@@ -14,15 +14,15 @@ This work is strongly motivated by, and based on, the [GSLea](https://github.com
 
 # Notes
 
-## Geographic area
+## Geographic area - rough ideas
 
 GSLea has 9 or so Ecosystem Approach Regions. We had some preliminary discussion of how we would define such regions for Pacific Region waters. One point - is there a reason to have them mutually exclusive (i.e. can allow overlapping regions)?
 
 Could we have user-defined polygons? Seems unlikely as would require a lot of computation for some data sets.  
 
+Perhaps we can have various spatial scales, with smaller spatial scales being able to be joined to form larger ones if necessary. Possible Goal: Find out what spatial scales on which indices are useful/required for which species.
+
 Pacific Bioregions (too large-scale for our purposes) are shown [here](https://cpawsbc.org/northern-shelf-bioregion/).
-
-
 
 ## Data ideas
 
