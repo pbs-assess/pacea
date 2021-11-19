@@ -1,0 +1,95 @@
+---
+title: "Obtain Satellite Data From NOAA's ERDDAP"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Downloading the Latest Monthly Satellite (Remote-Sensing) Data from ERDDAP
+
+First we download the remote-sensing datasets from erddap
+
+```{r download data}
+dataset_ids <-
+  c('erdMBsstdmday_LonPM180', # SST MONTHLY MODIS
+    'erdMBchlamday_LonPM180') # CHLA MONTHLY MODIS
+
+dataset_startdates <-
+  c('2006-01-17',
+    '2006-01-17')
+
+# strides 'keep' only every kth value to save space
+dataset_strides <- 
+  c(1,4,4,1, # keep every month, every 4th lon/lat and every var
+    1,4,4,1)
+
+# character of variable name sored in data
+dataset_char <-
+  c(
+    'sst',
+    'chlorophyll'
+  )
+  
+
+Coastline_lonlat <-
+  sf::st_transform(
+  sf::st_as_sf(PACea::Coastline),
+  crs=sf::st_crs('EPSG:4326')
+  )
+
+# Create a list to store all the datasets in
+dataset_list <- vector('list', length(dataset_ids))
+
+current_date <- as.character(Sys.Date())
+
+for (i in 1:length(dataset_list))
+{
+  print(paste0('currently processing covariate ', dataset_char[i]))
+  
+  dataset_list[[i]] <-
+    rerddap::griddap(
+      x=rerddap::info(datasetid = dataset_ids[i]),
+      time=c(dataset_startdates[i], '2006-03-17'),#current_date),
+      latitude=sf::st_bbox(Coastline_lonlat)[c(2,4)],
+      longitude=sf::st_bbox(Coastline_lonlat)[c(1,3)],
+      stride = dataset_strides[i]
+    )$data
+  
+  # Convert to wide format for efficiency
+  dataset_list[[i]] <-
+    dataset_list[[i]] %>%
+    tidyr::pivot_wider(
+      id_cols = c(lat,lon),
+      names_from = time, 
+      values_from = dataset_char[i])
+    
+  
+  # Convert these dataframes to raster objects 
+  dataset_list[[i]] <-
+    raster::brick(
+      sp::SpatialPixelsDataFrame(
+        points=dataset_list[[i]][,c('lon','lat')],
+        data=data.frame(dataset_list[[i]][,-c(1,2)])
+      )
+    )
+  
+  # project onto correct CRS using bilinear interpolation
+  raster::crs(dataset_list[[i]]) <-
+    raster::crs('EPSG:4326')
+  
+  dataset_list[[i]] <-
+    raster::projectRaster(
+      dataset_list[[i]],
+      crs = PACea::Coastline@proj4string
+    )
+
+  print(paste0('successfully processed covariate ', dataset_char[i]))
+}
+
+
+
+```
+
+Next, we aggregate them onto the regions we are interested in
