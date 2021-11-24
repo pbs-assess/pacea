@@ -1,0 +1,285 @@
+---
+title: "Groundfish_IPHC_Data"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Obtaining Groundfish IPHC Relative Abundance Indices
+
+First, we download the groundfish IPHC data using the gfiphc and hookCompetition packages 
+
+```{r}
+library(gfiphc)
+
+fit_mod <- F
+
+if(fit_mod)
+{
+  gf_data <-
+  hookCompetition::read_Data_hookcomp(
+    species_vec = c("yelloweye rockfish",
+            "arrowtooth flounder",
+            "lingcod",
+            "north pacific spiny dogfish",
+            "pacific cod",
+            "pacific halibut",
+            "redbanded rockfish",
+            "sablefish",
+            "walleye pollock"),
+    at_PBS = T, 
+    simple_species_vec = c("yelloweye",
+            "arrowtooth",
+            "lingcod",
+            "dogfish",
+            "cod",
+            "halibut",
+            "redbanded",
+            "sablefish",
+            "walleye"),
+    min_dist = 1e6, 
+    min_dist_to_boundary = 1e6
+  )
+}
+
+
+```
+Next, we fit spatio-temporal censored Poisson models to the Pacific Herring predators to create density layers for relative abundance for each year. We extract the density layer for each species and add it to a list object
+
+```{r}
+if(fit_mod)
+{
+  pacific_herring_predators_ind <- 
+  vector('list', length = length(c("yelloweye",
+            "arrowtooth",
+            "lingcod",
+            "dogfish",
+            "cod",
+            "halibut",
+            "redbanded",
+            "sablefish",
+            "walleye")))
+  
+  # Make spatial objects required for the fit
+  spatial_obj <- 
+    hookCompetition::make_spatial_objects(
+      gf_data$Reduced_data_sp,
+      
+    )
+  
+  names(pacific_herring_predators_ind) <-
+  c("yelloweye rockfish",
+    "arrowtooth flounder",
+    "lingcod",
+    "north pacific spiny dogfish",
+    "pacific cod",
+    "pacific halibut",
+    "redbanded rockfish",
+    "sablefish",
+    "walleye pollock")
+
+count <- 1
+for(i in names(pacific_herring_predators_ind))
+{
+  pacific_herring_predators_ind[[count]] <-
+    hookCompetition::spatiotemp_censored_index_fun (
+      data=gf_data$Reduced_data_sp[
+        gf_data$Reduced_data_sp$year>=1997 &
+          gf_data$Reduced_data_sp$station %in% 
+          names(table(gf_data$Reduced_data_sp$station))[table(gf_data$Reduced_data_sp$station)>2],], 
+      species=i,
+      return=T, ICR_adjust=F, cprop=0.95, 
+      nthreads=1, keep=F, use_upper_bound=TRUE, 
+      upper_bound_quantile=0.85, plot=T, 
+      allyears=F, station_effects=T, 
+      prior_event=HT.prior(), prior_station=HT.prior(), 
+      n_knots=8, seed=0, verbose=F, n_trajectories=1,
+      preserve_inter_regional_differences = T,
+      spatiotemporal=F, mesh=spatial_obj$mesh, 
+      spde=spatial_obj$spde_mod, 
+      pixels=spatial_obj$predict_pixels
+)$pred_df_plot
+  count <- count + 1
+}
+
+# save the indices for future use
+usethis::use_data_raw(pacific_herring_predators_ind)
+
+}
+
+if(!fit_mod)
+{
+  pacific_herring_predators_ind <- readRDS('pacific_herring_predators_ind.rds')
+  
+  names(pacific_herring_predators_ind) <-
+  c("yelloweye",
+    "arrowtooth",
+    "lingcod",
+    "dogfish",
+    "cod",
+    "halibut",
+    "redbanded",
+    "sablefish",
+    "walleye")
+}
+
+
+```
+
+Next, we map the indices to the partition regions
+
+```{r}
+# read in partition regions
+BC_Partition_Objects <- PACea::BC_Partition_Objects
+
+# compute the mean relative abundance per region
+Partition_Polys <- BC_Partition_Objects$BC_Partition
+
+# Convert to wide format
+# Then read in as a rasterBrick with repeated locations to save memory
+predators_raster <- 
+  vector('list', length(pacific_herring_predators_ind))
+
+names(predators_raster) <-
+  c("yelloweye",
+    "arrowtooth",
+    "lingcod",
+    "dogfish",
+    "cod",
+    "halibut",
+    "redbanded",
+    "sablefish",
+    "walleye")
+for( i in 1:length(pacific_herring_predators_ind) )
+{
+  predators_raster[[i]] <- 
+    cbind(sf::st_drop_geometry(pacific_herring_predators_ind[[i]]),
+          sf::st_coordinates(pacific_herring_predators_ind[[i]])) %>%
+    dplyr::filter(!is.na(region_INLA)) %>%
+    tidyr::pivot_wider(id_cols = c(X, Y),
+                names_from = year, values_from = median)
+  
+  predators_raster[[i]] <-
+    raster::brick(sp::SpatialPixelsDataFrame(
+      points=cbind(predators_raster[[i]]$X, predators_raster[[i]]$Y),
+      data = predators_raster[[i]][,-c(1,2)],
+      tolerance = 0.0025,
+      proj4string = sp::CRS(sf::st_crs(Partition_Polys)$proj4string)
+    ))
+  
+}
+
+# remove the original data.frame
+rm(pacific_herring_predators_ind)
+
+predator_years <- as.numeric(substr(names(predators_raster[[1]]),2,10))
+
+# Create a data.frame object for storing the aggregated predator abundance values
+nyear=length(min(predator_years):max(predator_years))
+npoly=length(Partition_Polys$Regions_Name)
+nspecies=length(predators_raster)
+
+Partition_df <-
+  data.frame(Poly_ID=rep(1:npoly, times=nyear*nspecies),
+             Species=rep(rep(names(predators_raster), each=npoly), times=nyear),
+             Year=rep(min(predator_years):max(predator_years), each=npoly*nspecies),
+             Mean_Rel_Abund=NA,
+             Fraction_NA=NA
+  )
+
+# Loop through the years and months and form the mappings - save memory this way
+for(i in min(predator_years):max(predator_years))
+{
+  print(paste0('Currently processing year ',i))
+   
+    # Find the corresponding column in the raster data
+    raster_ind <- which(predator_years==i)
+
+    
+    for(j in 1:length(predators_raster))
+    {
+      
+      Partition_df <- 
+        Partition_df %>%
+        dplyr::filter() %>%
+        dplyr::mutate(Mean_Rel_Abund = 
+                 ifelse(Species==names(predators_raster)[j] & Year==i,
+                        exactextractr::exact_extract(
+                          predators_raster[[j]][[raster_ind]],
+                          Partition_Polys,
+                          fun='mean'
+                        ), Mean_Rel_Abund),
+                       Fraction_NA =
+                   ifelse(Species==names(predators_raster)[j] & Year==i,
+                     exactextractr::exact_extract(
+                        predators_raster[[j]][[raster_ind]],
+                        Partition_Polys,
+                        fun=function(value,cov_frac){
+                          1-sum(cov_frac*!is.na(value))/sum(cov_frac)
+                          }
+                        ), Fraction_NA),
+                 Fraction_NA = ifelse(is.na(Fraction_NA),1,Fraction_NA)
+        )
+      
+    }
+    print('successfully mapped to polygons')
+    
+}
+
+
+# Convert to wide format with a column per species
+Groundfish_IPHC_DF <-
+  Partition_df %>%
+  tidyr::pivot_wider(
+    id_cols = c(Year, Poly_ID),
+    names_from = c(Species),
+    values_from = c(Mean_Rel_Abund, Fraction_NA)
+  )
+  
+usethis::use_data(Groundfish_IPHC_DF, overwrite = T)
+
+```
+
+Now make a quick plot of yelloweye rockfish density in 1999 as a sanity check
+
+```{r}
+ ggplot2::ggplot(cbind(Partition_Polys, 
+              Groundfish_IPHC_DF %>% 
+                dplyr::filter(Year==1999) %>% 
+                dplyr::select(Mean_Rel_Abund_yelloweye)
+              ), 
+        ggplot2::aes(fill=Mean_Rel_Abund_yelloweye)) + 
+  ggplot2::geom_sf()
+
+# Extract only the indices that correspond to the West Coast Haida Gwaii
+BC_Partition_Objects$index_vectors$BC_Major_Area_Boundaries[3]
+# Index 58 is the correct row from the BC_Partition_Objects$Mapping_Matrix
+
+ggplot2::ggplot(cbind(Partition_Polys, 
+              Groundfish_IPHC_DF %>% 
+                dplyr::filter(Year==1999) %>% 
+                dplyr::select(Mean_Rel_Abund_yelloweye) %>%
+                dplyr::mutate(yelloweye_WCHG=
+                         ifelse(row_number() %in%
+                          which(as.logical(
+                            BC_Partition_Objects$Mapping_Matrix[       
+                          BC_Partition_Objects$index_vectors$BC_Major_Area_Boundaries[3],
+                          ])),
+                          Mean_Rel_Abund_yelloweye,
+                          NA))
+              ), 
+        ggplot2::aes(fill=yelloweye_WCHG)) + 
+  ggplot2::geom_sf()
+
+# Plot the fraction of the polygon which has missing data
+ ggplot2::ggplot(cbind(Partition_Polys, 
+              Groundfish_IPHC_DF %>% 
+                dplyr::filter(Year==1999) %>% 
+                dplyr::select(Fraction_NA_yelloweye)
+              ), 
+        ggplot2::aes(fill=Fraction_NA_yelloweye)) + 
+  ggplot2::geom_sf()
+```
+
