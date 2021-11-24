@@ -13,6 +13,7 @@ First, we read in all the different regions
 
 ```{r}
 
+library(dplyr)
 # Shapefile of the entire BC Coastline for plotting
 # data(nepacLL)
 # Shapefile of the entire BC Coastline for plotting

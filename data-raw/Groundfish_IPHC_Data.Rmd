@@ -13,6 +13,7 @@ First, we download the groundfish IPHC data using the gfiphc and hookCompetition
 
 ```{r}
 library(gfiphc)
+library(dplyr)
 
 fit_mod <- F
 
