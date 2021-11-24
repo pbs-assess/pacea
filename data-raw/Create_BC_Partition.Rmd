@@ -1,0 +1,201 @@
+---
+title: "Create_BC_Partition"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Script for Creating the spatial Partition of BC
+
+First, we read in all the different regions
+
+```{r}
+
+# Shapefile of the entire BC Coastline for plotting
+# data(nepacLL)
+# Shapefile of the entire BC Coastline for plotting
+# Coastline <- #sf::st_as_sf(PACea::Coastline)
+# sfheaders::sf_polygon(
+#   obj = data.frame(nepacLL[,c('X','Y','PID','POS')])
+#   , x = "X"
+#   , y = "Y"
+#   , polygon_id = "PID"
+# )
+# sf::st_crs(Coastline) <- sf::st_crs('EPSG:4326')
+# plot(Coastline)
+
+# Shapefile of the entire BC Coastline for plotting
+Coastline <- sf::st_as_sf(PACea::Coastline)
+
+Coastline_Simp <- st_simplify(st_buffer(Coastline, dist=20), dTolerance=25)
+  
+# Coarse polygons defining 4 Major regions: QCS, WCVI, HS, WCHG
+BC_Major_Area_Boundaries <- sf::st_as_sf(
+  PACea::BC_Major_Area_Boundaries)
+BC_Major_Area_Boundaries <- sf::st_transform(
+  BC_Major_Area_Boundaries,
+  sf::st_crs(Coastline)
+)
+
+# Coarse polygons defining the Pacific Herring Sections (from SpawnIndex package)
+Pacific_Herring_Sections <- sf::st_transform(
+  PACea::Pacific_Herring_Sections,
+  sf::st_crs(Coastline))
+# Convert Section to Statistical Area (first two digits)
+Pacific_Herring_Sections$Statistical_Area <-
+  factor(
+  substr(Pacific_Herring_Sections$Section,1,2)
+  )
+# Merge by Statistical Area
+Pacific_Herring_Sections <-
+Pacific_Herring_Sections %>% 
+  dplyr::group_by(Statistical_Area) %>% 
+  dplyr::summarize()
+
+which.max(diff(sf::st_coordinates(Coastline)[,2]))
+sf::st_coordinates(Coastline)[1333:1337,]
+sf::st_bbox(Coastline)
+# expand the polygon by 50km Westwards
+poly_expansion <-
+  sf::st_polygon(list(matrix(c(390,1036.5509,
+                      339,1036.5509,
+                      1030,253.6858,
+                      1080,253.6858,
+                      390,1036.5509),
+                      ncol=2,
+                    byrow = T)))
+poly_expansion <-
+  sf::st_sf(sf::st_sfc(poly_expansion), crs = sf::st_crs(Coastline))
+
+Coastline <- sf::st_union(poly_expansion, Coastline)
+plot(Coastline)
+
+
+# create large pixel grid over the simplified coastline
+Coastline_Grid <- sf::st_sf(sf::st_make_grid(Coastline_Simp,
+                      n=c(10,10))
+                  )
+plot(Coastline_Grid)
+plot(Coastline, add=T, col='red')
+
+# Keep only the polygons that fall within or touch the original Coastline
+Coastline_Grid  <- 
+  Coastline_Grid[Coastline,]
+
+Coastline_Grid <- sf::st_as_sf(sf::as_Spatial(Coastline_Grid))
+
+plot(Coastline_Grid)
+plot(Coastline, add=T, col='red')
+
+```
+
+Next, we compute the intersection of all the competing partitions
+
+```{r}
+
+All_regions <- 
+  dplyr::bind_rows(
+        Coastline_Grid %>% dplyr::mutate(Regions_Name = 'Entire Coast'),
+        BC_Major_Area_Boundaries %>% dplyr::mutate(Regions_Name = 'BC Major Areas'),
+        Pacific_Herring_Sections %>% dplyr::mutate(Regions_Name = 'Pacific Herring Spawn Statistical Areas'))
+    
+
+BC_Partition <- 
+  sf::st_intersection(All_regions)
+  
+# Convert the GEOMETRYCOLLECTION to multipolygon
+BC_Partition <-  sf::st_collection_extract(BC_Partition, type = c("POLYGON"))
+
+# Create a Poly_ID variable
+BC_Partition <-
+  BC_Partition %>%
+  mutate(Poly_ID = row_number())
+
+# Compute the areas of each region
+region_Areas <-
+sf::st_area(BC_Partition)
+
+# Compute the area of intersection between the ocean and each of the regions
+Ocean_Intersection_Areas <- rep(0,dim(BC_Partition)[1])
+for(i in 1:dim(BC_Partition)[1])
+{
+  Ocean_Intersection_Areas[i] <-
+    ifelse(is.null(sf::st_area(sf::st_intersection(BC_Partition[i,], Coastline, drop=F))),
+           0, 
+           sf::st_area(sf::st_intersection(BC_Partition[i,], Coastline, drop=F)))
+    
+}
+
+# dplyr strangely drops the values from the non-intersecting points
+# so can't use
+# Ocean_Intersection_Areas <-
+#   BC_Partition %>%
+#   dplyr::group_by(Poly_ID) %>%
+#   summarize(Area = sf::st_area(., sf::st_intersection(Coastline, drop=F))) %>%
+#   sf::st_drop_geometry()
+
+# remove regions with areas < 3km^2 and values that are essentially land
+BC_Partition <- 
+  BC_Partition[region_Areas > units::set_units(3,'km^2') &
+                Ocean_Intersection_Areas > 3 &
+                 !is.na(Ocean_Intersection_Areas),]
+
+# Check that all the regions are POLYGON or MULTIPOLYGON type
+sf::st_geometry_type(BC_Partition)
+
+plot(BC_Partition)
+
+# Update the areas of each region
+region_Areas <-
+sf::st_area(BC_Partition)
+Ocean_Intersection_Areas <-
+sf::st_area(sf::st_intersection(BC_Partition, Coastline))
+
+# Update the Poly_ID variable
+BC_Partition <-
+  BC_Partition %>%
+  mutate(Poly_ID = row_number())
+# Define the mapping between each subregion and the original regions
+Mapping_Matrix <-
+  matrix(0, 
+         nrow = dim(All_regions)[1], 
+         ncol = dim(BC_Partition)[1])
+
+for(i in 1:dim(BC_Partition)[1])
+{
+  # loop through the partitioned regions and place a 1 in the rows 
+  # corresponding to the original regions which intersect
+  Mapping_Matrix[BC_Partition$origins[[i]],i] <- 1
+}
+
+# Check the mapping has been made correctly
+colSums(Mapping_Matrix)
+BC_Partition$n.overlaps
+assertthat::assert_that(
+  assertthat::are_equal(colSums(Mapping_Matrix),
+                        BC_Partition$n.overlaps),
+                        msg='Creation of the mapping matrix failed')
+
+# create a named list with each entry equal to a index vector 
+# each index vector points the set of regions to the correct rows 
+# Mapping Matrix  (e.g. WCHG, WCVI, HS, QCS)
+index_vectors <- 
+  list(Coastline = which(All_regions$Regions_Name=="Entire Coast"),
+       BC_Major_Area_Boundaries = which(All_regions$Regions_Name=="BC Major Areas"),
+       Pacific_Herring_Sections = which(All_regions$Regions_Name=="Pacific Herring Spawn Statistical Areas"))
+
+
+# save the results for future use
+BC_Partition_Objects <-
+  list(BC_Partition=BC_Partition,
+       region_Areas=region_Areas,
+       Ocean_Intersection_Areas=Ocean_Intersection_Areas,
+       Mapping_Matrix=Mapping_Matrix,
+       index_vectors=index_vectors)
+
+usethis::use_data(BC_Partition_Objects, overwrite = T)
+
+```
+
