@@ -9,9 +9,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Downloading the Latest Monthly Satellite (Remote-Sensing) Data from ERDDAP
 
-First we download the remote-sensing datasets from erddap
+First we download the remote-sensing datasets from erddap. Then we map to the polygons defining the BC partition. We compute the spatial average to do the mapping onto the polygons and record the spatial fraction of missing values per polygon too.
 
 ```{r download data}
+library(dplyr)
+
 dataset_ids <-
   c('erdMBsstdmday_LonPM180', # SST MONTHLY MODIS
     'erdMBchlamday_LonPM180') # CHLA MONTHLY MODIS
@@ -22,10 +24,12 @@ dataset_startdates <-
 
 # strides 'keep' only every kth value to save space
 dataset_strides <- 
+  matrix(
   c(1,4,4,1, # keep every month, every 4th lon/lat and every var
-    1,4,4,1)
+    1,4,4,1),
+  ncol=4, byrow=T)
 
-# character of variable name sored in data
+# character of variable name stored in data
 dataset_char <-
   c(
     'sst',
@@ -39,27 +43,51 @@ Coastline_lonlat <-
   crs=sf::st_crs('EPSG:4326')
   )
 
-# Create a list to store all the datasets in
-dataset_list <- vector('list', length(dataset_ids))
+# subtract the date by 1 month to make sure enough time has been allowed to update the satellite data
+current_date <- as.character(lubridate::ymd(Sys.Date())-lubridate::period(1, units='month'))
 
-current_date <- as.character(Sys.Date())
+# read in partition regions
+BC_Partition_Objects <- PACea::BC_Partition_Objects
 
-for (i in 1:length(dataset_list))
+# compute the mean values per region
+Partition_Polys <- BC_Partition_Objects$BC_Partition
+
+data_years <- vector('list', length(dataset_ids))
+data_months <- vector('list', length(dataset_ids))
+
+# Create a data.frame object for storing the aggregated predator abundance values
+nyear=length(min(lubridate::year(dataset_startdates)):lubridate::year(lubridate::ymd(Sys.Date())-lubridate::period(1, units='month')))
+nmonth=12
+npoly=length(Partition_Polys$Regions_Name)
+ncovs=length(dataset_ids)
+
+Partition_df <-
+  expand.grid(Poly_ID=1:npoly,
+             Covariate=dataset_char,
+             Year=min(lubridate::year(dataset_startdates)):lubridate::year(lubridate::ymd(Sys.Date())-lubridate::period(1, units='month')),
+             Month=1:12,
+             Mean=NA,
+             Fraction_NA=1
+  )
+
+for (i in 1:length(dataset_ids))
 {
-  print(paste0('currently processing covariate ', dataset_char[i]))
+  print(paste0('currently downloading covariate ', dataset_char[i], ' from ERDDAP Database'))
   
-  dataset_list[[i]] <-
+  dataset_list <-
     rerddap::griddap(
       x=rerddap::info(datasetid = dataset_ids[i]),
-      time=c(dataset_startdates[i], '2006-03-17'),#current_date),
+      time=c(dataset_startdates[i], current_date),
       latitude=sf::st_bbox(Coastline_lonlat)[c(2,4)],
       longitude=sf::st_bbox(Coastline_lonlat)[c(1,3)],
-      stride = dataset_strides[i]
+      stride = dataset_strides[i,]
     )$data
   
+    print(paste0('Finished downloading covariate ', dataset_char[i], ' from ERDDAP Database'))
+  
   # Convert to wide format for efficiency
-  dataset_list[[i]] <-
-    dataset_list[[i]] %>%
+  dataset_list <-
+    dataset_list %>%
     tidyr::pivot_wider(
       id_cols = c(lat,lon),
       names_from = time, 
@@ -67,29 +95,85 @@ for (i in 1:length(dataset_list))
     
   
   # Convert these dataframes to raster objects 
-  dataset_list[[i]] <-
+  dataset_list <-
     raster::brick(
       sp::SpatialPixelsDataFrame(
-        points=dataset_list[[i]][,c('lon','lat')],
-        data=data.frame(dataset_list[[i]][,-c(1,2)])
+        points=dataset_list[,c('lon','lat')],
+        data=data.frame(dataset_list[,-c(1,2)])
       )
     )
   
   # project onto correct CRS using bilinear interpolation
-  raster::crs(dataset_list[[i]]) <-
+  raster::crs(dataset_list) <-
     raster::crs('EPSG:4326')
   
-  dataset_list[[i]] <-
+  dataset_list <-
     raster::projectRaster(
-      dataset_list[[i]],
+      dataset_list,
       crs = PACea::Coastline@proj4string
     )
 
+  data_years[[i]] <- as.numeric(substr(names(dataset_list),2,5))
+  data_months[[i]] <- as.numeric(substr(names(dataset_list),7,8))
+
+  # Loop through the years and months and form the mappings - save memory this way
+for(j in min(data_years[[i]]):max(data_years[[i]]))
+{
+  print(paste0('Currently processing year ',j))
+   
+    for(k in 1:12)
+    {
+      # Find the corresponding column in the raster data
+    raster_ind <- which(data_years[[i]]==j & 
+                          data_months[[i]] == k)
+    
+    if(length(raster_ind)>0)
+    {
+      Partition_df <- 
+        Partition_df %>%
+        dplyr::filter() %>%
+        dplyr::mutate(Mean = 
+                 ifelse(Month==k & Year==j & Covariate==dataset_char[i],
+                        exactextractr::exact_extract(
+                          dataset_list[[raster_ind]],
+                          Partition_Polys,
+                          fun='mean'
+                        ), Mean),
+                       Fraction_NA =
+                   ifelse(Month==k & Year==j & Covariate==dataset_char[i],
+                     exactextractr::exact_extract(
+                        dataset_list[[raster_ind]],
+                        Partition_Polys,
+                        fun=function(value,cov_frac){
+                          1-sum(cov_frac*!is.na(value))/sum(cov_frac)
+                          }
+                        ), Fraction_NA),
+                 Fraction_NA = ifelse(is.na(Fraction_NA),1,Fraction_NA)
+        ) 
+    }
+      
+    }
+    print(paste0('successfully mapped year ',j,' to polygons'))
+    
+}
+  
   print(paste0('successfully processed covariate ', dataset_char[i]))
+  rm(dataset_list)
 }
 
-
-
+# Convert to wide format with a column per species
+ERDDAP_DF <-
+  Partition_df %>%
+  tidyr::pivot_wider(
+    id_cols = c(Year, Month, Poly_ID),
+    names_from = c(Covariate),
+    values_from = c(Mean, Fraction_NA)
+  )
+  
+usethis::use_data(ERDDAP_DF, overwrite = T)
 ```
 
-Next, we aggregate them onto the regions we are interested in
+
+
+
+
