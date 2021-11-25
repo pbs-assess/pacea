@@ -15,6 +15,17 @@ First, we download the groundfish IPHC data using the gfiphc and hookCompetition
 library(gfiphc)
 library(dplyr)
 
+dataset_commonname <-
+  c("yelloweye_rel_density",
+    "arrowtooth_rel_density",
+    "lingcod_rel_density",
+    "dogfish_rel_density",
+    "cod_rel_density",
+    "halibut_rel_density",
+    "redbanded_rel_density",
+    "sablefish_rel_density",
+    "walleye_rel_density")
+
 fit_mod <- F
 
 if(fit_mod)
@@ -240,6 +251,31 @@ Groundfish_IPHC_DF <-
   )
   
 usethis::use_data(Groundfish_IPHC_DF, overwrite = T)
+
+# save the data key, pointing the common names of the datasets to the correct DF
+data_key <- 
+  data.frame(
+    Common_Name = dataset_commonname,
+    DF_Name = 'Groundfish_IPHC_DF',
+    Time_Resolution = 'Annual',
+    Data_Type = 'Model-based Raster',
+    Units = 'Relative Density (Proportional to #Individuals per Unit Area)',
+    Author = 'Joe Watson',
+    Citation = NA,
+    Comments = ''
+  )
+
+# append to the master Data_Key and remove duplicates
+Data_Key <-
+  rbind(PACea::Data_Key,
+        data_key)
+
+Data_Key <-
+  Data_Key[!duplicated(Data_Key),]
+
+# Update the master key
+usethis::use_data(Data_Key, overwrite=T)
+
 
 ```
 

@@ -13,6 +13,10 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(dplyr)
 
+dataset_commonname <-
+  c('SST_Monthly_BC_Lightstation',
+    'Salinity_Monthly_BC_Lightstation')
+
 Lightstations <-
 sf::st_read(
   dsn='./BC_Lightstation_Data_SHP_Files/BC_Lighthouse_DATA.shp'
@@ -227,6 +231,31 @@ Now we save the data and plot to check correctness
 
 ```{r}
 usethis::use_data(Lighthouse_SST_Salinity_DF, overwrite = T)
+
+# save the data key, pointing the common names of the datasets to the correct DF
+data_key <- 
+  data.frame(
+    Common_Name = dataset_commonname,
+    DF_Name = 'Lighthouse_SST_Salinity_DF',
+    Time_Resolution = 'Monthly',
+    Data_Type = 'Point-Referenced Raw Data',
+    Units = c('Degrees Celsius', 
+              'PSU (Practical Salinity Unit)'),
+    Author = 'Fisheries and Oceans Canada',
+    Citation = NA,
+    Comments = 'See https://open.canada.ca/data/en/dataset/719955f2-bf8e-44f7-bc26-6bd623e82884 for details'
+  )
+
+# append to the master Data_Key and remove duplicates
+Data_Key <-
+  rbind(PACea::Data_Key,
+        data_key)
+
+Data_Key <-
+  Data_Key[!duplicated(Data_Key[,c('Common_Name','DF_Name')]),]
+
+# Update the master key
+usethis::use_data(Data_Key, overwrite=T)
 
 # plot the mean lighthouse SST in April 1999 aggregated over the BC partition
 ggplot2::ggplot(data=

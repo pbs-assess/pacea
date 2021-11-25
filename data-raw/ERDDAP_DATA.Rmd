@@ -14,6 +14,10 @@ First we download the remote-sensing datasets from erddap. Then we map to the po
 ```{r download data}
 library(dplyr)
 
+dataset_commonname <-
+  c('SST Monthly MODIS', 
+    'CHLA Monthly MODIS')
+
 dataset_ids <-
   c('erdMBsstdmday_LonPM180', # SST MONTHLY MODIS
     'erdMBchlamday_LonPM180') # CHLA MONTHLY MODIS
@@ -171,6 +175,32 @@ ERDDAP_DF <-
   )
   
 usethis::use_data(ERDDAP_DF, overwrite = T)
+
+# save the data key, pointing the common names of the datasets to the correct DF
+data_key <- 
+  data.frame(
+    Common_Name = dataset_commonname,
+    DF_Name = 'ERDDAP_DF',
+    Time_Resolution = 'Monthly',
+    Data_Type = 'Remote-Sensed Raster',
+    Units = c('Degrees Celsius', 
+              'mg m-3'),
+    Author = 'NOAA', # Need to update uniquely for each dataset
+    Citation = NA, # Need to update for each dataset
+    Comments = '' # Maybe add a link to the ERDDAP data page
+  )
+
+# append to the master Data_Key and remove duplicates
+Data_Key <-
+  rbind(PACea::Data_Key,
+        data_key)
+
+Data_Key <-
+  Data_Key[!duplicated(Data_Key),]
+
+# Update the master key
+usethis::use_data(Data_Key, overwrite=T)
+
 ```
 
 
