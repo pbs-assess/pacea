@@ -1,17 +1,18 @@
 # Function for viewing all available datasets with information on them
 PACea_info <- function(
-  common_name=NULL
+  fetch_name=NULL
 )
 {
-  if(is.null(common_name))
+  if(is.null(fetch_name))
   {
-    return(View(PACea::Data_Key))
+    return(View(PACea::Data_Key[,c('Fetch_Name','Time_Resolution','Data_Type','Units','Author','Citation','Comments','DF_Name')]))
   }
-  if(!is.null(common_name))
+  if(!is.null(fetch_name))
   {
     return(View(PACea::Data_Key[
-      grepl(tolower(PACea::Data_Key$Common_Name),
-            pattern = tolower(common_name)),
-    ]))
+      grepl(tolower(PACea::Data_Key$Fetch_Name),
+            pattern = tolower(fetch_name)),
+    c('Fetch_Name','Time_Resolution','Data_Type','Units','Author','Citation','Comments','DF_Name')
+      ]))
   }
 }
