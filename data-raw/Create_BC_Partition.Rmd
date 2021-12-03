@@ -14,23 +14,13 @@ First, we read in all the different regions
 ```{r}
 
 library(dplyr)
-# Shapefile of the entire BC Coastline for plotting
-# data(nepacLL)
-# Shapefile of the entire BC Coastline for plotting
-# Coastline <- #sf::st_as_sf(PACea::Coastline)
-# sfheaders::sf_polygon(
-#   obj = data.frame(nepacLL[,c('X','Y','PID','POS')])
-#   , x = "X"
-#   , y = "Y"
-#   , polygon_id = "PID"
-# )
-# sf::st_crs(Coastline) <- sf::st_crs('EPSG:4326')
-# plot(Coastline)
+
+make_grid <- F
 
 # Shapefile of the entire BC Coastline for plotting
 Coastline <- sf::st_as_sf(PACea::Coastline)
 
-Coastline_Simp <- st_simplify(st_buffer(Coastline, dist=20), dTolerance=25)
+Coastline_Simp <- sf::st_simplify(sf::st_buffer(Coastline, dist=20), dTolerance=25)
   
 # Coarse polygons defining 4 Major regions: QCS, WCVI, HS, WCHG
 BC_Major_Area_Boundaries <- sf::st_as_sf(
@@ -73,7 +63,8 @@ poly_expansion <-
 Coastline <- sf::st_union(poly_expansion, Coastline)
 plot(Coastline)
 
-
+if(make_grid)
+{
 # create large pixel grid over the simplified coastline
 Coastline_Grid <- sf::st_sf(sf::st_make_grid(Coastline_Simp,
                       n=c(10,10))
@@ -86,6 +77,13 @@ Coastline_Grid  <-
   Coastline_Grid[Coastline,]
 
 Coastline_Grid <- sf::st_as_sf(sf::as_Spatial(Coastline_Grid))
+
+usethis::use_data(Coastline_Grid, overwrite = T)
+}
+if(!make_grid)
+{
+  Coastline_Grid <- PACea::Coastline_Grid
+}
 
 plot(Coastline_Grid)
 plot(Coastline, add=T, col='red')
