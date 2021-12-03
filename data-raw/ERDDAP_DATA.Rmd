@@ -173,6 +173,8 @@ ERDDAP_DF <-
     names_from = c(Covariate),
     values_from = c(Mean, Fraction_NA)
   )
+
+## MAKE SURE THE AGGREGATED VARIABLES ARE IN NUMERIC FORMAT NOT A LIST!
   
 usethis::use_data(ERDDAP_DF, overwrite = T)
 
