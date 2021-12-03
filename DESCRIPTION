@@ -39,5 +39,11 @@ Suggests:
     gfiphc (>= 0.0.0.9000),
     rlang (>= 0.4.11),
     rerddap (>= 0.7.6),
-    Matrix
+    stringr (>= 1.4.0),
+    tidyr (>= 1.1.4),
+    assertthat (>= 0.2.1),
+    exactextractr (>= 0.7.1),
+    Matrix,
+    testthat (>= 3.0.0)
 VignetteBuilder: knitr
+Config/testthat/edition: 3
