@@ -129,6 +129,11 @@ PACea_fetch <- function(
     }
     count <- count + 1 
   }
+  # Map the Poly_Name to the Data
+  Data$Poly_Name <-
+    PACea::BC_Partition_Objects$BC_Partition$Poly_Name[
+      Data$Poly_ID
+    ]
   
   return(Data)
 }
