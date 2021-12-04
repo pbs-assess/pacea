@@ -1,17 +1,17 @@
 ,Fetch_Name,DF_Name,Time_Resolution,Data_Type,Units,Author,Citation,Comments,DF_Variable_Names
-1,SST Monthly MODIS,ERDDAP_DF,Monthly,Remote-Sensed Raster,Degrees Celsius,NOAA,NA,,Mean_sst;Fraction_NA_sst
-2,CHLA Monthly MODIS,ERDDAP_DF,Monthly,Remote-Sensed Raster,mg m-3,NOAA,NA,,Mean_chlorophyll;Fraction_NA_chlorophyll
-3,yelloweye_rel_density,Groundfish_IPHC_DF,Annual,Model-based Raster,Relative Density (Proportional to #Individuals per Unit Area),Joe Watson,NA,,Mean_Rel_Abund_yelloweye;Fraction_NA_yelloweye
-4,arrowtooth_rel_density,Groundfish_IPHC_DF,Annual,Model-based Raster,Relative Density (Proportional to #Individuals per Unit Area),Joe Watson,NA,,Mean_Rel_Abund_arrowtooth;Fraction_NA_arrowtooth
-5,lingcod_rel_density,Groundfish_IPHC_DF,Annual,Model-based Raster,Relative Density (Proportional to #Individuals per Unit Area),Joe Watson,NA,,Mean_Rel_Abund_lingcod;Fraction_NA_lingcod
-6,dogfish_rel_density,Groundfish_IPHC_DF,Annual,Model-based Raster,Relative Density (Proportional to #Individuals per Unit Area),Joe Watson,NA,,Mean_Rel_Abund_dogfish;Fraction_NA_dogfish
-7,cod_rel_density,Groundfish_IPHC_DF,Annual,Model-based Raster,Relative Density (Proportional to #Individuals per Unit Area),Joe Watson,NA,,Mean_Rel_Abund_cod;Fraction_NA_cod
-8,halibut_rel_density,Groundfish_IPHC_DF,Annual,Model-based Raster,Relative Density (Proportional to #Individuals per Unit Area),Joe Watson,NA,,Mean_Rel_Abund_halibut;Fraction_NA_halibut
-9,redbanded_rel_density,Groundfish_IPHC_DF,Annual,Model-based Raster,Relative Density (Proportional to #Individuals per Unit Area),Joe Watson,NA,,Mean_Rel_Abund_redbanded;Fraction_NA_redbanded
-10,sablefish_rel_density,Groundfish_IPHC_DF,Annual,Model-based Raster,Relative Density (Proportional to #Individuals per Unit Area),Joe Watson,NA,,Mean_Rel_Abund_sablefish;Fraction_NA_sablefish
-11,walleye_rel_density,Groundfish_IPHC_DF,Annual,Model-based Raster,Relative Density (Proportional to #Individuals per Unit Area),Joe Watson,NA,,Mean_Rel_Abund_walleye;Fraction_NA_walleye
-12,SST_Monthly_BC_Lightstation,Lighthouse_SST_Salinity_DF,Monthly,Point-Referenced Raw Data,Degrees Celsius,Fisheries and Oceans Canada,NA,See https://open.canada.ca/data/en/dataset/719955f2-bf8e-44f7-bc26-6bd623e82884 for details,Mean_SST;N_Obs_SST
-13,Salinity_Monthly_BC_Lightstation,Lighthouse_SST_Salinity_DF,Monthly,Point-Referenced Raw Data,PSU (Practical Salinity Unit),Fisheries and Oceans Canada,NA,See https://open.canada.ca/data/en/dataset/719955f2-bf8e-44f7-bc26-6bd623e82884 for details,Mean_Salinity;N_Obs_Salinity
+1,SST_Monthly_MODIS,ERDDAP_DF,Monthly,Remote-Sensed Raster,Degrees Celsius,NOAA,NA,,Mean_SST_MODIS;Fraction_NA_SST_MODIS
+2,CHLA_Monthly_MODIS,ERDDAP_DF,Monthly,Remote-Sensed Raster,mg m-3,NOAA,NA,,Mean_CHLA_MODIS;Fraction_NA_CHLA_MODIS
+3,Yelloweye_Rel_Density,Groundfish_IPHC_DF,Annual,Model-based Raster,Relative Density (Proportional to #Individuals per Unit Area),Joe Watson,NA,,Mean_Rel_Abund_Yelloweye;Fraction_NA_Yelloweye
+4,Arrowtooth_Rel_Density,Groundfish_IPHC_DF,Annual,Model-based Raster,Relative Density (Proportional to #Individuals per Unit Area),Joe Watson,NA,,Mean_Rel_Abund_Arrowtooth;Fraction_NA_Arrowtooth
+5,Lingcod_Rel_Density,Groundfish_IPHC_DF,Annual,Model-based Raster,Relative Density (Proportional to #Individuals per Unit Area),Joe Watson,NA,,Mean_Rel_Abund_Lingcod;Fraction_NA_Lingcod
+6,Dogfish_Rel_Density,Groundfish_IPHC_DF,Annual,Model-based Raster,Relative Density (Proportional to #Individuals per Unit Area),Joe Watson,NA,,Mean_Rel_Abund_Dogfish;Fraction_NA_Dogfish
+7,Cod_Rel_Density,Groundfish_IPHC_DF,Annual,Model-based Raster,Relative Density (Proportional to #Individuals per Unit Area),Joe Watson,NA,,Mean_Rel_Abund_Cod;Fraction_NA_Cod
+8,Halibut_Rel_Density,Groundfish_IPHC_DF,Annual,Model-based Raster,Relative Density (Proportional to #Individuals per Unit Area),Joe Watson,NA,,Mean_Rel_Abund_Halibut;Fraction_NA_Halibut
+9,Redbanded_Rel_Density,Groundfish_IPHC_DF,Annual,Model-based Raster,Relative Density (Proportional to #Individuals per Unit Area),Joe Watson,NA,,Mean_Rel_Abund_Redbanded;Fraction_NA_Redbanded
+10,Sablefish_Rel_Density,Groundfish_IPHC_DF,Annual,Model-based Raster,Relative Density (Proportional to #Individuals per Unit Area),Joe Watson,NA,,Mean_Rel_Abund_Sablefish;Fraction_NA_Sablefish
+11,Walleye_Rel_Density,Groundfish_IPHC_DF,Annual,Model-based Raster,Relative Density (Proportional to #Individuals per Unit Area),Joe Watson,NA,,Mean_Rel_Abund_Walleye;Fraction_NA_Walleye
+12,SST_Monthly_BC_Lightstation,Lighthouse_SST_Salinity_DF,Monthly,Point-Referenced Raw Data,Degrees Celsius,Fisheries and Oceans Canada,NA,See https://open.canada.ca/data/en/dataset/719955f2-bf8e-44f7-bc26-6bd623e82884 for details,Mean_SST_BC_Lightstation;N_Obs_SST_BC_Lightstation
+13,Salinity_Monthly_BC_Lightstation,Lighthouse_SST_Salinity_DF,Monthly,Point-Referenced Raw Data,PSU (Practical Salinity Unit),Fisheries and Oceans Canada,NA,See https://open.canada.ca/data/en/dataset/719955f2-bf8e-44f7-bc26-6bd623e82884 for details,Mean_Salinity_BC_Lightstation;N_Obs_Salinity_BC_Lightstation
 14,ENSO_MEI,Coastwide_Index_DF,Monthly,Model-based Time Series,Degrees Celsius,NOAA,NA,Multivariate El Nino Southern Oscillation Index Version 2 See https://psl.noaa.gov/enso/mei,ENSO_MEI
 15,ENSO_ONI,Coastwide_Index_DF,Monthly,Model-based Time Series,Degrees Celsius,NOAA,https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php,Oceanic Nino Index - El Nino Southern Oscillation See https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php,ENSO_ONI_Total;ENSO_ONI_Anom
 16,AO_Index,Coastwide_Index_DF,Monthly,Model-based Time Series,NA,NOAA,https://psl.noaa.gov/gcos_wgsp/Timeseries/AO/,Arctic Oscillation (AO) Index see https://psl.noaa.gov/gcos_wgsp/Timeseries/AO/,AO_Index

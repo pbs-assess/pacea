@@ -16,15 +16,15 @@ library(gfiphc)
 library(dplyr)
 
 dataset_commonname <-
-  c("yelloweye_rel_density",
-    "arrowtooth_rel_density",
-    "lingcod_rel_density",
-    "dogfish_rel_density",
-    "cod_rel_density",
-    "halibut_rel_density",
-    "redbanded_rel_density",
-    "sablefish_rel_density",
-    "walleye_rel_density")
+  c("Yelloweye_Rel_Density",
+    "Arrowtooth_Rel_Density",
+    "Lingcod_Rel_Density",
+    "Dogfish_Rel_Density",
+    "Cod_Rel_Density",
+    "Halibut_Rel_Density",
+    "Redbanded_Rel_Density",
+    "Sablefish_Rel_Density",
+    "Walleye_Rel_Density")
 
 fit_mod <- F
 
@@ -155,15 +155,15 @@ predators_raster <-
   vector('list', length(pacific_herring_predators_ind))
 
 names(predators_raster) <-
-  c("yelloweye",
-    "arrowtooth",
-    "lingcod",
-    "dogfish",
-    "cod",
-    "halibut",
-    "redbanded",
-    "sablefish",
-    "walleye")
+  c("Yelloweye",
+    "Arrowtooth",
+    "Lingcod",
+    "Dogfish",
+    "Cod",
+    "Halibut",
+    "Redbanded",
+    "Sablefish",
+    "Walleye")
 for( i in 1:length(pacific_herring_predators_ind) )
 {
   predators_raster[[i]] <- 
@@ -253,28 +253,28 @@ Groundfish_IPHC_DF <-
 usethis::use_data(Groundfish_IPHC_DF, overwrite = T)
 
 # save the data key, pointing the common names of the datasets to the correct DF
-data_key <- 
-  data.frame(
-    Common_Name = dataset_commonname,
-    DF_Name = 'Groundfish_IPHC_DF',
-    Time_Resolution = 'Annual',
-    Data_Type = 'Model-based Raster',
-    Units = 'Relative Density (Proportional to #Individuals per Unit Area)',
-    Author = 'Joe Watson',
-    Citation = NA,
-    Comments = ''
-  )
+# data_key <- 
+#   data.frame(
+#     Common_Name = dataset_commonname,
+#     DF_Name = 'Groundfish_IPHC_DF',
+#     Time_Resolution = 'Annual',
+#     Data_Type = 'Model-based Raster',
+#     Units = 'Relative Density (Proportional to #Individuals per Unit Area)',
+#     Author = 'Joe Watson',
+#     Citation = NA,
+#     Comments = ''
+#   )
 
 # append to the master Data_Key and remove duplicates
-Data_Key <-
-  rbind(PACea::Data_Key,
-        data_key)
-
-Data_Key <-
-  Data_Key[!duplicated(Data_Key),]
-
-# Update the master key
-usethis::use_data(Data_Key, overwrite=T)
+# Data_Key <-
+#   rbind(PACea::Data_Key,
+#         data_key)
+# 
+# Data_Key <-
+#   Data_Key[!duplicated(Data_Key),]
+# 
+# # Update the master key
+# usethis::use_data(Data_Key, overwrite=T)
 
 
 ```

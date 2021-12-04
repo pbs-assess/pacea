@@ -15,8 +15,8 @@ First we download the remote-sensing datasets from erddap. Then we map to the po
 library(dplyr)
 
 dataset_commonname <-
-  c('SST Monthly MODIS', 
-    'CHLA Monthly MODIS')
+  c('SST_Monthly_MODIS', 
+    'CHLA_Monthly_MODIS')
 
 dataset_ids <-
   c('erdMBsstdmday_LonPM180', # SST MONTHLY MODIS
@@ -36,8 +36,8 @@ dataset_strides <-
 # character of variable name stored in data
 dataset_char <-
   c(
-    'sst',
-    'chlorophyll'
+    'SST_MODIS',
+    'CHLA_MODIS'
   )
   
 
@@ -165,6 +165,14 @@ for(j in min(data_years[[i]]):max(data_years[[i]]))
   rm(dataset_list)
 }
 
+## MAKE SURE THE AGGREGATED VARIABLES ARE IN NUMERIC FORMAT NOT A LIST!
+View(Partition_df[sapply(Partition_df$Mean,length)>1,])
+
+Partition_df$Mean[sapply(Partition_df$Mean,length)>1] <-
+  NA
+
+Partition_df$Mean <- as.numeric(do.call('c',Partition_df$Mean))
+
 # Convert to wide format with a column per species
 ERDDAP_DF <-
   Partition_df %>%
@@ -173,35 +181,33 @@ ERDDAP_DF <-
     names_from = c(Covariate),
     values_from = c(Mean, Fraction_NA)
   )
-
-## MAKE SURE THE AGGREGATED VARIABLES ARE IN NUMERIC FORMAT NOT A LIST!
   
 usethis::use_data(ERDDAP_DF, overwrite = T)
 
 # save the data key, pointing the common names of the datasets to the correct DF
-data_key <- 
-  data.frame(
-    Common_Name = dataset_commonname,
-    DF_Name = 'ERDDAP_DF',
-    Time_Resolution = 'Monthly',
-    Data_Type = 'Remote-Sensed Raster',
-    Units = c('Degrees Celsius', 
-              'mg m-3'),
-    Author = 'NOAA', # Need to update uniquely for each dataset
-    Citation = NA, # Need to update for each dataset
-    Comments = '' # Maybe add a link to the ERDDAP data page
-  )
-
-# append to the master Data_Key and remove duplicates
-Data_Key <-
-  rbind(PACea::Data_Key,
-        data_key)
-
-Data_Key <-
-  Data_Key[!duplicated(Data_Key),]
-
-# Update the master key
-usethis::use_data(Data_Key, overwrite=T)
+# data_key <- 
+#   data.frame(
+#     Common_Name = dataset_commonname,
+#     DF_Name = 'ERDDAP_DF',
+#     Time_Resolution = 'Monthly',
+#     Data_Type = 'Remote-Sensed Raster',
+#     Units = c('Degrees Celsius', 
+#               'mg m-3'),
+#     Author = 'NOAA', # Need to update uniquely for each dataset
+#     Citation = NA, # Need to update for each dataset
+#     Comments = '' # Maybe add a link to the ERDDAP data page
+#   )
+# 
+# # append to the master Data_Key and remove duplicates
+# Data_Key <-
+#   rbind(PACea::Data_Key,
+#         data_key)
+# 
+# Data_Key <-
+#   Data_Key[!duplicated(Data_Key),]
+# 
+# # Update the master key
+# usethis::use_data(Data_Key, overwrite=T)
 
 ```
 

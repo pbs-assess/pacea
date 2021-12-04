@@ -190,10 +190,10 @@ Lighthouse_SST_Salinity_DF <-
              Month=rep(rep(1:12, each=npoly), times=nyears),
              Year=rep(min(Data_Lightstations$Year,na.rm=T):max(Data_Lightstations$Year,na.rm=T),
                       each=npoly*nmonths),
-             Mean_SST=NA,
-             N_Obs_SST=0,
-             Mean_Salinity=NA,
-             N_Obs_Salinity=0
+             Mean_SST_BC_Lightstation=NA,
+             N_Obs_SST_BC_Lightstation=0,
+             Mean_Salinity_BC_Lightstation=NA,
+             N_Obs_Salinity_BC_Lightstation=0
   )
 
 # Which Polygon does each Lightstation fall in?
@@ -210,16 +210,18 @@ for(j in unique(Partition_Polys$Poly_ID))
   if(length(ind_Poly_to_Lightstation[[j]])>0)
   {
     Lighthouse_SST_Salinity_DF[Lighthouse_SST_Salinity_DF$Poly_ID==j,
-                 c('Mean_SST', 'N_Obs_SST', 'Mean_Salinity', 'N_Obs_Salinity')] <-
+                 c('Mean_SST_BC_Lightstation', 'N_Obs_SST_BC_Lightstation', 
+                   'Mean_Salinity_BC_Lightstation', 'N_Obs_Salinity_BC_Lightstation')] <-
       (sf::st_drop_geometry(Data_Lightstations) %>%
       filter(Location %in% ind_Poly_to_Lightstation[[j]]) %>%
       group_by(Year, Month) %>%
       summarize(
-        Mean_SST=mean(SST, na.rm=T),
-        N_Obs_SST=sum(!is.na(SST)),
-        Mean_Salinity=mean(Salinity, na.rm=T),
-        N_Obs_Salinity=sum(!is.na(Salinity))
-      ))[,c('Mean_SST', 'N_Obs_SST', 'Mean_Salinity', 'N_Obs_Salinity')]
+        Mean_SST_BC_Lightstation=mean(SST, na.rm=T),
+        N_Obs_SST_BC_Lightstation=sum(!is.na(SST)),
+        Mean_Salinity_BC_Lightstation=mean(Salinity, na.rm=T),
+        N_Obs_Salinity_BC_Lightstation=sum(!is.na(Salinity))
+      ))[,c('Mean_SST_BC_Lightstation', 'N_Obs_SST_BC_Lightstation', 
+            'Mean_Salinity_BC_Lightstation', 'N_Obs_Salinity_BC_Lightstation')]
     
   }
 }
@@ -233,36 +235,36 @@ Now we save the data and plot to check correctness
 usethis::use_data(Lighthouse_SST_Salinity_DF, overwrite = T)
 
 # save the data key, pointing the common names of the datasets to the correct DF
-data_key <- 
-  data.frame(
-    Common_Name = dataset_commonname,
-    DF_Name = 'Lighthouse_SST_Salinity_DF',
-    Time_Resolution = 'Monthly',
-    Data_Type = 'Point-Referenced Raw Data',
-    Units = c('Degrees Celsius', 
-              'PSU (Practical Salinity Unit)'),
-    Author = 'Fisheries and Oceans Canada',
-    Citation = NA,
-    Comments = 'See https://open.canada.ca/data/en/dataset/719955f2-bf8e-44f7-bc26-6bd623e82884 for details'
-  )
-
-# append to the master Data_Key and remove duplicates
-Data_Key <-
-  rbind(PACea::Data_Key,
-        data_key)
-
-Data_Key <-
-  Data_Key[!duplicated(Data_Key[,c('Common_Name','DF_Name')]),]
-
-# Update the master key
-usethis::use_data(Data_Key, overwrite=T)
+# data_key <- 
+#   data.frame(
+#     Common_Name = dataset_commonname,
+#     DF_Name = 'Lighthouse_SST_Salinity_DF',
+#     Time_Resolution = 'Monthly',
+#     Data_Type = 'Point-Referenced Raw Data',
+#     Units = c('Degrees Celsius', 
+#               'PSU (Practical Salinity Unit)'),
+#     Author = 'Fisheries and Oceans Canada',
+#     Citation = NA,
+#     Comments = 'See https://open.canada.ca/data/en/dataset/719955f2-bf8e-44f7-bc26-6bd623e82884 for details'
+#   )
+# 
+# # append to the master Data_Key and remove duplicates
+# Data_Key <-
+#   rbind(PACea::Data_Key,
+#         data_key)
+# 
+# Data_Key <-
+#   Data_Key[!duplicated(Data_Key[,c('Common_Name','DF_Name')]),]
+# 
+# # Update the master key
+# usethis::use_data(Data_Key, overwrite=T)
 
 # plot the mean lighthouse SST in April 1999 aggregated over the BC partition
 ggplot2::ggplot(data=
                   cbind(Partition_Polys,
                         (Lighthouse_SST_Salinity_DF %>%
                            filter(Year==1999, Month==4))),
-                ggplot2::aes(fill=Mean_SST)
+                ggplot2::aes(fill=Mean_SST_BC_Lightstation)
 ) + ggplot2::geom_sf() +
   ggplot2::geom_sf(data=Lightstations_final, ggplot2::aes(fill=1), colour='red', size=4)
 
@@ -271,7 +273,7 @@ ggplot2::ggplot(data=
                   cbind(Partition_Polys,
                         (Lighthouse_SST_Salinity_DF %>%
                            filter(Year==1999, Month==4))),
-                ggplot2::aes(fill=Mean_Salinity)
+                ggplot2::aes(fill=Mean_Salinity_BC_Lightstation)
 ) + ggplot2::geom_sf() +
   ggplot2::geom_sf(data=Lightstations_final, ggplot2::aes(fill=1), colour='red', size=4)
 
@@ -280,28 +282,28 @@ ggplot2::ggplot(data=
                   cbind(Partition_Polys,
                         (Lighthouse_SST_Salinity_DF %>%
                            filter(Year==1999, Month==4))),
-                ggplot2::aes(fill=N_Obs_SST)
+                ggplot2::aes(fill=N_Obs_SST_BC_Lightstation)
 ) + ggplot2::geom_sf() +
   ggplot2::geom_sf(data=Lightstations_final, ggplot2::aes(fill=1), colour='red', size=4)
 
 # map to WCVI and plot
 # Extract only the indices that correspond to the West Coast Vancouver Island
 BC_Partition_Objects$index_vectors$BC_Major_Area_Boundaries[4]
-# Index 59 is the correct row from the BC_Partition_Objects$Mapping_Matrix
+# Index 93 is the correct row from the BC_Partition_Objects$Mapping_Matrix
 
 # Plot the mean Salinity as inferred by the average lighthouse recording in the region
 ggplot2::ggplot(data=
                   cbind(Partition_Polys,
                         (Lighthouse_SST_Salinity_DF %>%
                            filter(Year==1999, Month==4))) %>% 
-                dplyr::select(Mean_Salinity) %>%
+                dplyr::select(Mean_Salinity_BC_Lightstation) %>%
                 dplyr::mutate(Mean_Salinity_WCVI=
                          ifelse(row_number() %in%
                           which(as.logical(
                             BC_Partition_Objects$Mapping_Matrix[       
                           BC_Partition_Objects$index_vectors$BC_Major_Area_Boundaries[4],
                           ])),
-                          mean(Mean_Salinity,na.rm=T),
+                          mean(Mean_Salinity_BC_Lightstation,na.rm=T),
                           NA)), 
         ggplot2::aes(fill=Mean_Salinity_WCVI)) + 
   ggplot2::geom_sf()

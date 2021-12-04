@@ -35,15 +35,3 @@ test_that('Are any Author values missing in the Data_Key?',{
 test_that('Are any Citation values missing in the Data_Key?',{
   expect_equal(sum(is.na(Data_Key$Citation)),0)
 })
-
-test_that('Have all data.frames present in the folder "/data" been added to the Data_Key?',{
-  expect_equal(length(unique(Data_Key$DF_Name)),
-               sum(grepl(list.files(), pattern='DF')))
-  if(length(unique(Data_Key$DF_Name)) != sum(grepl(list.files(), pattern='DF')) )
-  {
-    names_DF_files <- str_split(list.files(),pattern = '.rda', simplify = T)[,1]
-    names_DF_files <- names_DF_files[grepl(names_DF_files, pattern = 'DF')]
-    print(paste0('The following files appear to need adding to the Data_Key: ',
-                 names_DF_files[!(names_DF_files %in% Data_Key$DF_Name)]))
-  }
-})
