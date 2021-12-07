@@ -6,7 +6,6 @@ Pacea_regions <- function(regions = NULL, plot=F, return_sf_Polys=F)
     print('Warning: The plotting function requires the ggplot2 R package to be installed. 
           If not installed already, run install.packages("ggplot2", dep=T)')
   }
-  
   if(is.null(regions))
   {
     print(c('The available regions are called ',names(PACea::BC_Partition_Objects$index_vectors)))
@@ -78,7 +77,7 @@ Pacea_regions <- function(regions = NULL, plot=F, return_sf_Polys=F)
                            apply(PACea::BC_Partition_Objects$Mapping_Matrix[
                              PACea::BC_Partition_Objects$index_vectors[[i]],
                            ],
-                           1, FUN=function(x){which(x==1)}))
+                           1, FUN=function(x){which(x==1)}, simplify = F))
           )
         
         if(plot)
