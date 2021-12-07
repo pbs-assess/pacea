@@ -1,6 +1,7 @@
 # Main script for fetching the data 
 PACea_fetch <- function(
   regions, # Where do you want the data?
+  poly_names=NULL, # do you only want the data returned on a subset of the polygons or even define a new region as the sum of polygons? 
   fetch_names, # What data do you want?
   year_range, # When do you want the data?
   month_range, # When do you want the data?
@@ -23,7 +24,7 @@ PACea_fetch <- function(
     stop('Data can only be extracted for one region at a time')
   }
   
-  browser()
+  #browser()
   # Match the common name to the corresponding pre-compiled data.frame
   DF_names <-
     PACea::Data_Key %>%
@@ -135,5 +136,141 @@ PACea_fetch <- function(
       Data$Poly_ID
     ]
   
-  return(Data)
+  if(!is.null(poly_names))
+  {
+    # Subset the data by the requested poly_names
+    if(max(stringr::str_count(poly_names, pattern = '\\+')) > 0)
+    {
+      browser()
+      # Obtain the data over custom-defined regions
+      # Do a weighted average where relevant
+
+      # First, extract the standard regions
+      Data_standard <-
+        Data %>%
+        dplyr::filter(Poly_Name %in% poly_names)
+      
+      regions <- stringr::str_split(poly_names, pattern = '\\+')
+      
+      for(i in 1:length(regions))
+      {
+        if(length(regions[[i]]) > 1)
+        {
+          if(sum(c('Year','Month') %in% names(Data)) == 1) # Annual data
+          {
+            Data_nonstandard_tmp <-
+              Data %>%
+              dplyr::filter(Poly_Name %in% regions[[i]]) %>%
+              group_by(Year) %>%
+              summarize(across(.fns=function(x){(
+                BC_Partition_Objects$Ocean_Intersection_Areas[
+                  pmatch(Poly_Name,
+                         BC_Partition_Objects$BC_Partition$Poly_Name)
+                ] * x) /
+                  sum(BC_Partition_Objects$Ocean_Intersection_Areas[
+                    pmatch(regions[[i]],
+                           BC_Partition_Objects$BC_Partition$Poly_Name)
+                  ])})) %>%
+              ungroup(Poly_ID, Poly_Name) %>%
+              summarize(across(!c(Poly_ID, Poly_Name),sum)) %>%
+              mutate(Poly_Name = stringr::str_flatten(regions[[i]],'+'),
+                     Poly_ID = 10000+i)
+          }
+          if(sum(c('Year','Month') %in% names(Data)) == 2) # Monthly data
+          {
+            Data_nonstandard_tmp <-
+              Data %>%
+              dplyr::filter(Poly_Name %in% regions[[i]]) %>%
+              group_by(Year, Month, Poly_ID, Poly_Name) %>%
+              summarize(across(.fns=function(x){(
+                BC_Partition_Objects$Ocean_Intersection_Areas[
+                  pmatch(Poly_Name,
+                         BC_Partition_Objects$BC_Partition$Poly_Name)
+                ] * x) /
+                  sum(BC_Partition_Objects$Ocean_Intersection_Areas[
+                    pmatch(regions[[i]],
+                           BC_Partition_Objects$BC_Partition$Poly_Name)
+                  ])})) %>%
+              ungroup(Poly_ID, Poly_Name) %>%
+              summarize(across(!c(Poly_ID, Poly_Name),sum)) %>%
+              mutate(Poly_Name = stringr::str_flatten(regions[[i]],'+'),
+                     Poly_ID = 10000+i)
+          }
+          if(sum(c('Year','Month') %in% names(Data)) == 0) # Fixed data
+          {
+            Data_nonstandard_tmp <-
+              Data %>%
+              dplyr::filter(Poly_Name %in% regions[[i]]) %>%
+              summarize(across(.fns=function(x){(
+                BC_Partition_Objects$Ocean_Intersection_Areas[
+                  pmatch(Poly_Name,
+                         BC_Partition_Objects$BC_Partition$Poly_Name)
+                ] * x) /
+                  sum(BC_Partition_Objects$Ocean_Intersection_Areas[
+                    pmatch(regions[[i]],
+                           BC_Partition_Objects$BC_Partition$Poly_Name)
+                  ])})) %>%
+              ungroup(Poly_ID, Poly_Name) %>%
+              summarize(across(!c(Poly_ID, Poly_Name),sum)) %>%
+              mutate(Poly_Name = stringr::str_flatten(regions[[i]],'+'),
+                     Poly_ID = 10000+i)
+          }
+          if(i==1)
+          {
+            Data_nonstandard <- 
+              Data_nonstandard_tmp
+          }
+          if(i>1)
+          {
+            Data_nonstandard <-
+              rbind(Data_nonstandard,
+                    Data_nonstandard_tmp)
+          }
+        }
+        
+      }
+      if(dim(Data_standard)[1] > 0)
+      {
+        Data <- dplyr::full_join(
+          Data_nonstandard,
+          Data_standard
+        )
+      }
+      if(dim(Data_standard)[1] == 0)
+      {
+        Data <- Data_nonstandard
+      }
+      
+      print('Warning: An area-weighted mean was computed to define the variable values across the user-defined regions. In some cases, this procedure will not be appropriate. ')
+    }
+    if(max(stringr::str_count(poly_names, pattern = '\\+')) == 0)
+    {
+      Data <-
+        Data %>%
+        dplyr::filter(Poly_Name %in% poly_names)
+    }
+  }
+  
+  if(!output_as_csv)
+  {
+    return(Data)
+  }
+  if(output_as_csv)
+  {
+    write.csv(
+      Data, 
+      file=paste0('PACea_',
+                  stringr::str_flatten(regions,'_'),
+                  as.character(min(year_range)), '_',
+                  as.character(max(year_range)), '_',
+                  '.csv')
+    )
+    print(paste0('The .csv file ',
+                 'PACea_',
+                 stringr::str_flatten(regions,'_'),
+                 as.character(min(year_range)), '_',
+                 as.character(max(year_range)), '_',
+                 '.csv',
+                 ' has been written to the directory ',getwd()))
+  }
 }
