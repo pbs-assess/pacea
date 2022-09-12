@@ -9,7 +9,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Downloading the Latest Monthly Satellite (Remote-Sensing) Data from ERDDAP
 
-First we download the remote-sensing datasets from erddap. Then we map to the polygons defining the BC partition. We compute the spatial average to do the mapping onto the polygons and record the spatial fraction of missing values per polygon too.
+This markdown document shows how remote-sensed satellite data, collected by NOAA and hosted on ERDDAP, are compiled into PACea.
+
+Note that there are a LOT of datasets available on ERDDAP. To search the entire catalogue, visit this page: <https://coastwatch.pfeg.noaa.gov/erddap/griddap/index.html?page=1&itemsPerPage=1000>. The column titled `Dataset ID` is crucial.
+
+First we download the remote-sensing datasets from erddap. Then we map to the cells defining the BC grid. We compute the spatial average to do the mapping onto the polygons and record the spatial fraction of missing values per grid cell too.
 
 ```{r download data}
 library(dplyr)
@@ -18,10 +22,12 @@ dataset_commonname <-
   c('SST_Monthly_MODIS', 
     'CHLA_Monthly_MODIS')
 
+# These are the names of the datasets within ERDDAP
 dataset_ids <-
   c('erdMBsstdmday_LonPM180', # SST MONTHLY MODIS
     'erdMBchlamday_LonPM180') # CHLA MONTHLY MODIS
 
+# When did the data go online?
 dataset_startdates <-
   c('2006-01-17',
     '2006-01-17')
@@ -36,8 +42,8 @@ dataset_strides <-
 # character of variable name stored in data
 dataset_char <-
   c(
-    'SST_MODIS',
-    'CHLA_MODIS'
+    as.character(rerddap::info(dataset_ids[1])$variables[1]),
+    as.character(rerddap::info(dataset_ids[2])$variables[1])
   )
   
 
@@ -50,16 +56,17 @@ Coastline_lonlat <-
 # subtract the date by 1 month to make sure enough time has been allowed to update the satellite data
 current_date <- as.character(lubridate::ymd(Sys.Date())-lubridate::period(1, units='month'))
 
-# read in partition regions
+# read in BC Grid
 BC_Partition_Objects <- PACea::BC_Partition_Objects
 
-# compute the mean values per region
-Partition_Polys <- BC_Partition_Objects$BC_Partition
+# compute the mean values per grid cell - keep only 'BC Grid'
+Partition_Polys <- BC_Partition_Objects$BC_Partition[
+  BC_Partition_Objects$BC_Partition$Regions_Name=='BC Grid',]
 
 data_years <- vector('list', length(dataset_ids))
 data_months <- vector('list', length(dataset_ids))
 
-# Create a data.frame object for storing the aggregated predator abundance values
+# Create an empty data.frame object for storing the aggregated data
 nyear=length(min(lubridate::year(dataset_startdates)):lubridate::year(lubridate::ymd(Sys.Date())-lubridate::period(1, units='month')))
 nmonth=12
 npoly=length(Partition_Polys$Regions_Name)
@@ -74,10 +81,12 @@ Partition_df <-
              Fraction_NA=1
   )
 
+# loop through the ERDDAP datasets
 for (i in 1:length(dataset_ids))
 {
   print(paste0('currently downloading covariate ', dataset_char[i], ' from ERDDAP Database'))
   
+  # Download the dataset
   dataset_list <-
     rerddap::griddap(
       x=rerddap::info(datasetid = dataset_ids[i]),
@@ -120,7 +129,7 @@ for (i in 1:length(dataset_ids))
   data_years[[i]] <- as.numeric(substr(names(dataset_list),2,5))
   data_months[[i]] <- as.numeric(substr(names(dataset_list),7,8))
 
-  # Loop through the years and months and form the mappings - save memory this way
+  # Loop through the years and months map to grid - save memory this way
 for(j in min(data_years[[i]]):max(data_years[[i]]))
 {
   print(paste0('Currently processing year ',j))

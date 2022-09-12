@@ -9,7 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Obtaining the Coastwide Indices
 
-Thanks to Chris Rooper for sharing the code
+This markdown document shows how the oceanographic basin indices are compiled into PACea. Thanks to Chris Rooper for sharing the code
 
 ```{r}
 #ENSO MEI
@@ -87,4 +87,4 @@ Coastwide_Index_DF <-
 use_data(Coastwide_Index_DF, overwrite = T)
 ```
 
-
+Note that these time-series' of oceanographic indices are NOT stored across the BC grid. This saves a lot of space. Instead, PACea recognises that a covariate is `coastwide' if the `Poly_ID` value is set to `-1`.

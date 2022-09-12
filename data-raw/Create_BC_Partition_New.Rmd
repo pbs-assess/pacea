@@ -9,10 +9,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Script for Creating the spatial Partition of BC
 
-First, we read in all the different regions
+This markdown document creates the regular grid of BC's coastline. This regular spatial grid defines how the data are stored internally within PACea. To obtain covariates on other spatial resolutions, the function `ffff` is used to aggregate/project the values from the grid onto the other regions (typically with polygons of a larger area).
+
+All other regions available for use in PACea are also defined here, with a mapping matrix created for projecting the covariate values from the grid to the regions.
+
+First, we read in all the different regions.
 
 ```{r}
-
 library(dplyr)
 
 make_grid <- F
@@ -80,7 +83,10 @@ rotang = 318.5
 rot = function(a) matrix(c(cos(a), sin(a), -sin(a), cos(a)), 2, 2)
 tran = function(geo, ang, center) (geo - center) * rot(ang * pi / 180) + center  
 
-center <- st_centroid(st_union(Coastline))
+center <- sf::st_centroid(sf::st_union(Coastline))
+# This is the function call which actually creates the master grid
+# To increase the resolution (almost certainly desired), increase the 
+# n argument (e.g. n=c(100,100)).
 Coastline_Grid <- sf::st_sf(
   sf::st_make_grid(tran(sf::st_geometry(Coastline), -rotang, center), 
                    n=c(10,10)
@@ -88,20 +94,28 @@ Coastline_Grid <- sf::st_sf(
 )
 Coastline_Grid <- tran(sf::st_geometry(Coastline_Grid), rotang, center)
 
-# Keep only the polygons that fall within or touch the original Coastline
+# Keep only the polygons that fall within or touch the original Coastline to save storage space
 Coastline_Grid <- sf::st_as_sf(sf::as_Spatial(Coastline_Grid))
 sf::st_crs(Coastline_Grid) <- sf::st_crs(Coastline)
+
+# Name the individual polygons by row-column method
+# Note that sf works from bottom-left to top-right
+# The first grid cell is the bottom-left grid cell (1,1)
+# The final grid cell is the top-right grid cell (n,n)
+# NEED TO CHANGE THE VALUES 10 TO MATCH THE CHOICE OF n=c(,) above!!
+Coastline_Grid$Poly_Name <-
+  paste0('Grid_Index_(',
+         rep(1:10, each=10), # repeat each value of 1:cols, nrows
+         ',',
+         rep(1:10, times=10), # repeat sequence 1:nrows, ncols times
+         ')'
+)
+
 Coastline_Grid  <- 
   Coastline_Grid[Coastline,]
 
 plot(Coastline_Grid)
 plot(Coastline, add=T, col='red')
-
-# Name the individual polygons
-Coastline_Grid$Poly_Name <-
-  paste0('Grid_Index_',
-         1:dim(Coastline_Grid)[1]
-)
 
 usethis::use_data(Coastline_Grid, overwrite = T)
 }
@@ -113,13 +127,14 @@ if(!make_grid)
 
 ```
 
-Next, we bind the competing region definitions into a single spatial object called BC_Partition
+Next, we bind the competing region definitions into a single spatial object called BC_Partition. We name the BC grid, which will eventually store the data, as 'BC Grid' within the variable `Regions_Name`. We then define a matrix to perform the aggregations from the BC Grid to the other regions' polygons
 
 ```{r}
-
+# If additional regions are added, simply add them to the bind_rows
+# function call. Note that BC Grid MUST GO FIRST
 All_regions <- 
   dplyr::bind_rows(
-        Coastline_Grid %>% dplyr::mutate(Regions_Name = 'Entire Coast'),
+        Coastline_Grid %>% dplyr::mutate(Regions_Name = 'BC Grid'),
         BC_Major_Area_Boundaries %>% dplyr::mutate(Regions_Name = 'BC Major Areas'),
         Pacific_Herring_Sections %>% dplyr::mutate(Regions_Name = 'Pacific Herring Spawn Statistical Areas'))
     
@@ -151,65 +166,47 @@ for(i in 1:dim(BC_Partition)[1])
     
 }
 
-# dplyr strangely drops the values from the non-intersecting points
-# so can't use
-# Ocean_Intersection_Areas <-
-#   BC_Partition %>%
-#   dplyr::group_by(Poly_ID) %>%
-#   summarize(Area = sf::st_area(., sf::st_intersection(Coastline, drop=F))) %>%
-#   sf::st_drop_geometry()
-
-# remove regions with areas < 3km^2 and values that are essentially land
-# BC_Partition <- 
-#   BC_Partition[region_Areas > units::set_units(3,'km^2') &
-#                 Ocean_Intersection_Areas > 3 &
-#                  !is.na(Ocean_Intersection_Areas),]
-
 # Check that all the regions are POLYGON or MULTIPOLYGON type
 sf::st_geometry_type(BC_Partition)
 
 plot(BC_Partition)
 
-# Update the areas of each region
-# region_Areas <-
-# sf::st_area(BC_Partition)
-# Ocean_Intersection_Areas <-
-# sf::st_area(sf::st_intersection(BC_Partition, Coastline))
-
-# Update the Poly_ID variable
-# BC_Partition <-
-#   BC_Partition %>%
-#   mutate(Poly_ID = row_number())
-
-# Define the mapping between each subregion and the original regions
-  # Update - without partitioning, the matrix is the identity
-  # Note - the matrix is still a useful concept in case in the future,
+# Define the mapping between each region with the BC Grid
+  # Note - the matrix will also be a useful concept in future, when
   # users wish to define new regions which are union of existing regions
-Mapping_Matrix <- diag(nrow=dim(BC_Partition)[1])
-  # matrix(0, 
-  #        nrow = dim(BC_Partition)[1], 
-  #        ncol = dim(BC_Partition)[1])
+Mapping_Matrix <- #diag(nrow=dim(BC_Partition)[1])
+   matrix(0, 
+          nrow = dim(Coastline_Grid)[1],#dim(BC_Partition)[1], 
+          ncol = dim(BC_Partition)[1])
 
-# for(i in 1:dim(BC_Partition)[1])
-# {
-  # loop through the partitioned regions and place a 1 in the rows 
-  # corresponding to the original regions which intersect
-  #Mapping_Matrix[BC_Partition$origins[[i]],i] <- 1
-# }
+for(i in 1:dim(BC_Partition)[1])
+ {
+  # loop through the partitioned regions and compute the area of
+  # intersection with Coastline Grid.
+  Mapping_Matrix[sf::st_intersects(Coastline_Grid, BC_Partition[i,],
+                                   sparse = F),
+                 i] <- 
+    as.numeric(sf::st_area(sf::st_intersection(Coastline_Grid, BC_Partition[i,])))
+  # Divide by rowSums to normalize to 1 (to create spatially-weighted mean)
+  if(sum(Mapping_Matrix[,i])>0)
+  {
+    Mapping_Matrix[,i] <- Mapping_Matrix[,i] / sum(Mapping_Matrix[,i])
+  }
+  if(sum(Mapping_Matrix[,i])==0)
+  {
+    Mapping_Matrix[,i] <- 0
+  }
+  }
 
 # Check the mapping has been made correctly
-# colSums(Mapping_Matrix)
-# BC_Partition$n.overlaps
-# assertthat::assert_that(
-#   assertthat::are_equal(colSums(Mapping_Matrix),
-#                         BC_Partition$n.overlaps),
-#                         msg='Creation of the mapping matrix failed')
+Mapping_Matrix
+colSums(Mapping_Matrix)
 
 # create a named list with each entry equal to a index vector 
 # each index vector points the set of regions to the correct rows 
 # Mapping Matrix  (e.g. WCHG, WCVI, HS, QCS)
 index_vectors <- 
-  list(Coastline = which(BC_Partition$Regions_Name=="Entire Coast"),
+  list(Coastline = which(BC_Partition$Regions_Name=="BC Grid"),
        BC_Major_Area_Boundaries = which(BC_Partition$Regions_Name=="BC Major Areas"),
        Pacific_Herring_Sections = which(BC_Partition$Regions_Name=="Pacific Herring Spawn Statistical Areas"))
 
@@ -226,3 +223,4 @@ usethis::use_data(BC_Partition_Objects, overwrite = T)
 
 ```
 
+The basic idea of the mapping matrix is as follows. The number of rows of the matrix equals the number of cells of the BC grid (in which the data is stored). The number of columns of the matrix equals the number of polygons across all the regions stored in PACea (e.g. Herring Sections). Then, a given column of the matrix has entries equal to the fraction of its total area which is contained within each grid cell. These fractions sum to 1. Thus, to evaluate the average value of a covariate (e.g. SST) in a specific region, simply sum the average values within each grid cell, multiplied by the fraction of the total area of intersection. Because these sum to 1, the quantity is a spatially-weighted average. Of course, this only works if the data are not missing in any grid cell, else the fractions need to be re-weighted. Furthermore, if a sum or total of a quantity over a region is desired instead of a mean concentration or density, then we simply scale by the area of the region - stored as `Ocean_Intersection_Areas`, assuming the quantity can only exist in the water. 

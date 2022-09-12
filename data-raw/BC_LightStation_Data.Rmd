@@ -9,6 +9,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Creating BC Lightstation Data on SST and Salinity
 
+This markdown document shows how the sea-surface temperature (SST) and salinity data collected by the BC lightstations/lighthouses are compiled into PACea.
+
 # Read buoy data from BC Lightstations
 ```{r}
 library(dplyr)
@@ -17,11 +19,13 @@ dataset_commonname <-
   c('SST_Monthly_BC_Lightstation',
     'Salinity_Monthly_BC_Lightstation')
 
+# read in shapefile containing the lighthouse locations
 Lightstations <-
 sf::st_read(
   dsn='./BC_Lightstation_Data_SHP_Files/BC_Lighthouse_DATA.shp'
 )
 
+# rename Langara lighthouse to match later data merge
 Lightstations <-
   Lightstations %>%
   dplyr::mutate(LIGHSTATIO = recode(LIGHSTATIO,'LANGARA POINT LIGHTSTATION'='LANGARA ISLAND LIGHTSTATION'))
@@ -48,6 +52,7 @@ Data_Lightstations <- data.frame(Location=rep(NA,nstations*nyears*nmonths),
 # Loop through the currently active stations and obtain SST and salinity
 count_SST <- 1
 count_salinity <- 1
+# loop through the files contained in the directory
 for(filename in list.files('./DATA_Active_lightstations',pattern = '.csv') )
 {
   if(grepl(filename, pattern = 'Temperatures'))
@@ -74,6 +79,7 @@ for(filename in list.files('./DATA_Active_lightstations',pattern = '.csv') )
           ignore.case = T)])
     
     # read the csv data and merge by Location Year Month
+    # Convert to the data.frame into long format by creating 'Month' variable
     tmp <- read.csv(paste0('./DATA_Active_Lightstations/', filename), 
                     header = T, skip = 1)
     tmp <- tmp %>%
@@ -176,11 +182,12 @@ Next, we aggregate over the polygons defined by BC_Partitions
 
 ```{r}
 
-# read in partition regions
+# read in BC Grid
 BC_Partition_Objects <- PACea::BC_Partition_Objects
 
-# compute the mean relative abundance per region
-Partition_Polys <- BC_Partition_Objects$BC_Partition
+# compute the mean relative abundance per grid cell
+Partition_Polys <- BC_Partition_Objects$BC_Partition[
+  BC_Partition_Objects$BC_Partition$Regions_Name=='BC Grid',]
 
 # Create a data.frame object for storing the aggregated predator abundance values
 npoly=length(Partition_Polys$Poly_ID)
@@ -204,9 +211,11 @@ ind_Poly_to_Lightstation <- apply(
 sf::st_contains_properly(Partition_Polys, Lightstations_final, sparse=F),
 1, FUN = function(x){Lightstations_final$Location[which(x)]})
 
+# loop through the polygons
 for(j in unique(Partition_Polys$Poly_ID))
 {
   print(paste0('Processing Data For Polygon ',j,' out of ', length(unique(Partition_Polys$Poly_ID))))
+  # Does a lighthouse fall within the polygon?
   if(length(ind_Poly_to_Lightstation[[j]])>0)
   {
     Lighthouse_SST_Salinity_DF[Lighthouse_SST_Salinity_DF$Poly_ID==j,
@@ -229,7 +238,7 @@ for(j in unique(Partition_Polys$Poly_ID))
 
 ```
 
-Now we save the data and plot to check correctness
+Now we save the data and plot to check correctness. The `use_data()` function is responsible for the mapping.
 
 ```{r}
 usethis::use_data(Lighthouse_SST_Salinity_DF, overwrite = T)
@@ -288,24 +297,35 @@ ggplot2::ggplot(data=
 
 # map to WCVI and plot
 # Extract only the indices that correspond to the West Coast Vancouver Island
+BC_Partition_Objects$BC_Partition$Poly_Name[
+  BC_Partition_Objects$BC_Partition$Regions_Name=='BC Major Areas'
+]
+# WCVI is the fourth BC Major Area
 BC_Partition_Objects$index_vectors$BC_Major_Area_Boundaries[4]
-# Index 93 is the correct row from the BC_Partition_Objects$Mapping_Matrix
+# Index 93 is the correct column from the BC_Partition_Objects$Mapping_Matrix
 
 # Plot the mean Salinity as inferred by the average lighthouse recording in the region
-ggplot2::ggplot(data=
-                  cbind(Partition_Polys,
-                        (Lighthouse_SST_Salinity_DF %>%
-                           filter(Year==1999, Month==4))) %>% 
-                dplyr::select(Mean_Salinity_BC_Lightstation) %>%
-                dplyr::mutate(Mean_Salinity_WCVI=
-                         ifelse(row_number() %in%
-                          which(as.logical(
-                            BC_Partition_Objects$Mapping_Matrix[       
-                          BC_Partition_Objects$index_vectors$BC_Major_Area_Boundaries[4],
-                          ])),
-                          mean(Mean_Salinity_BC_Lightstation,na.rm=T),
-                          NA)), 
-        ggplot2::aes(fill=Mean_Salinity_WCVI)) + 
+
+# Compute the mean using the Mapping_Matrix
+WCVI_Mean_1994_April <-
+t(BC_Partition_Objects$Mapping_Matrix[,
+                                    BC_Partition_Objects$index_vectors$BC_Major_Area_Boundaries[4]
+                          ]) %*% 
+  as.matrix(
+  Lighthouse_SST_Salinity_DF %>%
+       filter(Year==1999, Month==4) %>% 
+       mutate(Mean_Salinity_BC_Lightstation=
+                ifelse(is.na(Mean_Salinity_BC_Lightstation),
+                       0,
+                       Mean_Salinity_BC_Lightstation)) %>%
+       dplyr::pull(Mean_Salinity_BC_Lightstation)
+  )
+
+
+ggplot2::ggplot(BC_Partition_Objects$BC_Partition[
+  BC_Partition_Objects$BC_Partition$Poly_Name=='WCVI',
+], 
+        ggplot2::aes(fill=WCVI_Mean_1994_April)) + 
   ggplot2::geom_sf()
 
 

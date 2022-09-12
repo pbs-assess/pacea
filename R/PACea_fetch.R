@@ -56,7 +56,6 @@ PACea_fetch <- function(
   #   PACea::BC_Partition_Objects$Poly_names_vectors[regions],
   #   what='c'
   # )
-  
   # create a list of variable names - splitting the individual names by by the ';'
   DF_Variable_Names <- strsplit(DF_Variable_Names, ';')
 
@@ -67,9 +66,10 @@ PACea_fetch <- function(
     
     # Are any coastwide indices present in the data?
     # Coastwide indices stored as Poly_ID == -1
+    Coastwide_Logical <- tmp_dat$Poly_ID
     
     # First - check that coastwide AND regional variables are not stored
-    if(sum(tmp_dat$Poly_ID == -1) > 0 & sum(tmp_dat$Poly_ID != -1) > 0)
+    if(sum(Coastwide_Logical == -1) > 0 & sum(Coastwide_Logical != -1) > 0)
     {
       stop('It appears that Coastwide AND regional values were stored in the same 
            data.frame. This is not allowed. Please ensure the coastwide and regional
@@ -77,46 +77,181 @@ PACea_fetch <- function(
     }
     
     # If so replicate the variable values across the desired regions
-    if(sum(tmp_dat$Poly_ID == -1) > 0)
+    if(sum(Coastwide_Logical == -1) > 0)
     {
+      #browser()
       tmp_dat <- 
         tmp_dat %>%
         mutate(nrep = length(region_indices)) %>%
         tidyr::uncount(nrep) %>%
         mutate(Poly_ID = rep(region_indices, times=dim(tmp_dat)[1]))
+      
+      if(Time_Resolution[count] == 'Monthly')
+      {
+        tmp_dat <-
+          tmp_dat %>%
+          dplyr::filter(Year %in% year_range &
+                          Month %in% month_range &
+                          Poly_ID %in% region_indices) %>%
+          dplyr::select(Year, Month, Poly_ID, DF_Variable_Names[[count]]) %>%
+          tidyr::complete(Year=year_range, Month=month_range, Poly_ID=region_indices)# %>%
+        # mutate(Poly_ID = PACea::BC_Partition_Objects$Poly_names_vectors[Poly_ID]) #TODO
+      }
+      if(Time_Resolution[count] == 'Annual')
+      {
+        tmp_dat <-
+          tmp_dat %>%
+          filter(Year %in% year_range &
+                   Poly_ID %in% region_indices) %>%
+          select(Year, Poly_ID, DF_Variable_Names[[count]]) %>%
+          tidyr::complete(Year=year_range, Poly_ID=region_indices) # %>%
+        # mutate(Poly_ID = PACea::BC_Partition_Objects$Poly_names_vectors[Poly_ID]) #TODO
+      }
+      if(Time_Resolution[count] == 'Fixed')
+      {
+        tmp_dat <-
+          tmp_dat %>%
+          filter(Poly_ID %in% region_indices) %>%
+          select(Poly_ID, DF_Variable_Names[[count]]) %>%
+          tidyr::complete(Poly_ID=region_indices) # %>%
+        # mutate(Poly_ID = PACea::BC_Partition_Objects$Poly_names_vectors[Poly_ID]) #TODO
+      }
     }
-    
+    if(sum(Coastwide_Logical == -1) == 0)
+    {
     if(Time_Resolution[count] == 'Monthly')
     {
-      tmp_dat <-
-        tmp_dat %>%
-        dplyr::filter(Year %in% year_range &
-                 Month %in% month_range &
-                 Poly_ID %in% region_indices) %>%
-        dplyr::select(Year, Month, Poly_ID, DF_Variable_Names[[count]]) %>%
-        tidyr::complete(Year=year_range, Month=month_range, Poly_ID=region_indices)# %>%
-      # mutate(Poly_ID = PACea::BC_Partition_Objects$Poly_names_vectors[Poly_ID]) #TODO
+      # Define empty dataframe for filling
+      tmp_dat2 <-
+        expand.grid(
+          Year=year_range,
+          Month=month_range,
+          Poly_ID=region_indices
+        )
+      
+      # Loop through variables, years and months
+      for(j in 1:length(DF_Variable_Names[[count]]))
+      {
+        for(k in year_range)
+        {
+          for(l in month_range)
+          {
+            for(m in region_indices)
+            {
+              # compute the spatially-weighted mean using Mapping Matrix
+              # First, compute the fraction of values missing and re-weight matrix
+              # to ensure the columns sum to 1, even after accounting for missing values
+              weight <-
+                sum(PACea::BC_Partition_Objects$Mapping_Matrix[
+                  which(!is.na(as.numeric(
+                    tmp_dat %>%
+                      dplyr::filter(Year == k & Month == l) %>%
+                      dplyr::pull(DF_Variable_Names[[count]][j])))),
+                  m])
+              
+              tmp_dat2[tmp_dat2$Year==k & 
+                         tmp_dat2$Month==l & 
+                         tmp_dat2$Poly_ID==m,
+                       DF_Variable_Names[[count]][j]] <-
+                ifelse(sum(!is.na(as.numeric(
+                  tmp_dat %>%
+                     dplyr::filter(Year == k & Month == l) %>%
+                    dplyr::pull(DF_Variable_Names[[count]][j])))
+                  ) > 0,
+                sum(PACea::BC_Partition_Objects$Mapping_Matrix[,m] * 
+                as.numeric(tmp_dat %>%
+                dplyr::filter(Year == k & Month == l) %>%
+                pull(DF_Variable_Names[[count]][j])),
+                na.rm=T)/weight,
+                NA)
+            }
+          }
+        }
+      }
+      tmp_dat <- tmp_dat2
+    
     }
     if(Time_Resolution[count] == 'Annual')
     {
-      tmp_dat <-
-        tmp_dat %>%
-        filter(Year %in% year_range &
-                 Poly_ID %in% region_indices) %>%
-        select(Year, Poly_ID, DF_Variable_Names[[count]]) %>%
-        tidyr::complete(Year=year_range, Poly_ID=region_indices) # %>%
-      # mutate(Poly_ID = PACea::BC_Partition_Objects$Poly_names_vectors[Poly_ID]) #TODO
+      # Define empty dataframe for filling
+      tmp_dat2 <-
+        expand.grid(
+          Year=year_range,
+          Poly_ID=region_indices
+        )
+      
+      # Loop through variables, years and months
+      for(j in 1:length(DF_Variable_Names[[count]]))
+      {
+        for(k in year_range)
+        {
+          for(m in region_indices)
+            {
+            weight <-
+              sum(PACea::BC_Partition_Objects$Mapping_Matrix[
+                which(!is.na(as.numeric(
+                  tmp_dat %>%
+                    dplyr::filter(Year == k) %>%
+                    dplyr::pull(DF_Variable_Names[[count]][j])))),
+                m])
+            
+              tmp_dat2[tmp_dat2$Year==k & 
+                        tmp_dat2$Poly_ID==m,
+                      DF_Variable_Names[[count]][j]] <-
+                ifelse(sum(!is.na(as.numeric(
+                  tmp_dat %>%
+                    dplyr::filter(Year == k) %>%
+                    dplyr::pull(DF_Variable_Names[[count]][j])))
+                ) > 0,
+                sum(PACea::BC_Partition_Objects$Mapping_Matrix[,m] * 
+                      as.numeric(tmp_dat %>%
+                                   dplyr::filter(Year == k) %>%
+                                   pull(DF_Variable_Names[[count]][j])),
+                    na.rm=T)/weight,
+                NA)
+            }
+          
+        }
+      }
+      
+      tmp_dat <- tmp_dat2
     }
     if(Time_Resolution[count] == 'Fixed')
     {
-      tmp_dat <-
-        tmp_dat %>%
-        filter(Poly_ID %in% region_indices) %>%
-        select(Poly_ID, DF_Variable_Names[[count]]) %>%
-        tidyr::complete(Poly_ID=region_indices) # %>%
-      # mutate(Poly_ID = PACea::BC_Partition_Objects$Poly_names_vectors[Poly_ID]) #TODO
+      # Define empty dataframe for filling
+      tmp_dat2 <-
+        expand.grid(
+          Poly_ID=region_indices
+        )
+      
+      # Loop through variables
+      for(j in 1:length(DF_Variable_Names[[count]]))
+      {
+          for(m in region_indices)
+          {
+            weight <-
+              sum(PACea::BC_Partition_Objects$Mapping_Matrix[
+                which(!is.na(as.numeric(
+                  tmp_dat %>%
+                    dplyr::pull(DF_Variable_Names[[count]][j])))),
+                m])
+            
+            tmp_dat2[tmp_dat2$Poly_ID==m,
+                    DF_Variable_Names[[count]][j]] <-
+              ifelse(sum(!is.na(as.numeric(
+                tmp_dat %>%
+                  dplyr::pull(DF_Variable_Names[[count]][j])))
+              ) > 0,
+              sum(PACea::BC_Partition_Objects$Mapping_Matrix[,m] * 
+                    as.numeric(tmp_dat %>%
+                                 pull(DF_Variable_Names[[count]][j])),
+                  na.rm=T)/weight,
+              NA)
+          }
+      }
+      tmp_dat <- tmp_dat2
     }
-    
+    }
     if(count == 1)
     {
       Data <- tmp_dat

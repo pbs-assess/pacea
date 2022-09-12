@@ -1,6 +1,6 @@
 ,Fetch_Name,DF_Name,Time_Resolution,Data_Type,Units,Author,Citation,Comments,DF_Variable_Names
-1,SST_Monthly_MODIS,ERDDAP_DF,Monthly,Remote-Sensed Raster,Degrees Celsius,NOAA,NA,,Mean_SST_MODIS;Fraction_NA_SST_MODIS
-2,CHLA_Monthly_MODIS,ERDDAP_DF,Monthly,Remote-Sensed Raster,mg m-3,NOAA,NA,,Mean_CHLA_MODIS;Fraction_NA_CHLA_MODIS
+1,SST_Monthly_MODIS,ERDDAP_DF,Monthly,Remote-Sensed Raster,Degrees Celsius,NOAA,NA,,Mean_sst;Fraction_NA_sst
+2,CHLA_Monthly_MODIS,ERDDAP_DF,Monthly,Remote-Sensed Raster,mg m-3,NOAA,NA,,Mean_chlorophyll;Fraction_NA_chlorophyll
 3,Yelloweye_Rel_Density,Groundfish_IPHC_DF,Annual,Model-based Raster,Relative Density (Proportional to #Individuals per Unit Area),Joe Watson,NA,,Mean_Rel_Abund_Yelloweye;Fraction_NA_Yelloweye
 4,Arrowtooth_Rel_Density,Groundfish_IPHC_DF,Annual,Model-based Raster,Relative Density (Proportional to #Individuals per Unit Area),Joe Watson,NA,,Mean_Rel_Abund_Arrowtooth;Fraction_NA_Arrowtooth
 5,Lingcod_Rel_Density,Groundfish_IPHC_DF,Annual,Model-based Raster,Relative Density (Proportional to #Individuals per Unit Area),Joe Watson,NA,,Mean_Rel_Abund_Lingcod;Fraction_NA_Lingcod

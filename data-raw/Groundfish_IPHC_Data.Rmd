@@ -9,6 +9,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Obtaining Groundfish IPHC Relative Abundance Indices
 
+This markdown document shows how longline catch data on numerous groundfish species, collected by IPHC, are compiled into PACea. Spatiotempoal covariates are made, in the form of a spatial raster of density for each year from 1995 onwards.
+
 First, we download the groundfish IPHC data using the gfiphc and hookCompetition packages 
 
 ```{r}
@@ -143,11 +145,12 @@ if(!fit_mod)
 Next, we map the indices to the partition regions
 
 ```{r}
-# read in partition regions
+# read in BC Grid
 BC_Partition_Objects <- PACea::BC_Partition_Objects
 
-# compute the mean relative abundance per region
-Partition_Polys <- BC_Partition_Objects$BC_Partition
+# compute the mean values per grid cell - keep only 'BC Grid'
+Partition_Polys <- BC_Partition_Objects$BC_Partition[
+  BC_Partition_Objects$BC_Partition$Regions_Name=='BC Grid',]
 
 # Convert to wide format
 # Then read in as a rasterBrick with repeated locations to save memory
@@ -285,38 +288,44 @@ Now make a quick plot of yelloweye rockfish density in 1999 as a sanity check
  ggplot2::ggplot(cbind(Partition_Polys, 
               Groundfish_IPHC_DF %>% 
                 dplyr::filter(Year==1999) %>% 
-                dplyr::select(Mean_Rel_Abund_yelloweye)
+                dplyr::select(Mean_Rel_Abund_Yelloweye)
               ), 
-        ggplot2::aes(fill=Mean_Rel_Abund_yelloweye)) + 
+        ggplot2::aes(fill=Mean_Rel_Abund_Yelloweye)) + 
   ggplot2::geom_sf()
 
 # Extract only the indices that correspond to the West Coast Haida Gwaii
 BC_Partition_Objects$index_vectors$BC_Major_Area_Boundaries[3]
 # Index 58 is the correct row from the BC_Partition_Objects$Mapping_Matrix
 
-ggplot2::ggplot(cbind(Partition_Polys, 
-              Groundfish_IPHC_DF %>% 
-                dplyr::filter(Year==1999) %>% 
-                dplyr::select(Mean_Rel_Abund_yelloweye) %>%
-                dplyr::mutate(yelloweye_WCHG=
-                         ifelse(row_number() %in%
-                          which(as.logical(
-                            BC_Partition_Objects$Mapping_Matrix[       
-                          BC_Partition_Objects$index_vectors$BC_Major_Area_Boundaries[3],
-                          ])),
-                          Mean_Rel_Abund_yelloweye,
-                          NA))
-              ), 
-        ggplot2::aes(fill=yelloweye_WCHG)) + 
+# Compute the mean using the Mapping_Matrix
+WCHG_Mean_1999 <-
+t(BC_Partition_Objects$Mapping_Matrix[,
+                                    BC_Partition_Objects$index_vectors$BC_Major_Area_Boundaries[3]
+                          ]) %*% 
+  as.matrix(
+  Groundfish_IPHC_DF %>% 
+       dplyr::filter(Year==1999) %>% 
+       mutate(Mean_Rel_Abund_Yelloweye=
+                ifelse(is.na(Mean_Rel_Abund_Yelloweye),
+                       0,
+                       Mean_Rel_Abund_Yelloweye)) %>%
+       dplyr::pull(Mean_Rel_Abund_Yelloweye)
+  )
+
+
+ggplot2::ggplot(BC_Partition_Objects$BC_Partition[
+  BC_Partition_Objects$BC_Partition$Poly_Name=='WCHG',
+], 
+        ggplot2::aes(fill=WCHG_Mean_1999)) + 
   ggplot2::geom_sf()
 
 # Plot the fraction of the polygon which has missing data
  ggplot2::ggplot(cbind(Partition_Polys, 
               Groundfish_IPHC_DF %>% 
                 dplyr::filter(Year==1999) %>% 
-                dplyr::select(Fraction_NA_yelloweye)
+                dplyr::select(Fraction_NA_Yelloweye)
               ), 
-        ggplot2::aes(fill=Fraction_NA_yelloweye)) + 
+        ggplot2::aes(fill=Fraction_NA_Yelloweye)) + 
   ggplot2::geom_sf()
 ```
 
