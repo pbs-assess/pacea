@@ -87,7 +87,7 @@ From this, we can see that the covariates have been downloaded for the correct y
 
 Next, we get the covariates in the custom-defined ECHG. Note that we use the printed output from `PACea_custom()` to define the `poly_names` argument.
 
-```{r fetch}
+```{r fetch2}
 ECHG_covs <-
 PACea_fetch(fetch_names = c('SST_Monthly_MODIS','ENSO_ONI'),
             regions = 'BC Grid',
@@ -196,8 +196,7 @@ Fake_Data_BC_Grid <-
   dplyr::group_by(Poly_ID) %>%
   dplyr::mutate(Bathymetric_Fake=Bathymetric_Fake*Area/sum(Area)) %>%
   dplyr::summarize(Bathymetric_Fake=sum(Bathymetric_Fake)) %>%
-  dplyr::ungroup(Poly_ID) %>%
-  tidyr::complete(Poly_ID = 1:max(BC_Grid$`BC Grid`$Poly_ID)) %>%
+  tidyr::complete(Poly_ID = 1:max(BC_Grid$`BC Grid`$Poly_ID))
 
 # Add to the BC_Grid sf object
 BC_Grid <- 
@@ -226,7 +225,7 @@ Thus, the goal of the Rmd/R file is to automatically update the datasets in the 
 
 #### Step 6 Upload all Datasets, Rmd files and descriptions to GitHub
 
-Now is the time to upload all the files to GitHub for the package maintainers to verify and implement your dataset into PACea. Thank you for contributing!!
+Now is the time to upload all the files to GitHub for the package maintainers to verify and implement your dataset into PACea. Please use the website that the function `PACea_upload()` directs you to. Thank you for contributing!!
 
 ## (Optional) Feature 2 - Requesting New Data for PACea
 
