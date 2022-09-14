@@ -1,0 +1,243 @@
+---
+title: "PACea User Demonstration"
+author: "Joe Watson"
+date: "9/13/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## How to use PACea: A demonstration of the workflow
+
+PACea is a package designed to provide high-quality and curated spatial, temporal, and spatiotemporal environmental data across Canada's Pacific coast. The user can request covariates from a large library, before choosing a desired time frame and spatial aggregation. For instance, a user may request monthly-average sea-surface temperature and ENSO_ONI values from 2010-2015 in the months of January, February, and March, averaged over the West Coast of Haida Gwaii and the East Coast of Haida Gwaii separately.
+
+In this document, we will show the basic workflow required by the user to do precisely this.
+
+First, we load the PACea, tidyverse, and sf packages.
+
+```{r packages, message=F, warning=F}
+library(tidyverse)
+library(sf)
+library(PACea)
+```
+
+## Step 1 - Search the catalogue of available datasets
+
+Use the function `PACea_info()` to see all available datasets. We use the argument `vignette_mode=T` for compatibility with an Rmd document. This can normally be skipped
+
+```{r datasets}
+PACea_info(vignette_mode = T)
+PACea_info('SST',vignette_mode = T)
+PACea_info('ENSO',vignette_mode = T)
+```
+
+We are searching for sea-surface temperature (SST) and ENSO_ONI data. We can see two (SST) datasets available - we choose the MODIS satellite-derived data - and an ENSO_ONI dataset. The most important column to note down is the `Fetch_Name` column. This will be used to extract the data in a later step. Thus, we note down `ENSO_ONI` and `SST_Monthly_MODIS`.
+
+## Step 2 - Search the catalogue of available areas and regions
+
+Next, we want to search through the available regions in PACea. For the purposes of this demonstration, we will search for West Coast of Haida Gwaii and the East Coast of Haida Gwaii. To search for all regions available, we will use the function `PACea_regions()`.
+
+```{r regions}
+Pacea_regions()
+```
+
+This tells us that 4 regions are currently available. The ones we are interested in exploring further are the `BC_grid` and `BC_Major_Area_Boundaries`. First, we will explore `BC_Major_Area_Boundaries` with a plot, by specifying `plot=T`.
+
+```{r regions2}
+Pacea_regions('BC Major Area Boundaries', plot=T)
+```
+Conveniently, it appears that the West Coast of Haida Gwaii is provided as a region in PACea, corresponding to Poly_ID=92, and with `Poly_Name` equal `WCHG`. The `Poly_ID` and `Poly_Name` values are important for later use.
+
+However, we are unhappy with the lack of East Coast Haida Gwaii currently available in PACea. Suppose we are unhappy with the Hecate Strait Polygon with `Poly_ID=90`. We can instead define a custom region by hand. To do this, we first run the `PACea_regions()` function again, but this time with the argument `'BC Grid'`.
+
+```{r regions3}
+Pacea_regions('BC Grid', plot=T)
+```
+We can now define a custom region, East Coast Haida Gwaii (ECHG) using the BC Grid as a template. Suppose we are happy defining ECHG as the union of the polygons with `Poly_Name = (7,4), (7,5), (8,4), (8,5)` or, equivalently, as the union of the polygons with `Poly_ID = (56, 57, 66, 67)`.
+
+We can use the helper function `PACea_custom()` to determine how to specify this custom region within the package. We need to pass an argument either a vector of the Poly_ID numbers, or a character vector of the Poly_Name values. We do both to show equivalence.
+
+```{r regions4}
+PACea_custom(poly_ids = c(56,57,66,67))
+PACea_custom(poly_names = c('(7,4)','(7,5)','(8,4)','(8,5)'))
+```
+
+Both function calls indeed return the same region. Note that the covariates will automatically be adjusted to account for the fact that the polygon with Poly_ID=66 has substantial overlap with land. This will be achieved by reweighting the covariate values in each grid cell by their surface area covering the ocean.
+
+Importantly, the function returns a helper message specifying how the custom region will be defined internally within PACea when later obtaining the covariates. In particular, the Poly_Name of the custom region is defined as `'(7,4)+(7,5)+(8,4)+(8,5)'`. This will need to be passed to the function `PACea_fetch()`, discussed later in this document.
+
+To conclude, we now know the `Poly_Name` values for our two regions. For West Coast Haida Gwaii, the value is 'WCHG'. For ECHG, the value is '(7,4)+(7,5)+(8,4)+(8,5)'. We also know the `Fetch_Name` values for our two covariates: `ENSO_ONI` and `SST_Monthly_MODIS`.
+
+## Step 3 Fetch the covariates
+
+Now, we fetch the covariates across the regions we want for the years 2010-2015 in the months of January, February, and March. To do this, we use the function `PACea_fetch()`. Note that because we are using a custom-defined region, with a pre-specified region, we must call the function separately for each. Typically, this is not the case. First, get the covariates in WCHG.
+
+```{r fetch}
+WCHG_covs <-
+PACea_fetch(fetch_names = c('SST_Monthly_MODIS','ENSO_ONI'),
+            regions = 'BC Major Area Boundaries',
+            poly_names = 'WCHG',
+            year_range = 2010:2015,
+            month_range = 1:3)
+head(WCHG_covs)
+```
+From this, we can see that the covariates have been downloaded for the correct years and months in the polygons of `Poly_ID` (`Poly_Name`) equal 92 (`WCHG`). Associated with each covariate is a record of the proportion of the polygon (by area) which had missing values for each covariate. For instance, 100% and 14% of the SST data in January and February 2010 are missing, respectively. This helps the user gauge the quality of each dataset. **Note that the missing values from the spatial and spatiotemporal covariates have not yet been imputed**. Consequently, covariate values with large percentages of missing values could be severely biased. **Future work should build in automatic imputation into the covariates - for instance using a GAM with a tensor product spline for each year and using the model-based predictions to complete the covariates**. 
+
+Next, we get the covariates in the custom-defined ECHG. Note that we use the printed output from `PACea_custom()` to define the `poly_names` argument.
+
+```{r fetch}
+ECHG_covs <-
+PACea_fetch(fetch_names = c('SST_Monthly_MODIS','ENSO_ONI'),
+            regions = 'BC Grid',
+            poly_names = '(7,4)+(7,5)+(8,4)+(8,5)',
+            year_range = 2010:2015,
+            month_range = 1:3)
+head(ECHG_covs)
+```
+
+The covariates take longer to extract over custom regions. Note that the output is similar to before, however the `Poly_ID` column now begins at 10000 to indicate the region is custom. The fraction of missing values is computed as a spatially-weighted average, with weights equal to the area of ocean within each of the polygons defining the custom region. Finally, the function `PACea_fetch()` includes an argument `output_as_csv`. Setting this to `TRUE` writes the data as a `csv` file in the current working directory.
+
+## (Optional) Feature 1 - Uploading Data to PACea
+
+Suppose you have access to a dataset that you think it perfect for PACea. The helper function `PACea_upload()` provides instructions for how to do this. As an example, suppose this dataset was bathymetry. This dataset is spatial in nature and does not vary in time. To tell PACea this, use the arguments `Time_Resolution = 'Fixed'` and `Spatial=TRUE`. 
+
+```{r upload}
+PACea_upload(Time_Resolution = 'Fixed', Spatial=T, vignette_mode = T)
+```
+
+If, instead, the dataset was a non-spatial annual time-series (e.g. another oceanographic index), then `Time_Resolution = 'Annual'` and `Spatial=FALSE` should be specified.
+
+```{r upload2}
+PACea_upload(Time_Resolution = 'Annual', Spatial=T, vignette_mode = T)
+```
+
+In both cases, the function creates a Data_Key.csv file to fill in and provides instructions for the user. These include instructions for what the column names of the data.frame should be, followed by a prompt asking the user to hit the key '1' to direct them to the GitHub webpage for uploading their dataset, completed `Data_Key.csv` file, and (optional) Rmd or R script showing how the data were created. Notice that the Annual time series contains an additional column, `Year`, to complete.
+
+An important thing to remember about PACea, is that all spatial and spatiotemporal datasets are stored internally across the `BC Grid` polygons. Thus, to upload spatial and/or spatiotemporal data to PACea, it is important to aggregate all data across the `BC Grid`. To obtain the polygons defining the `BC Grid` in the `sf` r package format, in the internally-used coordinate reference system, call `Pacea_regions("BC Grid", return_sf_Polys = T)`. To export these polygons as a shapefile for use externally (e.g. in ESRI), call `st_write(Pacea_regions("BC Grid", return_sf_Polys = T), "nameofshapefile.shp")`.
+
+### Step-by-step demonstration of uploading data into PACea
+
+Suppose we have data on some bathymetric data that we want to upload to PACea. We plot the (ficticious) dataset below.
+
+```{r fakedata, echo=F}
+# Create fake data
+# Shapefile of the entire BC Coastline for plotting
+Coastline <- sf::st_as_sf(PACea::Coastline)
+# expand the polygon by 50km Westwards
+poly_expansion <-
+  sf::st_polygon(list(matrix(c(390,1036.5509,
+                      339,1036.5509,
+                      1030,253.6858,
+                      1080,253.6858,
+                      390,1036.5509),
+                      ncol=2,
+                    byrow = T)))
+poly_expansion <-
+  sf::st_sf(sf::st_sfc(poly_expansion), crs = sf::st_crs(Coastline))
+
+Coastline <- sf::st_union(poly_expansion, Coastline)
+
+# Rotate the grid to maximize the spatial overlap
+rotang = 318.5
+rot = function(a) matrix(c(cos(a), sin(a), -sin(a), cos(a)), 2, 2)
+tran = function(geo, ang, center) (geo - center) * rot(ang * pi / 180) + center  
+
+center <- sf::st_centroid(sf::st_union(Coastline))
+# This is the function call which actually creates the master grid
+# To increase the resolution (almost certainly desired), increase the 
+# n argument (e.g. n=c(100,100)).
+Fake_Data <- sf::st_sf(
+  sf::st_make_grid(tran(sf::st_geometry(Coastline), -rotang, center), 
+                   n=c(50,50)
+                   )
+)
+Fake_Data <- tran(sf::st_geometry(Fake_Data), rotang, center)
+
+# Keep only the polygons that fall within or touch the original Coastline to save storage space
+Fake_Data <- sf::st_as_sf(sf::as_Spatial(Fake_Data))
+sf::st_crs(Fake_Data) <- sf::st_crs(Coastline)
+
+Fake_Data  <- 
+  Fake_Data[Coastline,]
+
+Fake_Data$Bathymetric_Fake <-
+  rnorm(n=dim(Fake_Data)[1], mean = 1000, sd=100)
+
+plot(Fake_Data[,'Bathymetric_Fake'])
+
+```
+
+#### Step 1: Obtain the BC Grid polygons
+
+```{r uploaddemo1}
+BC_Grid <- Pacea_regions('BC Grid', return_sf_Polys = T)
+```
+
+We save the BC Grid polygons into an R object that we call BC_Grid.
+
+#### Step 2: Discover what the variable names need to be 
+
+We run the function `PACea_upload(Time_Resolution = 'Fixed', Spatial=T)` which tells us that the column names need to be `Poly_ID` and match those of the BC Grid.
+
+#### Step 3: Aggregate the (ficticious) data over the BC grid
+
+The ficticious covariate, stored in an R object called `Fake_Data`, is in `sf` format. We choose to compute the spatially-weighted mean of the spatial covariate over the BC Grid as follows:
+
+```{r uploaddemo2}
+Fake_Data_BC_Grid <-
+  Fake_Data %>%
+  sf::st_intersection(BC_Grid$`BC Grid`)
+
+Fake_Data_BC_Grid <-
+  cbind(Fake_Data_BC_Grid,
+        Area = sf::st_area(Fake_Data_BC_Grid)) %>%
+  dplyr::group_by(Poly_ID) %>%
+  dplyr::mutate(Bathymetric_Fake=Bathymetric_Fake*Area/sum(Area)) %>%
+  dplyr::summarize(Bathymetric_Fake=sum(Bathymetric_Fake)) %>%
+  dplyr::ungroup(Poly_ID) %>%
+  tidyr::complete(Poly_ID = 1:max(BC_Grid$`BC Grid`$Poly_ID)) %>%
+
+# Add to the BC_Grid sf object
+BC_Grid <- 
+  BC_Grid$`BC Grid` 
+BC_Grid$Bathymetric_Fake <-
+  Fake_Data_BC_Grid$Bathymetric_Fake
+
+plot(BC_Grid)
+head(Fake_Data_BC_Grid)
+
+```
+
+This is achieved in 5 steps. First, the intersection of the BC grid and the spatial covariate is computed. Second, the area of each polygon making up the intersection is computed. Third, for each Poly_ID of the BC_Grid that overlaps with the spatial covariate, the product of the covariate value in each component and the area of it is computed, before dividing the result by the total area of all the intersection components. Then, the total sum of the modified covariate value is computed within each Poly_ID. Next, any missing Poly_ID values are filled in - putting NA values in the covariates. Finally, the covariate values are mapped to the `sf` polygon object, `BC_Grid`.
+
+The above steps will differ depending on what R package you use, or if you choose to use external programs (e.g. ESRI or QGIS).
+
+#### Step 4 - Update the Data_Key.csv file
+
+Fill in the columns of the `Data_Key.csv` file which should have been written to the current working directory. Each row should contain the details of a single covariate value. In our example, we have only a single, (fictitious) covariate. We must choose it's Fetch_Name (unique for each covariate) and DF_Name (unique to each dataset). These will determine the names users must specify in `PACea_fetch()` to obtain the dataset. An example here, could be `Bathym_Fake` and `Bathym_Fake_DF`. Ideally, choose sensible names here.
+
+#### Step 5 - Write an Rmd file showing the steps
+
+For reproducibility reasons, please write an Rmd file or R script showing how the dataset was produced. This helps with the quality control and also (hopefully) allows the package maintainers to simply run the Rmd script every 6 months to automatically update the dataset.
+
+Thus, the goal of the Rmd/R file is to automatically update the datasets in the case of spatiotemporal and temporal datasets. 
+
+#### Step 6 Upload all Datasets, Rmd files and descriptions to GitHub
+
+Now is the time to upload all the files to GitHub for the package maintainers to verify and implement your dataset into PACea. Thank you for contributing!!
+
+## (Optional) Feature 2 - Requesting New Data for PACea
+
+To request additional datasets for use in PACea, simply run `PACea_request()`.
+
+```{r request}
+PACea_request(vignette_mode=T)
+```
+
+This will direct the user to a GitHub issue page where they can make their data requests to the package developers. Please try to contain as much information as possible on possible data sources and authors, and any other details you think would help the developers along the way.
+
+## (Optional) Feature 3 - Manually updating the data
+
+Need more up-to-date data than is currently hosted in PACea. **All** the Rmd/R files used to generate the datasets can be found in the data-raw folder on GitHub. Feel free to generate the latest data yourself by running these scripts!

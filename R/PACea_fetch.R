@@ -1,3 +1,4 @@
+#' @export
 # Main script for fetching the data 
 PACea_fetch <- function(
   regions, # Where do you want the data?
@@ -6,7 +7,6 @@ PACea_fetch <- function(
   year_range, # When do you want the data?
   month_range, # When do you want the data?
   output_as_csv=F)
-
 {
     
   if(max(year_range) > lubridate::year(lubridate::ymd(Sys.Date())) |
@@ -35,7 +35,6 @@ PACea_fetch <- function(
   DF_Variable_Names <- DF_names$DF_Variable_Names
   DF_names <- DF_names$DF_Name
   
-  
   # create a function for reading package data by string
   getdata <- function(mydataset) {
     data(list=mydataset, package = 'PACea')  
@@ -48,14 +47,7 @@ PACea_fetch <- function(
     PACea::BC_Partition_Objects$index_vectors[regions],
     what='c'
     )
-  
-  # Extract the names of the polygons within each region
-  # collapse into a character vector
-  # TODO
-  # region_names <- do.call(
-  #   PACea::BC_Partition_Objects$Poly_names_vectors[regions],
-  #   what='c'
-  # )
+
   # create a list of variable names - splitting the individual names by by the ';'
   DF_Variable_Names <- strsplit(DF_Variable_Names, ';')
 
@@ -71,7 +63,7 @@ PACea_fetch <- function(
     # First - check that coastwide AND regional variables are not stored
     if(sum(Coastwide_Logical == -1) > 0 & sum(Coastwide_Logical != -1) > 0)
     {
-      stop('It appears that Coastwide AND regional values were stored in the same 
+      stop('It appears that coastwide AND regional values were stored in the same 
            data.frame. This is not allowed. Please ensure the coastwide and regional
            values are stored in separate data.frames')
     }
@@ -271,32 +263,61 @@ PACea_fetch <- function(
       Data$Poly_ID
     ]
   
+  # Have specific polygon names been requested?
   if(!is.null(poly_names))
   {
     # Subset the data by the requested poly_names
+    # The following searches for '+' signs in the strings of polygons
+    # If at least one exists, then we must combine these regions
+    # This feature allows users to define their own custom regions
+    # Most likely approximating complex regions not currently in PACea
+    # with a union of the BC grid cells
     if(max(stringr::str_count(poly_names, pattern = '\\+')) > 0)
     {
-      browser()
+      #browser()
       # Obtain the data over custom-defined regions
       # Do a weighted average where relevant
 
       # First, extract the standard regions
+      # 'standard' means not-summed
+      # Example - a user could request HG and WCVI+WCHG
+      # The first region HG would be 'standard'
       Data_standard <-
         Data %>%
         dplyr::filter(Poly_Name %in% poly_names)
       
+      # Which regions are non-standard (i.e. joined by '+' sign)?
+      # Strip the '+' signs
       regions <- stringr::str_split(poly_names, pattern = '\\+')
       
+      # Loop through the individual region combinations
       for(i in 1:length(regions))
       {
+        # Are the requested polygons valid?
+        if(sum(!(regions[[i]] %in% Data$Poly_Name)) > 0)
+        {
+          stop('Some of the Poly_Name requests are invalid. Please run
+                 Pacea_regions() to see the available regions and then run
+                 Pacea_regions("Name_of_region",plot=T) to see the polygon names')
+        }
+        # If the length of a region is longer than 1, then it is a summed region
+        # I.e. non-standard
         if(length(regions[[i]]) > 1)
         {
+          # Is this annual data?
           if(sum(c('Year','Month') %in% names(Data)) == 1) # Annual data
           {
+            # Keep only the polygons inside the user-defined region
+            # Group by Year, Polygon and multiply values by area of each polygon
+            # Sum up and divide by the total area of the custom region
+            # This performs area-weighted average. Account for missing data by
+            # Multiplying by 0 if missing data and 1 if data are available
+            # Adjust the total sum accordingly (for missing data) too.
+            # Rename the polygon and assign it values beginning 10000 to indicate custom
             Data_nonstandard_tmp <-
               Data %>%
               dplyr::filter(Poly_Name %in% regions[[i]]) %>%
-              group_by(Year) %>%
+              group_by(Year, Poly_ID, Poly_Name) %>%
               summarize(across(.fns=function(x){(
                 BC_Partition_Objects$Ocean_Intersection_Areas[
                   pmatch(Poly_Name,
@@ -305,14 +326,28 @@ PACea_fetch <- function(
                   sum(BC_Partition_Objects$Ocean_Intersection_Areas[
                     pmatch(regions[[i]],
                            BC_Partition_Objects$BC_Partition$Poly_Name)
-                  ])})) %>%
+                  ] * !is.na(x))})) %>%
               ungroup(Poly_ID, Poly_Name) %>%
-              summarize(across(!c(Poly_ID, Poly_Name),sum)) %>%
+              summarize(across(!c(Poly_ID, Poly_Name),
+                               .fns = function(x){
+                                 ifelse(sum(!is.na(x)) > 0,
+                                        sum(x, na.rm=T),
+                                        NA
+                                 )
+                               }
+                               )) %>%
               mutate(Poly_Name = stringr::str_flatten(regions[[i]],'+'),
                      Poly_ID = 10000+i)
           }
           if(sum(c('Year','Month') %in% names(Data)) == 2) # Monthly data
           {
+            # Keep only the polygons inside the user-defined region
+            # Group by Year, Month, Polygon and multiply values by area of each polygon
+            # Sum up and divide by the total area of the custom region
+            # This performs area-weighted average. Account for missing data by
+            # Multiplying by 0 if missing data and 1 if data are available
+            # Adjust the total sum accordingly (for missing data) too.
+            # Rename the polygon and assign it values beginning 10000 to indicate custom
             Data_nonstandard_tmp <-
               Data %>%
               dplyr::filter(Poly_Name %in% regions[[i]]) %>%
@@ -325,17 +360,32 @@ PACea_fetch <- function(
                   sum(BC_Partition_Objects$Ocean_Intersection_Areas[
                     pmatch(regions[[i]],
                            BC_Partition_Objects$BC_Partition$Poly_Name)
-                  ])})) %>%
+                  ] * !is.na(x))})) %>%
               ungroup(Poly_ID, Poly_Name) %>%
-              summarize(across(!c(Poly_ID, Poly_Name),sum)) %>%
+              summarize(across(!c(Poly_ID, Poly_Name),
+                               .fns = function(x){
+                                 ifelse(sum(!is.na(x)) > 0,
+                                        sum(x, na.rm=T),
+                                        NA
+                                 )
+                               }
+              )) %>%
               mutate(Poly_Name = stringr::str_flatten(regions[[i]],'+'),
                      Poly_ID = 10000+i)
           }
           if(sum(c('Year','Month') %in% names(Data)) == 0) # Fixed data
           {
+            # Keep only the polygons inside the user-defined region
+            # Group by Polygon and multiply values by area of each polygon
+            # Sum up and divide by the total area of the custom region
+            # This performs area-weighted average. Account for missing data by
+            # Multiplying by 0 if missing data and 1 if data are available
+            # Adjust the total sum accordingly (for missing data) too.
+            # Rename the polygon and assign it values beginning 10000 to indicate custom
             Data_nonstandard_tmp <-
               Data %>%
               dplyr::filter(Poly_Name %in% regions[[i]]) %>%
+              group_by(Poly_ID, Poly_Name) %>%
               summarize(across(.fns=function(x){(
                 BC_Partition_Objects$Ocean_Intersection_Areas[
                   pmatch(Poly_Name,
@@ -344,19 +394,28 @@ PACea_fetch <- function(
                   sum(BC_Partition_Objects$Ocean_Intersection_Areas[
                     pmatch(regions[[i]],
                            BC_Partition_Objects$BC_Partition$Poly_Name)
-                  ])})) %>%
+                  ] * !is.na(x))})) %>%
               ungroup(Poly_ID, Poly_Name) %>%
-              summarize(across(!c(Poly_ID, Poly_Name),sum)) %>%
+              summarize(across(!c(Poly_ID, Poly_Name),
+                               .fns = function(x){
+                                 ifelse(sum(!is.na(x)) > 0,
+                                        sum(x, na.rm=T),
+                                        NA
+                                 )
+                               }
+              )) %>%
               mutate(Poly_Name = stringr::str_flatten(regions[[i]],'+'),
                      Poly_ID = 10000+i)
           }
           if(i==1)
           {
+            # If first region, assign subsetted data
             Data_nonstandard <- 
               Data_nonstandard_tmp
           }
           if(i>1)
           {
+            # All further regions get concatenated onto existing data
             Data_nonstandard <-
               rbind(Data_nonstandard,
                     Data_nonstandard_tmp)
@@ -366,6 +425,7 @@ PACea_fetch <- function(
       }
       if(dim(Data_standard)[1] > 0)
       {
+        # Concatenate the standard regions with the custom regions
         Data <- dplyr::full_join(
           Data_nonstandard,
           Data_standard
@@ -373,13 +433,22 @@ PACea_fetch <- function(
       }
       if(dim(Data_standard)[1] == 0)
       {
+        # If no standard regions, simply return the custom regions
         Data <- Data_nonstandard
       }
-      
+      # The following warning is useful to remind users about how the data were created
       print('Warning: An area-weighted mean was computed to define the variable values across the user-defined regions. In some cases, this procedure will not be appropriate. ')
     }
     if(max(stringr::str_count(poly_names, pattern = '\\+')) == 0)
     {
+      # Are the requested polygons valid?
+      if(sum(!(poly_names %in% Data$Poly_Name)) > 0)
+      {
+        stop('Some of the Poly_Name requests are invalid. Please run
+                 Pacea_regions() to see the available regions and then run
+                 Pacea_regions("Name_of_region",plot=T) to see the polygon names')
+      }
+      # If no custom (nonstandard) regions defined, then return requested polygons
       Data <-
         Data %>%
         dplyr::filter(Poly_Name %in% poly_names)
