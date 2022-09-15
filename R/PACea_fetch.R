@@ -1,14 +1,14 @@
 #' @export
-# Main script for fetching the data 
+# Main script for fetching the data
 PACea_fetch <- function(
   regions, # Where do you want the data?
-  poly_names=NULL, # do you only want the data returned on a subset of the polygons or even define a new region as the sum of polygons? 
+  poly_names=NULL, # do you only want the data returned on a subset of the polygons or even define a new region as the sum of polygons?
   fetch_names, # What data do you want?
   year_range, # When do you want the data?
   month_range, # When do you want the data?
   output_as_csv=F)
 {
-    
+
   if(max(year_range) > lubridate::year(lubridate::ymd(Sys.Date())) |
      min(year_range) < 1914)
   {
@@ -23,7 +23,7 @@ PACea_fetch <- function(
   {
     stop('Data can only be extracted for one region at a time')
   }
-  
+
   #browser()
   # Match the common name to the corresponding pre-compiled data.frame
   DF_names <-
@@ -34,13 +34,13 @@ PACea_fetch <- function(
   Time_Resolution <- DF_names$Time_Resolution
   DF_Variable_Names <- DF_names$DF_Variable_Names
   DF_names <- DF_names$DF_Name
-  
+
   # create a function for reading package data by string
   getdata <- function(mydataset) {
-    data(list=mydataset, package = 'PACea')  
+    data(list=mydataset, package = 'PACea')
     return(get(mydataset))
   }
-  
+
   # Extract the indices of the desired region(s)
   # collapse into a vector
   region_indices <- do.call(
@@ -55,29 +55,29 @@ PACea_fetch <- function(
   for(i in DF_names)
   {
     tmp_dat <- getdata(i)
-    
+
     # Are any coastwide indices present in the data?
     # Coastwide indices stored as Poly_ID == -1
     Coastwide_Logical <- tmp_dat$Poly_ID
-    
+
     # First - check that coastwide AND regional variables are not stored
     if(sum(Coastwide_Logical == -1) > 0 & sum(Coastwide_Logical != -1) > 0)
     {
-      stop('It appears that coastwide AND regional values were stored in the same 
+      stop('It appears that coastwide AND regional values were stored in the same
            data.frame. This is not allowed. Please ensure the coastwide and regional
            values are stored in separate data.frames')
     }
-    
+
     # If so replicate the variable values across the desired regions
     if(sum(Coastwide_Logical == -1) > 0)
     {
       #browser()
-      tmp_dat <- 
+      tmp_dat <-
         tmp_dat %>%
         mutate(nrep = length(region_indices)) %>%
         tidyr::uncount(nrep) %>%
         mutate(Poly_ID = rep(region_indices, times=dim(tmp_dat)[1]))
-      
+
       if(Time_Resolution[count] == 'Monthly')
       {
         tmp_dat <-
@@ -120,7 +120,7 @@ PACea_fetch <- function(
           Month=month_range,
           Poly_ID=region_indices
         )
-      
+
       # Loop through variables, years and months
       for(j in 1:length(DF_Variable_Names[[count]]))
       {
@@ -129,7 +129,12 @@ PACea_fetch <- function(
           for(l in month_range)
           {
             for(m in region_indices)
-            {
+            {  # See Issue #4 - if(agg_fun = mean){ what's already here} else
+               #   if(agg_fun = sum){ instead want to add up densities in each
+               #   grid cell and multiply by the area of intersection of
+               #   polygon with grid cell to extract the absolute quantity;
+               #   fraction of missing should be exported in data done by default}
+               #
               # compute the spatially-weighted mean using Mapping Matrix
               # First, compute the fraction of values missing and re-weight matrix
               # to ensure the columns sum to 1, even after accounting for missing values
@@ -140,9 +145,9 @@ PACea_fetch <- function(
                       dplyr::filter(Year == k & Month == l) %>%
                       dplyr::pull(DF_Variable_Names[[count]][j])))),
                   m])
-              
-              tmp_dat2[tmp_dat2$Year==k & 
-                         tmp_dat2$Month==l & 
+
+              tmp_dat2[tmp_dat2$Year==k &
+                         tmp_dat2$Month==l &
                          tmp_dat2$Poly_ID==m,
                        DF_Variable_Names[[count]][j]] <-
                 ifelse(sum(!is.na(as.numeric(
@@ -150,7 +155,7 @@ PACea_fetch <- function(
                      dplyr::filter(Year == k & Month == l) %>%
                     dplyr::pull(DF_Variable_Names[[count]][j])))
                   ) > 0,
-                sum(PACea::BC_Partition_Objects$Mapping_Matrix[,m] * 
+                sum(PACea::BC_Partition_Objects$Mapping_Matrix[,m] *
                 as.numeric(tmp_dat %>%
                 dplyr::filter(Year == k & Month == l) %>%
                 pull(DF_Variable_Names[[count]][j])),
@@ -161,7 +166,7 @@ PACea_fetch <- function(
         }
       }
       tmp_dat <- tmp_dat2
-    
+
     }
     if(Time_Resolution[count] == 'Annual')
     {
@@ -171,7 +176,7 @@ PACea_fetch <- function(
           Year=year_range,
           Poly_ID=region_indices
         )
-      
+
       # Loop through variables, years and months
       for(j in 1:length(DF_Variable_Names[[count]]))
       {
@@ -186,8 +191,8 @@ PACea_fetch <- function(
                     dplyr::filter(Year == k) %>%
                     dplyr::pull(DF_Variable_Names[[count]][j])))),
                 m])
-            
-              tmp_dat2[tmp_dat2$Year==k & 
+
+              tmp_dat2[tmp_dat2$Year==k &
                         tmp_dat2$Poly_ID==m,
                       DF_Variable_Names[[count]][j]] <-
                 ifelse(sum(!is.na(as.numeric(
@@ -195,17 +200,17 @@ PACea_fetch <- function(
                     dplyr::filter(Year == k) %>%
                     dplyr::pull(DF_Variable_Names[[count]][j])))
                 ) > 0,
-                sum(PACea::BC_Partition_Objects$Mapping_Matrix[,m] * 
+                sum(PACea::BC_Partition_Objects$Mapping_Matrix[,m] *
                       as.numeric(tmp_dat %>%
                                    dplyr::filter(Year == k) %>%
                                    pull(DF_Variable_Names[[count]][j])),
                     na.rm=T)/weight,
                 NA)
             }
-          
+
         }
       }
-      
+
       tmp_dat <- tmp_dat2
     }
     if(Time_Resolution[count] == 'Fixed')
@@ -215,7 +220,7 @@ PACea_fetch <- function(
         expand.grid(
           Poly_ID=region_indices
         )
-      
+
       # Loop through variables
       for(j in 1:length(DF_Variable_Names[[count]]))
       {
@@ -227,14 +232,14 @@ PACea_fetch <- function(
                   tmp_dat %>%
                     dplyr::pull(DF_Variable_Names[[count]][j])))),
                 m])
-            
+
             tmp_dat2[tmp_dat2$Poly_ID==m,
                     DF_Variable_Names[[count]][j]] <-
               ifelse(sum(!is.na(as.numeric(
                 tmp_dat %>%
                   dplyr::pull(DF_Variable_Names[[count]][j])))
               ) > 0,
-              sum(PACea::BC_Partition_Objects$Mapping_Matrix[,m] * 
+              sum(PACea::BC_Partition_Objects$Mapping_Matrix[,m] *
                     as.numeric(tmp_dat %>%
                                  pull(DF_Variable_Names[[count]][j])),
                   na.rm=T)/weight,
@@ -251,18 +256,18 @@ PACea_fetch <- function(
     if(count > 1)
     {
       Data <- dplyr::left_join(
-        Data, 
+        Data,
         tmp_dat
       )
     }
-    count <- count + 1 
+    count <- count + 1
   }
   # Map the Poly_Name to the Data
   Data$Poly_Name <-
     PACea::BC_Partition_Objects$BC_Partition$Poly_Name[
       Data$Poly_ID
     ]
-  
+
   # Have specific polygon names been requested?
   if(!is.null(poly_names))
   {
@@ -285,11 +290,11 @@ PACea_fetch <- function(
       Data_standard <-
         Data %>%
         dplyr::filter(Poly_Name %in% poly_names)
-      
+
       # Which regions are non-standard (i.e. joined by '+' sign)?
       # Strip the '+' signs
       regions <- stringr::str_split(poly_names, pattern = '\\+')
-      
+
       # Loop through the individual region combinations
       for(i in 1:length(regions))
       {
@@ -410,7 +415,7 @@ PACea_fetch <- function(
           if(i==1)
           {
             # If first region, assign subsetted data
-            Data_nonstandard <- 
+            Data_nonstandard <-
               Data_nonstandard_tmp
           }
           if(i>1)
@@ -421,7 +426,7 @@ PACea_fetch <- function(
                     Data_nonstandard_tmp)
           }
         }
-        
+
       }
       if(dim(Data_standard)[1] > 0)
       {
@@ -454,7 +459,7 @@ PACea_fetch <- function(
         dplyr::filter(Poly_Name %in% poly_names)
     }
   }
-  
+
   if(!output_as_csv)
   {
     return(Data)
@@ -462,7 +467,7 @@ PACea_fetch <- function(
   if(output_as_csv)
   {
     write.csv(
-      Data, 
+      Data,
       file=paste0('PACea_',
                   stringr::str_flatten(regions,'_'),
                   as.character(min(year_range)), '_',
