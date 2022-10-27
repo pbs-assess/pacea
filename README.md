@@ -1,14 +1,20 @@
 # PACea
-An R package to house Pacific Region ecosystem data to help facilitate an ecosystem approach to fisheries. 
+An R package to house Pacific Region ecosystem data to help operationalise an ecosystem approach to fisheries. 
 
-While being an R package, for non-R users it will allow for extraction of all the data as a simple .csv file. It is intended to be a data platform, *not* a primary database of lots of raw data.
+The primary audience is stock assessment scientists who want to analyse environmental variables in the context of their stock assessment. The Fisheries Act requires management of fisheries to take into account "[the biology of the fish and the environmental conditions affecting the stock](https://laws-lois.justice.gc.ca/eng/acts/f-14/page-3.html#h-1175547)".  
+Such an Ecosystem Approach to Fisheries Management requires data. 
 
-For now, just adding some notes and references from our first planning meeting, while we scope out this project.
+A comprehensive [2022 analysis of Canadian stock assessments](https://publications.gc.ca/collections/collection_2022/mpo-dfo/Fs97-6-3473-eng.pdf) found that availability of data on environmental variables was the leading cause of not integrating such information into assessments. PACea aims to help make data availability more streamlined, and avoid each individual assessment scientist having to figure out themselves where to get appropriate data.
+
+PACea is intended to be a data platform, *not* a primary database of lots of raw data. All data sets include documentation regarding the original authors, who should be cited as appropriate. 
+
+It is not operational yet (some of the data are just example data to set up the infrastructure of the package).
+
+While being an R package, for non-R users we hope to add functionality to extract the data as a simple .csv file. 
+
+Below are some of the notes and references from our original planning meeting (later notes are elsewhere). Work is ongoing.
 
 # Motivation
-
-The Fisheries Act requires management of fisheries to take into account "[the biology of the fish and the environmental conditions affecting the stock](https://laws-lois.justice.gc.ca/eng/acts/f-14/page-3.html#h-1175547)".  
-Such an Ecosystem Approach to Fisheries Management requires data. This package will help Pacific Region stock assessment scientists by housing usable broad-scale data in one place, so each person does not have to go looking for it themselves. 
 
 This work is strongly motivated by, and based on, the [GSLea](https://github.com/duplisea/gslea) R package by Dan Duplisea and colleagues for the Gulf of St Lawrence.
 
