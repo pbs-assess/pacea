@@ -9,7 +9,7 @@
 year_months <- c("Year", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
                  "11", "12")
 
-#ENSO MEI
+# ENSO MEI
 nlines <- as.numeric(format(Sys.time(),
                             "%Y")) - 1978     # Then double check later that
                                               #  first year is 1979
@@ -45,7 +45,7 @@ stopifnot(min(ENSO_MEI$Year) == 1979,
 # https://www.psl.noaa.gov/enso/mei
 # Row values are 2 month seasons (YEAR DJ JF FM MA AM MJ JJ JA AS SO ON ND)
 
-#ENSO ONI
+# ENSO ONI
 download.file("https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
               destfile="ENSO_ONI.txt",
               mode="wb",
@@ -71,7 +71,7 @@ ENSO_ONI$Month <- as.numeric(factor(ENSO_ONI$Month,
 # Add to help - values are three-month averages (preceding, current, and next month)
 # May need to update every month. Maybe have a column of when last updated?
 
-#PDO
+# PDO
 #download.file("https://www.ncdc.noaa.gov/teleconnections/pdo/data.csv", destfile="PDO.csv",mode="wb", quiet = FALSE)
 download.file("https://www.ncei.noaa.gov/pub/data/cmb/ersst/v5/index/ersst.v5.pdo.dat",
               destfile="PDO.dat",
@@ -98,47 +98,114 @@ PDO$Month <- as.numeric(PDO$Month)
 
 PDO[PDO == 99.99] <- NA
 
-#AO
-download.file("https://www.cpc.ncep.noaa.gov/products/precip/CWlink/daily_ao_index/monthly.ao.index.b50.current.ascii.table", destfile="AO.dat",mode="wb", quiet = FALSE)
-AO<-read.table("AO.dat",skip=1,as.is=TRUE,header=F, fill=T)
-colnames(AO)<-c("Year","1","2","3","4","5","6","7","8","9","10","11","12")
-AO<-reshape::melt(AO,id="Year")
-colnames(AO)<-c('Year','Month','AO_Index')
+# AO
+download.file("https://www.cpc.ncep.noaa.gov/products/precip/CWlink/daily_ao_index/monthly.ao.index.b50.current.ascii.table",
+              destfile="AO.dat",
+              mode="wb",
+              quiet = FALSE)
+
+AO<-read.table("AO.dat",
+               skip=1,
+               as.is=TRUE,
+               header=F,
+               fill=T)
+
+colnames(AO) <- year_months
+
+AO<-reshape::melt(AO,
+                  id="Year")
+
+colnames(AO)<-c('Year',
+                'Month',
+                'AO_Index')
+
 AO$Month <- as.numeric(AO$Month)
 
 #SOI
-download.file("https://www.cpc.ncep.noaa.gov/data/indices/soi", destfile="SOI.dat",mode="wb", quiet = FALSE)
-SOI<-read.table("SOI.dat",skip=3,as.is=TRUE,header=TRUE, fill=T)
+download.file("https://www.cpc.ncep.noaa.gov/data/indices/soi",
+              destfile = "SOI.dat",
+              mode = "wb",
+              quiet = FALSE)
+
+SOI<-read.table("SOI.dat",
+                skip = 3,
+                as.is = TRUE,
+                header = TRUE,
+                fill=T)
+
 SOI$YEAR <- as.numeric(SOI$YEAR)
+
 SOI <- SOI[!is.na(SOI$YEAR),]
+
 SOI<-reshape::melt(SOI,id="YEAR")
-colnames(SOI)<-c('Year','Month','SOI_Anomaly_Index')
+
+colnames(SOI) <- c('Year',
+                   'Month',
+                   'SOI_Anomaly_Index')
+
 SOI$SOI_Anomaly_Index[grepl(SOI$SOI_Anomaly_Index, pattern='9-999')] <- NA
+
 SOI <- SOI %>%
   group_by(Year, Month) %>%
   mutate(SOI_Standardized_Index = as.numeric(SOI_Anomaly_Index[2]),
          SOI_Anomaly_Index = as.numeric(SOI_Anomaly_Index[1])) %>%
   filter(row_number()==1)
+
 SOI$Month <- as.numeric(SOI$Month)
 
 #NGPO
-download.file("http://www.o3d.org/npgo/npgo.php", destfile="NPGO.txt",mode="wb", quiet = FALSE)
-NPGO<-read.table("NPGO.txt",skip=30,as.is=TRUE,header=FALSE,fill=TRUE)
-colnames(NPGO)<-c("Year","Month","NPGO_index")
+download.file("http://www.o3d.org/npgo/npgo.php",
+              destfile="NPGO.txt",
+              mode="wb",
+              quiet = FALSE)
+
+NPGO<-read.table("NPGO.txt",
+                 skip=30,
+                 as.is=TRUE,
+                 header=FALSE,
+                 fill=TRUE)
+
+colnames(NPGO)<-c("Year",
+                  "Month",
+                  "NPGO_index")
+
 NPGO$Year<-as.numeric(NPGO$Year)
+
 NPGO<-subset(NPGO,is.na(NPGO$NPGO_index)==FALSE)
 
 #ALPI - CURRENT DATA NOT AVAILABLE - LAST UPDATE 2015
-download.file("http://www.pac.dfo-mpo.gc.ca/od-ds/science/alpi-idda/ALPI_1900_2015_EN.csv", destfile="ALPI.csv",mode="wb", quiet = FALSE)
-ALPI<-read.csv("ALPI.csv",skip=0,as.is=TRUE,header=TRUE)
-colnames(ALPI)<-c("Year","ALPI")
+download.file("http://www.pac.dfo-mpo.gc.ca/od-ds/science/alpi-idda/ALPI_1900_2015_EN.csv",
+              destfile="ALPI.csv",
+              mode="wb",
+              quiet = FALSE)
+
+ALPI<-read.csv("ALPI.csv",
+               skip=0,
+               as.is=TRUE,
+               header=TRUE)
+
+colnames(ALPI)<-c("Year",
+                  "ALPI")
+
 plot(ALPI)
 
 #NPI
-download.file("https://climatedataguide.ucar.edu/sites/default/files/npindex_monthly.txt",destfile="NPI.txt",mode="wb", quiet = FALSE)
-NPI<-read.table("NPI.txt",skip=1,as.is=TRUE,header=FALSE,fill=TRUE)
-NPI[NPI==(-999)]<-NA
-NPI<-data.frame(Year=floor(NPI$V1/100), Month=seq(1,12,1),NPI=NPI$V2)
+download.file("https://climatedataguide.ucar.edu/sites/default/files/npindex_monthly.txt",
+              destfile="NPI.txt",
+              mode="wb",
+              quiet = FALSE)
+
+NPI<-read.table("NPI.txt",
+                skip=1,
+                as.is=TRUE,
+                header=FALSE,
+                fill=TRUE)
+
+NPI[NPI==(-999)] <- NA
+
+NPI<-data.frame(Year=floor(NPI$V1/100),
+                Month=seq(1, 12, 1),
+                NPI=NPI$V2)
 
 Coastwide_Index_DF<-merge(merge(merge(merge(merge(merge(ENSO_MEI,ENSO_ONI,by=c("Year",'Month'),all=TRUE),AO,by=c("Year",'Month'),all=TRUE),NPGO,by=c("Year",'Month'),all=TRUE),PDO,by=c("Year",'Month'),all=TRUE),SOI,by=c("Year",'Month'),all=TRUE),NPI,by=c("Year",'Month'),all=TRUE)
 
@@ -151,6 +218,5 @@ Coastwide_Index_DF <-
   Coastwide_Index_DF[!is.na(Coastwide_Index_DF$Year) &
                        !is.na(Coastwide_Index_DF$Month),]
 
-#write.csv(basin_indicators,"basin_indicators.csv",row.names=FALSE)
+# Commenting for now so don't overwrite.
 # use_data(Coastwide_Index_DF, overwrite = T)
-```
