@@ -1,8 +1,6 @@
-context('Checking validity of Data_Key')
+# library(stringr)
 
-library(stringr)
-
-setwd('./data')
+# setwd('./data')
 
 test_that('Are all Fetch_names unique in the Data_Key?',{
   expect_equal(sum(duplicated(Data_Key$Fetch_Name)), 0)
