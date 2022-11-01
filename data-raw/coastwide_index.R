@@ -45,12 +45,31 @@ stopifnot(min(ENSO_MEI$Year) == 1979,
 # https://www.psl.noaa.gov/enso/mei
 # Row values are 2 month seasons (YEAR DJ JF FM MA AM MJ JJ JA AS SO ON ND)
 
-
 #ENSO ONI
-download.file("https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt", destfile="ENSO_ONI.txt",mode="wb", quiet = FALSE)
-ENSO_ONI<-read.table("ENSO_ONI.txt",skip=0,as.is=TRUE,header=TRUE)
-colnames(ENSO_ONI)<-c("Month","Year","ENSO_ONI_Total","ENSO_ONI_Anom")
-ENSO_ONI$Month <- as.numeric(factor(ENSO_ONI$Month, levels=unique(ENSO_ONI$Month), ordered=T))
+download.file("https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+              destfile="ENSO_ONI.txt",
+              mode="wb",
+              quiet = FALSE)
+
+ENSO_ONI <- read.table("ENSO_ONI.txt",
+                       skip=0,
+                       as.is=TRUE,
+                       header=TRUE)
+
+stopifnot(colnames(ENSO_ONI) == c("SEAS", "YR", "TOTAL", "ANOM"),
+          ENSO_ONI[1, 1] == "DJF")    # If this fails then months as factors
+                                      #  will become incorrect
+
+colnames(ENSO_ONI)<-c("Month",
+                      "Year",
+                      "ENSO_ONI_Total",
+                      "ENSO_ONI_Anom")
+
+ENSO_ONI$Month <- as.numeric(factor(ENSO_ONI$Month,
+                                    levels=unique(ENSO_ONI$Month),
+                                    ordered=T))
+# Add to help - values are three-month averages (preceding, current, and next month)
+# May need to update every month. Maybe have a column of when last updated?
 
 #PDO
 #download.file("https://www.ncdc.noaa.gov/teleconnections/pdo/data.csv", destfile="PDO.csv",mode="wb", quiet = FALSE)
