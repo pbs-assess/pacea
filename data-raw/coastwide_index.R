@@ -5,16 +5,46 @@
 #  BC grid. This saves a lot of space. Instead, PACea recognises that a covariate
 #  is `coastwide' if the `Poly_ID` value is set to `-1`.
 
-```{r}
+# Column names
+year_months <- c("YEAR", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+                 "11", "12")
+
 #ENSO MEI
-nlines<-as.numeric(format(Sys.time(), "%Y"))-1978
-download.file("https://psl.noaa.gov/enso/mei/data/meiv2.data", destfile="ENSO_MEI.txt",mode="wb", quiet = FALSE)
-ENSO_MEI<-read.table("ENSO_MEI.txt",skip=1,as.is=TRUE, nrows = nlines)
-colnames(ENSO_MEI)<-c("YEAR","1","2","3","4","5","6","7","8","9","10","11","12")
+nlines <- as.numeric(format(Sys.time(),
+                            "%Y")) - 1978     # Then double check later that
+                                              #  first year is 1979
+
+download.file("https://psl.noaa.gov/enso/mei/data/meiv2.data",
+              destfile="ENSO_MEI.txt",
+              mode="wb",
+              quiet = FALSE)
+
+ENSO_MEI <- read.table("ENSO_MEI.txt",
+                       skip = 1,
+                       as.is = TRUE,
+                       nrows = nlines)
+
+colnames(ENSO_MEI) <- year_months
+
 ENSO_MEI[ENSO_MEI==-999]<-NA
-ENSO_MEI<-reshape::melt(ENSO_MEI,id="YEAR")
+
+ENSO_MEI <- reshape::melt(ENSO_MEI,
+                          id="YEAR")
+
 colnames(ENSO_MEI)<-c("Year","Month","ENSO_MEI")
+
 ENSO_MEI$Month <- as.numeric(ENSO_MEI$Month)
+
+# If get an error (or earlier) then likely that it's early in a year and there
+#  are no values for that year yet. Depends when the website updates their table length.
+stopifnot(min(ENSO_MEI$Year) == 1979,
+          max(ENSO_MEI$Year) ==  format(Sys.time(), "%Y"))
+
+# Add to help:
+# Multivariate ENSO Index Version 2 (MEI.v2)
+# https://www.psl.noaa.gov/enso/mei
+# Row values are 2 month seasons (YEAR DJ JF FM MA AM MJ JJ JA AS SO ON ND)
+
 
 #ENSO ONI
 download.file("https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt", destfile="ENSO_ONI.txt",mode="wb", quiet = FALSE)
