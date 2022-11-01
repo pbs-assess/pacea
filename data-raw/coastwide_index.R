@@ -6,7 +6,7 @@
 #  is `coastwide' if the `Poly_ID` value is set to `-1`.
 
 # Column names
-year_months <- c("YEAR", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+year_months <- c("Year", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
                  "11", "12")
 
 #ENSO MEI
@@ -26,10 +26,10 @@ ENSO_MEI <- read.table("ENSO_MEI.txt",
 
 colnames(ENSO_MEI) <- year_months
 
-ENSO_MEI[ENSO_MEI==-999]<-NA
+ENSO_MEI[ENSO_MEI == -999] <- NA
 
 ENSO_MEI <- reshape::melt(ENSO_MEI,
-                          id="YEAR")
+                          id="Year")
 
 colnames(ENSO_MEI)<-c("Year","Month","ENSO_MEI")
 
@@ -73,13 +73,30 @@ ENSO_ONI$Month <- as.numeric(factor(ENSO_ONI$Month,
 
 #PDO
 #download.file("https://www.ncdc.noaa.gov/teleconnections/pdo/data.csv", destfile="PDO.csv",mode="wb", quiet = FALSE)
-download.file("https://www.ncei.noaa.gov/pub/data/cmb/ersst/v5/index/ersst.v5.pdo.dat", destfile="PDO.dat",mode="wb", quiet = FALSE)
-PDO<-read.table("PDO.dat",skip=1,as.is=TRUE,header=TRUE, sep='', fill=T)
-colnames(PDO)<-c("Year","1","2","3","4","5","6","7","8","9","10","11","12")
-PDO<-reshape::melt(PDO,id="Year")
-colnames(PDO)<-c('Year','Month','PDO_Index')
+download.file("https://www.ncei.noaa.gov/pub/data/cmb/ersst/v5/index/ersst.v5.pdo.dat",
+              destfile="PDO.dat",
+              mode="wb",
+              quiet = FALSE)
+
+PDO <- read.table("PDO.dat",
+                  skip=1,
+                  as.is=TRUE,
+                  header=TRUE,
+                  sep='',
+                  fill=T)
+
+colnames(PDO)<- year_months
+
+PDO<-reshape::melt(PDO,
+                   id="Year")
+
+colnames(PDO)<-c("Year",
+                 "Month",
+                 "PDO_Index")
+
 PDO$Month <- as.numeric(PDO$Month)
-PDO$PDO_Index <- as.numeric(PDO$PDO_Index)
+
+PDO[PDO == 99.99] <- NA
 
 #AO
 download.file("https://www.cpc.ncep.noaa.gov/products/precip/CWlink/daily_ao_index/monthly.ao.index.b50.current.ascii.table", destfile="AO.dat",mode="wb", quiet = FALSE)
@@ -135,5 +152,5 @@ Coastwide_Index_DF <-
                        !is.na(Coastwide_Index_DF$Month),]
 
 #write.csv(basin_indicators,"basin_indicators.csv",row.names=FALSE)
-use_data(Coastwide_Index_DF, overwrite = T)
+# use_data(Coastwide_Index_DF, overwrite = T)
 ```
