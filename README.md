@@ -1,4 +1,9 @@
 # PACea
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/pbs-assess/PACea/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pbs-assess/PACea/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 An R package to house Pacific Region ecosystem data to help operationalise an ecosystem approach to fisheries. 
 
 The primary audience is stock assessment scientists who want to analyse environmental variables in the context of their stock assessment. The Fisheries Act requires management of fisheries to take into account "[the biology of the fish and the environmental conditions affecting the stock](https://laws-lois.justice.gc.ca/eng/acts/f-14/page-3.html#h-1175547)".  
