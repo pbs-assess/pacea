@@ -104,23 +104,24 @@ download.file("https://www.cpc.ncep.noaa.gov/products/precip/CWlink/daily_ao_ind
               mode="wb",
               quiet = FALSE)
 
-AO<-read.table("AO.dat",
-               skip=1,
-               as.is=TRUE,
-               header=F,
-               fill=T)
+AO <- read.table("AO.dat",
+                 skip=1,
+                 as.is=TRUE,
+                 header=F,
+                 fill=T)
 
 colnames(AO) <- year_months
 
-AO<-reshape::melt(AO,
+AO <- reshape::melt(AO,
                   id="Year")
 
-colnames(AO)<-c('Year',
-                'Month',
-                'AO_Index')
+colnames(AO) <- c('Year',
+                  'Month',
+                  'AO_Index')
 
 AO$Month <- as.numeric(AO$Month)
 
+**GOT TO HERE**
 #SOI
 download.file("https://www.cpc.ncep.noaa.gov/data/indices/soi",
               destfile = "SOI.dat",
