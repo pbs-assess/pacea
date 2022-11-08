@@ -20,7 +20,8 @@ First, we load the PACea, tidyverse, and sf packages.
 ```{r packages, message=F, warning=F}
 library(tidyverse)
 library(sf)
-library(PACea)
+# library(PACea)
+load_all()
 ```
 
 ## Step 1 - Search the catalogue of available datasets
@@ -83,7 +84,7 @@ PACea_fetch(fetch_names = c('SST_Monthly_MODIS','ENSO_ONI'),
             month_range = 1:3)
 head(WCHG_covs)
 ```
-From this, we can see that the covariates have been downloaded for the correct years and months in the polygons of `Poly_ID` (`Poly_Name`) equal 92 (`WCHG`). Associated with each covariate is a record of the proportion of the polygon (by area) which had missing values for each covariate. For instance, 100% and 14% of the SST data in January and February 2010 are missing, respectively. This helps the user gauge the quality of each dataset. **Note that the missing values from the spatial and spatiotemporal covariates have not yet been imputed**. Consequently, covariate values with large percentages of missing values could be severely biased. **Future work should build in automatic imputation into the covariates - for instance using a GAM with a tensor product spline for each year and using the model-based predictions to complete the covariates**. 
+From this, we can see that the covariates have been downloaded for the correct years and months in the polygons of `Poly_ID` (`Poly_Name`) equal 92 (`WCHG`). Associated with each covariate is a record of the proportion of the polygon (by area) which had missing values for each covariate. For instance, 100% and 14% of the SST data in January and February 2010 are missing, respectively. This helps the user gauge the quality of each dataset. **Note that the missing values from the spatial and spatiotemporal covariates have not yet been imputed**. Consequently, covariate values with large percentages of missing values could be severely biased. **Future work should build in automatic imputation into the covariates - for instance using a GAM with a tensor product spline for each year and using the model-based predictions to complete the covariates**.
 
 Next, we get the covariates in the custom-defined ECHG. Note that we use the printed output from `PACea_custom()` to define the `poly_names` argument.
 
@@ -101,7 +102,7 @@ The covariates take longer to extract over custom regions. Note that the output 
 
 ## (Optional) Feature 1 - Uploading Data to PACea
 
-Suppose you have access to a dataset that you think it perfect for PACea. The helper function `PACea_upload()` provides instructions for how to do this. As an example, suppose this dataset was bathymetry. This dataset is spatial in nature and does not vary in time. To tell PACea this, use the arguments `Time_Resolution = 'Fixed'` and `Spatial=TRUE`. 
+Suppose you have access to a dataset that you think it perfect for PACea. The helper function `PACea_upload()` provides instructions for how to do this. As an example, suppose this dataset was bathymetry. This dataset is spatial in nature and does not vary in time. To tell PACea this, use the arguments `Time_Resolution = 'Fixed'` and `Spatial=TRUE`.
 
 ```{r upload}
 PACea_upload(Time_Resolution = 'Fixed', Spatial=T, vignette_mode = T)
@@ -142,14 +143,14 @@ Coastline <- sf::st_union(poly_expansion, Coastline)
 # Rotate the grid to maximize the spatial overlap
 rotang = 318.5
 rot = function(a) matrix(c(cos(a), sin(a), -sin(a), cos(a)), 2, 2)
-tran = function(geo, ang, center) (geo - center) * rot(ang * pi / 180) + center  
+tran = function(geo, ang, center) (geo - center) * rot(ang * pi / 180) + center
 
 center <- sf::st_centroid(sf::st_union(Coastline))
 # This is the function call which actually creates the master grid
-# To increase the resolution (almost certainly desired), increase the 
+# To increase the resolution (almost certainly desired), increase the
 # n argument (e.g. n=c(100,100)).
 Fake_Data <- sf::st_sf(
-  sf::st_make_grid(tran(sf::st_geometry(Coastline), -rotang, center), 
+  sf::st_make_grid(tran(sf::st_geometry(Coastline), -rotang, center),
                    n=c(50,50)
                    )
 )
@@ -159,7 +160,7 @@ Fake_Data <- tran(sf::st_geometry(Fake_Data), rotang, center)
 Fake_Data <- sf::st_as_sf(sf::as_Spatial(Fake_Data))
 sf::st_crs(Fake_Data) <- sf::st_crs(Coastline)
 
-Fake_Data  <- 
+Fake_Data  <-
   Fake_Data[Coastline,]
 
 Fake_Data$Bathymetric_Fake <-
@@ -177,7 +178,7 @@ BC_Grid <- Pacea_regions('BC Grid', return_sf_Polys = T)
 
 We save the BC Grid polygons into an R object that we call BC_Grid.
 
-#### Step 2: Discover what the variable names need to be 
+#### Step 2: Discover what the variable names need to be
 
 We run the function `PACea_upload(Time_Resolution = 'Fixed', Spatial=T)` which tells us that the column names need to be `Poly_ID` and match those of the BC Grid.
 
@@ -199,8 +200,8 @@ Fake_Data_BC_Grid <-
   tidyr::complete(Poly_ID = 1:max(BC_Grid$`BC Grid`$Poly_ID))
 
 # Add to the BC_Grid sf object
-BC_Grid <- 
-  BC_Grid$`BC Grid` 
+BC_Grid <-
+  BC_Grid$`BC Grid`
 BC_Grid$Bathymetric_Fake <-
   Fake_Data_BC_Grid$Bathymetric_Fake
 
@@ -221,7 +222,7 @@ Fill in the columns of the `Data_Key.csv` file which should have been written to
 
 For reproducibility reasons, please write an Rmd file or R script showing how the dataset was produced. This helps with the quality control and also (hopefully) allows the package maintainers to simply run the Rmd script every 6 months to automatically update the dataset.
 
-Thus, the goal of the Rmd/R file is to automatically update the datasets in the case of spatiotemporal and temporal datasets. 
+Thus, the goal of the Rmd/R file is to automatically update the datasets in the case of spatiotemporal and temporal datasets.
 
 #### Step 6 Upload all Datasets, Rmd files and descriptions to GitHub
 
