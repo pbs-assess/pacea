@@ -23,15 +23,17 @@ First, we read in all the different regions.
 
 ```{r}
 library(dplyr)
+load_all()
 
-make_grid <- FALSE
+make_grid <- FALSE    # Whether to remake the main BC Grid
 
 # Shapefile of the entire BC Coastline for plotting
 Coastline <- sf::st_as_sf(PACea::Coastline)
 
-Coastline_Simp <- sf::st_simplify(sf::st_buffer(Coastline, dist=20), dTolerance=25)
+Coastline_Simp <- sf::st_simplify(sf::st_buffer(Coastline, dist=20),
+                                  dTolerance=25)
 
-# Coarse polygons defining 4 Major regions: QCS, WCVI, HS, WCHG
+# Coarse polygons defining 4 Major regions: QCS, WCVI, HS, WCHG.
 BC_Major_Area_Boundaries <- sf::st_as_sf(
                                   PACea::BC_Major_Area_Boundaries)
 BC_Major_Area_Boundaries <- sf::st_transform(
@@ -51,6 +53,7 @@ Pacific_Herring_Sections$Statistical_Area <-
   factor(
     substr(Pacific_Herring_Sections$Section,1,2)
   )
+
 # Merge by Statistical Area
 Pacific_Herring_Sections <-
   Pacific_Herring_Sections %>%
@@ -66,6 +69,7 @@ Pacific_Herring_Sections$Poly_Name <-
 which.max(diff(sf::st_coordinates(Coastline)[,2]))
 sf::st_coordinates(Coastline)[1333:1337,]
 sf::st_bbox(Coastline)
+
 # expand the polygon by 50km Westwards
 poly_expansion <-
   sf::st_polygon(list(matrix(c(390,1036.5509,
@@ -121,7 +125,7 @@ if(make_grid)
     Coastline_Grid[Coastline,]
 
   plot(Coastline_Grid)
-  plot(Coastline, add=T, col='red')
+  plot(Coastline, add=T) # , col='red')
 
   usethis::use_data(Coastline_Grid, overwrite = T)
 }
