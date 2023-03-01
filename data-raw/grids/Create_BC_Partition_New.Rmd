@@ -87,17 +87,6 @@ if(make_grid)
   # create large pixel grid over the simplified coastline
   # Rotate the grid to maximize the spatial overlap
   rotang = 318.5
-  rot = function(a){
-    matrix(c(cos(a),
-             sin(a),
-             -sin(a),
-             cos(a)),
-           2, 2)
-  }
-
-  tran = function(geo, ang, center){
-    (geo - center) * rot(ang * pi / 180) + center
-  }
 
   center <- sf::st_centroid(sf::st_union(Coastline))
   # This is the function call which actually creates the master grid
