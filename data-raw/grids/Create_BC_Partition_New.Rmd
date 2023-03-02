@@ -25,13 +25,14 @@ First, we read in all the different regions.
 library(dplyr)
 load_all()
 
-make_grid <- FALSE    # Whether to remake the main BC Grid
+make_grid_here <- FALSE    # Whether to remake the main BC Grid
 
 # Shapefile of the entire BC Coastline for plotting
 Coastline <- sf::st_as_sf(PACea::Coastline)
 
-Coastline_Simp <- sf::st_simplify(sf::st_buffer(Coastline, dist=20),
-                                  dTolerance=25)
+# Very coarse, may not need:
+# Coastline_Simp <- sf::st_simplify(sf::st_buffer(Coastline, dist=20),
+#                                  dTolerance=25)
 
 # Coarse polygons defining 4 Major regions: QCS, WCVI, HS, WCHG.
 BC_Major_Area_Boundaries <- sf::st_as_sf(PACea::BC_Major_Area_Boundaries)
@@ -82,8 +83,10 @@ Coastline <- sf::st_union(poly_expansion,
                           Coastline)
 plot(Coastline)
 
-if(make_grid)
+if(make_grid_here)
 {
+ ----
+moving to make-grid.R, keeping here for now to test.
   # create large pixel grid over the simplified coastline
   # Rotate the grid to maximize the spatial overlap
   rotang = 318.5
@@ -118,12 +121,13 @@ if(make_grid)
 
   Coastline_Grid  <- Coastline_Grid[Coastline, ]
 
+----
   plot(Coastline_Grid)
   plot(Coastline, add=T) # , col='red')
 
   usethis::use_data(Coastline_Grid, overwrite = T)
 }
-if(!make_grid)
+if(!make_grid_here)
 {
   Coastline_Grid <- PACea::Coastline_Grid
 }
