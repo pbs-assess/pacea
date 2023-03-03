@@ -19,7 +19,7 @@ First we download the remote-sensing datasets from erddap. Then we map to the ce
 library(dplyr)
 
 dataset_commonname <-
-  c('SST_Monthly_MODIS', 
+  c('SST_Monthly_MODIS',
     'CHLA_Monthly_MODIS')
 
 # These are the names of the datasets within ERDDAP
@@ -33,7 +33,7 @@ dataset_startdates <-
     '2006-01-17')
 
 # strides 'keep' only every kth value to save space
-dataset_strides <- 
+dataset_strides <-
   matrix(
   c(1,4,4,1, # keep every month, every 4th lon/lat and every var
     1,4,4,1),
@@ -45,7 +45,7 @@ dataset_char <-
     as.character(rerddap::info(dataset_ids[1])$variables[1]),
     as.character(rerddap::info(dataset_ids[2])$variables[1])
   )
-  
+
 
 Coastline_lonlat <-
   sf::st_transform(
@@ -59,7 +59,8 @@ current_date <- as.character(lubridate::ymd(Sys.Date())-lubridate::period(1, uni
 # read in BC Grid
 BC_Partition_Objects <- PACea::BC_Partition_Objects
 
-# compute the mean values per grid cell - keep only 'BC Grid'
+# compute the mean values per grid cell - keep only 'BC Grid'   # Andy: seems
+# better to have BC_Grid as it's own thing for this purpose. Could call each one **_partition.
 Partition_Polys <- BC_Partition_Objects$BC_Partition[
   BC_Partition_Objects$BC_Partition$Regions_Name=='BC Grid',]
 
@@ -82,10 +83,11 @@ Partition_df <-
   )
 
 # loop through the ERDDAP datasets
-for (i in 1:length(dataset_ids))
+# for (i in 1:length(dataset_ids))
+i = 1   # just want one for developing
 {
   print(paste0('currently downloading covariate ', dataset_char[i], ' from ERDDAP Database'))
-  
+
   # Download the dataset
   dataset_list <-
     rerddap::griddap(
@@ -95,19 +97,19 @@ for (i in 1:length(dataset_ids))
       longitude=sf::st_bbox(Coastline_lonlat)[c(1,3)],
       stride = dataset_strides[i,]
     )$data
-  
+
     print(paste0('Finished downloading covariate ', dataset_char[i], ' from ERDDAP Database'))
-  
+
   # Convert to wide format for efficiency
   dataset_list <-
     dataset_list %>%
     tidyr::pivot_wider(
       id_cols = c(lat,lon),
-      names_from = time, 
+      names_from = time,
       values_from = dataset_char[i])
-    
-  
-  # Convert these dataframes to raster objects 
+
+
+  # Convert these dataframes to raster objects
   dataset_list <-
     raster::brick(
       sp::SpatialPixelsDataFrame(
@@ -115,11 +117,12 @@ for (i in 1:length(dataset_ids))
         data=data.frame(dataset_list[,-c(1,2)])
       )
     )
-  
+
+  # THESE ARE THE IMPORTANT LINES
   # project onto correct CRS using bilinear interpolation
   raster::crs(dataset_list) <-
     raster::crs('EPSG:4326')
-  
+
   dataset_list <-
     raster::projectRaster(
       dataset_list,
@@ -133,19 +136,19 @@ for (i in 1:length(dataset_ids))
 for(j in min(data_years[[i]]):max(data_years[[i]]))
 {
   print(paste0('Currently processing year ',j))
-   
+
     for(k in 1:12)
     {
       # Find the corresponding column in the raster data
-    raster_ind <- which(data_years[[i]]==j & 
+    raster_ind <- which(data_years[[i]]==j &
                           data_months[[i]] == k)
-    
+
     if(length(raster_ind)>0)
     {
-      Partition_df <- 
+      Partition_df <-
         Partition_df %>%
         dplyr::filter() %>%
-        dplyr::mutate(Mean = 
+        dplyr::mutate(Mean =
                  ifelse(Month==k & Year==j & Covariate==dataset_char[i],
                         exactextractr::exact_extract(
                           dataset_list[[raster_ind]],
@@ -162,14 +165,14 @@ for(j in min(data_years[[i]]):max(data_years[[i]]))
                           }
                         ), Fraction_NA),
                  Fraction_NA = ifelse(is.na(Fraction_NA),1,Fraction_NA)
-        ) 
+        )
     }
-      
+
     }
     print(paste0('successfully mapped year ',j,' to polygons'))
-    
+
 }
-  
+
   print(paste0('successfully processed covariate ', dataset_char[i]))
   rm(dataset_list)
 }
@@ -190,37 +193,32 @@ ERDDAP_DF <-
     names_from = c(Covariate),
     values_from = c(Mean, Fraction_NA)
   )
-  
+
 usethis::use_data(ERDDAP_DF, overwrite = T)
 
 # save the data key, pointing the common names of the datasets to the correct DF
-# data_key <- 
+# data_key <-
 #   data.frame(
 #     Common_Name = dataset_commonname,
 #     DF_Name = 'ERDDAP_DF',
 #     Time_Resolution = 'Monthly',
 #     Data_Type = 'Remote-Sensed Raster',
-#     Units = c('Degrees Celsius', 
+#     Units = c('Degrees Celsius',
 #               'mg m-3'),
 #     Author = 'NOAA', # Need to update uniquely for each dataset
 #     Citation = NA, # Need to update for each dataset
 #     Comments = '' # Maybe add a link to the ERDDAP data page
 #   )
-# 
+#
 # # append to the master Data_Key and remove duplicates
 # Data_Key <-
 #   rbind(PACea::Data_Key,
 #         data_key)
-# 
+#
 # Data_Key <-
 #   Data_Key[!duplicated(Data_Key),]
-# 
+#
 # # Update the master key
 # usethis::use_data(Data_Key, overwrite=T)
 
 ```
-
-
-
-
-

@@ -29,6 +29,9 @@ make_grid_here <- FALSE    # Whether to remake the main BC Grid
 
 # Shapefile of the entire BC Coastline for plotting
 Coastline <- sf::st_as_sf(PACea::Coastline)
+# This loads in Coastline.rda but converts it, and then changes it further down
+# - dangerous! Moving Coastline stuff to coastline.Rmd, and saving a final
+# object as coastline.rda probably.
 
 # Very coarse, may not need:
 # Coastline_Simp <- sf::st_simplify(sf::st_buffer(Coastline, dist=20),
@@ -138,6 +141,31 @@ called BC_Partition. We name the BC grid, which will eventually store the data,
 as 'BC Grid' within the variable `Regions_Name`. We then define a matrix to
 perform the aggregations from the BC Grid to the other regions' polygons
 
+
+The basic idea of the mapping matrix is as follows. The number of rows of the
+matrix equals the number of cells of the BC grid (in which the data is
+stored). The number of columns of the matrix equals the number of polygons
+across all the regions stored in PACea (e.g. Herring Sections). Then, a given
+column of the matrix has entries equal to the fraction of its total area which
+is contained within each grid cell. These fractions sum to 1.
+
+**AE: Maybe better to do that as region_name_partition for each one, doesn't have to
+be a giant matrix**
+
+Thus, to evaluate
+the average value of a covariate (e.g. SST) in a specific region, simply sum the
+average values within each grid cell, multiplied by the fraction of the total
+area of intersection. Because these sum to 1, the quantity is a
+spatially-weighted average. Of course, this only works if the data are not
+missing in any grid cell, else the fractions need to be
+re-weighted.
+
+Furthermore, if a sum or total of a quantity over a region is
+desired instead of a mean concentration or density, then we simply scale by the
+area of the region - stored as `Ocean_Intersection_Areas`, assuming the quantity
+can only exist in the water.
+
+
 ```{r}
 # If additional regions are added, simply add them to the bind_rows
 # function call. Note that BC Grid MUST GO FIRST
@@ -235,23 +263,3 @@ usethis::use_data(BC_Partition_Objects,
                   overwrite = T)
 
 ```
-
-The basic idea of the mapping matrix is as follows. The number of rows of the
-matrix equals the number of cells of the BC grid (in which the data is
-stored). The number of columns of the matrix equals the number of polygons
-across all the regions stored in PACea (e.g. Herring Sections). Then, a given
-column of the matrix has entries equal to the fraction of its total area which
-is contained within each grid cell. These fractions sum to 1.
-
-Thus, to evaluate
-the average value of a covariate (e.g. SST) in a specific region, simply sum the
-average values within each grid cell, multiplied by the fraction of the total
-area of intersection. Because these sum to 1, the quantity is a
-spatially-weighted average. Of course, this only works if the data are not
-missing in any grid cell, else the fractions need to be
-re-weighted.
-
-Furthermore, if a sum or total of a quantity over a region is
-desired instead of a mean concentration or density, then we simply scale by the
-area of the region - stored as `Ocean_Intersection_Areas`, assuming the quantity
-can only exist in the water.
