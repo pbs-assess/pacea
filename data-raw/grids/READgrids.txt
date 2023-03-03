@@ -1,0 +1,44 @@
+Create_BC_Partition_New.Rmd - from Joe, but I may have adapted. Aiming to move
+ each bit into it's only separate place to make more logical
+
+Create_BC_Partition.Rmd - earlier version from Joe, but I think he just made
+ _New one when we met in Sept 2022.
+
+test-grids.R - testing different grid sizes, and saving the grids.
+test_grid_20_partition.Rmd - was going to start doing partition grids on 20x20,
+but want to first look at ERDDAP data and then ROMS.
+
+AHA!!
+As saved by Joe, we have:
+BC_Partition_Objects   having the sf polygons for the cells, but also more
+ things such as  $region_Areas, $Ocean_Intersection_Areas, and
+ Mapping_Matrix. BUT the elements correspond to numbering the cells in the
+ master grid and then continuing the numbering for defined areas:
+
+BC_Partition_Objects$index_vectors
+$`BC Grid`
+ [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
+[26] 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50
+[51] 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75
+[76] 76 77 78 79 80 81 82 83 84 85 86 87 88 89
+
+$`BC Major Area Boundaries`
+[1] 90 91 92 93
+
+$`Pacific Herring Sections`
+ [1]  94  95  96  97  98  99 100 101 102 103 104 105 106 107 108 109 110 111 112
+[20] 113 114 115 116 117 118 119 120 121 122 123
+>
+
+So this was for 89 cells in the master grid, but results in a big mapping
+matrix, which will be much larger if we increase the resolution. This also
+explains why the first 89x89 is the identity matrix:
+
+expect_equal(BC_Partition_Objects$Mapping_Matrix[1:89, 1:89],
+             diag(89))
+
+BUT if we end up with 40,000 cells in the master, this will be
+impractical. Think we forget the idea of an ever-expanding master matrix and
+have a vector for each new region. Don't need to do that yet, first focus on
+ERRDAP/ROMS. Think Joe did say somewhere about dropping the mapping matrix idea,
+so look out for that.
