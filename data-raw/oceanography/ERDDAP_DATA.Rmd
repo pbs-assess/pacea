@@ -121,7 +121,7 @@ i = 1   # just want one for developing
   # THESE ARE THE IMPORTANT LINES
   # project onto correct CRS using bilinear interpolation
   raster::crs(dataset_list) <-
-    raster::crs('EPSG:4326')
+    raster::crs('EPSG:4326')   # standard for ERDDAP
 
   dataset_list <-
     raster::projectRaster(

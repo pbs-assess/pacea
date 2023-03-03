@@ -1,0 +1,324 @@
+---
+title: "ROMS extraction"
+author: "Andrew Edwards"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: pdf_document
+---
+
+Based on Lindsay's original code, just trying out the `ncdf4` package and learning.
+
+LD: Calculate the mean temperature per grid cell per year. Create a rasterStack of
+each of the years and temperatures (water column, bottom, sea surface).
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ncdf4) # package for netcdf manipulation
+# library(raster) # package for raster manipulation
+# library(rgdal) # package for geospatial analysis
+# ibrary(ggplot2) # package for plotting
+# library(tidyr)
+library(dplyr)
+# library(RColorBrewer)
+# library(here)
+library(sf)
+library(lubridate)
+load_all()
+```
+
+Opening data and print metadata to see the data names and structure.
+```{r printMetadata}
+
+temp_nc <- nc_open("Roms_bcc42_mon_2008to2011_sst.nc") # Example temperature output file
+# Don't think it loads in the full file, but opens it for extracting, and gets
+#  the metadata and dimensions. Maybe.
+
+temp_nc
+
+# From Angelica:
+# ocean_time - monthly value from 2008 to 2011 (4x12=48);
+# lon_rho - longitude at the center of each cell
+# lat_rho - latitude at the center of each cell
+# mask_rho - land/ocean mask (1=ocean, 0=land)
+# sst - sea surface temperature at each grid cell every month from 2008 to 2011
+
+summary(temp_nc)
+temp_nc$var   #
+```
+
+Data exploration and looking at the metadata (which is largely non existent).
+```{r dataexploration_ignore}
+
+#ncpath <- "data-raw/ROMS_original/"
+#ncname <- "bcc42_era5b37r1_mon1995to2018_bottom"
+#ncfname <- paste(ncpath, ncname, ".nc", sep="")
+#dname <- "temp"
+#dname_oxygen <- "Oxygen"
+
+# open a netCDF file
+#ncin <- nc_open(ncfname)
+#print(ncin)
+
+# get time
+time <- ncvar_get(temp_nc, "ocean_time") %>% as.vector()
+time # vector of seconds from midnight 1st Jan 1970
+tunits <- ncatt_get(temp_nc,
+                    "ocean_time",
+                    "units")  # FALSE, since I think not saved correctly.
+
+as_datetime(time)      # These are all midnight, so can stick with just dates
+as_date(time)
+date <- as_datetime(time) %>% as_date()
+
+date
+
+day(date) %>% range()  # Will ask Angelica why these aren't always in the middle
+                       # of the month.
+
+# lat and lon
+# [xi_rho and eta_rho are the physical model co-ordinates, don't think we need
+#  to use those]. Angelica: The model domain has 236 grid cells in the x-axis and 410 in the
+#  y-axis (1,1 is the left bottom corner of the model and 236,410 the upper right
+#  corner of the domain).
+
+lon <- ncvar_get(temp_nc,
+                 "lon_rho")
+lat <- ncvar_get(temp_nc,
+                 "lat_rho")
+dim(lon)       # lon is the longitude of the center of each cell
+dim(lat)       # lat is the longitude of the center of each cell
+
+lon[1:5, 1:5]
+lat[1:5, 1:5]
+lon[1, 1]      # Angelica: bottom left. Aha, grid is rotated, so furthest south
+               #  but not furthest west
+lon[1, 410]    # this seems to be furthest west
+lon[236, 1]    # this seems to be furthest east
+lon[236, 410]  # Angelica: upper right. Aha, grid is rotated, so furthest north
+               #  but not furthest east.
+
+plot(lon[1, ], ylim = range(lon))
+points(lon[, 1], col = "red")
+points(lon[236, ], col = "blue")
+points(lon[, 410], col = "green")
+
+# image(lon)   # clearly shows not a north-south east-west grid, as lon changes
+
+plot(lon, lat, pch = 20, cex = 0.1, xlim = c(-130, -125), ylim = c(43.5, 48))
+
+plot(lon, lat, pch = 20, cex = 0.1, xlim = c(-129, -127), ylim = c(43.5, 45)) # to print
+
+# lat2 <- rev(lat[1,]) # Lindsay had
+
+
+# sst
+sst <- ncvar_get(temp_nc,
+                 "sst")
+dim(sst)
+attributes(sst)
+plot(sst[1, 1, 1:48],
+     type = "o")    # One location, sst at each time point
+
+dim(sst[1:236, 1:410, 1]) # First time point
+
+sst_time_1 <- sst[, , 1]
+
+# Want to use st_as_sf() to convert to an sf object.
+# https://tmieno2.github.io/R-as-GIS-for-Economists/turning-a-data-frame-of-points-into-an-sf.html
+
+# Need dataframe of sst, lon, lat
+
+lon_first <- lon[1:10, 1]
+lat_first <- lat[1:10, 1]
+sst_first <- sst_time_1[1:10, 1]
+
+lon_lat_sst_array <- tibble(lon = lon_first, lat = lat_first, sst = sst_first)
+
+sst_time_1_sf <- sf::st_as_sf(lon_lat_sst_array,
+                              coords = c("lon","lat"))
+
+sst_time_1_sf <- sf::st_set_crs(sst_time_1_sf,
+                                "WGS84")
+# Below, Lindsay had
+# crs=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs+ towgs84=0,0,0"))
+# so I've used that
+# **See if she confirms, check with Kelsey also, and may have to ask Angelica
+
+
+
+GOT TO HERE   - really just want to do the sf stuff mapping to the master grid,
+then save resulting values in each cell as a data.frame, with columns being
+year, month, and master cells
+
+x <- data.frame(lon[1,1:410 ])
+
+nlon <- dim(lon)
+nlat <- dim(lat)
+
+print(c(nlon,nlat))
+# print(c(lon,lat)) - don't do, prints everything.
+
+#get attributes for bottom temp
+#dlname <- ncatt_get(ncin,dname,"long_name")
+#dunits <- ncatt_get(ncin,dname,"units")
+#fillvalue <- ncatt_get(ncin,dname,"_FillValue")
+#dim(tmp_array_bottom)
+
+ncin <- temp_nc
+# get global attributes, think these will all be empty.
+# title <- ncatt_get(ncin,0,"title")
+#institution <- ncatt_get(ncin,0,"institution")
+#datasource <- ncatt_get(ncin,0,"source")
+#references <- ncatt_get(ncin,0,"references")
+#history <- ncatt_get(ncin,0,"history")
+#Conventions <- ncatt_get(ncin,0,"Conventions")
+
+```
+
+
+Extract bottom and average water column temp and oxygen.
+```{r get_data}
+
+# open a netCDF file
+avg <- nc_open("data-raw/ROMS_original/bcc42_era5b37r1_mon1995to2018_zAvg.nc")
+print(avg) #average across the water column
+bottom <- nc_open("data-raw/ROMS_original/bcc42_era5b37r1_mon1995to2018_bottom.nc")
+print(bottom)
+
+attributes(avg$dim)$names
+attributes(avg$var)$names
+attributes(avg$dim)$names[1]
+attributes(avg$dim)$names[3]
+
+
+#get temp and attributes
+tmp_array_bottom <- ncvar_get(bottom,"temp")
+dim(tmp_array_bottom) #first number rows, second columns, last number is the number of years * 12 months
+oxy_array_bottom <- ncvar_get(bottom,"Oxygen")
+tmp_array_col <- ncvar_get(avg,"temp")
+oxy_array_col <- ncvar_get(avg,"Oxygen")
+
+tmp_array_bottom[1:236, 1:410, 1] #one time slice with all of the data
+tmp_array_bottom[1, 1, 1:288] #one grid cell with dat from all time slices
+
+# get longitude and latitude
+lon <- ncvar_get(bottom,"lon_rho") #the the first one as that corresponds to
+dim(lon)
+
+lat <- ncvar_get(bottom,"lat_rho")
+lat2 <- rev(lat[1,])
+nlat <- length(lat)
+
+
+
+x <- data.frame(lon[1,1:410 ])
+
+nlon <- dim(lon)
+
+
+
+print(c(nlon,nlat))
+print(c(lon,lat))
+
+# get longitude and latitude of the average dataset - this is the same OR SHOUD be the same as above
+avg_lon <- ncvar_get(avg,"lon_rho") #the the first one as that corresponds to
+avg_lon <- avg_lon[,1]
+navglon <- length(avg_lon)
+avg_lat <- ncvar_get(avg,"lat_rho")
+avg_lat <- avg_lat[1,]
+navglat <- length(avg_lat)
+
+print(c(nlon,nlat))
+
+
+```
+
+
+
+
+Functions for extraction monthly mean and max temperatures and oxygen from bottom and water column netcdfs.
+```{r extract_monthly_averages}
+
+#MEAN
+mean_each_year <- function(array, x) {
+m <- 1:12 #months, could change to summer months
+m <- m*x
+tmp_slice <- array[,,m] #one year
+test4 <- brick(tmp_slice, xmn=min(lon), xmx=max(lon), ymn=min(lat), ymx=max(lat), crs=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs+ towgs84=0,0,0"))
+mean <- mean(test4) #change this for max or mean...
+year = 1994 #actual start date of data is 1995, to account for the 1 in the model below started one year earlier
+r_brick <- flip(t(mean), direction='y') #this flips the coordinates
+names(r_brick) <- c(paste0("meantemp", year+x))
+return(r_brick)
+}
+
+
+#MAX
+maxO2_each_year <- function(array, x) {
+m <- 1:12 #could change the months here to just summer months, so months 5:8,
+m <- m*x # x is number of years
+tmp_slice <- array[,,m] #one year
+test4 <- brick(tmp_slice, xmn=min(lon), xmx=max(lon), ymn=min(lat), ymx=max(lat), crs=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs+ towgs84=0,0,0"))
+max <- max(test4) #change this for max or mean...
+year = 1994 #change this value depending on the data
+r_brick <- flip(t(max), direction='y') #this flips the coordinates
+names(r_brick) <- c(paste0("maxO2", year+x))
+return(r_brick)
+}
+
+
+#Min
+minO2_each_year <- function(array, x) {
+m <- 1:12 #could change the months here to just summer months, so mohths 5:8,
+m <- m*x # x is number of years
+tmp_slice <- array[,,m] #one year
+test4 <- brick(tmp_slice, xmn=min(lon), xmx=max(lon), ymn=min(lat), ymx=max(lat), crs=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs+ towgs84=0,0,0"))
+min <- min(test4) #change this for max or mean...
+year = 1994 #change this value depending on the data
+r_brick <- flip(t(min), direction='y') #this flips the coordinates
+names(r_brick) <- c(paste0("minO2", year+x))
+return(r_brick)
+}
+
+
+```
+
+
+
+Write Rasterstacks **for water column** (mean and max) temp and oxygen. Create a raster brick for each of the years. Take the mean temperature for each year and export as a raster brick. Use this output to intersect with the survey points to get average temperature per grid cell per year.
+```{r extract_columns}
+
+#mean temp water column
+
+
+temp_col <- raster()
+for (x in seq_along(0:23)){ #24 years
+  df <- mean_each_year(tmp_array_col, x)
+  temp_col <- stack(df, temp_col)
+}
+names(temp_col)
+plot(temp_col)
+writeRaster(temp_col, file="output/temp_col_mean", overwrite = TRUE)
+
+
+#mean oxygen water column
+oxy_col <- raster()
+for (x in seq_along(1:24)){ #24 years
+  df <- mean_each_year(oxy_array_col, x)
+  oxy_col <- stack(df, oxy_col)
+}
+names(oxy_col)
+plot(oxy_col)
+writeRaster(oxy_col, file="output/oxy_col_mean", overwrite = TRUE)
+
+
+#max temp water column
+temp_col_max <- raster()
+for (x in seq_along(1:24)){ #24 years
+  df <- max_each_year(tmp_array_col, x)
+  temp_col_max <- stack(df, temp_col_max)
+}
+names(temp_col_max)
+plot(temp_col_max)
+writeRaster(temp_col_max, file="output/temp_col_max", overwrite = TRUE)
+```
