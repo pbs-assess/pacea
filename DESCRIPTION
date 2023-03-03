@@ -2,21 +2,21 @@ Package: PACea
 Type: Package
 Title: An R package to house Pacific Region ecosystem data to help facilitate an ecosystem approach to fisheries
 Version: 0.1.0
-Author: Joe Watson and Andrew Edwards
-Maintainer: Joe Watson <joe.watson@dfo-mpo.gc.ca>
+Author: Andrew M. Edwards and Joe Watson
+Maintainer: Andrew Edwards <andrew.edwards@dfo-mpo.gc.ca>
 Description: The package allow for extraction of all the data as a simple .csv file
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Depends: 
+Depends:
     R (>= 3.5.0),
     stats (>= 4.0.2)
-Imports: 
+Imports:
     dplyr (>= 1.0.2),
     lubridate (>= 1.8.0)
 RoxygenNote: 7.1.2
 Remotes: github::pbs-assess/gfiphc
-Suggests: 
+Suggests:
     rmarkdown,
     knitr,
     rgdal (>= 1.5.23),
