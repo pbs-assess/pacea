@@ -142,10 +142,61 @@ sst_time_1_sf <- sf::st_set_crs(sst_time_1_sf,
 # Below, Lindsay had
 # crs=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs+ towgs84=0,0,0"))
 # so I've used that
-# **See if she confirms, check with Kelsey also, and may have to ask Angelica
+# **See if she confirms, check with Kelsey also, and may have to ask
+# Angelica. Chris has that also in his code, and thinks he got from Angelica.
+
+# Seem to want to use stars::st_rasterize to the conversion to the master grid:
+#  xx <- stars::st_rasterize(sst_time_1_sf, test_grid_20)   # but need
+#  test_grid_20 as a stars object.
+
+#xx <- stars::st_rasterize(sst_time_1_sf,
+#                          stars::st_as_stars(test_grid_20))
+# correctly doesn't work as first is in lat-lon and grid is in km. Kelsey said km
+#  is probably better.
+
+test_grid_20_lon_lat <- sf::st_transform(test_grid_20,
+                                         sf::st_crs(sst_time_1_sf))
+
+sf::st_crs(test_grid_20_lon_lat)
+
+xx <- stars::st_rasterize(sst_time_1_sf,
+                          stars::st_as_stars(test_grid_20_lon_lat))
+                          #  align = TRUE) option gives:
+                          # Error in stars::st_rasterize(sst_time_1_sf, stars::st_as_stars(test_grid_20_lon_lat),  :
+                          #   is_regular_grid(template) is not TRUE
+
+# still didn't work, not quite sure why.
+
+try fasterize, though may need to create the grid as a raster
+object. That's fine, can still save it as just sf.
+
+HERE
+
+This is what Joe has in ERDDAP_DATA.Rmd:
+
+  # project onto correct CRS using bilinear interpolation
+  raster::crs(dataset_list) <-
+    raster::crs('EPSG:4326')   # standard for ERDDAP
+
+  dataset_list <-
+    raster::projectRaster(
+      dataset_list,
+      crs = PACea::Coastline@proj4string
+    )
 
 
 
+#-- Lindsay has:
+#Project mean temp/oxy values onto a 3km raster (I have not interpolated missing values)
+xx <- rasterize(x=vect(spdf), y=r, field=names(spdf)[1], fun=mean, na.rm=F)
+plot(xx)
+#
+for (i in (2:dim(df)[2])){
+rasterize <- rasterize(x=vect(spdf), y=r, field=names(spdf)[i], fun=mean, na.rm=F)
+rasterizeresamp <- resample(rasterize, r, method="bilinear")
+xx <- c(xx,rasterizeresamp)
+}
+# --
 GOT TO HERE   - really just want to do the sf stuff mapping to the master grid,
 then save resulting values in each cell as a data.frame, with columns being
 year, month, and master cells
