@@ -81,6 +81,18 @@ day(date) %>% range()  # Will ask Angelica why these aren't always in the middle
 #  y-axis (1,1 is the left bottom corner of the model and 236,410 the upper right
 #  corner of the domain).
 
+# Doesn't work:
+#xi_rho <- ncvar_get(temp_nc,
+#                    "xi_rho")
+# [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named eta_rho BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"
+# Error in nc$dim[[idobj$list_index]] :
+#   invalid negative subscript in get1index <real>
+
+
+# Doesn't work:
+# eta_rho <- ncvar_get(temp_nc,
+#                    "eta_rho")
+
 lon <- ncvar_get(temp_nc,
                  "lon_rho")
 lat <- ncvar_get(temp_nc,
@@ -128,6 +140,10 @@ sst_time_1 <- sst[, , 1]
 
 # Need dataframe of sst, lon, lat
 
+
+HERE - redo this but not for first row as
+that's way down off Oregon. Make an sf object then do the clip thing to be only north of XX and then try.
+
 lon_first <- lon[1:10, 1]
 lat_first <- lat[1:10, 1]
 sst_first <- sst_time_1[1:10, 1]
@@ -138,39 +154,85 @@ sst_time_1_sf <- sf::st_as_sf(lon_lat_sst_array,
                               coords = c("lon","lat"))
 
 sst_time_1_sf <- sf::st_set_crs(sst_time_1_sf,
-                                "WGS84")
+                                value =
+                                "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs+ towgs84=0,0,0")  # NOT automatic from netCDF, is what Lindsay used
+
+plot(sst_time_1_sf,
+     axes = TRUE)
 # Below, Lindsay had
 # crs=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs+ towgs84=0,0,0"))
 # so I've used that
 # **See if she confirms, check with Kelsey also, and may have to ask
 # Angelica. Chris has that also in his code, and thinks he got from Angelica.
 
-# Seem to want to use stars::st_rasterize to the conversion to the master grid:
-#  xx <- stars::st_rasterize(sst_time_1_sf, test_grid_20)   # but need
-#  test_grid_20 as a stars object.
+# Seem to want to use stars::st_rasterize for the conversion to the master grid:
+#  xx <- stars::st_rasterize(sst_time_1_sf,
+#                            test_grid_20)
+# but need test_grid_20 as a stars object.
 
 #xx <- stars::st_rasterize(sst_time_1_sf,
 #                          stars::st_as_stars(test_grid_20))
 # correctly doesn't work as first is in lat-lon and grid is in km. Kelsey said km
 #  is probably better.
 
-test_grid_20_lon_lat <- sf::st_transform(test_grid_20,
-                                         sf::st_crs(sst_time_1_sf))
+# ---
+# DON'T THINK NEEDED
+# So I'm not sure why I did this, surely want to go the other way (trying other
+#   way later):
 
-sf::st_crs(test_grid_20_lon_lat)
+#test_grid_20_lon_lat <- sf::st_transform(test_grid_20,
+# sf::st_crs(sst_time_1_sf))
 
-xx <- stars::st_rasterize(sst_time_1_sf,
-                          stars::st_as_stars(test_grid_20_lon_lat))
+# sf::st_crs(test_grid_20_lon_lat)
+
+# xx <- stars::st_rasterize(sst_time_1_sf,
+#                          stars::st_as_stars(test_grid_20_lon_lat))
                           #  align = TRUE) option gives:
                           # Error in stars::st_rasterize(sst_time_1_sf, stars::st_as_stars(test_grid_20_lon_lat),  :
                           #   is_regular_grid(template) is not TRUE
 
+#stars:::is_regular_grid(test_grid_20_lon_lat)    # FALSE
 # still didn't work, not quite sure why.
+# ---
 
-try fasterize, though may need to create the grid as a raster
-object. That's fine, can still save it as just sf.
+# This seems like should work, but see above
 
-HERE
+# Try instead to convert sst values into km as for grid
+
+test_grid_20
+plot(test_grid_20,
+     axes = TRUE)
+
+sst_time_1_sf
+
+sst_time_1_sf_km <- sf::st_transform(sst_time_1_sf,
+                                     sf::st_crs(test_grid_20))
+
+expect_equal(sf::st_crs(sst_time_1_sf_km), sf::st_crs(test_grid_20))
+
+sst_time_1_sf_km
+plot(sst_time_1_sf_km,
+     axes = TRUE)    # This is giving negative northings
+
+xx <- stars::st_rasterize(sst_time_1_sf_km,
+                          stars::st_as_stars(test_grid_20))
+                          #  align = TRUE) option gives:
+                          # Error in stars::st_rasterize(sst_time_1_sf, stars::st_as_stars(test_grid_20_lon_lat),  :
+                          #   is_regular_grid(template) is not TRUE
+
+stars:::is_regular_grid(sst_time_1_sf_km)    # FALSE  (function not exported)
+stars:::is_regular_grid(test_grid_20)    # FALSE
+# still didn't work, not quite sure why.
+# ---
+
+#could try fasterize, though may need to create the grid as a raster
+#object. That's fine, can still save it as just sf.
+
+stars::aggregate maybe
+
+
+
+# Andy got no further
 
 This is what Joe has in ERDDAP_DATA.Rmd:
 
@@ -197,7 +259,8 @@ rasterizeresamp <- resample(rasterize, r, method="bilinear")
 xx <- c(xx,rasterizeresamp)
 }
 # --
-GOT TO HERE   - really just want to do the sf stuff mapping to the master grid,
+
+Really just want to do the sf stuff mapping to the master grid,
 then save resulting values in each cell as a data.frame, with columns being
 year, month, and master cells
 
