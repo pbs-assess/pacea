@@ -126,29 +126,46 @@ plot(lon, lat, pch = 20, cex = 0.1, xlim = c(-129, -127), ylim = c(43.5, 45)) # 
 # sst
 sst <- ncvar_get(temp_nc,
                  "sst")
-dim(sst)
+# sst[which(is.nan(sst))] <- NA        # uncomment this when it all works later,
+# doing it for example one getting working
+
+dim(sst)             # 236 x 410 x 48 time steps
 attributes(sst)
 plot(sst[1, 1, 1:48],
      type = "o")    # One location, sst at each time point
 
 dim(sst[1:236, 1:410, 1]) # First time point
 
-sst_time_1 <- sst[, , 1]
+sst_time_1 <- sst[, , 1]  # 236 x 410, same as lat and lon
 
 # Want to use st_as_sf() to convert to an sf object.
 # https://tmieno2.github.io/R-as-GIS-for-Economists/turning-a-data-frame-of-points-into-an-sf.html
 
-# Need dataframe of sst, lon, lat
+
+# Instead of what I did below, trying this from ?read_ncdf
+# sst_stars <- stars::read_ncdf("Roms_bcc42_mon_2008to2011_sst.nc",
+#                            curvlinear = c("lon_rho", "lat_rho"),
+#                            var = "sst")
+# plot(sst_stars)
+# While plotting what might look okay (48 panels of sst with nothing on land),
+# the axes are xi_rho and eta_rho not lon and lat. Hard to extract those
+# automatically from the netCDF file, so stick with doing it manually.
 
 
-HERE - redo this but not for first row as
-that's way down off Oregon. Make an sf object then do the clip thing to be only north of XX and then try.
+# STEPS - skip to later
+# Need dataframe of sst, lon, lat in long format to then use sf::st_as_sf and
+# then st_rasterize or other functions as tried later. Want to have values only
+# north of, say 47 degrees.
 
+# This is for just 10 values,
 lon_first <- lon[1:10, 1]
 lat_first <- lat[1:10, 1]
 sst_first <- sst_time_1[1:10, 1]
 
-lon_lat_sst_array <- tibble(lon = lon_first, lat = lat_first, sst = sst_first)
+# Make into long format
+lon_lat_sst_array = tibble(lon_first, lat = lat_first, sst = sst_first)
+
+# lon_lat_sst_array <- tibble(lon, lat, sst) - needs tweaking since each one is not now a vector
 
 sst_time_1_sf <- sf::st_as_sf(lon_lat_sst_array,
                               coords = c("lon","lat"))
@@ -175,29 +192,7 @@ plot(sst_time_1_sf,
 # correctly doesn't work as first is in lat-lon and grid is in km. Kelsey said km
 #  is probably better.
 
-# ---
-# DON'T THINK NEEDED
-# So I'm not sure why I did this, surely want to go the other way (trying other
-#   way later):
-
-#test_grid_20_lon_lat <- sf::st_transform(test_grid_20,
-# sf::st_crs(sst_time_1_sf))
-
-# sf::st_crs(test_grid_20_lon_lat)
-
-# xx <- stars::st_rasterize(sst_time_1_sf,
-#                          stars::st_as_stars(test_grid_20_lon_lat))
-                          #  align = TRUE) option gives:
-                          # Error in stars::st_rasterize(sst_time_1_sf, stars::st_as_stars(test_grid_20_lon_lat),  :
-                          #   is_regular_grid(template) is not TRUE
-
-#stars:::is_regular_grid(test_grid_20_lon_lat)    # FALSE
-# still didn't work, not quite sure why.
-# ---
-
-# This seems like should work, but see above
-
-# Try instead to convert sst values into km as for grid
+# Try to convert sst values into km as for grid
 
 test_grid_20
 plot(test_grid_20,
@@ -227,10 +222,119 @@ stars:::is_regular_grid(test_grid_20)    # FALSE
 
 #could try fasterize, though may need to create the grid as a raster
 #object. That's fine, can still save it as just sf.
+# stars::aggregate maybe
 
-stars::aggregate maybe
+
+# Repeating above ideas but for not just a vector of lon and of lat and of sst,
+# but the full matrix of values (for just the first time step).
+
+# STEPS
+# Need dataframe of sst, lon, lat in long format to then use sf::st_as_sf and
+# then st_rasterize or other functions as tried later. Want to have values only
+# north of, say 47 degrees.
+
+# This is for just 10 values,
+# lon_first <- lon[1:10, 1]
+# lat_first <- lat[1:10, 1]
+# sst_first <- sst_time_1[1:10, 1]
+
+# Make into long format
+
+lon_vec <- as.vector(lon)       # Constructs vector columnwise from matrix
+lat_vec <- as.vector(lat)
+sst_time_1_vec <- as.vector(sst_time_1)
+sst_time_1_vec[which(is.nan(sst_time_1_vec))] <- NA     # Do this straight away
+                                        # on sst earlier, doing it here while developing.
+
+lon_lat_sst_tibble = tibble(lon = lon_vec,
+                            lat = lat_vec,
+                            sst = sst_time_1_vec)   # 96,760 x 3 = 236 * 410 * 3
+
+sst_time_1_sf <- sf::st_as_sf(lon_lat_sst_tibble,
+                              coords = c("lon","lat"))
+
+sst_time_1_sf <- sf::st_set_crs(sst_time_1_sf,
+                                value =
+                                "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs+ towgs84=0,0,0")  # NOT automatic from netCDF, is what Lindsay used
+# Below, Lindsay had
+# crs=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs+ towgs84=0,0,0"))
+# so I've used that
+# **See if she confirms, check with Kelsey also, and may have to ask
+# Angelica. Chris has that also in his code, and thinks he got from Angelica.
 
 
+plot(sst_time_1_sf, axes = TRUE,
+     pch = 20,
+     cex = 0.1)       # A point for each value, kind of shows the resolution
+                      # (cex smaller makes no difference).
+
+plot(sst_time_1_sf, axes = TRUE,
+     pch = 20,
+     cex = 0.1,
+     xlim = c(-140, -118),
+     ylim = c(47.5, 55))    # think it kind of ignores ylim to get xlim okay
+
+# Now do a restricted area, make quite small for testing the master grid stuff
+
+lon_lat_sst_tibble_restrict <- filter(lon_lat_sst_tibble,
+                                      lon > -125,
+                                      lat > 48,
+                                      lat < 50)
+
+sst_time_1_sf_restrict <- sf::st_as_sf(lon_lat_sst_tibble_restrict,
+                                       coords = c("lon","lat"))
+
+sst_time_1_sf_restrict <- sf::st_set_crs(sst_time_1_sf_restrict,
+                                         value =
+                                         "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs+ towgs84=0,0,0")  # NOT automatic from netCDF, is what Lindsay used
+# Includes NA's for land
+
+plot(sst_time_1_sf_restrict,
+     axes = TRUE,
+     pch = 20,
+     cex = 0.1)    # southeast Vancouver Island
+
+# Try to convert sst values into km as for grid
+
+test_grid_20
+plot(test_grid_20,
+     axes = TRUE)
+
+sst_time_1_sf_restrict
+
+sst_time_1_sf_km_restrict <- sf::st_transform(sst_time_1_sf_restrict,
+                                              sf::st_crs(test_grid_20))
+
+expect_equal(sf::st_crs(sst_time_1_sf_km_restrict), sf::st_crs(test_grid_20))
+
+sst_time_1_sf_km_restrict
+plot(sst_time_1_sf_km_restrict,
+     axes = TRUE,
+     pch = 20,
+     cex = 0.1) # Looks like matches above one
+
+test_grid_20_stars <- stars::st_as_stars(test_grid_20)
+
+HERE - this still fails. Need to learn more about the packages.
+
+xx <- stars::st_rasterize(sst_time_1_sf_km_restrict,   #["sst"],
+                          template = test_grid_20_stars)
+                          # Error in !all.equal(match(xydims, names(d)), 1:2) : invalid argument type
+                          #  Think it's the ! giving the error, as:
+                          #   > names(test_grid_20_stars)
+                          # [1] "id"
+                          # > names(sst_time_1_sf_km_restrict["sst"])
+                          # [1] "sst"      "geometry"
+                          #  align = TRUE) option gives:
+                          # Error in stars::st_rasterize(sst_time_1_sf, stars::st_as_stars(test_grid_20_lon_lat),  :
+                          #   is_regular_grid(template) is not TRUE
+
+stars:::is_regular_grid(sst_time_1_sf_km_restrict)    # FALSE  (function not exported)
+stars:::is_regular_grid(test_grid_20)    # FALSE
+# still didn't work, not quite sure why.
+# ---
+
+# END of what was copied from above
 
 # Andy got no further
 
