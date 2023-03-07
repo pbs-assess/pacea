@@ -274,15 +274,6 @@ plot(sst_time_1_sf, axes = TRUE,
      xlim = c(-140, -118),
      ylim = c(47.5, 55))    # think it kind of ignores ylim to get xlim okay
 
-# Playing around for hexSticker, but need better resolution and should usual
-#  a final mapped example. Trying to do quickly for SOPO.
-plot(sst_time_1_sf, axes = TRUE,
-     pch = 20,
-     cex = 0.8,
-     xlim = c(-128, -123),
-     ylim = c(48, 51))    # think it kind of ignores xlim or ylim
-
-
 # Now do a restricted area, make quite small for testing the master grid stuff
 
 lon_lat_sst_tibble_restrict <- filter(lon_lat_sst_tibble,
