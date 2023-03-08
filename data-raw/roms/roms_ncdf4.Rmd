@@ -256,6 +256,17 @@ sst_time_1_sf <- sf::st_as_sf(lon_lat_sst_tibble,
 sst_time_1_sf <- sf::st_set_crs(sst_time_1_sf,
                                 value =
                                 "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs+ towgs84=0,0,0")  # NOT automatic from netCDF, is what Lindsay used
+
+# Just see how big the objects are, note these includes lots of NA's and aren't
+#  yet on the master grid
+
+usethis::use_data(sst_time_1_sf)   # 1.2 Mb as an sf object
+usethis::use_data(sst_time_1)      # 244 kb (one month)
+usethis::use_data(sst)             # 11.5 Mb (but 48 months worth, only slightly more
+                                   # efficient than saving 48 one-month ones =
+                                   # 48 * 244 = 11.7 Mb)
+
+
 # Below, Lindsay had
 # crs=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs+ towgs84=0,0,0"))
 # so I've used that
@@ -314,6 +325,7 @@ plot(sst_time_1_sf_km_restrict,
      cex = 0.1) # Looks like matches above one
 
 test_grid_20_stars <- stars::st_as_stars(test_grid_20)
+
 
 HERE - this still fails. Need to learn more about the packages.
 
