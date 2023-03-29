@@ -54,15 +54,34 @@ colnames(oni_new)<-c("month",
 oni_new$month <- as.numeric(factor(oni_new$month,
                                    levels=unique(oni_new$month),
                                    ordered=TRUE))
+class(oni_new) <- c("pacea",
+                    class(oni_new))
 
-# If it's changed then save the new version (**test if this is needed, if
-# use_data just doesn't overwrite if it hasn't actually changed? Git may detect).
-if(!expect_equal(oni_new,
-                 oni)){
+# If it's changed from what is currently saved then save the new version.
+# (Tried testthat::expect_equal but it returned tibble of FALSE's)
+# Will need this again so should make a function.
+if(nrow(oni) != nrow(oni_new) |
+   ncol(oni) != ncol(oni_new)){
+
   oni <- oni_new
+
   usethis::use_data(oni,
-                    overwrite = TRUE)
+                    overwrite = TRUE)} else {
+  # dimensions are the same so check values
+  if(!(all(oni == oni_new))){
+    oni <- oni_new
+
+    usethis::use_data(oni,
+                      overwrite = TRUE)
+  }
 }
+# Without the all_equal() check, use_data does
+#  overwrite the old file even if nothing has changed, so the date stamp changes,
+#  but Git sees that nothing has changed so doesn't require a commit; seems best
+#  to keep the expect_equal check, even though we could get away with not having
+#  it (it will avoid confusing timestamps that are newer than the last commit of
+#  a file).
+
 
 stop("Got to here")
 
