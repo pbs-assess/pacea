@@ -1,9 +1,32 @@
 # Obtaining the oceanographic basin indices and compile them into PACea.
-# Converted from original code supplied by Chris Rooper.
+#  Converted from original code supplied by Chris Rooper.
 
-# Note that these time series of indices are NOT stored across the
+# Probably not using, see Issue #9: Note that these time series of indices are NOT stored across the
 #  BC grid. This saves a lot of space. Instead, PACea recognises that a covariate
 #  is `coastwide' if the `Poly_ID` value is set to `-1`.
+
+# Checking with Tetjana's from SOPO 2022. She has (they all say 'full year'):
+# Index    Used below by Chris?    Source file agrees with Chris's?
+# ONI      ENSO ONI                Yes (Chris found the link to the .txt file).
+# NPI      NPI                     Tetjana has
+# https://climatedataguide.ucar.edu/sites/default/files/cas_data_files/asphilli/npindex_monthly.txt
+# Chris has similar
+# https://climatedataguide.ucar.edu/sites/default/files/npindex_monthly.txt
+# Both are currently down (29/3/31, 10am; check again at some point). This seems
+# to have annual anomalies:
+#  https://climatedataguide.ucar.edu/sites/default/files/2023-01/npindex_anom_ndjfm.txt  - annoying if their websites now have dates in them, bit harder to automate (but doable)
+#   or monthly absolute values:
+#  https://climatedataguide.ucar.edu/sites/default/files/2023-01/npindex_monthly.txt
+# PDO      PDO                    Tetjana: http://research.jisao.washington.edu/pdo/ (but data links are borken, 29/3/31)
+#                                 Chris: https://www.ncei.noaa.gov/pub/data/cmb/ersst/v5/index/ersst.v5.pdo.dat  (works and is updated)
+# SOI      SOI                    Same website, still updated.
+# NPGO     NPGO                   Same website, still updated.
+
+# Chris also has:
+# ENSO MEI
+# AO
+# ALPI
+
 
 # Column names
 year_months <- c("Year", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
@@ -69,9 +92,30 @@ ENSO_ONI$Month <- as.numeric(factor(ENSO_ONI$Month,
                                     levels=unique(ENSO_ONI$Month),
                                     ordered=T))
 # Add to help - values are three-month averages (preceding, current, and next month)
-# May need to update every month. Maybe have a column of when last updated?
+# May need to update every month. Maybe have a column of when last updated? No,
+# can tell from the datestamp.
 
 # PDO
+# From http://research.jisao.washington.edu/pdo/
+# The "Pacific Decadal Oscillation" (PDO) is a long-lived El Niño-like pattern of Pacific climate variability. While the two climate oscillations have similar spatial climate fingerprints, they have very different behavior in time. Fisheries scientist Steven Hare coined the term "Pacific Decadal Oscillation" (PDO) in 1996 while researching connections between Alaska salmon production cycles and Pacific climate (his dissertation topic with advisor Robert Francis). Two main characteristics distinguish PDO from El Niño/Southern Oscillation (ENSO): first, 20th century PDO "events" persisted for 20-to-30 years, while typical ENSO events persisted for 6 to 18 months; second, the climatic fingerprints of the PDO are most visible in the North Pacific/North American sector, while secondary signatures exist in the tropics - the opposite is true for ENSO. Several independent studies find evidence for just two full PDO cycles in the past century: "cool" PDO regimes prevailed from 1890-1924 and again from 1947-1976, while "warm" PDO regimes dominated from 1925-1946 and from 1977 through (at least) the mid-1990's. Shoshiro Minobe  has shown that 20th century PDO fluctuations were most energetic in two general periodicities, one from 15-to-25 years, and the other from 50-to-70 years.
+## http://ingrid.ldeo.columbia.edu/%28/home/alexeyk/mydata/TSsvd.in%29readfile/.SST/.PDO/
+
+## Major changes in northeast Pacific marine ecosystems have been correlated with phase changes in the PDO; warm eras have seen enhanced coastal ocean biological productivity in Alaska and inhibited productivity off the west coast of the contiguous United States, while cold PDO eras have seen the opposite north-south pattern of marine ecosystem productivity.
+
+## Causes for the PDO are not currently known. Likewise, the potential
+## predictability for this climate oscillation are not known. Some climate
+## simulation models produce PDO-like oscillations, although often for different
+## reasons. The mechanisms giving rise to PDO will determine whether skillful
+## decades-long PDO climate predictions are possible. For example, if PDO arises
+## from air-sea interactions that require 10 year ocean adjustment times, then
+## aspects of the phenomenon will (in theory) be predictable at lead times of up to
+## 10 years. Even in the absence of a theoretical understanding, PDO climate
+## information improves season-to-season and year-to-year climate forecasts for
+## North America because of its strong tendency for multi-season and multi-year
+## persistence. From a societal impacts perspective, recognition of PDO is
+## important because it shows that "normal" climate conditions can vary over time
+## periods comparable to the length of a human's lifetime .
+
 #download.file("https://www.ncdc.noaa.gov/teleconnections/pdo/data.csv", destfile="PDO.csv",mode="wb", quiet = FALSE)
 download.file("https://www.ncei.noaa.gov/pub/data/cmb/ersst/v5/index/ersst.v5.pdo.dat",
               destfile="PDO.dat",
@@ -155,6 +199,8 @@ SOI <- SOI %>%
 SOI$Month <- as.numeric(SOI$Month)
 
 #NGPO
+# Useful background:
+#  http://www.o3d.org/npgo/
 download.file("http://www.o3d.org/npgo/npgo.php",
               destfile="NPGO.txt",
               mode="wb",
@@ -191,6 +237,10 @@ colnames(ALPI)<-c("Year",
 plot(ALPI)
 
 #NPI
+# From
+# https://climatedataguide.ucar.edu/climate-data/north-pacific-np-index-trenberth-and-hurrell-monthly-and-winter
+# The North Pacific Index (NP index or NPI) is the area-weighted sea level pressure over the region 30°N-65°N, 160°E-140°W. The NP index is defined to measure interannual to decadal variations in the atmospheric circulation. The dominant atmosphere-ocean relation in the North Pacific is one where atmospheric changes lead changes in sea surface temperatures by one to two months. However, strong ties exist with events in the tropical Pacific, with changes in tropical Pacific SSTs leading SSTs in the north Pacific by three months.
+
 download.file("https://climatedataguide.ucar.edu/sites/default/files/npindex_monthly.txt",
               destfile="NPI.txt",
               mode="wb",
