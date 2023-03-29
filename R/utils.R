@@ -2,13 +2,9 @@
 ##'  <desc>
 ##'
 ##' @param a Angle of rotation
-##' @return
+##' @return not-sure
 ##' @export
 ##' @author Andrew Edwards
-##' @examples
-##' @ontrun{
-##' @
-##' @}
 rot = function(a = 318.5){
   matrix(c(cos(a),
            sin(a),
@@ -21,16 +17,12 @@ rot = function(a = 318.5){
 ##'  as I think only used once). Took from Create_BC_Partition_New.Rmd
 ##'  <desc>
 ##'
-##' @param geo
-##' @param ang
-##' @param center
-##' @return
+##' @param geo TODO
+##' @param ang TODO
+##' @param center TODO
+##' @return TODO
 ##' @export
 ##' @author Andrew Edwards
-##' @examples
-##' @ontrun{
-##' @
-##' @}
 tran = function(geo, ang, center){
   (geo - center) * rot(ang * pi / 180) + center
 }
