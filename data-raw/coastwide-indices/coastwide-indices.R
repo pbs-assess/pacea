@@ -267,7 +267,8 @@ plot(ALPI)
 #NPI
 # From
 # https://climatedataguide.ucar.edu/climate-data/north-pacific-np-index-trenberth-and-hurrell-monthly-and-winter
-# The North Pacific Index (NP index or NPI) is the area-weighted sea level pressure over the region 30°N-65°N, 160°E-140°W. The NP index is defined to measure interannual to decadal variations in the atmospheric circulation. The dominant atmosphere-ocean relation in the North Pacific is one where atmospheric changes lead changes in sea surface temperatures by one to two months. However, strong ties exist with events in the tropical Pacific, with changes in tropical Pacific SSTs leading SSTs in the north Pacific by three months.
+# The North Pacific Index (NP index or NPI) is the area-weighted sea level
+# pressure over the region 30 deg N-65 deg N, 160 deg E-140 deg W. The NP index is defined to measure interannual to decadal variations in the atmospheric circulation. The dominant atmosphere-ocean relation in the North Pacific is one where atmospheric changes lead changes in sea surface temperatures by one to two months. However, strong ties exist with events in the tropical Pacific, with changes in tropical Pacific SSTs leading SSTs in the north Pacific by three months.
 
 download.file("https://climatedataguide.ucar.edu/sites/default/files/npindex_monthly.txt",
               destfile="NPI.txt",

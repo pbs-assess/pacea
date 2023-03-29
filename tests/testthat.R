@@ -1,4 +1,4 @@
 library(testthat)
-library(PACea)
+library(pacea)
 
-test_check("PACea")
+test_check("pacea")

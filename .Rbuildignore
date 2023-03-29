@@ -1,1 +1,7 @@
 ^\.github$
+
+data-raw/lighthouses/*
+ideas/*
+
+R/older-functions/*
+data/older-data/*
