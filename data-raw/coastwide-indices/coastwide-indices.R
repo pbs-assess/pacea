@@ -1,9 +1,9 @@
-# Obtaining the oceanographic basin indices and compile them into PACea.
+# Obtaining the oceanographic basin indices and compile them into pacea.
 #  Converted from original code supplied by Chris Rooper. Moving updated calls
 #  to the top, to save each data set as our new format.
 
 # Probably not using, see Issue #9: Note that these time series of indices are NOT stored across the
-#  BC grid. This saves a lot of space. Instead, PACea recognises that a covariate
+#  BC grid. This saves a lot of space. Instead, pacea recognises that a covariate
 #  is `coastwide' if the `Poly_ID` value is set to `-1`.
 
 # Checking with Tetjana's from SOPO 2022. She has (they all say 'full year'):
@@ -288,7 +288,7 @@ NPI<-data.frame(Year=floor(NPI$V1/100),
 
 Coastwide_Index_DF<-merge(merge(merge(merge(merge(merge(ENSO_MEI,ENSO_ONI,by=c("Year",'Month'),all=TRUE),AO,by=c("Year",'Month'),all=TRUE),NPGO,by=c("Year",'Month'),all=TRUE),PDO,by=c("Year",'Month'),all=TRUE),SOI,by=c("Year",'Month'),all=TRUE),NPI,by=c("Year",'Month'),all=TRUE)
 
-# Poly_ID == -1 tells PACea that these values are coastwide
+# Poly_ID == -1 tells pacea that these values are coastwide
 Coastwide_Index_DF$Poly_ID <- -1
 
 Coastwide_Index_DF$Month <- as.numeric(Coastwide_Index_DF$Month)
