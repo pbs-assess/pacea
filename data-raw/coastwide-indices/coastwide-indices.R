@@ -1,5 +1,6 @@
 # Obtaining the oceanographic basin indices and compile them into PACea.
-#  Converted from original code supplied by Chris Rooper.
+#  Converted from original code supplied by Chris Rooper. Moving updated calls
+#  to the top, to save each data set as our new format.
 
 # Probably not using, see Issue #9: Note that these time series of indices are NOT stored across the
 #  BC grid. This saves a lot of space. Instead, PACea recognises that a covariate
@@ -29,8 +30,42 @@
 
 
 # Column names
-year_months <- c("Year", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-                 "11", "12")
+# year_months <- c("Year", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+#                  "11", "12")
+
+# ENSO ONI
+download.file("https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+              destfile="oni.txt",
+              mode="wb",
+              quiet = FALSE)
+
+oni_new <- readr::read_table("oni.txt")
+
+stopifnot(colnames(oni_new) == c("SEAS", "YR", "TOTAL", "ANOM"),
+          oni_new[1, 1] == "DJF")    # If this fails then months as factors
+                                     #  below will become incorrect because it
+                                     #  assumes first one is January
+
+colnames(oni_new)<-c("month",
+                     "year",
+                     "val",
+                     "anom")
+
+oni_new$month <- as.numeric(factor(oni_new$month,
+                                   levels=unique(oni_new$month),
+                                   ordered=TRUE))
+
+# If it's changed then save the new version (**test if this is needed, if
+# use_data just doesn't overwrite if it hasn't actually changed? Git may detect).
+if(!expect_equal(oni_new,
+                 oni)){
+  oni <- oni_new
+  usethis::use_data(oni,
+                    overwrite = TRUE)
+}
+
+stop("Got to here")
+
 
 # ENSO MEI
 nlines <- as.numeric(format(Sys.time(),
@@ -68,32 +103,6 @@ stopifnot(min(ENSO_MEI$Year) == 1979,
 # https://www.psl.noaa.gov/enso/mei
 # Row values are 2 month seasons (YEAR DJ JF FM MA AM MJ JJ JA AS SO ON ND)
 
-# ENSO ONI
-download.file("https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
-              destfile="ENSO_ONI.txt",
-              mode="wb",
-              quiet = FALSE)
-
-ENSO_ONI <- read.table("ENSO_ONI.txt",
-                       skip=0,
-                       as.is=TRUE,
-                       header=TRUE)
-
-stopifnot(colnames(ENSO_ONI) == c("SEAS", "YR", "TOTAL", "ANOM"),
-          ENSO_ONI[1, 1] == "DJF")    # If this fails then months as factors
-                                      #  will become incorrect
-
-colnames(ENSO_ONI)<-c("Month",
-                      "Year",
-                      "ENSO_ONI_Total",
-                      "ENSO_ONI_Anom")
-
-ENSO_ONI$Month <- as.numeric(factor(ENSO_ONI$Month,
-                                    levels=unique(ENSO_ONI$Month),
-                                    ordered=T))
-# Add to help - values are three-month averages (preceding, current, and next month)
-# May need to update every month. Maybe have a column of when last updated? No,
-# can tell from the datestamp.
 
 # PDO
 # From http://research.jisao.washington.edu/pdo/
