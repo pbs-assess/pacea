@@ -1,11 +1,15 @@
 ##' ONI -- Oceanographic Nino Index
 ##'
-##' The Oceanic Niño Index (ONI) is a monthly index which is a 3-month running
+##' The Oceanic Niño Index is a monthly index which is one measure of the El
+##' Niño-Southern Oscillation.
+##'
+##' The Oceanic Niño Index (ONI) is a 3-month running
 ##' mean of sea surface temperature (SST) anomalies in the Niño 3.4 region
 ##' (5 deg N to 5 deg S, 120 deg W to 170 deg W) plotted on
 ##' the center month. The SST anomalies are calculated based on 30-year base
 ##' periods that are updated every 5 years, which accounts for global warming
-##' and some of the decadal-scale SST variability (as seen in the PDO index).
+##' and some of the decadal-scale SST variability (as seen in the Pacific
+##' Decadal Oscillation index).
 ##' The ONI is provided by the NOAA’s National Weather
 ##' Service National Centers for Environmental Prediction CPC:
 ##' http://www.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ensoyears.shtml
@@ -40,11 +44,15 @@
 ##' Associated code adapted from code generously shared by Chris Rooper.
 ##'
 ##' @format A tibble with columns:
-##'   * year: year of value
-##'   * month: month (1 to 12) of value
-##'   * val: absolute values of three-month averages (preceding, current, and
-##'   next month), deg C
-##'   * anom: anomalies based on 30-year base periods that are updated every 5 years
+##' \describe{
+##'   \item{year:}{year of value}
+##'   \item{month:}{month (1 to 12) of value}
+##'   \item{val:}{absolute values of three-month averages (preceding, current, and
+##'    next month), deg C}
+##'   \item{anom:}{anomalies based on 30-year base periods that are updated every
+##'   5 years, deg C}
+##'  }
 ##'
+##' @author Andrew Edwards
 ##' @source Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
 "oni"
