@@ -4,6 +4,7 @@
 library(ncdf4) # package for netcdf manipulation
 library(dplyr)
 library(sf)
+library(terra)
 library(lubridate)
 load_all()     # pacea
 
@@ -308,7 +309,27 @@ plot(sst_time_1_sf_km_restrict,
      pch = 20,
      cex = 0.1) # Looks like matches above one
 
-test_grid_20_stars <- stars::st_as_stars(test_grid_20)
+# Need both objects as terra spatRaster for terra::resample
+
+sst_time_1_sf_km_restrict_rast <- terra::rast(sst_time_1_sf_km_restrict)
+test_grid_20_rast <- terra::rast(test_grid_20)
+
+expect_equal(sf::st_crs(sst_time_1_sf_km_restrict_rast), sf::st_crs(test_grid_20_rast))
+
+sst_time_1_sf_km_restrict_grid_20 <- terra::resample(sst_time_1_sf_km_restrict_rast,
+                                                     test_grid_20_rast)
+
+# That didn't give an error (same when trying terra::project(), which shouldn't
+# need as have set both crs to be the same), but:
+
+plot(sst_time_1_sf_km_restrict_grid_20)
+# Plots blank screen (with co-ordinates) and warning:
+# [plot] SpatRaster has no cell values
+
+
+
+
+# test_grid_20_stars <- stars::st_as_stars(test_grid_20)
 
 stop("Got to here")
 
@@ -335,7 +356,8 @@ stars:::is_regular_grid(test_grid_20)    # FALSE
 
 # Andy got no further
 
-This is what Joe has in ERDDAP_DATA.Rmd:
+This is what Joe has in ERDDAP_DATA.Rmd, but uses raster package which is
+getting deprecated
 
   # project onto correct CRS using bilinear interpolation
   raster::crs(dataset_list) <-
@@ -348,6 +370,8 @@ This is what Joe has in ERDDAP_DATA.Rmd:
     )
 
 
+# Rest of this is from Lindsay (and based on her ROMS files); keep for now in
+#  case anything useful.
 
 #-- Lindsay has:
 #Project mean temp/oxy values onto a 3km raster (I have not interpolated missing values)
