@@ -1,35 +1,18 @@
----
-title: "ROMS extraction"
-author: "Andrew Edwards"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: pdf_document
----
+# Originally from from-others/roms_ncdf4.Rmf which was based on Linsday's
+#  RomsExtraction_forAndy.Rmd, but now just doing .R not .Rmd.
 
-Based on Lindsay's original code, just trying out the `ncdf4` package and learning.
-
-LD: Calculate the mean temperature per grid cell per year. Create a rasterStack of
-each of the years and temperatures (water column, bottom, sea surface).
-
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
 library(ncdf4) # package for netcdf manipulation
-# library(raster) # package for raster manipulation
-# library(rgdal) # package for geospatial analysis
-# ibrary(ggplot2) # package for plotting
-# library(tidyr)
 library(dplyr)
-# library(RColorBrewer)
-# library(here)
 library(sf)
 library(lubridate)
-load_all()
-```
+load_all()     # pacea
 
-Opening data and print metadata to see the data names and structure.
-```{r printMetadata}
 
-temp_nc <- nc_open("Roms_bcc42_mon_2008to2011_sst.nc") # Example temperature output file
+# Opening example temperature results object from Angelica and print metadata to
+#  see the data names and structure.
+# Four years worth of monthly sst results on a spatial grid.
+temp_nc <- nc_open("Roms_bcc42_mon_2008to2011_sst.nc")
+
 # Don't think it loads in the full file, but opens it for extracting, and gets
 #  the metadata and dimensions. Maybe.
 
@@ -43,37 +26,25 @@ temp_nc
 # sst - sea surface temperature at each grid cell every month from 2008 to 2011
 
 summary(temp_nc)
-temp_nc$var   #
-```
+temp_nc$var   # details of the four variables excluding dimensions: lon_rho, lat_rho,
+              #  mask_rho, sst
 
-Data exploration and looking at the metadata (which is largely non existent).
-```{r dataexploration_ignore}
+# Data exploration and looking at the metadata (which is largely non existent).
 
-#ncpath <- "data-raw/ROMS_original/"
-#ncname <- "bcc42_era5b37r1_mon1995to2018_bottom"
-#ncfname <- paste(ncpath, ncname, ".nc", sep="")
-#dname <- "temp"
-#dname_oxygen <- "Oxygen"
-
-# open a netCDF file
-#ncin <- nc_open(ncfname)
-#print(ncin)
-
-# get time
 time <- ncvar_get(temp_nc, "ocean_time") %>% as.vector()
-time # vector of seconds from midnight 1st Jan 1970
-tunits <- ncatt_get(temp_nc,
-                    "ocean_time",
-                    "units")  # FALSE, since I think not saved correctly.
+time    # vector of seconds from midnight 1st Jan 1970, with 48 values.
+# tunits <- ncatt_get(temp_nc,
+#                     "ocean_time",
+#                     "units")  # FALSE, since I think not saved correctly.
 
 as_datetime(time)      # These are all midnight, so can stick with just dates
-as_date(time)
 date <- as_datetime(time) %>% as_date()
 
 date
 
 day(date) %>% range()  # Will ask Angelica why these aren't always in the middle
-                       # of the month.
+                       # of the month. Maybe the resolution of the model is not
+                       # daily - if it's 3-day then that explains it.
 
 # lat and lon
 # [xi_rho and eta_rho are the physical model co-ordinates, don't think we need
@@ -87,7 +58,6 @@ day(date) %>% range()  # Will ask Angelica why these aren't always in the middle
 # [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named eta_rho BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"
 # Error in nc$dim[[idobj$list_index]] :
 #   invalid negative subscript in get1index <real>
-
 
 # Doesn't work:
 # eta_rho <- ncvar_get(temp_nc,
@@ -109,10 +79,11 @@ lon[236, 1]    # this seems to be furthest east
 lon[236, 410]  # Angelica: upper right. Aha, grid is rotated, so furthest north
                #  but not furthest east.
 
-plot(lon[1, ], ylim = range(lon))
-points(lon[, 1], col = "red")
-points(lon[236, ], col = "blue")
-points(lon[, 410], col = "green")
+# Plot values, but doesn't help too much.
+# plot(lon[1, ], ylim = range(lon))
+# points(lon[, 1], col = "red")
+# points(lon[236, ], col = "blue")
+# points(lon[, 410], col = "green")
 
 # image(lon)   # clearly shows not a north-south east-west grid, as lon changes
 
@@ -122,6 +93,11 @@ plot(lon, lat, pch = 20, cex = 0.1, xlim = c(-129, -127), ylim = c(43.5, 45)) # 
 
 # lat2 <- rev(lat[1,]) # Lindsay had
 
+plot(Coastline)     # originally saved one, will likely change
+points(lon, lat, pch = 20, cex = 0.1)    # hoping could just overlay, but didn't
+                                        # work I think because likely need an sf object.
+# Travis - could you take a look at that please??
+
 
 # sst
 sst <- ncvar_get(temp_nc,
@@ -130,15 +106,17 @@ sst <- ncvar_get(temp_nc,
 # doing it for example one getting working
 
 dim(sst)             # 236 x 410 x 48 time steps
+class(sst)
 attributes(sst)
 plot(sst[1, 1, 1:48],
      type = "o")    # One location, sst at each time point
 
 dim(sst[1:236, 1:410, 1]) # First time point
 
-sst_time_1 <- sst[, , 1]  # 236 x 410, same as lat and lon
+sst_time_1 <- sst[, , 1]  # sst at first time point; 236 x 410, same as lat and lon
 
-# Want to use st_as_sf() to convert to an sf object.
+# Want to use st_as_sf() to convert to an sf object to then use
+# stars::st_rasterize() (first attempt) or terra::project()  (from sf course)
 # https://tmieno2.github.io/R-as-GIS-for-Economists/turning-a-data-frame-of-points-into-an-sf.html
 
 
@@ -163,7 +141,7 @@ lat_first <- lat[1:10, 1]
 sst_first <- sst_time_1[1:10, 1]
 
 # Make into long format
-lon_lat_sst_array = tibble(lon_first, lat = lat_first, sst = sst_first)
+lon_lat_sst_array = tibble(lon = lon_first, lat = lat_first, sst = sst_first)
 
 # lon_lat_sst_array <- tibble(lon, lat, sst) - needs tweaking since each one is not now a vector
 
@@ -194,6 +172,7 @@ plot(sst_time_1_sf,
 
 # Try to convert sst values into km as for grid
 
+# ATTEMPT 1
 test_grid_20
 plot(test_grid_20,
      axes = TRUE)
@@ -204,6 +183,7 @@ sst_time_1_sf_km <- sf::st_transform(sst_time_1_sf,
                                      sf::st_crs(test_grid_20))
 
 expect_equal(sf::st_crs(sst_time_1_sf_km), sf::st_crs(test_grid_20))
+                                        # No error is good!
 
 sst_time_1_sf_km
 plot(sst_time_1_sf_km,
@@ -215,10 +195,12 @@ xx <- stars::st_rasterize(sst_time_1_sf_km,
                           # Error in stars::st_rasterize(sst_time_1_sf, stars::st_as_stars(test_grid_20_lon_lat),  :
                           #   is_regular_grid(template) is not TRUE
 
-stars:::is_regular_grid(sst_time_1_sf_km)    # FALSE  (function not exported)
+stars:::is_regular_grid(sst_time_1_sf_km)    # FALSE  (::: since function not exported)
 stars:::is_regular_grid(test_grid_20)    # FALSE
 # still didn't work, not quite sure why.
 # ---
+
+
 
 #could try fasterize, though may need to create the grid as a raster
 #object. That's fine, can still save it as just sf.
@@ -240,6 +222,7 @@ stars:::is_regular_grid(test_grid_20)    # FALSE
 
 # Make into long format
 
+# ATTEMPT 2
 lon_vec <- as.vector(lon)       # Constructs vector columnwise from matrix
 lat_vec <- as.vector(lat)
 sst_time_1_vec <- as.vector(sst_time_1)
@@ -277,7 +260,8 @@ usethis::use_data(sst)             # 11.5 Mb (but 48 months worth, only slightly
 plot(sst_time_1_sf, axes = TRUE,
      pch = 20,
      cex = 0.1)       # A point for each value, kind of shows the resolution
-                      # (cex smaller makes no difference).
+                      # (cex smaller makes no difference). Land just comes from
+                      # NA's presumably.
 
 plot(sst_time_1_sf, axes = TRUE,
      pch = 20,
@@ -326,8 +310,9 @@ plot(sst_time_1_sf_km_restrict,
 
 test_grid_20_stars <- stars::st_as_stars(test_grid_20)
 
+stop("Got to here")
 
-HERE - this still fails. Need to learn more about the packages.
+# HERE - this still fails. Need to learn more about the packages.
 
 xx <- stars::st_rasterize(sst_time_1_sf_km_restrict,   #["sst"],
                           template = test_grid_20_stars)

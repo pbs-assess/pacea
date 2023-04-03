@@ -24,7 +24,9 @@ sst - sea surface temperature at each grid cell every month from 2008 to 2011
 
 ROMS_test.R - quick test using RNetCDF package, but ncdf4 seems better.
 
-roms_ncdf4.Rmd - trying ncdf4 package, see HERE. Based on Lindsay Davidson's file:
+roms_ncdf4.R - trying ncdef4 package. Based on the following (but then decided
+ to simplify to just .R not .Rmd):
+from-others/roms_ncdf4.Rmd - trying ncdf4 package, see HERE. Based on Lindsay Davidson's file:
  RomsExtraction_forAndy.Rmd - from Lindsay
 
 --
