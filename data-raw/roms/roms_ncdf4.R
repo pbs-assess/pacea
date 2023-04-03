@@ -94,10 +94,9 @@ plot(lon, lat, pch = 20, cex = 0.1, xlim = c(-129, -127), ylim = c(43.5, 45)) # 
 
 # lat2 <- rev(lat[1,]) # Lindsay had
 
-plot(Coastline)     # originally saved one, will likely change
+plot(Coastline)     # originally saved one, as an sf object, will likely change
 points(lon, lat, pch = 20, cex = 0.1)    # hoping could just overlay, but didn't
                                         # work I think because likely need an sf object.
-# Travis - could you take a look at that please??
 
 
 # sst
@@ -309,9 +308,15 @@ plot(sst_time_1_sf_km_restrict,
      pch = 20,
      cex = 0.1) # Looks like matches above one
 
-# Need both objects as terra spatRaster for terra::resample
+# Need both objects as terra spatRaster for terra::resample, although we (for
+# now) don't want the layers that spatRaster creates (but maybe will do it that
+# way for the time aspect?). Help for terra::rast doesn't seem to mention sf
+# objects though.
 
 sst_time_1_sf_km_restrict_rast <- terra::rast(sst_time_1_sf_km_restrict)
+# That has no cell values:
+plot(sst_time_1_sf_km_restrict_rast)
+
 test_grid_20_rast <- terra::rast(test_grid_20)
 
 expect_equal(sf::st_crs(sst_time_1_sf_km_restrict_rast), sf::st_crs(test_grid_20_rast))
@@ -326,7 +331,7 @@ plot(sst_time_1_sf_km_restrict_grid_20)
 # Plots blank screen (with co-ordinates) and warning:
 # [plot] SpatRaster has no cell values
 
-
+HERE
 
 
 # test_grid_20_stars <- stars::st_as_stars(test_grid_20)
