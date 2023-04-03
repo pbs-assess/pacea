@@ -5,3 +5,7 @@ ideas/*
 
 R/older-functions/*
 data/older-data/*
+
+^.*\.Rproj$
+^\.Rproj\.user$
+
