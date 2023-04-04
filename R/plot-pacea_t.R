@@ -3,6 +3,12 @@
 ##'  <desc>
 ##'
 ##' @param obj a `pacea_t` object, which is a time series.
+##' @param value which column of `obj` to plot
+##' @param xlab x-axis label
+##' @param ylab y-axis label, the default is an attribute of the `pacea_t`
+##'   object. TODO Note that this isn't automated yet to refer to anomaly or absolute
+##'   values.
+##' @param ... optional arguments passed onto `plot()`
 ##' @return
 ##' @export
 ##' @author Andrew Edwards
@@ -11,12 +17,15 @@
 ##'
 ##' }
 plot.pacea_t <- function(obj,
-                         value = val,
+                         value = "anom",
                          xlab = "Date",
-                         ylab = "Value",
-                        ...
+                         ylab = attr(obj, "axis_name"),
+                         ...
                          ){
-  # TODO extract date-related columns and create the date column correctly
+  stopifnot("value must be a column of obj" =
+              value %in% names(obj))
+
+  # TODO extract date-related columns automatically and create the date column correctly
   #  This works for oni
 
   obj_lub <- dplyr::mutate(obj,
@@ -25,11 +34,8 @@ plot.pacea_t <- function(obj,
                                         sep = "-"))
   obj_lub$date <- lubridate::ym(obj_lub$date)
 
-  # TODO could automate name for ylab, by adding it as an attribute (?) to each
-  # object.
-
   plot.default(obj_lub$date,
-               obj_lub$val,
+               obj_lub[[value]], # [[]] returns a vector not a tibble
                xlab = xlab,
                ylab = ylab,
               ...)

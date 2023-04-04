@@ -59,11 +59,14 @@ oni_new$month <- as.numeric(factor(oni_new$month,
 class(oni_new) <- c("pacea_t",
                     class(oni_new))
 
+attr(oni_new, "axis_name") <- "Oceanic Niño Index"
+
 # If it's changed from what is currently saved then save the new version.
 # (Tried testthat::expect_equal but it returned tibble of FALSE's)
 # Will need this again so should make a function.
 if(nrow(oni) != nrow(oni_new) |
-   ncol(oni) != ncol(oni_new)){
+   ncol(oni) != ncol(oni_new) |
+   attr(oni, "axis_name") != attr(oni_new, "axis_name")){
 
   oni <- oni_new
 
@@ -84,6 +87,7 @@ if(nrow(oni) != nrow(oni_new) |
 #  it (it will avoid confusing timestamps that are newer than the last commit of
 #  a file).
 
+plot(oni)    # to check it looks okay
 
 stop("Got to here")
 
