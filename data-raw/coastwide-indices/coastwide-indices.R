@@ -33,6 +33,8 @@
 # year_months <- c("Year", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
 #                  "11", "12")
 
+load_all()
+
 # ENSO ONI
 download.file("https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
               destfile="oni.txt",
@@ -54,7 +56,7 @@ colnames(oni_new)<-c("month",
 oni_new$month <- as.numeric(factor(oni_new$month,
                                    levels=unique(oni_new$month),
                                    ordered=TRUE))
-class(oni_new) <- c("pacea",
+class(oni_new) <- c("pacea_t",
                     class(oni_new))
 
 # If it's changed from what is currently saved then save the new version.

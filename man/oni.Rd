@@ -5,7 +5,7 @@
 \alias{oni}
 \title{ONI -- Oceanographic Nino Index}
 \format{
-A tibble with columns:
+A tibble also of class `pacea_t` (pacea temporal) with columns:
 \describe{
   \item{year:}{year of value}
   \item{month:}{month (1 to 12) of value}
