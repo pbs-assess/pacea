@@ -318,6 +318,11 @@ sst_time_1_sf_km_restrict_rast <- terra::rast(sst_time_1_sf_km_restrict)
 plot(sst_time_1_sf_km_restrict_rast)
 
 test_grid_20_rast <- terra::rast(test_grid_20)
+# HERE
+# Also has no cell values. Ask Kelsey. Maybe best to just not restrict the data
+# so we get something (i.e. only looking at Juan de Fuca right now, which for a
+# 20x20 grid will have ROMS NA's).
+
 
 expect_equal(sf::st_crs(sst_time_1_sf_km_restrict_rast), sf::st_crs(test_grid_20_rast))
 
