@@ -29,7 +29,8 @@ object. TODO Note that this isn't automated yet to refer to anomaly or absolute
 values, though for each time series there is probably only one choice}
 
 \item{smooth_over_year}{logical to smooth monthly values over each calendar
-year (as per Tetjana Ross' plots, see `?oni` for reference). TODO when
+year (as per Tetjana Ross' plots, see `?oni` for reference). Note that the
+corresponding `date` is for 1st January of each year. TODO when
 smoothed the red-blue figure isn't quite right (it isn't for monthly also,
 but that's not as obvious). See Issue #15.}
 

@@ -9,7 +9,8 @@
 ##'   object. TODO Note that this isn't automated yet to refer to anomaly or absolute
 ##'   values, though for each time series there is probably only one choice
 ##' @param smooth_over_year logical to smooth monthly values over each calendar
-##'   year (as per Tetjana Ross' plots, see `?oni` for reference). TODO when
+##'   year (as per Tetjana Ross' plots, see `?oni` for reference). Note that the
+##'   corresponding `date` is for 1st January of each year. TODO when
 ##'   smoothed the red-blue figure isn't quite right (it isn't for monthly also,
 ##'   but that's not as obvious). See Issue #15.
 ##' @param type usual argument for `plot()`
@@ -62,10 +63,12 @@ plot.pacea_t <- function(obj,
     obj_lub <- dplyr::mutate(obj_lub,
                              date = lubridate::ymd(year,
                                                    truncated = 2))
-                             # sets year to 1st Jan of that year to give a valid
+                             # sets date to 1st Jan of that year to give a valid
                              #  date; could change to middle of year, but a
-                             #  little confusing.
-    } else {
+                             #  little confusing. year column still retained
+                             #  (but object not returned so okay).
+  } else {
+    if("month" %in% names(obj)){
 
       # TODO extract date-related columns automatically and create the date column correctly
       #  This works for oni, may need a switch (or function, since may want for
@@ -78,14 +81,12 @@ plot.pacea_t <- function(obj,
                                             sep = "-"))
       obj_lub$date <- lubridate::ym(obj_lub$date)
 
+    } else {
+    obj_lub <- dplyr::mutate(obj,
+                             date = lubridate::ymd(year,
+                                                   truncated = 2))
     }
-
-
-
-#data %>%
-#  mutate(day = floor_date(datetime, "day")) %>%
-#  group_by(day) %>%
-#  summarize(avg = mean(sed))
+  }
 
   if(style == "red_blue"){
 
