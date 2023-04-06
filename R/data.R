@@ -73,7 +73,7 @@
 ##' Key reference is Trenberth and Hurrell (1994): Decadal atmosphere-ocean
 ##' variations in the Pacific, Climate Dynamics 9:303-319.
 ##'
-##' This data set contains monthly absolute values. Annual average winter values
+##' `npi_monthly` contains monthly absolute values. Annual average winter values
 ##' and anomalies are in `npi_annual`.
 ##' Ross and Robert (2022; see `?oni` for reference): The NPI is a useful
 ##' indicator of the intensity and real extent of the Aleutian Low Pressure
@@ -96,14 +96,14 @@
 ##'
 ##' @author Andrew Edwards
 ##' @source Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
-"npi"
+"npi_monthly"
 
 ##' NPI -- North Pacific Index annual values and anomalies
 ##'
 ##' The North Pacific index measures interannual to decadal
 ##' variations in atmospheric circulation across the North Pacific.
 ##'
-##' See `?npi` for details.
+##' See `?npi_monthly` for details.
 ##'
 ##' `npi_annual` contains annual average winter values and anomalies.
 ##'
@@ -118,7 +118,7 @@
 ##'   data for 1898.}
 ##'   \item{anom:}{anomalies of the annual winter values compared to the 1925-1989 mean
 ##'   of 1008.9 hPa, again with an `NA` for 1899 TODO check.}
-##'
+##' }
 ##' @author Andrew Edwards
 ##' @source Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
 "npi_annual"

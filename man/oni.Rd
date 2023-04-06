@@ -3,7 +3,7 @@
 \docType{data}
 \name{oni}
 \alias{oni}
-\title{ONI -- Oceanographic Nino Index}
+\title{ONI -- Oceanographic Niño Index}
 \format{
 A tibble also of class `pacea_t` (pacea temporal) with columns:
 \describe{

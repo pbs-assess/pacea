@@ -9,6 +9,7 @@
   value = "anom",
   xlab = "Date",
   ylab = attr(obj, "axis_name"),
+  smooth_over_year = FALSE,
   type = "l",
   style = "red_blue",
   y_tick = 0.25,
@@ -26,6 +27,11 @@
 \item{ylab}{y-axis label, the default is an attribute of the `pacea_t`
 object. TODO Note that this isn't automated yet to refer to anomaly or absolute
 values, though for each time series there is probably only one choice}
+
+\item{smooth_over_year}{logical to smooth monthly values over each calendar
+year (as per Tetjana Ross' plots, see `?oni` for reference). TODO when
+smoothed the red-blue figure isn't quite right (it isn't for monthly also,
+but that's not as obvious). See Issue #15.}
 
 \item{type}{usual argument for `plot()`}
 

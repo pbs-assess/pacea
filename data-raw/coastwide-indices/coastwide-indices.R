@@ -79,35 +79,35 @@ if(check_index_changed(oni, oni_new)){
 # last one then later ones. Could write code to automate this.
 
 download.file("https://climatedataguide.ucar.edu/sites/default/files/2023-01/npindex_monthly.txt",
-              destfile="npi.txt",
+              destfile="npi_monthly.txt",
               mode="wb",
               quiet = FALSE)
 
-npi_new <- readr::read_table("npi.txt",
+npi_monthly_new <- readr::read_table("npi_monthly.txt",
                              col_names = c("yearmonth", "value"),
                              skip = 1,
                              na = "-999.00")    # December 1944
 
-stopifnot(npi_new[1,1] == 189901)    # Check still starts in 1899.
+stopifnot(npi_monthly_new[1,1] == 189901)    # Check still starts in 1899.
 
-npi_new$month <- as.numeric(substr(npi_new$yearmonth, 5, 6))
-npi_new$year  <- as.numeric(substr(npi_new$yearmonth, 1, 4))
+npi_monthly_new$month <- as.numeric(substr(npi_monthly_new$yearmonth, 5, 6))
+npi_monthly_new$year  <- as.numeric(substr(npi_monthly_new$yearmonth, 1, 4))
 
-npi_new <- dplyr::select(npi_new,
+npi_monthly_new <- dplyr::select(npi_monthly_new,
                          year,
                          month,
                          value)
 
-class(npi_new) <- c("pacea_t",
-                    class(npi_new))
+class(npi_monthly_new) <- c("pacea_t",
+                    class(npi_monthly_new))
 
-attr(npi_new, "axis_name") <- "North Pacific Index"
+attr(npi_monthly_new, "axis_name") <- "North Pacific Index"
 
-if(check_index_changed(npi, npi_new)){
-  npi <- npi_new
-  usethis::use_data(npi,
+if(check_index_changed(npi_monthly, npi_monthly_new)){
+  npi_monthly <- npi_monthly_new
+  usethis::use_data(npi_monthly,
                     overwrite = TRUE)
-  plot(npi, value = "value", style = "plain")  # plain not a thing yet, just
+  plot(npi_monthly, value = "value", style = "plain")  # plain not a thing yet, just
                                              # not red-blue TODO add in average
                                              # value so can show colours
 }

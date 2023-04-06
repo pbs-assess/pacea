@@ -4,7 +4,7 @@
 ##'
 ##' @param old original index (`pacea_t` object) saved in pacea
 ##' @param new newly downloaded and wrangled index (`pacea_t` object)
-##' @return
+##' @return logical if the index has changed (and we would then want to resave it)
 ##' @export
 ##' @author Andrew Edwards
 ##' @examples
