@@ -84,7 +84,7 @@ download.file("https://climatedataguide.ucar.edu/sites/default/files/2023-01/npi
               quiet = FALSE)
 
 npi_monthly_new <- readr::read_table("npi_monthly.txt",
-                             col_names = c("yearmonth", "value"),
+                             col_names = c("yearmonth", "val"),
                              skip = 1,
                              na = "-999.00")    # December 1944
 
@@ -96,7 +96,7 @@ npi_monthly_new$year  <- as.numeric(substr(npi_monthly_new$yearmonth, 1, 4))
 npi_monthly_new <- dplyr::select(npi_monthly_new,
                          year,
                          month,
-                         value)
+                         val)
 
 class(npi_monthly_new) <- c("pacea_t",
                     class(npi_monthly_new))
@@ -107,7 +107,7 @@ if(check_index_changed(npi_monthly, npi_monthly_new)){
   npi_monthly <- npi_monthly_new
   usethis::use_data(npi_monthly,
                     overwrite = TRUE)
-  plot(npi_monthly, value = "value", style = "plain")  # plain not a thing yet, just
+  plot(npi_monthly, value = "val", style = "plain")  # plain not a thing yet, just
                                              # not red-blue TODO add in average
                                              # value so can show colours
 }
@@ -116,15 +116,13 @@ if(check_index_changed(npi_monthly, npi_monthly_new)){
 # This webiste has 2022-10 in it but includes value for 2022 (which by definition
 #  includes data from 2023), so not sure about their naming convention.
 
-
-
 download.file("https://climatedataguide.ucar.edu/sites/default/files/2022-10/npindex_ndjfm.txt",
               destfile="npi_annual_val.txt",
               mode="wb",
               quiet = FALSE)
 
 npi_annual_val_new <- readr::read_table("npi_annual_val.txt",
-                                        col_names = c("year", "value"),
+                                        col_names = c("year", "val"),
                                         skip = 1,
                                         na = "-999.00")    # 1899 (since no 1898 data)
 
@@ -156,7 +154,7 @@ if(check_index_changed(npi_annual, npi_annual_new)){
   npi_annual <- npi_annual_new
   usethis::use_data(npi_annual,
                     overwrite = TRUE)
-  plot(npi_annual, value = "value", style = "plain")  # plain not a thing yet, just
+  plot(npi_annual, value = "val", style = "plain")  # plain not a thing yet, just
                                              # not red-blue TODO add in average
                                              # value so can show colours
 }

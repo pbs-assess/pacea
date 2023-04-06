@@ -21,8 +21,8 @@ check_index_changed <- function(old, new){
 
   if(nrow(old) != nrow(new) |
      ncol(old) != ncol(new) |
-     attr(old, "axis_name") != attr(new, "axis_name")){
-
+     attr(old, "axis_name") != attr(new, "axis_name") |
+     !all(names(old) == names(new))){
        index_changed = TRUE} else {
     # Dimensions are the same so check values:
     if(!(all(old == new, na.rm = TRUE))){
