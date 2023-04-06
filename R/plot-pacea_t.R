@@ -8,6 +8,10 @@
 ##' @param ylab y-axis label, the default is an attribute of the `pacea_t`
 ##'   object. TODO Note that this isn't automated yet to refer to anomaly or absolute
 ##'   values, though for each time series there is probably only one choice
+##' @param smooth_over_year logical to smooth monthly values over each calendar
+##'   year (as per Tetjana Ross' plots, see `?oni` for reference). TODO when
+##'   smoothed the red-blue figure isn't quite right (it isn't for monthly also,
+##'   but that's not as obvious).
 ##' @param type usual argument for `plot()`
 ##' @param style what style of plot -- "red_blue" for colouring red above 0 and
 ##'   blue below, "goa" for Gulf of Alaska Ecosystem Report style plots, "plain"
@@ -33,6 +37,7 @@ plot.pacea_t <- function(obj,
                          value = "anom",
                          xlab = "Date",
                          ylab = attr(obj, "axis_name"),
+                         smooth_over_year = FALSE,
                          type = "l",
                          style = "red_blue",
                          y_tick = 0.25,
@@ -40,17 +45,47 @@ plot.pacea_t <- function(obj,
                          ...
                          ){
   stopifnot("value must be a column of obj" =
-              value %in% names(obj))
+            value %in% names(obj))
 
-  # TODO extract date-related columns automatically and create the date column correctly
-  #  This works for oni, may need a switch (or function, since may want for
-  #  pacea_st also) for years-only.
+  if(smooth_over_year){
+    stopifnot("to smooth over year you need monthly data (if you have daily we can adapt the code
+               to use that; set smooth_over_year = FALSE" =
+              "month" %in% names(obj))
 
-  obj_lub <- dplyr::mutate(obj,
-                           date = paste(year,
-                                        month,
-                                        sep = "-"))
-  obj_lub$date <- lubridate::ym(obj_lub$date)
+    obj_lub <- dplyr::group_by(obj,
+                               year) %>%
+      dplyr::summarise(across(-month,
+                              mean))  # Replace val, anom, and any other
+                                              #  non-year non-month column with their
+                                              #  annual mean
+
+    obj_lub <- dplyr::mutate(obj_lub,
+                             date = lubridate::ymd(year,
+                                                   truncated = 2))
+                             # sets year to 1st Jan of that year to give a valid
+                             #  date; could change to middle of year, but a
+                             #  little confusing.
+    } else {
+
+      # TODO extract date-related columns automatically and create the date column correctly
+      #  This works for oni, may need a switch (or function, since may want for
+      #  pacea_st also) for years-only. And if make function then use for the
+      #  obj_lub line above also.
+
+      obj_lub <- dplyr::mutate(obj,
+                               date = paste(year,
+                                            month,
+                                            sep = "-"))
+      obj_lub$date <- lubridate::ym(obj_lub$date)
+
+    }
+
+
+
+#data %>%
+#  mutate(day = floor_date(datetime, "day")) %>%
+#  group_by(day) %>%
+#  summarize(avg = mean(sed))
 
   if(style == "red_blue"){
 
