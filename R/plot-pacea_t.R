@@ -11,7 +11,7 @@
 ##' @param smooth_over_year logical to smooth monthly values over each calendar
 ##'   year (as per Tetjana Ross' plots, see `?oni` for reference). TODO when
 ##'   smoothed the red-blue figure isn't quite right (it isn't for monthly also,
-##'   but that's not as obvious).
+##'   but that's not as obvious). See Issue #15.
 ##' @param type usual argument for `plot()`
 ##' @param style what style of plot -- "red_blue" for colouring red above 0 and
 ##'   blue below, "goa" for Gulf of Alaska Ecosystem Report style plots, "plain"
@@ -150,6 +150,12 @@ plot.red_blue <- function(obj_lub,
        ylab = ylab,
        ...)
   abline(h = 0)
+
+  # GOA code:
+  # segments(topX,topY,topX,e_md+e_sd,lwd=2*SC,col="#FFCC00",lend="square" )
+  # TODO. They use spline also, which will likely work for me also; unless we
+  # want just single bars for annual values, I'd rather avoid smoothing. Maybe
+  # do spline for monthly ones.
 
   polygon(c(obj_lub$date[1],
             obj_lub$date,
