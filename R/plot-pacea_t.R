@@ -8,17 +8,18 @@
 ##' @param ylab y-axis label, the default is an attribute of the `pacea_t`
 ##'   object. TODO Note that this isn't automated yet to refer to anomaly or absolute
 ##'   values, though for each time series there is probably only one choice
+##' @param type usual argument for `plot()`
 ##' @param style what style of plot -- "red_blue" for colouring red above 0 and
 ##'   blue below, "goa" for Gulf of Alaska Ecosystem Report style plots, "plain"
 ##'   for just a line.
-##' @param y_tick
+##' @param y_tick increment for y-axis ticks
 ##' @param x_tick_extra_years number of extra years to expand around the range
 ##'   of data for which to add annual tick marks
 ##' @param ... optional arguments passed onto `plot()`. Note that the x-axis is
 ##'   constructed using a lubridate `date` object, so `xlim` needs to be a
 ##'   `date` object (see example).
 ##' @param ytick interval between minor tick marks on y-axis
-##' @return
+##' @return plot of the time series
 ##' @export
 ##' @author Andrew Edwards
 ##' @examples
@@ -42,7 +43,8 @@ plot.pacea_t <- function(obj,
               value %in% names(obj))
 
   # TODO extract date-related columns automatically and create the date column correctly
-  #  This works for oni
+  #  This works for oni, may need a switch (or function, since may want for
+  #  pacea_st also) for years-only.
 
   obj_lub <- dplyr::mutate(obj,
                            date = paste(year,
@@ -51,54 +53,16 @@ plot.pacea_t <- function(obj,
   obj_lub$date <- lubridate::ym(obj_lub$date)
 
   if(style == "red_blue"){
-    # TODO check if 0 within range
-    # Adapted from https://stackoverflow.com/questions/74902499/shading-below-line-graph-in-r/74903305#74903305
-    obj_lub$y_pos <- ifelse(obj_lub[[value]] > 0,
-                            obj_lub[[value]],
-                            0)
-    obj_lub$y_neg <- ifelse(obj_lub[[value]] < 0,
-                            obj_lub[[value]],
-                            0)
-    plot(obj_lub$date,
-         obj_lub[[value]], # [[]] returns a vector not a tibble
-         type = type,
-         xlab = xlab,
-         ylab = ylab,
-         ...)
-    abline(h = 0)
 
-    polygon(c(obj_lub$date[1],
-              obj_lub$date,
-              tail(obj_lub$date, 1)),
-            c(0,
-              obj_lub$y_pos,
-              0),
-            col = "red")
-
-    polygon(c(obj_lub$date[1],
-              obj_lub$date,
-              tail(obj_lub$date, 1)),
-            c(0,
-              obj_lub$y_neg,
-              0),
-            col = "blue")
-    min <- min(lubridate::floor_date(obj_lub$date, unit = "year")) - lubridate::years(x_tick_extra_years)
-    max <- max(lubridate::ceiling_date(obj_lub$date, unit = "year")) + lubridate::years(x_tick_extra_years)
-    axis(1,
-         seq(min,
-             max,
-             by = "years"),
-         labels = FALSE,
-         tcl = -0.2)
-    axis(2,
-         seq(floor(par("usr")[3]),
-             ceiling(par("usr")[4]),
-             by = y_tick),
-         labels = FALSE,
-         tcl = -0.2)
-
+    plot.red_blue(obj_lub,
+                  value = value,
+                  xlab = xlab,
+                  ylab = ylab,
+                  type = type,
+                  y_tick = y_tick,
+                  x_tick_extra_years = x_tick_extra_years,
+                  ...)
   } else {
-
     plot.default(obj_lub$date,
                  obj_lub[[value]], # [[]] returns a vector not a tibble
                  xlab = xlab,
@@ -108,7 +72,79 @@ plot.pacea_t <- function(obj,
   }
 }
 
+##' Plot the red/blue style of anomaly plot; internal function called from `plot-pacea_t()`.
+##'
+##' Adapted from
+##' https://stackoverflow.com/questions/74902499/shading-below-line-graph-in-r/74903305#74903305
+##'
+##' @param obj_lub obj a `pacea_t` object, which is a time series, with a date
+##'   column that is the lubridate `date` class.
+##' @param value see `plot.pacea_t()`
+##' @param xlab see `plot.pacea_t()`
+##' @param ylab see `plot.pacea_t()`
+##' @param type see `plot.pacea_t()`
+##' @param y_tick see `plot.pacea_t()`
+##' @param x_tick_extra_years see `plot.pacea_t()`
+##' @param ... see `plot.pacea_t()`
+##' @return plot of time series
+##' @author Andrew Edwards
+##' @examples
+##' \dontrun{
+##' # see plot.pacea_t()
+##' }
+plot.red_blue <- function(obj_lub,
+                          value,
+                          xlab,
+                          ylab,
+                          type,
+                          y_tick,
+                          x_tick_extra_years,
+                          ...){
+  # TODO check if 0 within range
+  obj_lub$y_pos <- ifelse(obj_lub[[value]] > 0,
+                          obj_lub[[value]],
+                          0)
+  obj_lub$y_neg <- ifelse(obj_lub[[value]] < 0,
+                          obj_lub[[value]],
+                          0)
 
+  plot(obj_lub$date,
+       obj_lub[[value]], # [[]] returns a vector not a tibble
+       type = type,
+       xlab = xlab,
+       ylab = ylab,
+       ...)
+  abline(h = 0)
 
-## axis(side = 1, at = seq(1, 123, 10), labels = seq(1900, 2020, 10), las = 1)
-## axis(side = 2, at = seq(-6, 6, 0.5), labels = seq(-6, 6, 0.5))
+  polygon(c(obj_lub$date[1],
+            obj_lub$date,
+            tail(obj_lub$date, 1)),
+          c(0,
+            obj_lub$y_pos,
+            0),
+          col = "red")
+
+  polygon(c(obj_lub$date[1],
+            obj_lub$date,
+            tail(obj_lub$date, 1)),
+          c(0,
+            obj_lub$y_neg,
+            0),
+          col = "blue")
+
+  min <- min(lubridate::floor_date(obj_lub$date, unit = "year")) - lubridate::years(x_tick_extra_years)
+  max <- max(lubridate::ceiling_date(obj_lub$date, unit = "year")) + lubridate::years(x_tick_extra_years)
+
+  axis(1,
+       seq(min,
+           max,
+           by = "years"),
+       labels = FALSE,
+       tcl = -0.2)
+  axis(2,
+       seq(floor(par("usr")[3]),
+           ceiling(par("usr")[4]),
+           by = y_tick),
+       labels = FALSE,
+       tcl = -0.2)
+}

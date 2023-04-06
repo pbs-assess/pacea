@@ -4,17 +4,58 @@
 \alias{plot.pacea_t}
 \title{Plot a pacea time series object}
 \usage{
-\method{plot}{pacea_t}(obj)
+\method{plot}{pacea_t}(
+  obj,
+  value = "anom",
+  xlab = "Date",
+  ylab = attr(obj, "axis_name"),
+  type = "l",
+  style = "red_blue",
+  y_tick = 0.25,
+  x_tick_extra_years = 20,
+  ...
+)
 }
 \arguments{
 \item{obj}{a `pacea_t` object, which is a time series.}
+
+\item{value}{which column of `obj` to plot}
+
+\item{xlab}{x-axis label}
+
+\item{ylab}{y-axis label, the default is an attribute of the `pacea_t`
+object. TODO Note that this isn't automated yet to refer to anomaly or absolute
+values, though for each time series there is probably only one choice}
+
+\item{type}{usual argument for `plot()`}
+
+\item{style}{what style of plot -- "red_blue" for colouring red above 0 and
+blue below, "goa" for Gulf of Alaska Ecosystem Report style plots, "plain"
+for just a line.}
+
+\item{y_tick}{increment for y-axis ticks}
+
+\item{x_tick_extra_years}{number of extra years to expand around the range
+of data for which to add annual tick marks}
+
+\item{...}{optional arguments passed onto `plot()`. Note that the x-axis is
+constructed using a lubridate `date` object, so `xlim` needs to be a
+`date` object (see example).}
+
+\item{ytick}{interval between minor tick marks on y-axis}
+}
+\value{
+plot of the time series
 }
 \description{
 <desc>
 }
 \examples{
 \dontrun{
-
+plot(oni)
+plot(oni,
+     xlim = c(lubridate::dmy(01011950),
+     lubridate::dmy(01012040))) # to expand x-axis
 }
 }
 \author{
