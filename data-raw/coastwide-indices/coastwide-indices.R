@@ -93,46 +93,63 @@ if(nrow(oni) != nrow(oni_new) |
 
 plot(oni)    # to check it looks okay
 
-
-
-stop("Got to here")
-
 #NPI
 # From
 # https://climatedataguide.ucar.edu/climate-data/north-pacific-np-index-trenberth-and-hurrell-monthly-and-winter
 # The North Pacific Index (NP index or NPI) is the area-weighted sea level
 # pressure over the region 30 deg N-65 deg N, 160 deg E-140 deg W. The NP index is defined to measure interannual to decadal variations in the atmospheric circulation. The dominant atmosphere-ocean relation in the North Pacific is one where atmospheric changes lead changes in sea surface temperatures by one to two months. However, strong ties exist with events in the tropical Pacific, with changes in tropical Pacific SSTs leading SSTs in the north Pacific by three months.
 
-download.file("https://climatedataguide.ucar.edu/sites/default/files/npindex_monthly.txt",
-              destfile="NPI.txt",
+# Chris used monthly, so we'll use that, and maybe also get their annual one
+#  (since annual is a winter average, not a full-year average, so we shouldn't
+#  average it ourselves.
+
+# Monthly first.
+# The website has 2023-01 in it for date-year, so check later ones for updated
+# values. There is no 2023-02 to 2023-04, presumably just need to check that
+# last one then later ones. Could write code to automate this.
+
+download.file("https://climatedataguide.ucar.edu/sites/default/files/2023-01/npindex_monthly.txt",
+              destfile="npi.txt",
               mode="wb",
               quiet = FALSE)
 
-NPI<-read.table("NPI.txt",
-                skip=1,
-                as.is=TRUE,
-                header=FALSE,
-                fill=TRUE)
+# Copying from ONI:
 
-NPI[NPI==(-999)] <- NA
+npi_new <- readr::read_table("npi.txt",
+                             col_names = c("yearmonth", "value"),
+                             skip = 1,
+                             na = "-999.00")    # December 1944
 
-NPI<-data.frame(Year=floor(NPI$V1/100),
-                Month=seq(1, 12, 1),
-                NPI=NPI$V2)
+stopifnot(npi_new[1,1] == 189901)    # Check still starts in 1899.
 
-Coastwide_Index_DF<-merge(merge(merge(merge(merge(merge(ENSO_MEI,ENSO_ONI,by=c("Year",'Month'),all=TRUE),AO,by=c("Year",'Month'),all=TRUE),NPGO,by=c("Year",'Month'),all=TRUE),PDO,by=c("Year",'Month'),all=TRUE),SOI,by=c("Year",'Month'),all=TRUE),NPI,by=c("Year",'Month'),all=TRUE)
+npi_new$month <- as.numeric(substr(npi_new$yearmonth, 5, 6))
+npi_new$year  <- as.numeric(substr(npi_new$yearmonth, 1, 4))
 
-# Poly_ID == -1 tells pacea that these values are coastwide
-Coastwide_Index_DF$Poly_ID <- -1
+npi_new <- dplyr::select(npi_new,
+                         year,
+                         month,
+                         value)
 
-Coastwide_Index_DF$Month <- as.numeric(Coastwide_Index_DF$Month)
+class(npi_new) <- c("pacea_t",
+                    class(npi_new))
 
-Coastwide_Index_DF <-
-  Coastwide_Index_DF[!is.na(Coastwide_Index_DF$Year) &
-                       !is.na(Coastwide_Index_DF$Month),]
+attr(npi_new, "axis_name") <- "North Pacific Index"
 
-# Commenting for now so don't overwrite.
-# use_data(Coastwide_Index_DF, overwrite = T)
+
+if(check_index_changed(npi, npi_new)){
+  npi <- npi_new
+  usethis::use_data(npi,
+                    overwrite = TRUE)
+}
+
+plot(npi, value = "value", style = "plain")  # plain not a thing yet, just
+                                             # not red-blue TODO add in average
+                                             # value so can show colours
+
+
+# End of copying from ONI
+
+stop("Got to here")
 
 
 
