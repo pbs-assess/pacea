@@ -65,45 +65,15 @@ class(oni_new) <- c("pacea_t",
 
 attr(oni_new, "axis_name") <- "Oceanic Niño Index"
 
-# If it's changed from what is currently saved then save the new version.
-# (Tried testthat::expect_equal but it returned tibble of FALSE's)
-# Will need this again so should make a function.
-if(nrow(oni) != nrow(oni_new) |
-   ncol(oni) != ncol(oni_new) |
-   attr(oni, "axis_name") != attr(oni_new, "axis_name")){
-
+if(check_index_changed(oni, oni_new)){
   oni <- oni_new
-
   usethis::use_data(oni,
-                    overwrite = TRUE)} else {
-  # dimensions are the same so check values
-  if(!(all(oni == oni_new))){
-    oni <- oni_new
-
-    usethis::use_data(oni,
-                      overwrite = TRUE)
-  }
+                    overwrite = TRUE)
+  plot(oni)    # to check it looks okay; if no figure then hasn't changed
 }
-# Without the all_equal() check, use_data does
-#  overwrite the old file even if nothing has changed, so the date stamp changes,
-#  but Git sees that nothing has changed so doesn't require a commit; seems best
-#  to keep the expect_equal check, even though we could get away with not having
-#  it (it will avoid confusing timestamps that are newer than the last commit of
-#  a file).
 
-plot(oni)    # to check it looks okay
 
-#NPI
-# From
-# https://climatedataguide.ucar.edu/climate-data/north-pacific-np-index-trenberth-and-hurrell-monthly-and-winter
-# The North Pacific Index (NP index or NPI) is the area-weighted sea level
-# pressure over the region 30 deg N-65 deg N, 160 deg E-140 deg W. The NP index is defined to measure interannual to decadal variations in the atmospheric circulation. The dominant atmosphere-ocean relation in the North Pacific is one where atmospheric changes lead changes in sea surface temperatures by one to two months. However, strong ties exist with events in the tropical Pacific, with changes in tropical Pacific SSTs leading SSTs in the north Pacific by three months.
-
-# Chris used monthly, so we'll use that, and maybe also get their annual one
-#  (since annual is a winter average, not a full-year average, so we shouldn't
-#  average it ourselves.
-
-# Monthly first.
+# NPI monthly
 # The website has 2023-01 in it for date-year, so check later ones for updated
 # values. There is no 2023-02 to 2023-04, presumably just need to check that
 # last one then later ones. Could write code to automate this.
@@ -112,8 +82,6 @@ download.file("https://climatedataguide.ucar.edu/sites/default/files/2023-01/npi
               destfile="npi.txt",
               mode="wb",
               quiet = FALSE)
-
-# Copying from ONI:
 
 npi_new <- readr::read_table("npi.txt",
                              col_names = c("yearmonth", "value"),
@@ -135,22 +103,67 @@ class(npi_new) <- c("pacea_t",
 
 attr(npi_new, "axis_name") <- "North Pacific Index"
 
-
 if(check_index_changed(npi, npi_new)){
   npi <- npi_new
   usethis::use_data(npi,
                     overwrite = TRUE)
-}
-
-plot(npi, value = "value", style = "plain")  # plain not a thing yet, just
+  plot(npi, value = "value", style = "plain")  # plain not a thing yet, just
                                              # not red-blue TODO add in average
                                              # value so can show colours
+}
+
+# NPI annual
+# This webiste has 2022-10 in it but includes value for 2022 (which by definition
+#  includes data from 2023), so not sure about their naming convention.
 
 
-# End of copying from ONI
+
+download.file("https://climatedataguide.ucar.edu/sites/default/files/2022-10/npindex_ndjfm.txt",
+              destfile="npi_annual_val.txt",
+              mode="wb",
+              quiet = FALSE)
+
+npi_annual_val_new <- readr::read_table("npi_annual_val.txt",
+                                        col_names = c("year", "value"),
+                                        skip = 1,
+                                        na = "-999.00")    # 1899 (since no 1898 data)
+
+stopifnot(npi_annual_val_new[1,1] == 1899)    # Check still starts in 1899.
+
+
+download.file("https://climatedataguide.ucar.edu/sites/default/files/2023-01/npindex_anom_ndjfm.txt",
+              destfile="npi_annual_anom.txt",
+              mode="wb",
+              quiet = FALSE)
+
+npi_annual_anom_new <- readr::read_table("npi_annual_anom.txt",
+                                         col_names = c("year", "anom"),
+                                         skip = 1,
+                                         na = "-999.00")    # 1899 (since no 1898 data)
+
+stopifnot(npi_annual_anom_new[1,1] == 1899)    # Check still starts in 1899.
+
+npi_annual_new <- dplyr::left_join(npi_annual_val_new,
+                                   npi_annual_anom_new,
+                                   by = "year")
+
+class(npi_annual_new) <- c("pacea_t",
+                           class(npi_annual_new))
+
+attr(npi_annual_new, "axis_name") <- "North Pacific Index"
+
+if(check_index_changed(npi_annual, npi_annual_new)){
+  npi_annual <- npi_annual_new
+  usethis::use_data(npi_annual,
+                    overwrite = TRUE)
+  plot(npi_annual, value = "value", style = "plain")  # plain not a thing yet, just
+                                             # not red-blue TODO add in average
+                                             # value so can show colours
+}
+
+TODO make plot work for objects without months
 
 stop("Got to here")
-
 
 
 # ENSO MEI
