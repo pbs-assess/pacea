@@ -1,4 +1,6 @@
-# Obtaining the oceanographic basin indices and compile them into pacea.
+# Obtaining the oceanographic basin indices and compile them into pacea. Code is
+#  best run line-by-line to check plots etc.
+#
 #  Converted from original code supplied by Chris Rooper. Moving updated calls
 #  to the top, to save each data set as our new format.
 
@@ -13,11 +15,13 @@
 # https://climatedataguide.ucar.edu/sites/default/files/cas_data_files/asphilli/npindex_monthly.txt
 # Chris has similar
 # https://climatedataguide.ucar.edu/sites/default/files/npindex_monthly.txt
-# Both are currently down (29/3/31, 10am; check again at some point). This seems
-# to have annual anomalies:
+# Both are currently down (29/3/31, 10am; check again at some point, also 6/4/23). This seems
+# to have annual anomalies and information:
+#  https://climatedataguide.ucar.edu/climate-data/north-pacific-np-index-trenberth-and-hurrell-monthly-and-winter
+
 #  https://climatedataguide.ucar.edu/sites/default/files/2023-01/npindex_anom_ndjfm.txt  - annoying if their websites now have dates in them, bit harder to automate (but doable)
 #   or monthly absolute values:
-#  https://climatedataguide.ucar.edu/sites/default/files/2023-01/npindex_monthly.txt
+#  https://climatedataguide.ucar.edu/sites/default/files/2023-01/npindex_monthly.txt .
 # PDO      PDO                    Tetjana: http://research.jisao.washington.edu/pdo/ (but data links are borken, 29/3/31)
 #                                 Chris: https://www.ncei.noaa.gov/pub/data/cmb/ersst/v5/index/ersst.v5.pdo.dat  (works and is updated)
 # SOI      SOI                    Same website, still updated.
@@ -89,7 +93,47 @@ if(nrow(oni) != nrow(oni_new) |
 
 plot(oni)    # to check it looks okay
 
+
+
 stop("Got to here")
+
+#NPI
+# From
+# https://climatedataguide.ucar.edu/climate-data/north-pacific-np-index-trenberth-and-hurrell-monthly-and-winter
+# The North Pacific Index (NP index or NPI) is the area-weighted sea level
+# pressure over the region 30 deg N-65 deg N, 160 deg E-140 deg W. The NP index is defined to measure interannual to decadal variations in the atmospheric circulation. The dominant atmosphere-ocean relation in the North Pacific is one where atmospheric changes lead changes in sea surface temperatures by one to two months. However, strong ties exist with events in the tropical Pacific, with changes in tropical Pacific SSTs leading SSTs in the north Pacific by three months.
+
+download.file("https://climatedataguide.ucar.edu/sites/default/files/npindex_monthly.txt",
+              destfile="NPI.txt",
+              mode="wb",
+              quiet = FALSE)
+
+NPI<-read.table("NPI.txt",
+                skip=1,
+                as.is=TRUE,
+                header=FALSE,
+                fill=TRUE)
+
+NPI[NPI==(-999)] <- NA
+
+NPI<-data.frame(Year=floor(NPI$V1/100),
+                Month=seq(1, 12, 1),
+                NPI=NPI$V2)
+
+Coastwide_Index_DF<-merge(merge(merge(merge(merge(merge(ENSO_MEI,ENSO_ONI,by=c("Year",'Month'),all=TRUE),AO,by=c("Year",'Month'),all=TRUE),NPGO,by=c("Year",'Month'),all=TRUE),PDO,by=c("Year",'Month'),all=TRUE),SOI,by=c("Year",'Month'),all=TRUE),NPI,by=c("Year",'Month'),all=TRUE)
+
+# Poly_ID == -1 tells pacea that these values are coastwide
+Coastwide_Index_DF$Poly_ID <- -1
+
+Coastwide_Index_DF$Month <- as.numeric(Coastwide_Index_DF$Month)
+
+Coastwide_Index_DF <-
+  Coastwide_Index_DF[!is.na(Coastwide_Index_DF$Year) &
+                       !is.na(Coastwide_Index_DF$Month),]
+
+# Commenting for now so don't overwrite.
+# use_data(Coastwide_Index_DF, overwrite = T)
+
 
 
 # ENSO MEI
@@ -269,40 +313,3 @@ colnames(ALPI)<-c("Year",
                   "ALPI")
 
 plot(ALPI)
-
-#NPI
-# From
-# https://climatedataguide.ucar.edu/climate-data/north-pacific-np-index-trenberth-and-hurrell-monthly-and-winter
-# The North Pacific Index (NP index or NPI) is the area-weighted sea level
-# pressure over the region 30 deg N-65 deg N, 160 deg E-140 deg W. The NP index is defined to measure interannual to decadal variations in the atmospheric circulation. The dominant atmosphere-ocean relation in the North Pacific is one where atmospheric changes lead changes in sea surface temperatures by one to two months. However, strong ties exist with events in the tropical Pacific, with changes in tropical Pacific SSTs leading SSTs in the north Pacific by three months.
-
-download.file("https://climatedataguide.ucar.edu/sites/default/files/npindex_monthly.txt",
-              destfile="NPI.txt",
-              mode="wb",
-              quiet = FALSE)
-
-NPI<-read.table("NPI.txt",
-                skip=1,
-                as.is=TRUE,
-                header=FALSE,
-                fill=TRUE)
-
-NPI[NPI==(-999)] <- NA
-
-NPI<-data.frame(Year=floor(NPI$V1/100),
-                Month=seq(1, 12, 1),
-                NPI=NPI$V2)
-
-Coastwide_Index_DF<-merge(merge(merge(merge(merge(merge(ENSO_MEI,ENSO_ONI,by=c("Year",'Month'),all=TRUE),AO,by=c("Year",'Month'),all=TRUE),NPGO,by=c("Year",'Month'),all=TRUE),PDO,by=c("Year",'Month'),all=TRUE),SOI,by=c("Year",'Month'),all=TRUE),NPI,by=c("Year",'Month'),all=TRUE)
-
-# Poly_ID == -1 tells pacea that these values are coastwide
-Coastwide_Index_DF$Poly_ID <- -1
-
-Coastwide_Index_DF$Month <- as.numeric(Coastwide_Index_DF$Month)
-
-Coastwide_Index_DF <-
-  Coastwide_Index_DF[!is.na(Coastwide_Index_DF$Year) &
-                       !is.na(Coastwide_Index_DF$Month),]
-
-# Commenting for now so don't overwrite.
-# use_data(Coastwide_Index_DF, overwrite = T)
