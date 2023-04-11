@@ -1,6 +1,25 @@
+##' Make the master grid
+##'
+##' Internal function for developers, to create the master grid. Andy
+##' functionalised from Joe's original code. Function will need
+##' changing/adapting/deprecating if we use a new coastline object. And if we
+##' decide on a non-regular grid - coarser away from the coast.
+##'
+##' @param coastline `SpatialPolygons` object (from `sp` package) to represent
+##'   the coastline. Probably only works for `Coastline` for now, which Joe got
+##'   from somewhere.
+##' @param cell_size_x size of each cell in the (pseudo, due to rotation) x
+##'   direction, km
+##' @param cell_size_y size of each cell in the (pseudo, due to rotation) y
+##'   direction, km
+##' @param rotang angle to rotate the grid
+##' @return a grid to use as a master grid, of class `sf` and `data.frame`
+##' @author Andrew Edwards
+##' @examples
+##' \dontrun{
+##' # See data-raw/grids/test-grids.R
+##' }
 make_grid <- function(coastline,
-                      # num_x = 10,
-                      # num_y = 10,
                       cell_size_x = 2,
                       cell_size_y = 2,
                       rotang = 318.5){

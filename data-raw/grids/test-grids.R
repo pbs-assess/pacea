@@ -2,7 +2,7 @@ library(dplyr)
 load_all()
 
 # Shapefile of the entire BC Coastline for plotting
-Coastline <- sf::st_as_sf(PACea::Coastline)
+Coastline <- sf::st_as_sf(Coastline)     # BAD, as Coastline is saved in the package
 # Okay, should resave that as an sf so it's in the right format within the
 # package.
 
@@ -18,7 +18,8 @@ test_grid_10 <- make_grid(Coastline,
 
 test_grid_20 <- make_grid(Coastline,
                           cell_size_x = 20,
-                          cell_size_y = 20)
+                          cell_size_y = 20)     # If this changes then may have
+                                        # to change the corresponding test
 
 usethis::use_data(test_grid_2, overwrite = T)    # .rda file size is 1.6 Mb
 usethis::use_data(test_grid_10, overwrite = T)   # .rda file size is  85 kb
