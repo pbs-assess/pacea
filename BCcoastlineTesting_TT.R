@@ -149,31 +149,3 @@ ggplot() +
   geom_sf(data = eez.bc_sf) + 
   geom_sf(data = canus_crop) 
 
-
-
-
-
-  
-
-# transform to UTM
-bcUTM <- st_transform(north.america, crs = 3157) # 3157 is the CRS for UTM zone 10
-
-
-
-st_bbox(bcUTM)  
-bcUTM$geometry <- bcUTM$geometry/1000
-
-tt <- st_crop(bcUTM,
-              y = c(xmin = -142, ymin = 45, xmax = -110, ymax = 57))
-
-ggplot() +
-  geom_sf(data = tt)
-
-
-
-str(north.america)
-st_crs(north.america) # WGS 84
-# transform to UTMs
-bcUTM <- st_transform(north.america, crs = 3157) # 3157 is the CRS for UTM zone 10
-
-
