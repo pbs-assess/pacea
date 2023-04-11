@@ -21,12 +21,12 @@ check_index_changed <- function(old, new){
 
   if(nrow(old) != nrow(new) |
      ncol(old) != ncol(new) |
-     attr(old, "axis_name") != attr(new, "axis_name") |
-     !all(names(old) == names(new))){
+     attr(old, "axis_name") != attr(new, "axis_name")) {
        index_changed = TRUE} else {
     # Dimensions are the same so check values:
-    if(!(all(old == new, na.rm = TRUE))){
-      index_changed = TRUE
+  if(!(all(old == new, na.rm = TRUE)) |
+     !all(names(old) == names(new))){
+    index_changed = TRUE
       # Only overwrite if values have changed (else
       #  timestamp of data object will be confusingly later than
       #  the Git commit that made it, because Git won't
