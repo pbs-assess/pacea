@@ -35,7 +35,7 @@ ggplot() +
   geom_sf(data = bceez) + 
   geom_sf(data = bccoast) 
 
-
+# add sf object data to pacakge data folder
 usethis::use_data(bccoast)
 usethis::use_data(bceez)
 
