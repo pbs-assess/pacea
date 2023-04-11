@@ -2,6 +2,7 @@
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/pbs-assess/pacea/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pbs-assess/pacea/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/pbs-assess/pacea/branch/main/graph/badge.svg)](https://app.codecov.io/gh/pbs-assess/pacea?branch=main)
 <!-- badges: end -->
 
 An R package to house Pacific Region ecosystem data to help operationalise an ecosystem approach to fisheries.
