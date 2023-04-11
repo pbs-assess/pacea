@@ -37,7 +37,7 @@ but that's not as obvious). See Issue #15.}
 \item{type}{usual argument for `plot()`}
 
 \item{style}{what style of plot -- "red_blue" for colouring red above 0 and
-blue below, "goa" for Gulf of Alaska Ecosystem Report style plots, "plain"
+blue below, TODO to implement: "goa" for Gulf of Alaska Ecosystem Report style plots, "plain"
 for just a line.}
 
 \item{y_tick}{increment for y-axis ticks}
@@ -52,10 +52,11 @@ constructed using a lubridate `date` object, so `xlim` needs to be a
 \item{ytick}{interval between minor tick marks on y-axis}
 }
 \value{
-plot of the time series
+plot of the time series to the current device (returns nothing)
 }
 \description{
-<desc>
+Temporal plot for a pacea time series (`pacea_t`) object, with options for
+display style.
 }
 \examples{
 \dontrun{
@@ -63,6 +64,8 @@ plot(oni)
 plot(oni,
      xlim = c(lubridate::dmy(01011950),
      lubridate::dmy(01012040))) # to expand x-axis
+plot(npi_monthly,
+     value = "val")
 }
 }
 \author{
