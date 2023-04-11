@@ -1,6 +1,7 @@
 ##' Plot a pacea time series object
 ##'
-##'  <desc>
+##' Temporal plot for a pacea time series (`pacea_t`) object, with options for
+##' display style.
 ##'
 ##' @param obj a `pacea_t` object, which is a time series.
 ##' @param value which column of `obj` to plot
@@ -15,7 +16,7 @@
 ##'   but that's not as obvious). See Issue #15.
 ##' @param type usual argument for `plot()`
 ##' @param style what style of plot -- "red_blue" for colouring red above 0 and
-##'   blue below, "goa" for Gulf of Alaska Ecosystem Report style plots, "plain"
+##'   blue below, TODO to implement: "goa" for Gulf of Alaska Ecosystem Report style plots, "plain"
 ##'   for just a line.
 ##' @param y_tick increment for y-axis ticks
 ##' @param x_tick_extra_years number of extra years to expand around the range
@@ -24,7 +25,7 @@
 ##'   constructed using a lubridate `date` object, so `xlim` needs to be a
 ##'   `date` object (see example).
 ##' @param ytick interval between minor tick marks on y-axis
-##' @return plot of the time series
+##' @return plot of the time series to the current device (returns nothing)
 ##' @export
 ##' @author Andrew Edwards
 ##' @examples
@@ -33,6 +34,8 @@
 ##' plot(oni,
 ##'      xlim = c(lubridate::dmy(01011950),
 ##'      lubridate::dmy(01012040))) # to expand x-axis
+##' plot(npi_monthly,
+##'      value = "val")
 ##' }
 plot.pacea_t <- function(obj,
                          value = "anom",
@@ -45,12 +48,12 @@ plot.pacea_t <- function(obj,
                          x_tick_extra_years = 20,
                          ...
                          ){
-  stopifnot("value must be a column of obj" =
+  stopifnot("value must be a column of the pacea_t object" =
             value %in% names(obj))
 
   if(smooth_over_year){
     stopifnot("to smooth over year you need monthly data (if you have daily we can adapt the code
-               to use that; set smooth_over_year = FALSE" =
+               to use that); set smooth_over_year = FALSE" =
               "month" %in% names(obj))
 
     obj_lub <- dplyr::group_by(obj,
@@ -189,4 +192,5 @@ plot.red_blue <- function(obj_lub,
            by = y_tick),
        labels = FALSE,
        tcl = -0.2)
+  invisible()
 }
