@@ -16,11 +16,11 @@ A comprehensive [2022 analysis of Canadian stock assessments](https://publicatio
 
 pacea is intended to be a data platform, *not* a primary database of lots of raw data. All data sets include documentation regarding the original authors, who should be cited as appropriate. 
 
-It is not operational yet (some of the data are just example data to set up the infrastructure of the package).
+It is not fully operational yet (some of the data are just example data to set up the infrastructure of the package) while we are developing it; there will be vignettes to explain functionality.
 
-While being an R package, for non-R users we hope to add functionality to extract the data as a simple .csv file. 
+While being an R package, for non-R users we hope to add functionality to extract the data as a simple .csv file. Though this may be prove harder than we originally envisioned, given how we are storing the data (and the ROMS outputs are large). 
 
-Below are some of the notes and references from our original planning meeting (later notes are elsewhere). Work is ongoing.
+Below are some rough notes and references from our original planning meeting (later notes are elsewhere). Work is ongoing.
 
 # Motivation
 
@@ -72,6 +72,15 @@ Main structure in GSLea is simply the four headings:
 
 | Year | Ecosystem Approach Region | Variable | Value |
 
+## Notes for developers
+
+Lower case as much as possible, with underscores.
+
+Document everything.
+
+Add unit tests as much as possible (though not for functions that might not end up being used).
+
+Add examples in functions, and vignettes (once we've finalised some aspects).
 
 ## Funding
 
