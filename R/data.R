@@ -122,3 +122,98 @@
 ##' @author Andrew Edwards
 ##' @source Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
 "npi_annual"
+
+##' PDO -- Pacific Decadal Oscillation
+##'
+##' The Pacific Decadal Oscillation is a monthly index which is a long-lived El
+##' Niño-like pattern of Pacific climate variability.
+##'
+##' Adapted from http://research.jisao.washington.edu/pdo/
+##' The Pacific Decadal Oscillation (PDO) is a long-lived El Niño-like pattern
+##' of Pacific climate variability. While the two climate oscillations have
+##' similar spatial climate fingerprints, they have very different behavior in
+##' time. Fisheries scientist Steven Hare coined the term PDO
+##' in 1996 while researching connections between Alaska
+##' salmon production cycles and Pacific climate.
+##' Two main characteristics distinguish PDO from El
+##' Niño/Southern Oscillation (ENSO): first, 20th century PDO "events" persisted
+##' for 20-to-30 years, while typical ENSO events persisted for 6 to 18 months;
+##' second, the climatic fingerprints of the PDO are most visible in the North
+##' Pacific/North American sector, while secondary signatures exist in the
+##' tropics, whereas the opposite is true for ENSO. Several independent studies find
+##' evidence for just two full PDO cycles in the past century: "cool" PDO
+##' regimes prevailed from 1890-1924 and again from 1947-1976, while "warm" PDO
+##' regimes dominated from 1925-1946 and from 1977 through (at least) the
+##' mid-1990's. Shoshiro Minobe  has shown that 20th century PDO fluctuations
+##' were most energetic in two general periodicities, one from 15-to-25 years,
+##' and the other from 50-to-70 years.
+##'
+##' Major changes in northeast Pacific marine ecosystems have been correlated
+##' with phase changes in the PDO; warm eras have seen enhanced coastal ocean
+##' biological productivity in Alaska and inhibited productivity off the west
+##' coast of the contiguous United States, while cold PDO eras have seen the
+##' opposite north-south pattern of marine ecosystem productivity.
+##'
+##' Causes for the PDO are not currently known. Likewise, the potential
+##' predictability for this climate oscillation are not known. Some climate
+##' simulation models produce PDO-like oscillations, although often for different
+##' reasons. The mechanisms giving rise to PDO will determine whether skillful
+##' decades-long PDO climate predictions are possible. For example, if PDO arises
+##' from air-sea interactions that require 10 year ocean adjustment times, then
+##' aspects of the phenomenon will (in theory) be predictable at lead times of up to
+##' 10 years. Even in the absence of a theoretical understanding, PDO climate
+##' information improves season-to-season and year-to-year climate forecasts for
+##' North America because of its strong tendency for multi-season and multi-year
+##' persistence. From a societal impacts perspective, recognition of PDO is
+##' important because it shows that "normal" climate conditions can vary over time
+##' periods comparable to the length of a human's lifetime .
+##'
+##' https://www.ncei.noaa.gov/access/monitoring/pdo/
+##' The NCEI (NOAA's National Centers for Environmental Information) PDO index
+##' (used in pacea) is based on NOAA's extended reconstruction of
+##' SSTs (ERSST Version 5). It is constructed by regressing the ERSST anomalies
+##' against the Mantua PDO index for their overlap period, to compute a PDO
+##' regression map for the North Pacific ERSST anomalies. The ERSST anomalies
+##' are then projected onto that map to compute the NCEI index. The NCEI PDO
+##' index closely follows the Mantua PDO index.
+##'
+##' Good explanation (and see figures) from https://www.worldclimateservice.com/2021/09/01/pacific-decadal-oscillation/
+##' The Pacific Decadal Oscillation is a sea surface temperature (SST) climate
+##' cycle (or teleconnection) describing sea surface temperature anomalies over
+##' the Northeastern Pacific Ocean. The PDO can influence the weather conditions
+##' across North America with characteristic patterns occurring at different
+##' times of the year.
+##' The PDO oscillates between positive and negative phases. The positive phase
+##' is characterized by cool SSTs north of Hawaii and warmer than normal sea
+##' surface temperatures along the western coast of North America (their Figure
+##' 1). The negative phase is a mirror image with warm surface waters in the
+##' Central North Pacific and cooler than normal waters along the western coast
+##' of North America (their Figure 2).
+##'
+##' Also, from https://en.wikipedia.org/wiki/Pacific_decadal_oscillation :
+##' Over the past century, the amplitude of this climate pattern has varied
+##' irregularly at interannual-to-interdecadal time scales (meaning time periods
+##' of a few years to as much as time periods of multiple decades). There is
+##' evidence of reversals in the prevailing polarity (meaning changes in cool
+##' surface waters versus warm surface waters within the region) of the
+##' oscillation occurring around 1925, 1947, and 1977; the last two reversals
+##' corresponded with dramatic shifts in salmon production regimes in the North
+##' Pacific Ocean. This climate pattern also affects coastal sea and continental
+##' surface air temperatures from Alaska to California. A PDO 'signal' has been
+##' reconstructed as far back as 1661 through tree-ring chronologies in the Baja
+##' California area.
+##'
+##' Associated code adapted from code generously shared by Chris Rooper.
+##'
+##' @format A tibble also of class `pacea_t` (pacea temporal) with columns:
+##' \describe{
+##'   \item{year:}{year of value}
+##'   \item{month:}{month (1 to 12) of value}
+##'   \item{anom:}{anomaly calculated as the leading empirical orthogonal
+##'   function of monthly sea surface temperature anomalies over the North
+##'   Pacific (poleward of 20 deg N) after the global average sea surface
+##'   temperature has been removed.}
+##' }
+##' @author Andrew Edwards
+##' @source Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
+"pdo"

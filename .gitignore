@@ -25,7 +25,4 @@ lib/
 /data/test_grid_2.rda
 
 /R/older-functions/Upload_Data_Key.csv
-/data-raw/coastwide-indices/npi.txt
-/data-raw/coastwide-indices/npi_annual_anom.txt
-/data-raw/coastwide-indices/npi_annual_val.txt
-/data-raw/coastwide-indices/npi_monthly.txt
+/data-raw/coastwide-indices/*.txt

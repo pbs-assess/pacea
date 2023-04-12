@@ -3,11 +3,7 @@
 #
 #  Converted from original code supplied by Chris Rooper. Moving updated calls
 #  to the top, to save each data set as our new format.
-
-# Probably not using, see Issue #9: Note that these time series of indices are NOT stored across the
-#  BC grid. This saves a lot of space. Instead, pacea recognises that a covariate
-#  is `coastwide' if the `Poly_ID` value is set to `-1`.
-
+#
 # Checking with Tetjana's from SOPO 2022. She has (they all say 'full year'):
 # Index    Used below by Chris?    Source file agrees with Chris's?
 # ONI      ENSO ONI                Yes (Chris found the link to the .txt file).
@@ -34,7 +30,7 @@
 
 
 # Column names
-# year_months <- c("Year", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+#year_months <- c("Year", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
 #                  "11", "12")
 
 load_all()
@@ -159,7 +155,38 @@ if(check_index_changed(npi_annual, npi_annual_new)){
                                              # value so can show colours
 }
 
-TODO make plot work for objects without months
+# PDO
+# UCAR's second link going to Chris's one that we use below:
+# https://climatedataguide.ucar.edu/climate-data/pacific-decadal-oscillation-pdo-definition-and-indices
+download.file("https://www.ncei.noaa.gov/pub/data/cmb/ersst/v5/index/ersst.v5.pdo.dat",
+              destfile="pdo.txt",
+              mode="wb",
+              quiet = FALSE)
+
+pdo_new <- readr::read_table("pdo.txt",
+                             skip = 1,
+                             na = "99.99")  # Final months
+
+stopifnot(pdo_new[1,1] == 1854) # Check still starts in 1854
+
+pdo_new <- tidyr::pivot_longer(pdo_new,
+                               cols = "Jan":"Dec",
+                               names_to = "month",
+                               values_to = "anom") %>%
+  mutate(month = as.numeric(match(month, month.abb))) %>%
+  rename(year = Year)
+
+class(pdo_new) <- c("pacea_t",
+                    class(pdo_new))
+
+attr(pdo_new, "axis_name") <- "Pacific Decadal Oscillation"
+
+if(check_index_changed(pdo, pdo_new)){
+  pdo <- pdo_new
+  usethis::use_data(pdo,
+                    overwrite = TRUE)
+  plot(pdo)
+}
 
 stop("Got to here")
 
@@ -201,52 +228,6 @@ stopifnot(min(ENSO_MEI$Year) == 1979,
 # Row values are 2 month seasons (YEAR DJ JF FM MA AM MJ JJ JA AS SO ON ND)
 
 
-# PDO
-# From http://research.jisao.washington.edu/pdo/
-# The "Pacific Decadal Oscillation" (PDO) is a long-lived El Niño-like pattern of Pacific climate variability. While the two climate oscillations have similar spatial climate fingerprints, they have very different behavior in time. Fisheries scientist Steven Hare coined the term "Pacific Decadal Oscillation" (PDO) in 1996 while researching connections between Alaska salmon production cycles and Pacific climate (his dissertation topic with advisor Robert Francis). Two main characteristics distinguish PDO from El Niño/Southern Oscillation (ENSO): first, 20th century PDO "events" persisted for 20-to-30 years, while typical ENSO events persisted for 6 to 18 months; second, the climatic fingerprints of the PDO are most visible in the North Pacific/North American sector, while secondary signatures exist in the tropics - the opposite is true for ENSO. Several independent studies find evidence for just two full PDO cycles in the past century: "cool" PDO regimes prevailed from 1890-1924 and again from 1947-1976, while "warm" PDO regimes dominated from 1925-1946 and from 1977 through (at least) the mid-1990's. Shoshiro Minobe  has shown that 20th century PDO fluctuations were most energetic in two general periodicities, one from 15-to-25 years, and the other from 50-to-70 years.
-## http://ingrid.ldeo.columbia.edu/%28/home/alexeyk/mydata/TSsvd.in%29readfile/.SST/.PDO/
-
-## Major changes in northeast Pacific marine ecosystems have been correlated with phase changes in the PDO; warm eras have seen enhanced coastal ocean biological productivity in Alaska and inhibited productivity off the west coast of the contiguous United States, while cold PDO eras have seen the opposite north-south pattern of marine ecosystem productivity.
-
-## Causes for the PDO are not currently known. Likewise, the potential
-## predictability for this climate oscillation are not known. Some climate
-## simulation models produce PDO-like oscillations, although often for different
-## reasons. The mechanisms giving rise to PDO will determine whether skillful
-## decades-long PDO climate predictions are possible. For example, if PDO arises
-## from air-sea interactions that require 10 year ocean adjustment times, then
-## aspects of the phenomenon will (in theory) be predictable at lead times of up to
-## 10 years. Even in the absence of a theoretical understanding, PDO climate
-## information improves season-to-season and year-to-year climate forecasts for
-## North America because of its strong tendency for multi-season and multi-year
-## persistence. From a societal impacts perspective, recognition of PDO is
-## important because it shows that "normal" climate conditions can vary over time
-## periods comparable to the length of a human's lifetime .
-
-#download.file("https://www.ncdc.noaa.gov/teleconnections/pdo/data.csv", destfile="PDO.csv",mode="wb", quiet = FALSE)
-download.file("https://www.ncei.noaa.gov/pub/data/cmb/ersst/v5/index/ersst.v5.pdo.dat",
-              destfile="PDO.dat",
-              mode="wb",
-              quiet = FALSE)
-
-PDO <- read.table("PDO.dat",
-                  skip=1,
-                  as.is=TRUE,
-                  header=TRUE,
-                  sep='',
-                  fill=T)
-
-colnames(PDO)<- year_months
-
-PDO<-reshape::melt(PDO,
-                   id="Year")
-
-colnames(PDO)<-c("Year",
-                 "Month",
-                 "PDO_Index")
-
-PDO$Month <- as.numeric(PDO$Month)
-
-PDO[PDO == 99.99] <- NA
 
 # AO
 download.file("https://www.cpc.ncep.noaa.gov/products/precip/CWlink/daily_ao_index/monthly.ao.index.b50.current.ascii.table",
