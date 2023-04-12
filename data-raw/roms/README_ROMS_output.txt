@@ -29,6 +29,8 @@ roms_ncdf4.R - trying ncdef4 package. Based on the following (but then decided
 from-others/roms_ncdf4.Rmd - trying ncdf4 package, see HERE. Based on Lindsay Davidson's file:
  RomsExtraction_forAndy.Rmd - from Lindsay
 
+file-size-testing.R - Travis testing different resulting file sizes.
+
 --
 
 base-3km-raster.R from Jessica Nephin:
