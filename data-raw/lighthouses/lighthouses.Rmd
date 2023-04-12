@@ -9,6 +9,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Creating BC Lightstation Data on SST and Salinity
 
+Joe's original code - will need adapting slightly. Should these be temporal
+objects or spatio-temporal - I'd assumed just simple time series each
+corresponding to a location.
+
 This markdown document shows how the sea-surface temperature (SST) and salinity data collected by the BC lightstations/lighthouses are compiled into PACea.
 
 # Read buoy data from BC Lightstations
@@ -39,11 +43,11 @@ nmonths <- 12
 # 1914 is the year the first 'active' buoy went online
 nyears <- length(1914:lubridate::year(Sys.Date()))
 
-# Create a 'complete' data.frame skeleton to fill in 
+# Create a 'complete' data.frame skeleton to fill in
 Data_Lightstations <- data.frame(Location=rep(NA,nstations*nyears*nmonths),
                                  Year=rep(rep(1914:lubridate::year(Sys.Date()),
-                                              each=nmonths),times=nstations), 
-                                 Month=rep(1:12, times=nyears*nstations), 
+                                              each=nmonths),times=nstations),
+                                 Month=rep(1:12, times=nyears*nstations),
                                  SST=rep(NA, nstations*nyears*nmonths),
                                  Salinity=rep(NA, nstations*nyears*nmonths),
                                  Longitude=NA,
@@ -61,7 +65,7 @@ for(filename in list.files('./DATA_Active_lightstations',pattern = '.csv') )
       (count_SST-1)*nyears*nmonths + (1:(nyears*nmonths))
     ] <-
       substr(filename, start=1, stop = stringr::str_locate_all(filename,'_')[[1]][2,]-1)
-    
+
     # Extract the lat/lon coords of the buoy
     Data_Lightstations$Longitude[
       (count_SST-1)*nyears*nmonths + (1:(nyears*nmonths))
@@ -77,10 +81,10 @@ for(filename in list.files('./DATA_Active_lightstations',pattern = '.csv') )
          pattern=substr(filename, start=1, stop = stringr::str_locate_all(filename,'_')[[1]][2,]-1),
           gsub(Lightstations$LIGHSTATIO, pattern = ' ', replacement = '_'),
           ignore.case = T)])
-    
+
     # read the csv data and merge by Location Year Month
     # Convert to the data.frame into long format by creating 'Month' variable
-    tmp <- read.csv(paste0('./DATA_Active_Lightstations/', filename), 
+    tmp <- read.csv(paste0('./DATA_Active_Lightstations/', filename),
                     header = T, skip = 1)
     tmp <- tmp %>%
       dplyr::select(YEAR, JAN, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC) %>%
@@ -92,16 +96,16 @@ for(filename in list.files('./DATA_Active_lightstations',pattern = '.csv') )
       dplyr::mutate(Month=recode(Month, JAN=1, FEB=2, MAR=3,
                                  APR=4, MAY=5, JUN=6, JUL=7, AUG=8,
                                  SEP=9, OCT=10, NOV=11, DEC=12),
-                    Location=substr(filename, start=1, 
+                    Location=substr(filename, start=1,
                                     stop = stringr::str_locate_all(filename,'_')[[1]][2,]-1)) %>%
       dplyr::rename(Year=YEAR)
-    
+
     Data_Lightstations[(count_SST-1)*nyears*nmonths + (1:(nyears*nmonths)),] <-
       dplyr::left_join(Data_Lightstations[(count_SST-1)*nyears*nmonths + (1:(nyears*nmonths)),
-                                          c('Location','Year','Month','Salinity','Longitude','Latitude')], 
+                                          c('Location','Year','Month','Salinity','Longitude','Latitude')],
                        tmp) %>%
       select(Location,Year,Month,SST,Salinity,Longitude,Latitude)
-    
+
     count_SST <- count_SST + 1
   }
   if(grepl(filename, pattern = 'Salinities'))
@@ -110,7 +114,7 @@ for(filename in list.files('./DATA_Active_lightstations',pattern = '.csv') )
       (count_salinity-1)*nyears*nmonths + (1:(nyears*nmonths))
     ] <-
       substr(filename, start=1, stop = stringr::str_locate_all(filename,'_')[[1]][2,]-1)
-    
+
     # Extract the lat/lon coords of the buoy
     Data_Lightstations$Longitude[
       (count_SST-1)*nyears*nmonths + (1:(nyears*nmonths))
@@ -126,9 +130,9 @@ for(filename in list.files('./DATA_Active_lightstations',pattern = '.csv') )
          pattern=substr(filename, start=1, stop = stringr::str_locate_all(filename,'_')[[1]][2,]-1),
           gsub(Lightstations$LIGHSTATIO, pattern = ' ', replacement = '_'),
           ignore.case = T)])
-    
+
     # read the data and merge by Location, Year and Month
-    tmp <- read.csv(paste0('./DATA_Active_Lightstations/', filename), 
+    tmp <- read.csv(paste0('./DATA_Active_Lightstations/', filename),
                     header = T, skip = 1)
     tmp <- tmp %>%
       dplyr::select(YEAR, JAN, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC) %>%
@@ -140,16 +144,16 @@ for(filename in list.files('./DATA_Active_lightstations',pattern = '.csv') )
       dplyr::mutate(Month=recode(Month, JAN=1, FEB=2, MAR=3,
                                  APR=4, MAY=5, JUN=6, JUL=7, AUG=8,
                                  SEP=9, OCT=10, NOV=11, DEC=12),
-                    Location=substr(filename, start=1, 
+                    Location=substr(filename, start=1,
                                     stop = stringr::str_locate_all(filename,'_')[[1]][2,]-1)) %>%
       rename(Year=YEAR)
-    
+
     Data_Lightstations[(count_salinity-1)*nyears*nmonths + (1:(nyears*nmonths)),] <-
       dplyr::left_join(Data_Lightstations[(count_salinity-1)*nyears*nmonths + (1:(nyears*nmonths)),
-                                          c('Location','Year','Month','SST','Longitude','Latitude')], 
+                                          c('Location','Year','Month','SST','Longitude','Latitude')],
                        tmp) %>%
       select(Location,Year,Month,SST,Salinity,Longitude,Latitude)
-    
+
     count_salinity <- count_salinity + 1
   }
 }
@@ -219,7 +223,7 @@ for(j in unique(Partition_Polys$Poly_ID))
   if(length(ind_Poly_to_Lightstation[[j]])>0)
   {
     Lighthouse_SST_Salinity_DF[Lighthouse_SST_Salinity_DF$Poly_ID==j,
-                 c('Mean_SST_BC_Lightstation', 'N_Obs_SST_BC_Lightstation', 
+                 c('Mean_SST_BC_Lightstation', 'N_Obs_SST_BC_Lightstation',
                    'Mean_Salinity_BC_Lightstation', 'N_Obs_Salinity_BC_Lightstation')] <-
       (sf::st_drop_geometry(Data_Lightstations) %>%
       filter(Location %in% ind_Poly_to_Lightstation[[j]]) %>%
@@ -229,9 +233,9 @@ for(j in unique(Partition_Polys$Poly_ID))
         N_Obs_SST_BC_Lightstation=sum(!is.na(SST)),
         Mean_Salinity_BC_Lightstation=mean(Salinity, na.rm=T),
         N_Obs_Salinity_BC_Lightstation=sum(!is.na(Salinity))
-      ))[,c('Mean_SST_BC_Lightstation', 'N_Obs_SST_BC_Lightstation', 
+      ))[,c('Mean_SST_BC_Lightstation', 'N_Obs_SST_BC_Lightstation',
             'Mean_Salinity_BC_Lightstation', 'N_Obs_Salinity_BC_Lightstation')]
-    
+
   }
 }
 
@@ -244,27 +248,27 @@ Now we save the data and plot to check correctness. The `use_data()` function is
 usethis::use_data(Lighthouse_SST_Salinity_DF, overwrite = T)
 
 # save the data key, pointing the common names of the datasets to the correct DF
-# data_key <- 
+# data_key <-
 #   data.frame(
 #     Common_Name = dataset_commonname,
 #     DF_Name = 'Lighthouse_SST_Salinity_DF',
 #     Time_Resolution = 'Monthly',
 #     Data_Type = 'Point-Referenced Raw Data',
-#     Units = c('Degrees Celsius', 
+#     Units = c('Degrees Celsius',
 #               'PSU (Practical Salinity Unit)'),
 #     Author = 'Fisheries and Oceans Canada',
 #     Citation = NA,
 #     Comments = 'See https://open.canada.ca/data/en/dataset/719955f2-bf8e-44f7-bc26-6bd623e82884 for details'
 #   )
-# 
+#
 # # append to the master Data_Key and remove duplicates
 # Data_Key <-
 #   rbind(PACea::Data_Key,
 #         data_key)
-# 
+#
 # Data_Key <-
 #   Data_Key[!duplicated(Data_Key[,c('Common_Name','DF_Name')]),]
-# 
+#
 # # Update the master key
 # usethis::use_data(Data_Key, overwrite=T)
 
@@ -310,10 +314,10 @@ BC_Partition_Objects$index_vectors$BC_Major_Area_Boundaries[4]
 WCVI_Mean_1994_April <-
 t(BC_Partition_Objects$Mapping_Matrix[,
                                     BC_Partition_Objects$index_vectors$BC_Major_Area_Boundaries[4]
-                          ]) %*% 
+                          ]) %*%
   as.matrix(
   Lighthouse_SST_Salinity_DF %>%
-       filter(Year==1999, Month==4) %>% 
+       filter(Year==1999, Month==4) %>%
        mutate(Mean_Salinity_BC_Lightstation=
                 ifelse(is.na(Mean_Salinity_BC_Lightstation),
                        0,
@@ -324,10 +328,9 @@ t(BC_Partition_Objects$Mapping_Matrix[,
 
 ggplot2::ggplot(BC_Partition_Objects$BC_Partition[
   BC_Partition_Objects$BC_Partition$Poly_Name=='WCVI',
-], 
-        ggplot2::aes(fill=WCVI_Mean_1994_April)) + 
+],
+        ggplot2::aes(fill=WCVI_Mean_1994_April)) +
   ggplot2::geom_sf()
 
 
 ```
-
