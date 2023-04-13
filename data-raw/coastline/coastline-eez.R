@@ -18,10 +18,23 @@ canus <- rnaturalearth::ne_countries(scale = "large",
                                      returnclass = "sf")
 
 # crop to bc marine area and plot
-st_bbox(canus)
+st_bbox(canus) # bounding box to create crop extent
 box <- c(xmin = -142, ymin = 46, xmax = -120, ymax = 56)
-bc_coast <- st_crop(canus, box)
+tbc_coast <- st_crop(canus, box)
 
+# keep only remove all extra data columns
+tbc_coast <- tbc_coast[,c("admin","geometry")]
+
+#####
+# run code below to remove data columns / attributes (i.e. USA and Canada)
+
+# combine data rows of bc_coast into one multipolygon
+tbc_coast <- st_combine(tbc_coast) # converts to sfc_MULTIPOLYGON object
+st_geometry(tbc_coast) <- "geometry"
+tbc_coast <- st_as_sf(tbc_coast)
+#####
+
+bc_coast <- tbc_coast
 
 # BC EEZ from PBSdata
 data(eez.bc)
@@ -32,8 +45,8 @@ bc_eez <- sf::st_as_sf(bc_eez)
 
 # test plot
 ggplot() +
-  geom_sf(data = bceez) + 
-  geom_sf(data = bccoast) 
+  geom_sf(data = bc_eez) + 
+  geom_sf(data = bc_coast) 
 
 # add sf object data to pacakge data folder
 usethis::use_data(bc_coast, overwrite = T)
