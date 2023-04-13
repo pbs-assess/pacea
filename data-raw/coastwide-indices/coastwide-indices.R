@@ -6,8 +6,8 @@
 #
 # Checking with Tetjana's from SOPO 2022. She has (they all say 'full year'):
 # Index    Used below by Chris?    Source file agrees with Chris's?
-# ONI      ENSO ONI                Yes (Chris found the link to the .txt file).
-# NPI      NPI                     Tetjana has
+#D ONI      ENSO ONI                Yes (Chris found the link to the .txt file).
+#D NPI      NPI                     Tetjana has
 # https://climatedataguide.ucar.edu/sites/default/files/cas_data_files/asphilli/npindex_monthly.txt
 # Chris has similar
 # https://climatedataguide.ucar.edu/sites/default/files/npindex_monthly.txt
@@ -18,7 +18,7 @@
 #  https://climatedataguide.ucar.edu/sites/default/files/2023-01/npindex_anom_ndjfm.txt  - annoying if their websites now have dates in them, bit harder to automate (but doable)
 #   or monthly absolute values:
 #  https://climatedataguide.ucar.edu/sites/default/files/2023-01/npindex_monthly.txt .
-# PDO      PDO                    Tetjana: http://research.jisao.washington.edu/pdo/ (but data links are borken, 29/3/31)
+#D PDO      PDO                    Tetjana: http://research.jisao.washington.edu/pdo/ (but data links are borken, 29/3/31)
 #                                 Chris: https://www.ncei.noaa.gov/pub/data/cmb/ersst/v5/index/ersst.v5.pdo.dat  (works and is updated)
 # SOI      SOI                    Same website, still updated.
 # NPGO     NPGO                   Same website, still updated.
@@ -188,6 +188,95 @@ if(check_index_changed(pdo, pdo_new)){
   plot(pdo)
 }
 
+#SOI
+download.file("https://www.cpc.ncep.noaa.gov/data/indices/soi",
+              destfile = "soi.txt",
+              mode = "wb",
+              quiet = FALSE)
+
+#soi_new <- readr::read_table("soi.txt",
+#                             skip = 3,
+#                             na = "-999.9")  # Final months of 2023 plus more,
+                                        # but is next to the true final month
+
+# Need Chris's approach due to "-999.9" adjacent to final month of data, and more.
+soi_new<-read.table("soi.txt",
+                    skip = 3,
+                    as.is = TRUE,
+                    header = TRUE,
+                    fill=T)
+
+stopifnot(soi_new[1,1] == 1951) # Check still starts in 1951
+
+# Year after current year (currently 2023) gets saved as
+#  "2024-999.9-999.9-999.9-999.9-999.9-999.9-999.9-999.9-999.9-999.9-999.9-999.9"
+# Tetjana only uses the anomaly data in the first half of the file, not the
+#  second half (STANDARDIZED DATA), so can just fine the above year and delete
+#  everything after that.
+
+names(soi_new)[1] <- "year"
+
+soi_new$year <- as.numeric(soi_new$year)   # Converts that 2024 year to NA
+
+soi_new <- soi_new[1:(min(which(is.na(soi_new$year))) - 1), ]  # Remove 2024
+                                                               # onwards
+# Now just have to fix the final month of data (currently March 2023) which is
+#  0.3-999.9-.... (without a space between the actual 0.3 value).
+soi_new[nrow(soi_new), ] <-  stringr::str_replace_all(soi_new[nrow(soi_new), ],
+                                                      "-999.9",
+                                                      "")
+
+soi_new <- dplyr::mutate_all(soi_new, function(x) as.numeric(x)) # also adds NA
+                                                                 # in final row as needed
+soi_new <- tidyr::pivot_longer(soi_new,
+                               cols = "JAN":"DEC",
+                               names_to = "month",
+                               values_to = "anom") %>%
+  mutate(month = as.numeric(match(month, toupper(month.abb))))
+
+class(soi_new) <- c("pacea_t",
+                    class(soi_new))
+
+attr(soi_new, "axis_name") <- "Southern Oscillation Index"
+
+if(check_index_changed(soi, soi_new)){
+  soi <- soi_new
+  usethis::use_data(soi,
+                    overwrite = TRUE)
+  plot(soi)
+}
+
+
+
+# Some of Chris's (to document the -999.9 issue for MAR 2023 (or the final month
+# of data)
+SOI <- SOI[!is.na(SOI$YEAR),]    # Automatically removes the future years with -999.9 and the text halfway down regarding Standardized Data
+
+SOI<-reshape::melt(SOI,id="YEAR")
+
+colnames(SOI) <- c('Year',
+                   'Month',
+                   'SOI_Anomaly_Index')
+
+# As of testing, we get this because of the way they append -999.9 to the 0.2 for
+#  MAR 2023 in the original data file (i.e. no space).
+# 438  2023   MAR 0.2-999.9-999.9-999.9-999.9-999.9-999.9-999.9-999.9-999.9
+
+SOI$SOI_Anomaly_Index[grepl(SOI$SOI_Anomaly_Index, pattern='9-999')] <- NA
+# So this becomes:
+# 438 2023   MAR              <NA>
+
+SOI <- SOI %>%
+  group_by(Year, Month) %>%
+  mutate(SOI_Standardized_Index = as.numeric(SOI_Anomaly_Index[2]),
+         SOI_Anomaly_Index = as.numeric(SOI_Anomaly_Index[1])) %>%
+  filter(row_number()==1)
+
+SOI$Month <- as.numeric(SOI$Month)
+# filter(SOI, Year == 2023)   gives NA for March, but the raw data has this
+# 2023   2.3   2.3   0.3-999.9-999.9-999.9-999.9-999.9-999.9-999.9-999.9-999.9
+#  so the weird -999.9 is connected to the 0.3, so gets called an NA
+
 stop("Got to here")
 
 
@@ -253,37 +342,6 @@ colnames(AO) <- c('Year',
 AO$Month <- as.numeric(AO$Month)
 
 **GOT TO HERE**
-#SOI
-download.file("https://www.cpc.ncep.noaa.gov/data/indices/soi",
-              destfile = "SOI.dat",
-              mode = "wb",
-              quiet = FALSE)
-
-SOI<-read.table("SOI.dat",
-                skip = 3,
-                as.is = TRUE,
-                header = TRUE,
-                fill=T)
-
-SOI$YEAR <- as.numeric(SOI$YEAR)
-
-SOI <- SOI[!is.na(SOI$YEAR),]
-
-SOI<-reshape::melt(SOI,id="YEAR")
-
-colnames(SOI) <- c('Year',
-                   'Month',
-                   'SOI_Anomaly_Index')
-
-SOI$SOI_Anomaly_Index[grepl(SOI$SOI_Anomaly_Index, pattern='9-999')] <- NA
-
-SOI <- SOI %>%
-  group_by(Year, Month) %>%
-  mutate(SOI_Standardized_Index = as.numeric(SOI_Anomaly_Index[2]),
-         SOI_Anomaly_Index = as.numeric(SOI_Anomaly_Index[1])) %>%
-  filter(row_number()==1)
-
-SOI$Month <- as.numeric(SOI$Month)
 
 #NGPO
 # Useful background:
