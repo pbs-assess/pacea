@@ -246,37 +246,6 @@ if(check_index_changed(soi, soi_new)){
   plot(soi)
 }
 
-
-
-# Some of Chris's (to document the -999.9 issue for MAR 2023 (or the final month
-# of data)
-SOI <- SOI[!is.na(SOI$YEAR),]    # Automatically removes the future years with -999.9 and the text halfway down regarding Standardized Data
-
-SOI<-reshape::melt(SOI,id="YEAR")
-
-colnames(SOI) <- c('Year',
-                   'Month',
-                   'SOI_Anomaly_Index')
-
-# As of testing, we get this because of the way they append -999.9 to the 0.2 for
-#  MAR 2023 in the original data file (i.e. no space).
-# 438  2023   MAR 0.2-999.9-999.9-999.9-999.9-999.9-999.9-999.9-999.9-999.9
-
-SOI$SOI_Anomaly_Index[grepl(SOI$SOI_Anomaly_Index, pattern='9-999')] <- NA
-# So this becomes:
-# 438 2023   MAR              <NA>
-
-SOI <- SOI %>%
-  group_by(Year, Month) %>%
-  mutate(SOI_Standardized_Index = as.numeric(SOI_Anomaly_Index[2]),
-         SOI_Anomaly_Index = as.numeric(SOI_Anomaly_Index[1])) %>%
-  filter(row_number()==1)
-
-SOI$Month <- as.numeric(SOI$Month)
-# filter(SOI, Year == 2023)   gives NA for March, but the raw data has this
-# 2023   2.3   2.3   0.3-999.9-999.9-999.9-999.9-999.9-999.9-999.9-999.9-999.9
-#  so the weird -999.9 is connected to the 0.3, so gets called an NA
-
 stop("Got to here")
 
 
