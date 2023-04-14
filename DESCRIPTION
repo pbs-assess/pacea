@@ -13,7 +13,8 @@ Depends:
     stats (>= 4.0.2)
 Imports:
     dplyr (>= 1.0.2),
-    lubridate (>= 1.8.0)
+    lubridate (>= 1.8.0),
+    rappdirs
 RoxygenNote: 7.2.0
 Remotes: github::pbs-assess/gfiphc
 Suggests:
