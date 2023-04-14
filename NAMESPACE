@@ -2,6 +2,7 @@
 
 S3method(plot,pacea_t)
 export(check_index_changed)
+export(pacea_cache)
 export(rot)
 export(tran)
 importFrom(dplyr,anti_join)
