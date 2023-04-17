@@ -11,9 +11,30 @@ temp_nc <- nc_open("C:/Users/TAIT/Documents/Research/Roms_bcc42_mon_2008to2011_s
 
 print(temp_nc)
 
+######
+# creating sf object of sst with lat lon
+# SST
 sst <- ncvar_get(temp_nc, varid = "sst")
 sst1 <- sst[,,1]
+sst.m <- apply(sst, MARGIN = c(3), FUN = c)
+dim(sst.m)
 
+# lon
+lon <- ncvar_get(temp_nc, varid = "lon_rho")
+lon.v <- c(lon)
+
+# lat
+lat <- ncvar_get(temp_nc, varid = "lat_rho")
+lat.v <- c(lat)
+
+sst.dat <- as.data.frame(sst.m) %>% 
+  mutate(lon = lon.v,
+         lat = lat.v) %>% 
+  st_as_sf(coords = c("lon", "lat"), crs = "EPSG: 4326")
+
+usethis::use_data(sst.dat) # 12.5mb
+
+#####
 
 # checking rdata file size of dataframe/array
 # usethis::use_data(sst)  # 11.5 mb (saves 300kb to store as one file)
