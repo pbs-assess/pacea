@@ -7,15 +7,18 @@ library(stars)
 library(dplyr)
 
 # read ncdf data with nc_open as array
-temp_nc <- nc_open("C:/Users/TAIT/Documents/Research/Roms_bcc42_mon_2008to2011_sst.nc") # 38 mb
+temp_nc <- nc_open("Roms_bcc42_mon_2008to2011_sst.nc") # 38 mb
 
 print(temp_nc)
-
-######
-# creating sf object of sst with lat lon
-# SST
 sst <- ncvar_get(temp_nc, varid = "sst")
 sst1 <- sst[,,1]
+
+
+#-------------------------------------------------#
+# creating sf object of sst with lat lon
+# SST
+
+# convert array to matrix
 sst.m <- apply(sst, MARGIN = c(3), FUN = c)
 dim(sst.m)
 
@@ -27,15 +30,17 @@ lon.v <- c(lon)
 lat <- ncvar_get(temp_nc, varid = "lat_rho")
 lat.v <- c(lat)
 
-sst.dat <- as.data.frame(sst.m) %>% 
+# assign correct lat-lon coordinates and crs
+sst_sf <- as.data.frame(sst.m) %>% 
   mutate(lon = lon.v,
          lat = lat.v) %>% 
   st_as_sf(coords = c("lon", "lat"), crs = "EPSG: 4326")
 
-usethis::use_data(sst.dat) # 12.5mb
+# create data 
+usethis::use_data(sst_sf) # 12.5mb
 
-#####
 
+#-------------------------------------------------#
 # checking rdata file size of dataframe/array
 # usethis::use_data(sst)  # 11.5 mb (saves 300kb to store as one file)
 # usethis::use_data(sst1) # 244 kb
@@ -81,19 +86,22 @@ crs(sst_rast) <- "EPSG:4326"
 
 # saveRDS function preserves raster data and can be loaded with readRDS, but cannot
 #  be loaded using loaded as part of package load_all()
-terra::saveRDS(sst_rast, file = "./data/sst_rast_saveRDS.rda")
+# terra::saveRDS(sst_rast, file = "./data/sst_rast_saveRDS.rda")
+
+# write out raster as .tif
+terra::writeRaster(sst_rast, "./data/sst_rastC.tif")
 
 
 #-------------------------------------------------#
 # converting raster to sf (via stars)
 
 sst_starsA <- stars::st_as_stars(sst_rast)
-sst_sfA <- sf::st_as_sf(sst_starsA, as_points = T)  # points is marginally smaller than polygons
+sst_sf_nolatlon <- sf::st_as_sf(sst_starsA, as_points = T)  # points is marginally smaller than polygons
 
 # checking rdata file size of sf object
-usethis::use_data(sst_sfA) # 11.3 mb
+# usethis::use_data(sst_sf_nolatlon) # 11.3 mb
 
-plot(sst_sfA[,c(1,49)])
+plot(sst_sf_nolatlon[,c(1,49)])
 
 
 #-------------------------------------------------#
@@ -163,21 +171,14 @@ library(devtools)
 load_all()
 
 class(oni)
-class(sst_sfA)
-crsclass(Adummy_sfpoints)
-
+class(sst_sf_nolatlon)
 
 # ROMS sst - class sf
-plot(sst_sfA[,c(1,49)])  # can be plotted without loading library(sf)
+plot(sst_sf_nolatlon[,c(1,49)])  # can be plotted without loading library(sf)
 
-tdat<-sst_sfA
+tdat<-sst_sf_nolatlon
 class(tdat) <- "data.frame"
 plot(tdat[,c(1,49)])
-
-# dummy data plotting sf objects 
-plot(Adummy_sfpoints[,c(1212:1213)])
-plot(Adummy_sfpoints[,c(1211:1213)])
-
 
 # reading in raster written and stored as .tif
 library(terra)
