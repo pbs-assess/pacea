@@ -112,7 +112,45 @@ nnfit <- function(x, r, loc, coords, nnmax) {
 # ROUTINE
 # Cross validation model
 
+# create NULL model
+##  RMSE for cross validation to test intepolation sd against data sd - interpolation should be lower than data sd
+##  performance = 0, interpolation has same sd as data; performance = 1, interpolation has no error
+RMSE <- function(observed, predicted) {
+  sqrt(mean((predicted - observed)^2, na.rm=TRUE))
+}
 
-## NEED TO WRITE COSS VALID FUNC HERE
+# performance function for interpolation model fitting 
+perf <- function(trmse, h0 = null) {
+  round(1 - (mean(trmse) / h0), 3)
+}
+
+
+
+rmse.kcross <- function(data, var, loc = c("x", "y"), nnmax = 4) {
+  c <- data[, loc, drop=F]
+  
+  d <- data[, var, drop=F]
+  
+  kf_dat <- cbind(c,d) |> na.omit()
+  kf <- sample(1:5, nrow(kf_dat), replace=TRUE)
+  out <- rep(NA, 5)
+  
+  null <- RMSE(mean(kf_dat[, var]), kf_dat[, var])
+  
+  f <- paste0(var, " ~ 1")
+  lf <- paste0("~", paste(loc, collapse = "+"))
+  
+  
+  for (k in 1:5) {
+    test <- kf_dat[kf == k, ]
+    train <- kf_dat[kf != k, ]
+    gs <- gstat(formula=formula(f), locations=formula(lf), data=train, nmax=nnmax, set=list(idp=0))
+    p <- predict(gs, test, debug.level=0)
+    out[k] <- RMSE(test[, var], p$var1.pred)
+  }
+  
+  lout <- list(null_rmse = null, kcross_rmse = out, performance = perf(out, h0 = null))
+  return(lout)
+}
 
 
