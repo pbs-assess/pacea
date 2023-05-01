@@ -7,6 +7,7 @@ library(terra)
 library(gstat)
 library(sf)
 library(ncdf4)
+library(ggplot2)
 
 sf_use_s2(FALSE)  # remove spherical geometry (s2) for sf operations
 
@@ -54,7 +55,7 @@ tsst_sf <- st_transform(sst_sf, crs = "EPSG: 3005")
 dat <- tsst_sf[, c(1:4)]
 sobj <- romseez_poly
 llnames <- c("x", "y")
-res <- 10000
+res <- 6000
 nmax <- 4
 
 # END parameters
@@ -64,8 +65,73 @@ nmax <- 4
 #####
 # MAIN PROGRAM
 
+# interpolate sst data 
 output <- point2rast(data = dat, spatobj = sobj, loc = llnames, cellsize = res, nnmax = nmax,
+                     as = "SpatRast")
+
+# 2 km res
+res <- 2000
+output2 <- point2rast(data = dat, spatobj = sobj, loc = llnames, cellsize = res, nnmax = nmax,
+                      as = "SpatVect")
+
+# 6 km res
+res <- 6000
+output6 <- point2rast(data = dat, spatobj = sobj, loc = llnames, cellsize = res, nnmax = nmax,
                      as = "SpatVect")
+
+# crop out grid cells with polygon masks
+sf_m2 <- st_as_sf(output2)[romseez_poly,]
+sf_m2 <- sf_m2[inshore_poly,] %>% st_as_sf()
+
+sf_m6 <- st_as_sf(output6)[romseez_poly,] 
+sf_m6 <- sf_m6[offshore_poly,] 
+sf_m6 <- st_difference(sf_m6, st_union(sf_m2)) %>% st_as_sf()
+
+# combine grids
+sf_m26 <- sf_m2 %>% rbind(sf_m6) 
+
+sf_m26
+
+plot(sf_m26[,1])
+
+
+
+### TEST 2 - interpolate to raster, then convert to stars and 
+
+# 2 km res
+res <- 2000
+output2 <- point2rast(data = dat, spatobj = sobj, loc = llnames, cellsize = res, nnmax = nmax,
+                      as = "SpatRast")
+
+# 6 km res
+res <- 6000
+output6 <- point2rast(data = dat, spatobj = sobj, loc = llnames, cellsize = res, nnmax = nmax,
+                      as = "SpatRast")
+
+
+# crop out grid cells with polygon masks
+sf_m2 <- st_as_sf(stars::st_as_stars(output2))[romseez_poly,]
+sf_m2 <- sf_m2[inshore_poly,] %>% st_as_sf()
+
+sf_m6 <- st_as_sf(stars::st_as_stars(output6))[romseez_poly,] 
+sf_m6 <- sf_m6[offshore_poly,] 
+sf_m6 <- st_difference(sf_m6, st_union(sf_m2)) %>% st_as_sf()
+
+# combine grids
+sf_m26 <- sf_m2 %>% rbind(sf_m6) 
+
+sf_m26
+
+names(sf_m26)[1:4] <- c("A","B","C","D")
+
+ggplot() +
+  geom_sf(data=sf_m26, aes(fill=A), col="grey")
+
+
+
+
+
+
 
 ## NEXT: write function to process data to our 2km and 6km grid
 
