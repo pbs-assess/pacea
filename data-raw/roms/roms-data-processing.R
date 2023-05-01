@@ -80,10 +80,12 @@ output6 <- point2rast(data = dat, spatobj = sobj, loc = llnames, cellsize = res,
                      as = "SpatVect")
 
 # crop out grid cells with polygon masks
-sf_m2 <- st_as_sf(output2)[romseez_poly,]
+sf_m2 <- st_as_sf(output2)
+sf_m2 <- sf_m2[romseez_poly,]
 sf_m2 <- sf_m2[inshore_poly,] %>% st_as_sf()
 
-sf_m6 <- st_as_sf(output6)[romseez_poly,] 
+sf_m6 <- st_as_sf(output6)
+sf_m6 <- sf_m6[romseez_poly,] 
 sf_m6 <- sf_m6[offshore_poly,] 
 sf_m6 <- st_difference(sf_m6, st_union(sf_m2)) %>% st_as_sf()
 
@@ -92,7 +94,17 @@ sf_m26 <- sf_m2 %>% rbind(sf_m6)
 
 sf_m26
 
-plot(sf_m26[,1])
+names(sf_m26)[1:4] <- c("A","B","C","D")
+
+
+
+ggplot() +
+  geom_sf(data=sf_m26, aes(fill=A), col=NA)
+
+
+
+
+
 
 
 
@@ -125,7 +137,7 @@ sf_m26
 names(sf_m26)[1:4] <- c("A","B","C","D")
 
 ggplot() +
-  geom_sf(data=sf_m26, aes(fill=A), col="grey")
+  geom_sf(data=sf_m26, aes(fill=A), col=NA)
 
 
 
