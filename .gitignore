@@ -26,3 +26,4 @@ lib/
 
 /R/older-functions/Upload_Data_Key.csv
 /data-raw/coastwide-indices/*.txt
+/data-raw/groundfish/hake_recruitment_new.rda
