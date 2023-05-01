@@ -15,8 +15,12 @@
 ##'   smoothed the red-blue figure isn't quite right (it isn't for monthly also,
 ##'   but that's not as obvious). See Issue #15.
 ##' @param type usual argument for `plot()`
-##' @param style what style of plot -- "red_blue" for colouring red above 0 and
-##'   blue below, TODO to implement: "goa" for Gulf of Alaska Ecosystem Report style plots, "plain"
+##' @param style what style of plot -- HERE TODO mention don't all work properly
+##'   but can tweak lwd
+##'   for "red_blue_bar" (default) for red bars above 0 and
+##'   blue bars below 0, "red_blue" for colouring red above 0 and
+##'   blue below (TODO needs splines or similar to smooth), TODO to implement:
+##'   "goa" for Gulf of Alaska Ecosystem Report style plots; "plain"
 ##'   for just a line.
 ##' @param y_tick increment for y-axis ticks
 ##' @param x_tick_extra_years number of extra years to expand around the range
@@ -43,7 +47,7 @@ plot.pacea_t <- function(obj,
                          ylab = attr(obj, "axis_name"),
                          smooth_over_year = FALSE,
                          type = "l",
-                         style = "red_blue",
+                         style = "red_blue_bar",
                          y_tick = 0.25,
                          x_tick_extra_years = 20,
                          ...
@@ -92,7 +96,6 @@ plot.pacea_t <- function(obj,
   }
 
   if(style == "red_blue"){
-
     plot.red_blue(obj_lub,
                   value = value,
                   xlab = xlab,
@@ -101,6 +104,15 @@ plot.pacea_t <- function(obj,
                   y_tick = y_tick,
                   x_tick_extra_years = x_tick_extra_years,
                   ...)
+  } else if(style == "red_blue_bar") {
+    plot.red_blue_bar(obj_lub,
+                      value = value,
+                      xlab = xlab,
+                      ylab = ylab,
+                      type = type,
+                      y_tick = y_tick,
+                      x_tick_extra_years = x_tick_extra_years,
+                      ...)
   } else {
     plot.default(obj_lub$date,
                  obj_lub[[value]], # [[]] returns a vector not a tibble
@@ -115,6 +127,7 @@ plot.pacea_t <- function(obj,
 ##'
 ##' Adapted from
 ##' https://stackoverflow.com/questions/74902499/shading-below-line-graph-in-r/74903305#74903305
+##' but original attempt doesn't cross the time correctly.
 ##'
 ##' @param obj_lub obj a `pacea_t` object, which is a time series, with a date
 ##'   column that is the lubridate `date` class.
@@ -140,7 +153,7 @@ plot.red_blue <- function(obj_lub,
                           x_tick_extra_years,
                           ...){
   # TODO check if 0 within range
-  obj_lub$y_pos <- ifelse(obj_lub[[value]] > 0,
+  obj_lub$y_pos <- ifelse(obj_lub[[value]] >= 0,
                           obj_lub[[value]],
                           0)
   obj_lub$y_neg <- ifelse(obj_lub[[value]] < 0,
@@ -176,6 +189,96 @@ plot.red_blue <- function(obj_lub,
             obj_lub$y_neg,
             0),
           col = "blue")
+
+  min <- min(lubridate::floor_date(obj_lub$date, unit = "year")) - lubridate::years(x_tick_extra_years)
+  max <- max(lubridate::ceiling_date(obj_lub$date, unit = "year")) + lubridate::years(x_tick_extra_years)
+
+  axis(1,
+       seq(min,
+           max,
+           by = "years"),
+       labels = FALSE,
+       tcl = -0.2)
+  axis(2,
+       seq(floor(par("usr")[3]),
+           ceiling(par("usr")[4]),
+           by = y_tick),
+       labels = FALSE,
+       tcl = -0.2)
+  invisible()
+}
+
+
+##' Plot the red/blue style of anomaly plot as barplots; internal function called from `plot.pacea_t()`.
+##'
+##' Adapted from `plot.red_blue()`.
+##'
+##' @param obj_lub obj a `pacea_t` object, which is a time series, with a date
+##'   column that is the lubridate `date` class.
+##' @param value see `plot.pacea_t()`
+##' @param xlab see `plot.pacea_t()`
+##' @param ylab see `plot.pacea_t()`
+##' @param type see `plot.pacea_t()`
+##' @param y_tick see `plot.pacea_t()`
+##' @param x_tick_extra_years see `plot.pacea_t()`
+##' @param ... see `plot.pacea_t()`
+##' @return plot of time series
+##' @author Andrew Edwards
+##' @examples
+##' \dontrun{
+##' # see plot.pacea_t()
+##' }
+plot.red_blue_bar <- function(obj_lub,
+                          value,
+                          xlab,
+                          ylab,
+                          type,
+                          y_tick,
+                          x_tick_extra_years,
+                          ...){
+  # TODO check if 0 within range
+
+  obj_lub$y_pos <- ifelse(obj_lub[[value]] >= 0,
+                          obj_lub[[value]],
+                          0)
+  obj_lub$y_neg <- ifelse(obj_lub[[value]] < 0,
+                          obj_lub[[value]],
+                          0)
+  bar_col <- ifelse(obj_lub[[value]] >= 0,
+                    "red",
+                    "blue")
+
+  plot(obj_lub$date,
+       obj_lub[[value]], # [[]] returns a vector not a tibble
+       type = "h",
+       xlab = xlab,
+       ylab = ylab,
+       col = bar_col,
+       lend = 1,
+       ...)
+  abline(h = 0)
+
+  # GOA code:
+  # segments(topX,topY,topX,e_md+e_sd,lwd=2*SC,col="#FFCC00",lend="square" )
+  # TODO. They use spline also, which will likely work for me also; unless we
+  # want just single bars for annual values, I'd rather avoid smoothing. Maybe
+  # do spline for monthly ones.
+
+  ## polygon(c(obj_lub$date[1],
+  ##           obj_lub$date,
+  ##           tail(obj_lub$date, 1)),
+  ##         c(0,
+  ##           obj_lub$y_pos,
+  ##           0),
+  ##         col = "red")
+
+  ## polygon(c(obj_lub$date[1],
+  ##           obj_lub$date,
+  ##           tail(obj_lub$date, 1)),
+  ##         c(0,
+  ##           obj_lub$y_neg,
+  ##           0),
+  ##         col = "blue")
 
   min <- min(lubridate::floor_date(obj_lub$date, unit = "year")) - lubridate::years(x_tick_extra_years)
   max <- max(lubridate::ceiling_date(obj_lub$date, unit = "year")) + lubridate::years(x_tick_extra_years)
