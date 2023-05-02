@@ -54,49 +54,8 @@ plot.pacea_index <- function(obj,
   stopifnot("value must be a column of the pacea_index object" =
             value %in% names(obj))
 
-  if(smooth_over_year){
-    stopifnot("to smooth over year you need monthly data (if you have daily we can adapt the code
-               to use that); set smooth_over_year = FALSE" =
-              "month" %in% names(obj))
-
-    obj_lub <- dplyr::group_by(obj,
-                               year) %>%
-      dplyr::summarise(across(-month,
-                              mean))  # Replace val, anom, and any other
-                                              #  non-year non-month column with their
-                                              #  annual mean
-
-    obj_lub <- dplyr::mutate(obj_lub,
-                             date = lubridate::ymd(year,
-                                                   truncated = 2))
-                             # sets date to 1st Jan of that year to give a valid
-                             #  date; could change to middle of year, but a
-                             #  little confusing. year column still retained
-                             #  (but object not returned so okay).
-  } else {
-    if("month" %in% names(obj)){
-
-      # TODO extract date-related columns automatically and create the date column correctly
-      #  This works for oni, may need a switch (or function, since may want for
-      #  pacea_st also) for years-only. And if make function then use for the
-      #  obj_lub line above also.
-
-      obj_lub <- dplyr::mutate(obj,
-                               date = paste(year,
-                                            month,
-                                            sep = "-"))
-      obj_lub$date <- lubridate::ym(obj_lub$date)
-
-    } else {
-    obj_lub <- dplyr::mutate(obj,
-                             date = lubridate::ymd(year,
-                                                   truncated = 2))
-    }
-  }
-
-  if(all(c("low", "high") %in% names(obj))){   # we have uncertainties so plot them
-    style = "uncertainty"
-  }
+  obj_lub <- lubridate_pacea_series(obj = obj,
+                                    smooth_over_year = smooth_over_year)
 
   if(style == "red_blue"){
     plot_red_blue(obj_lub,

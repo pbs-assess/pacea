@@ -3,6 +3,7 @@
 S3method(plot,pacea_index)
 S3method(plot,pacea_t)
 export(check_index_changed)
+export(lubridate_pacea_series)
 export(pacea_cache)
 export(rot)
 export(tran)
