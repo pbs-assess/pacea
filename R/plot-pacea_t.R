@@ -25,6 +25,10 @@
 ##' @param y_tick increment for y-axis ticks
 ##' @param x_tick_extra_years number of extra years to expand around the range
 ##'   of data for which to add annual tick marks
+##' @param uncertainty_bar_col colour for uncertainty bars for certain types of
+##'   plot (e.g. estimated fish recruitment)
+##' @param y_max maximum y value for certain types of plot (use this if you get
+##'   the error when specifying `ylim`
 ##' @param ... optional arguments passed onto `plot()`. Note that the x-axis is
 ##'   constructed using a lubridate `date` object, so `xlim` needs to be a
 ##'   `date` object (see example).
@@ -40,6 +44,7 @@
 ##'      lubridate::dmy(01012040))) # to expand x-axis
 ##' plot(npi_monthly,
 ##'      value = "val")
+##' # TODO add hake examples once in package
 ##' }
 plot.pacea_t <- function(obj,
                          value = "anom",
@@ -50,6 +55,8 @@ plot.pacea_t <- function(obj,
                          style = "red_blue_bar",
                          y_tick = 0.25,
                          x_tick_extra_years = 20,
+                         uncertainty_bar_col = "blue",
+                         y_max = NULL,
                          ...
                          ){
   stopifnot("value must be a column of the pacea_t object" =
@@ -95,6 +102,10 @@ plot.pacea_t <- function(obj,
     }
   }
 
+  if(all(c("low", "high") %in% names(obj))){   # we have uncertainties so plot them
+    style = "uncertainty"
+  }
+
   if(style == "red_blue"){
     plot_red_blue(obj_lub,
                   value = value,
@@ -113,12 +124,25 @@ plot.pacea_t <- function(obj,
                       y_tick = y_tick,
                       x_tick_extra_years = x_tick_extra_years,
                       ...)
+  } else if(style == "uncertainty"){
+    plot_with_uncertainty(obj_lub,
+                          value = value,
+                          xlab = xlab,
+                          ylab = ylab,
+                          type = type,
+                          y_tick = y_tick,
+                          x_tick_extra_years = x_tick_extra_years,
+                          uncertainty_bar_col = uncertainty_bar_col,
+                          y_max = y_max,
+                          ...)
   } else {
     plot.default(obj_lub$date,
                  obj_lub[[value]], # [[]] returns a vector not a tibble
                  xlab = xlab,
                  ylab = ylab,
                  type = type,
+                 y_tick = y_tick,
+                 x_tick_extra_years = x_tick_extra_years,
                  ...)
   }
 }
@@ -296,4 +320,66 @@ plot_red_blue_bar <- function(obj_lub,
        labels = FALSE,
        tcl = -0.2)
   invisible()
+}
+
+
+##' Plot estimated recruitment with uncertainty bars for stock assessment
+##' results time series; internal function called from `plot.pacea_t()`.
+##'
+##' Adapted from `make.mcmc.recruitment.plot()` from Pacific Hake assessment.
+##'
+##' @param obj_lub obj a `pacea_t` object, which is a time series, with a date
+##'   column that is the lubridate `date` class.
+##' @param value see `plot.pacea_t()`
+##' @param xlab see `plot.pacea_t()`
+##' @param ylab see `plot.pacea_t()`
+##' @param type see `plot.pacea_t()`
+##' @param y_tick see `plot.pacea_t()`
+##' @param x_tick_extra_years see `plot.pacea_t()`
+##' @param uncertainty_bar_col see `plot.pacea_t()`
+##' @param y_max see `plot.pacea_t()`
+##' @param ... see `plot.pacea_t()`
+##' @return plot of time series
+##' @author Andrew Edwards
+##' @examples
+##' \dontrun{
+##' # see plot.pacea_t()
+##' }
+plot_with_uncertainty <- function(obj_lub,
+                                  value,
+                                  xlab,
+                                  ylab,
+                                  type,
+                                  y_tick,
+                                  x_tick_extra_years,
+                                  uncertainty_bar_col,
+                                  y_max,
+                                  ...){
+
+  if(is.null(y_max)){
+    y_max = max(obj_lub$high)
+  }
+
+  plot(obj_lub$date,
+       obj_lub[[value]], # [[]] returns a vector not a tibble
+       xlab = xlab,
+       ylab = ylab,
+       pch = 20,
+       ylim = c(0, y_max),   # specifying ylim in main plot call won't override this
+       ...)
+
+  abline(h = 0, col = "lightgrey")
+
+  segments(x0 = obj_lub$date,
+           y0 = obj_lub$low,
+           x1 = obj_lub$date,
+           y1 = obj_lub$high,
+           col = uncertainty_bar_col)
+
+  points(obj_lub$date,
+         obj_lub[[value]], # [[]] returns a vector not a tibble
+         pch = 20)         # plot points again to be on top of bars
+
+  invisible()
+#  if(deparse(substitute(obj)) **contains recruitment
 }
