@@ -11,9 +11,9 @@ load_all()
 
 # Recruitment
 
-load("hake_recruitment_new.rda")                #
+load("hake_recruitment_new.rda")
 
-class(hake_recruitment_new) <- c("pacea_t",
+class(hake_recruitment_new) <- c("pacea_recruitment",
                                  class(hake_recruitment_new))
 
 attr(hake_recruitment_new, "axis_name") <-
@@ -31,7 +31,7 @@ if(check_index_changed(hake_recruitment,
 
 load("hake_biomass_new.rda")                #
 
-class(hake_biomass_new) <- c("pacea_t",
+class(hake_biomass_new) <- c("pacea_biomass",
                              class(hake_biomass_new))
 
 attr(hake_biomass_new, "axis_name") <-
