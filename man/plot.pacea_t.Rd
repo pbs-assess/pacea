@@ -14,6 +14,8 @@
   style = "red_blue_bar",
   y_tick = 0.25,
   x_tick_extra_years = 20,
+  uncertainty_bar_col = "blue",
+  y_max = NULL,
   ...
 )
 }
@@ -49,6 +51,12 @@ for just a line.}
 \item{x_tick_extra_years}{number of extra years to expand around the range
 of data for which to add annual tick marks}
 
+\item{uncertainty_bar_col}{colour for uncertainty bars for certain types of
+plot (e.g. estimated fish recruitment)}
+
+\item{y_max}{maximum y value for certain types of plot (use this if you get
+the error when specifying `ylim`}
+
 \item{...}{optional arguments passed onto `plot()`. Note that the x-axis is
 constructed using a lubridate `date` object, so `xlim` needs to be a
 `date` object (see example).}
@@ -70,6 +78,7 @@ plot(oni,
      lubridate::dmy(01012040))) # to expand x-axis
 plot(npi_monthly,
      value = "val")
+# TODO add hake examples once in package
 }
 }
 \author{
