@@ -108,38 +108,36 @@ nnfit <- function(x, r, loc, coords, nnmax) {
   return(as.vector(nn$var1.pred))
 }
 
-
+#####
 # ROUTINE
-# Cross validation model
-
-# create NULL model
-##  RMSE for cross validation to test intepolation sd against data sd - interpolation should be lower than data sd
-##  performance = 0, interpolation has same sd as data; performance = 1, interpolation has no error
-RMSE <- function(observed, predicted) {
-  sqrt(mean((predicted - observed)^2, na.rm=TRUE))
-}
-
-# performance function for interpolation model fitting 
-perf <- function(trmse, h0 = null) {
-  round(1 - (mean(trmse) / h0), 3)
-}
-
-
+# Cross validation function 
+# arguments: data = dataframe
+#            loc = vector of coordinate names in dataframe
+#            nnmax = max nearest neighbour values to interpolate from
 
 rmse.kcross <- function(data, var, loc = c("x", "y"), nnmax = 4) {
+  
+  # coordinates from data
   c <- data[, loc, drop=F]
   
+  # data column
   d <- data[, var, drop=F]
   
+  # remove NAs - interpolation can't handle missing values
   kf_dat <- cbind(c,d) |> na.omit()
+  
+  # assign each value to training data, 5 validation iterations
   kf <- sample(1:5, nrow(kf_dat), replace=TRUE)
+  
+  # store results
   out <- rep(NA, 5)
   
+  # null model variance 
   null <- RMSE(mean(kf_dat[, var]), kf_dat[, var])
   
+  # formulas for gstat model
   f <- paste0(var, " ~ 1")
   lf <- paste0("~", paste(loc, collapse = "+"))
-  
   
   for (k in 1:5) {
     test <- kf_dat[kf == k, ]
@@ -149,8 +147,22 @@ rmse.kcross <- function(data, var, loc = c("x", "y"), nnmax = 4) {
     out[k] <- RMSE(test[, var], p$var1.pred)
   }
   
+  # return list of results
   lout <- list(null_rmse = null, kcross_rmse = out, performance = perf(out, h0 = null))
   return(lout)
 }
 
+# SUBROUTINE - null model
+# Root-mean-squared error
+#  RMSE for cross validation to test intepolation sd against data sd - interpolation should be lower than data sd
+#  performance = 0, interpolation has same sd as data; performance = 1, interpolation has no error
+RMSE <- function(observed, predicted) {
+  sqrt(mean((predicted - observed)^2, na.rm=TRUE))
+}
+
+# SUBROUTINE - performance function
+#  performance function for interpolation model fitting 
+perf <- function(trmse, h0 = null) {
+  round(1 - (mean(trmse) / h0), 3)
+}
 
