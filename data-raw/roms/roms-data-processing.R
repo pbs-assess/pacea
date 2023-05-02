@@ -3,9 +3,11 @@
 
 
 library(devtools)
+library(dplyr)
 library(terra)
 library(gstat)
 library(sf)
+library(stars)
 library(ncdf4)
 library(ggplot2)
 
@@ -21,14 +23,15 @@ source("./data-raw/roms/point2rast_interpolation.R")
 #####
 # START - load data to environment
 
-# pacea - rnaturalearth bc coast
-data(bc_coast)
-
 # pacea - PBSdata eez
 data(bc_eez)
 
 # pacea - romseez polygon
 data(romseez_poly)
+
+# pacea - rnaturalearth bc coast
+data(bc_coast)
+tbc <- st_transform(bc_coast, crs=crs(romseez_poly))
 
 # open ncdf and load sst data
 nc_dat <- nc_open("Roms_bcc42_mon_2008to2011_sst.nc")
@@ -69,6 +72,13 @@ nmax <- 4
 output <- point2rast(data = dat, spatobj = sobj, loc = llnames, cellsize = res, nnmax = nmax,
                      as = "SpatRast")
 
+
+#####
+# TEST 1.1 - interpolate to spatvector then convert to sf before masking
+#  processing time to run code below: 44.36 s
+
+##
+start <- Sys.time()
 # 2 km res
 res <- 2000
 output2 <- point2rast(data = dat, spatobj = sobj, loc = llnames, cellsize = res, nnmax = nmax,
@@ -80,36 +90,43 @@ output6 <- point2rast(data = dat, spatobj = sobj, loc = llnames, cellsize = res,
                      as = "SpatVect")
 
 # crop out grid cells with polygon masks
-sf_m2 <- st_as_sf(output2)
-sf_m2 <- sf_m2[romseez_poly,]
-sf_m2 <- sf_m2[inshore_poly,] %>% st_as_sf()
+sf_m2 <- st_as_sf(output2) %>% 
+  st_filter(romseez_poly) %>% 
+  st_filter(inshore_poly) %>% 
+  st_as_sf()
 
-sf_m6 <- st_as_sf(output6)
-sf_m6 <- sf_m6[romseez_poly,] 
-sf_m6 <- sf_m6[offshore_poly,] 
-sf_m6 <- st_difference(sf_m6, st_union(sf_m2)) %>% st_as_sf()
+sf_m6 <- st_as_sf(output6) %>% 
+  st_filter(romseez_poly) %>%
+  st_filter(offshore_poly)
+sf_m6 <- sf_m6[!st_intersects(sf_m6, st_union(sf_m2), sparse=F),] %>% 
+  st_as_sf()
 
 # combine grids
-sf_m26 <- sf_m2 %>% rbind(sf_m6) 
+sf_m26 <- sf_m2 %>% rbind(sf_m6)
 
-sf_m26
+# index points that dont intersect with bc coast shapefile
+sf_m26 <- sf_m26[!st_intersects(sf_m26, tbc, sparse=F),]
+# names(sf_m26)[1:4] <- c("A","B","C","D")
+# sf_m26
 
-names(sf_m26)[1:4] <- c("A","B","C","D")
+end <- Sys.time()
+end-start
+##
 
 
-
+# plot
 ggplot() +
-  geom_sf(data=sf_m26, aes(fill=A), col=NA)
+  geom_sf(data=sf_m26[,1], aes(col=A)) +
+  geom_sf(data=tbc) + 
+  geom_sf(data=bc_eez, fill=NA) 
 
 
+#####
+# TEST 2 - interpolate to raster then convert to stars.raster to create mosaic of different raster resolution
+#  processing time to run code below: 32.76 sec
 
-
-
-
-
-
-### TEST 2 - interpolate to raster, then convert to stars and 
-
+##
+start <- Sys.time()
 # 2 km res
 res <- 2000
 output2 <- point2rast(data = dat, spatobj = sobj, loc = llnames, cellsize = res, nnmax = nmax,
@@ -120,24 +137,38 @@ res <- 6000
 output6 <- point2rast(data = dat, spatobj = sobj, loc = llnames, cellsize = res, nnmax = nmax,
                       as = "SpatRast")
 
-
 # crop out grid cells with polygon masks
-sf_m2 <- st_as_sf(stars::st_as_stars(output2))[romseez_poly,]
-sf_m2 <- sf_m2[inshore_poly,] %>% st_as_sf()
+r2 <- output2 %>% 
+  mask(romseez_poly) %>% 
+  mask(inshore_poly) %>%
+  stars::st_as_stars()
 
-sf_m6 <- st_as_sf(stars::st_as_stars(output6))[romseez_poly,] 
-sf_m6 <- sf_m6[offshore_poly,] 
-sf_m6 <- st_difference(sf_m6, st_union(sf_m2)) %>% st_as_sf()
+r6 <- output6 %>%
+  mask(romseez_poly) %>%
+  mask(offshore_poly) %>%
+  #mask(st_as_sf(st_union(st_as_sf(r2))), inverse=T) %>%
+  stars::st_as_stars()
 
-# combine grids
-sf_m26 <- sf_m2 %>% rbind(sf_m6) 
+r26 <- st_mosaic(r2, r6)
+end <- Sys.time()
+end-start
+##
 
-sf_m26
+# convert to sf for simpler data manipulation
+#  variables name change; but this is for numeric. TEST!!
+r26_sf <- st_as_sf(r26)
+r26_sf
 
-names(sf_m26)[1:4] <- c("A","B","C","D")
+
+# plot
+plot(r2[,,,1])
+plot(r6[,,,1])
+plot(r26[,,,1])
+
 
 ggplot() +
-  geom_sf(data=sf_m26, aes(fill=A), col=NA)
+  geom_stars(data=r26)
+
 
 
 
