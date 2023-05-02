@@ -11,7 +11,7 @@
   ylab = attr(obj, "axis_name"),
   smooth_over_year = FALSE,
   type = "l",
-  style = "red_blue",
+  style = "red_blue_bar",
   y_tick = 0.25,
   x_tick_extra_years = 20,
   ...
@@ -36,8 +36,12 @@ but that's not as obvious). See Issue #15.}
 
 \item{type}{usual argument for `plot()`}
 
-\item{style}{what style of plot -- "red_blue" for colouring red above 0 and
-blue below, TODO to implement: "goa" for Gulf of Alaska Ecosystem Report style plots, "plain"
+\item{style}{what style of plot -- HERE TODO mention don't all work properly
+but can tweak lwd
+for "red_blue_bar" (default) for red bars above 0 and
+blue bars below 0, "red_blue" for colouring red above 0 and
+blue below (TODO needs splines or similar to smooth), TODO to implement:
+"goa" for Gulf of Alaska Ecosystem Report style plots; "plain"
 for just a line.}
 
 \item{y_tick}{increment for y-axis ticks}

@@ -96,7 +96,7 @@ plot.pacea_t <- function(obj,
   }
 
   if(style == "red_blue"){
-    plot.red_blue(obj_lub,
+    plot_red_blue(obj_lub,
                   value = value,
                   xlab = xlab,
                   ylab = ylab,
@@ -105,7 +105,7 @@ plot.pacea_t <- function(obj,
                   x_tick_extra_years = x_tick_extra_years,
                   ...)
   } else if(style == "red_blue_bar") {
-    plot.red_blue_bar(obj_lub,
+    plot_red_blue_bar(obj_lub,
                       value = value,
                       xlab = xlab,
                       ylab = ylab,
@@ -144,7 +144,7 @@ plot.pacea_t <- function(obj,
 ##' \dontrun{
 ##' # see plot.pacea_t()
 ##' }
-plot.red_blue <- function(obj_lub,
+plot_red_blue <- function(obj_lub,
                           value,
                           xlab,
                           ylab,
@@ -211,7 +211,7 @@ plot.red_blue <- function(obj_lub,
 
 ##' Plot the red/blue style of anomaly plot as barplots; internal function called from `plot.pacea_t()`.
 ##'
-##' Adapted from `plot.red_blue()`.
+##' Adapted from `plot_red_blue()`.
 ##'
 ##' @param obj_lub obj a `pacea_t` object, which is a time series, with a date
 ##'   column that is the lubridate `date` class.
@@ -228,7 +228,7 @@ plot.red_blue <- function(obj_lub,
 ##' \dontrun{
 ##' # see plot.pacea_t()
 ##' }
-plot.red_blue_bar <- function(obj_lub,
+plot_red_blue_bar <- function(obj_lub,
                           value,
                           xlab,
                           ylab,
