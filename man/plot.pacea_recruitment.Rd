@@ -18,7 +18,8 @@
 )
 }
 \arguments{
-\item{obj}{a `pacea_recruitment` object, which is a time series.}
+\item{obj}{a `pacea_recruitment` object, which is a time series. Function
+will run on other objects (not give an error) but is not tested on those.}
 
 \item{value}{which column of `obj` to plot}
 

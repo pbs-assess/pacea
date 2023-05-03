@@ -3,7 +3,7 @@
 \name{plot_with_uncertainty}
 \alias{plot_with_uncertainty}
 \title{Plot medians with uncertainty bars, such as for stock assessment
-results; internal function called from `plot.pacea_recruitment()`.}
+recruitment; internal function called from `plot.pacea_recruitment()`.}
 \usage{
 plot_with_uncertainty(
   obj_lub,
@@ -18,7 +18,7 @@ plot_with_uncertainty(
 )
 }
 \arguments{
-\item{obj_lub}{obj a `pacea_t` object, which is a time series, with a date
+\item{obj_lub}{obj a `pacea_recruitment` object, which is a time series, with a date
 column that is the lubridate `date` class.}
 
 \item{value}{which column of `obj` to plot}

@@ -1,15 +1,19 @@
-##' Check if a newly downloaded index has changed from one currently in pacea
+##' Check if a newly downloaded pacea object has changed from one currently in pacea
 ##'
-##' If index has changed from the saved one then save the new version.
+##' If index has changed from the saved one then save the new version. Only used
+##' for updating data (see files in `data-raw`).
 ##'
-##' @param old original index (`pacea_t` object) saved in pacea
-##' @param new newly downloaded and wrangled index (`pacea_t` object)
-##' @return logical if the index has changed (and we would then want to resave it)
+##' @param old original object (of class `pacea_index`, `pacea_recruitment` or
+##'   `pacea_biomass`) saved in pacea
+##' @param new newly downloaded and wrangled object (must also be one of the above classes)
+##' @return logical if the object has changed (and we would then want to resave it)
 ##' @export
 ##' @author Andrew Edwards
 ##' @examples
 ##' \dontrun{
 ##' check_index_changed(oni, oni[-10, ]))
+##' # see data-raw/groundfish/data.R
+##' # see data-raw/coastwide-indices/coastwide-indices.R
 ##' }
 check_index_changed <- function(old, new){
   stopifnot(class(old)[1] %in% c("pacea_index",

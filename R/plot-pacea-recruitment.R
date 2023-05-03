@@ -3,7 +3,8 @@
 ##' Temporal plot for a pacea recruitment time series (of class
 ##' `pacea_recruitment`) object.
 ##'
-##' @param obj a `pacea_recruitment` object, which is a time series.
+##' @param obj a `pacea_recruitment` object, which is a time series. Function
+##'   will run on other objects (not give an error) but is not tested on those.
 ##' @inherit plot.pacea_index
 ##' @param x_tick_extra_years number of extra years to expand around the range
 ##'   of data for which to add annual tick marks
@@ -33,7 +34,7 @@ plot.pacea_recruitment <- function(obj,
                                    y_max = NULL,
                                    ...
                                    ){
-  stopifnot("value must be a column of the pacea_t object" =
+  stopifnot("value must be a column of the pacea_recruitment object" =
             value %in% names(obj))
 
   stopifnot("function currently assumes annual (not monthly) recruitments" =

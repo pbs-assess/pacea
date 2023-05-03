@@ -28,3 +28,4 @@ lib/
 /data-raw/coastwide-indices/*.txt
 /data-raw/groundfish/hake_recruitment_new.rda
 /data-raw/groundfish/hake_biomass_new.rda
+/data-raw/dummy.txt

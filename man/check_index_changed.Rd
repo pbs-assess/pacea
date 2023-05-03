@@ -2,24 +2,28 @@
 % Please edit documentation in R/check-index-changed.R
 \name{check_index_changed}
 \alias{check_index_changed}
-\title{Check if a newly downloaded index has changed from one currently in pacea}
+\title{Check if a newly downloaded pacea object has changed from one currently in pacea}
 \usage{
 check_index_changed(old, new)
 }
 \arguments{
-\item{old}{original index (`pacea_t` object) saved in pacea}
+\item{old}{original object (of class `pacea_index`, `pacea_recruitment` or
+`pacea_biomass`) saved in pacea}
 
-\item{new}{newly downloaded and wrangled index (`pacea_t` object)}
+\item{new}{newly downloaded and wrangled object (must also be one of the above classes)}
 }
 \value{
-logical if the index has changed (and we would then want to resave it)
+logical if the object has changed (and we would then want to resave it)
 }
 \description{
-If index has changed from the saved one then save the new version.
+If index has changed from the saved one then save the new version. Only used
+for updating data (see files in `data-raw`).
 }
 \examples{
 \dontrun{
 check_index_changed(oni, oni[-10, ]))
+# see data-raw/groundfish/data.R
+# see data-raw/coastwide-indices/coastwide-indices.R
 }
 }
 \author{

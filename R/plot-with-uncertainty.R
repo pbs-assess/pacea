@@ -1,9 +1,9 @@
 ##' Plot medians with uncertainty bars, such as for stock assessment
-##' results; internal function called from `plot.pacea_recruitment()`.
+##' recruitment; internal function called from `plot.pacea_recruitment()`.
 ##'
 ##' Adapted from `make.mcmc.recruitment.plot()` from Pacific Hake assessment.
 ##'
-##' @param obj_lub obj a `pacea_t` object, which is a time series, with a date
+##' @param obj_lub obj a `pacea_recruitment` object, which is a time series, with a date
 ##'   column that is the lubridate `date` class.
 ##' @inherit plot.pacea_recruitment
 ##' @return plot of time series with median as circle and bars for uncertainty.
