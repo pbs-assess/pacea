@@ -5,7 +5,7 @@
 \alias{oni}
 \title{ONI -- Oceanographic Niño Index}
 \format{
-A tibble also of class `pacea_t` (pacea temporal) with columns:
+A tibble also of class `pacea_index` with columns:
 \describe{
   \item{year:}{year of value}
   \item{month:}{month (1 to 12) of value}
@@ -65,6 +65,12 @@ consistent with a coupled ocean-atmosphere phenomenon accompanied these periods.
 Also see https://www.ncei.noaa.gov/access/monitoring/enso/sst
 
 Associated code adapted from code generously shared by Chris Rooper.
+}
+\examples{
+\dontrun{
+oni
+plot(oni)
+}
 }
 \author{
 Andrew Edwards

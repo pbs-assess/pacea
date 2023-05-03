@@ -5,7 +5,7 @@
 \alias{npi_monthly}
 \title{NPI -- North Pacific Index monthly values}
 \format{
-A tibble also of class `pacea_t` (pacea temporal) with columns:
+A tibble also of class `pacea_index` with columns:
 \describe{
   \item{year:}{year of value}
   \item{month:}{month (1 to 12) of value}
@@ -47,6 +47,13 @@ Lows. The NPI anomaly, plotted in Figure 7-2 [of Ross and Robert (2022)],
 was calculated from the NPI by removing the 1950-2018 mean.
 
 Associated code adapted from code generously shared by Chris Rooper.
+}
+\examples{
+\dontrun{
+npi_monthly
+plot(npi_monthly)
+}
+
 }
 \author{
 Andrew Edwards

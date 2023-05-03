@@ -5,7 +5,7 @@
 \alias{npi_annual}
 \title{NPI -- North Pacific Index annual values and anomalies}
 \format{
-A tibble also of class `pacea_t` (pacea temporal) with columns:
+A tibble also of class `pacea_index` with columns:
 \describe{
   \item{year:}{year of value}
   \item{val:}{absolute average winter value, hPa. The value for year $N$
@@ -32,6 +32,13 @@ variations in atmospheric circulation across the North Pacific.
 See `?npi_monthly` for details.
 
 `npi_annual` contains annual average winter values and anomalies.
+}
+\examples{
+\dontrun{
+npi_annual
+plot(npi_annual)
+}
+
 }
 \author{
 Andrew Edwards

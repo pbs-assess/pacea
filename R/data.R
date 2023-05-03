@@ -43,7 +43,7 @@
 ##'
 ##' Associated code adapted from code generously shared by Chris Rooper.
 ##'
-##' @format A tibble also of class `pacea_t` (pacea temporal) with columns:
+##' @format A tibble also of class `pacea_index` with columns:
 ##' \describe{
 ##'   \item{year:}{year of value}
 ##'   \item{month:}{month (1 to 12) of value}
@@ -52,7 +52,11 @@
 ##'   \item{anom:}{anomalies based on 30-year base periods that are updated every
 ##'   5 years, deg C}
 ##'  }
-##'
+##' @examples
+##' \dontrun{
+##' oni
+##' plot(oni)
+##' }
 ##' @author Andrew Edwards
 ##' @source Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
 "oni"
@@ -86,13 +90,19 @@
 ##'
 ##' Associated code adapted from code generously shared by Chris Rooper.
 ##'
-##' @format A tibble also of class `pacea_t` (pacea temporal) with columns:
+##' @format A tibble also of class `pacea_index` with columns:
 ##' \describe{
 ##'   \item{year:}{year of value}
 ##'   \item{month:}{month (1 to 12) of value}
 ##'   \item{val:}{absolute monthly value (average?), hPa, with an `NA` for
 ##'   December 1944}
 ##'  }
+##'
+##' @examples
+##' \dontrun{
+##' npi_monthly
+##' plot(npi_monthly)
+##' }
 ##'
 ##' @author Andrew Edwards
 ##' @source Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
@@ -107,7 +117,7 @@
 ##'
 ##' `npi_annual` contains annual average winter values and anomalies.
 ##'
-##' @format A tibble also of class `pacea_t` (pacea temporal) with columns:
+##' @format A tibble also of class `pacea_index` with columns:
 ##' \describe{
 ##'   \item{year:}{year of value}
 ##'   \item{val:}{absolute average winter value, hPa. The value for year $N$
@@ -119,6 +129,12 @@
 ##'   \item{anom:}{anomalies of the annual winter values compared to the 1925-1989 mean
 ##'   of 1008.9 hPa, again with an `NA` for 1899 TODO check.}
 ##' }
+##' @examples
+##' \dontrun{
+##' npi_annual
+##' plot(npi_annual)
+##' }
+##'
 ##' @author Andrew Edwards
 ##' @source Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
 "npi_annual"
@@ -205,7 +221,7 @@
 ##'
 ##' Associated code adapted from code generously shared by Chris Rooper.
 ##'
-##' @format A tibble also of class `pacea_t` (pacea temporal) with columns:
+##' @format A tibble also of class `pacea_index` with columns:
 ##' \describe{
 ##'   \item{year:}{year of value}
 ##'   \item{month:}{month (1 to 12) of value}
@@ -214,6 +230,98 @@
 ##'   Pacific (poleward of 20 deg N) after the global average sea surface
 ##'   temperature has been removed.}
 ##' }
+##'
+##' \dontrun{
+##' pdo
+##' plot(pdo)
+##' }
 ##' @author Andrew Edwards
 ##' @source Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
 "pdo"
+
+##' Pacific Hake annual age-0 recruitments as estimated by the 2023 stock
+##' assessment.
+##'
+##' The Pacific Hake stock is managed and assessed through an Agreement between
+##' Canada and the United States. The recruitment estimates come from the most
+##' recent joint stock assessment, and, importantly, are for the coastwide stock
+##' from California to British Columbia.
+##'
+##' Pacific Hake are a migratory species, generally spawning off southern
+##' California in the winter spawning season and migrating to coastal areas
+##' between northern California and northern British Columbia during the rest of
+##' the year. The stock tends to move farther to the north in the summer during
+##' warmer years compared to cool years.
+##'
+##' The stock is important to ecosystem dynamics in the Eastern
+##' Pacific Ocean due to its relatively large total biomass and potentially large
+##' role as both prey and predator. It has highly variable recruitment, as seen
+##' by typing `plot(hake_recruitment)`.
+##'
+##' The stock is assessed as a single migratory stock, so it is important to
+##' realise (in the context of analyses for Canadian waters) that these estimates are for the
+##' full coastwide stock. Results from the biannual coastwide acoustic survey show how the
+##' biomass of age-2 and older fish in Canadian waters can vary between years
+##' (Figure 2 of most recent assessment).
+##'
+##' The `hake_recruitment` (and `hake_biomass`) estimates are from a Bayesian statistical catch-at-age
+##' model, that is fit to the acoustic survey index of biomass, an index of
+##' age-1 fish from the survey, annual commercial catch-at-age data, and
+##' age-composition data from the survey and commercial fisheries.
+##'
+##' Results are from the most recent stock assessment:
+##'
+##' Berger, A.M., C.J. Grandin, K.F. Johnson and A.M. Edwards. 2023. Status of
+##' the Pacific Hake (whiting) stock in U.S. and Canadian waters in
+##' 2023. Prepared by the Joint Technical Committee of the U.S. and Canada
+##' Pacific Hake/Whiting Agreement, National Marine Fisheries Service and
+##' Fisheries and Oceans Canada. 208 p.
+##' https://media.fisheries.noaa.gov/2023-02/2023-hake-assessment-post-srg_web.pdf
+##'
+##' @format A tibble also of class `pacea_recruitment` with columns:
+##' \describe{
+##'   \item{year:}{year of the recruitment estimate}
+##'   \item{low:}{low end (2.5th percentile) of the 95\% credible interval for recruitment}
+##'   \item{median:}{median estimate of recruitment}
+##'   \item{low:}{high end (97.5th percentile) of the 95\% credible interval for recruitment}
+##'  }
+##'
+##' @examples
+##' \dontrun{
+##' hake_recruitment
+##' plot(hake_recruitment)
+##' }
+##' @author Andrew Edwards
+##' @source Generated from Andy running (in the hake repository)
+##'   `hake-assessment/sandbox/andy/pacea-save/pacea-save.R` and then here
+##'   `data-raw/groundfish/hake.R`.
+"hake_recruitment"
+
+##' Pacific Hake annual age-0 spawning stock biomass as estimated by the 2023 stock
+##' assessment.
+##'
+##' The Pacific Hake stock is managed and assessed through an Agreement between
+##' Canada and the United States. The spawning stock biomass (mature females) estimates come from the most
+##' recent joint stock assessment, and, importantly, are for the coastwide stock
+##' from California to British Columbia.
+##'
+##' See `?hake_recruitment` for further details and reference.
+##'
+##' @format A tibble also of class `pacea_biomass` with columns:
+##' \describe{
+##'   \item{year:}{year of the estimate of spawning stock biomass (mature females)}
+##'   \item{low:}{low end (2.5th percentile) of the 95\% credible interval for biomass}
+##'   \item{median:}{median estimate of biomass}
+##'   \item{low:}{high end (97.5th percentile) of the 95\% credible interval for biomss}
+##'  }
+##'
+##' @examples
+##' \dontrun{
+##' hake_biomass
+##' plot(hake_biomass)
+##' }
+##' @author Andrew Edwards
+##' @source Generated from Andy running (in the hake repository)
+##'   `hake-assessment/sandbox/andy/pacea-save/pacea-save.R` and then here
+##'   `data-raw/groundfish/hake.R`.
+"hake_biomass"

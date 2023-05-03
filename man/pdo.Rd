@@ -5,7 +5,7 @@
 \alias{pdo}
 \title{PDO -- Pacific Decadal Oscillation}
 \format{
-A tibble also of class `pacea_t` (pacea temporal) with columns:
+A tibble also of class `pacea_index` with columns:
 \describe{
   \item{year:}{year of value}
   \item{month:}{month (1 to 12) of value}
@@ -13,6 +13,11 @@ A tibble also of class `pacea_t` (pacea temporal) with columns:
   function of monthly sea surface temperature anomalies over the North
   Pacific (poleward of 20 deg N) after the global average sea surface
   temperature has been removed.}
+}
+
+\dontrun{
+pdo
+plot(pdo)
 }
 }
 \source{
