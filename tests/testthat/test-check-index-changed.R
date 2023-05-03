@@ -23,4 +23,9 @@ test_that("a changed index is identified as changed", {
                                   dplyr::mutate(oni, value = 2 * value)))
   expect_true(check_index_changed(oni,
                                   rbind(oni, oni[1,])))
+
+  oni3 <- oni
+  class(oni3)[1] <- "pacea_biomass"
+  expect_true(check_index_changed(oni,
+                                  oni3))
 })
