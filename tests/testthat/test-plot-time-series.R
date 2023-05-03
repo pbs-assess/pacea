@@ -1,4 +1,4 @@
-# These are on pacea_index and then pacea_recruitment and pacea_biomass objects.
+# These are on plotting functions for pacea_index and then pacea_recruitment and pacea_biomass objects.
 
 test_that("the stopifnot commands are working", {
   expect_error(plot(oni,
@@ -8,10 +8,13 @@ test_that("the stopifnot commands are working", {
                     smooth_over_year = TRUE))
 })
 
-test_that("plotting works with various options", {
+test_that("index plotting works with various options", {
   expect_invisible(plot(npi_monthly,
                         smooth_over_year = TRUE,
                         value = "value"))
+  expect_invisible(plot(oni,
+                        style = "red_blue"))
+
   expect_invisible(plot(npi_monthly,
                         value = "value"))
   expect_invisible(plot(npi_annual,
@@ -33,4 +36,20 @@ test_that("plotting works with various options", {
 
 })
 
-# TODO repeat some of above for hake_recruitment
+# Adapting some of above for hake_recruitment
+
+test_that("the stopifnot commands are working", {
+  expect_error(plot(hake_recruitment,
+                    value = "foo"))
+  expect_error(plot.hake_recruitment(npi_monthly))
+})
+
+test_that("recruitment plotting works with various options", {
+  expect_invisible(plot(hake_recruitment))
+  expect_invisible(plot(hake_recruitment,
+                        style = "foo"))
+  expect_invisible(plot(dplyr::select(hake_recruitment,
+                                      -c("low"))))
+  expect_invisible(plot(hake_recruitment,
+                        y_max = 100))
+})

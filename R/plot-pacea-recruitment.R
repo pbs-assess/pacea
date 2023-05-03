@@ -1,7 +1,9 @@
 ##' Plot a pacea recruitment time series object (currently assumes annual values)
 ##'
 ##' Temporal plot for a pacea recruitment time series (of class
-##' `pacea_recruitment`) object.
+##' `pacea_recruitment`) object. The `style` option here (unlike for
+##' `plot.pacea_index()` defaults to `no_uncertainty` and gets changed to
+##' `uncertainty` if `low` and `high` are columns of `obj`.
 ##'
 ##' @param obj a `pacea_recruitment` object, which is a time series. Function
 ##'   will run on other objects (not give an error) but is not tested on those.
@@ -27,9 +29,10 @@ plot.pacea_recruitment <- function(obj,
                                    value = "median",
                                    xlab = "Year",
                                    ylab = attr(obj, "axis_name"),
-                                   smooth_over_year = FALSE,
+                                   # smooth_over_year = FALSE,
                                    y_tick = 0.25,
                                    x_tick_extra_years = 20,
+                                   style = "no_uncertainty",
                                    uncertainty_bar_col = "blue",
                                    y_max = NULL,
                                    ...
@@ -61,9 +64,9 @@ plot.pacea_recruitment <- function(obj,
                  obj_lub[[value]], # [[]] returns a vector not a tibble
                  xlab = xlab,
                  ylab = ylab,
-                 type = type,
-                 y_tick = y_tick,
-                 x_tick_extra_years = x_tick_extra_years,
+                 # y_tick = y_tick,
+                 # x_tick_extra_years = x_tick_extra_years,
                  ...)
+    # Add tickmark function here
   }
 }
