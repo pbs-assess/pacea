@@ -64,8 +64,6 @@ plot(hake_recruitment,
      xlim = c(lubridate::dmy(01011950),
               lubridate::dmy(01012040))) # to expand x-axis
 }
-
-assume these are annual values
 }
 \author{
 Andrew Edwards
