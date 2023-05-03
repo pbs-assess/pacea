@@ -9,6 +9,7 @@
 ##' @author Andrew Edwards
 ##' @examples
 ##' \dontrun{
+##' check_index_changed(oni, oni[-10, ]))
 ##' }
 check_index_changed <- function(old, new){
   stopifnot(class(old)[1] %in% c("pacea_index",

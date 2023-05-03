@@ -19,6 +19,7 @@ If index has changed from the saved one then save the new version.
 }
 \examples{
 \dontrun{
+check_index_changed(oni, oni[-10, ]))
 }
 }
 \author{
