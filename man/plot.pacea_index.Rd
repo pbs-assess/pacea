@@ -6,7 +6,7 @@
 \usage{
 \method{plot}{pacea_index}(
   obj,
-  value = "anom",
+  value = "anomaly",
   xlab = "Date",
   ylab = attr(obj, "axis_name"),
   smooth_over_year = FALSE,
@@ -67,7 +67,7 @@ plot(oni,
      xlim = c(lubridate::dmy(01011950),
      lubridate::dmy(01012040))) # to expand x-axis
 plot(npi_monthly,
-     value = "val")
+     value = "value")
 }
 }
 \author{
