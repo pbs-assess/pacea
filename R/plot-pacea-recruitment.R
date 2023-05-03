@@ -22,8 +22,6 @@
 ##'      xlim = c(lubridate::dmy(01011950),
 ##'               lubridate::dmy(01012040))) # to expand x-axis
 ##' }
-##'
-##' assume these are annual values
 plot.pacea_recruitment <- function(obj,
                                    value = "median",
                                    xlab = "Year",
