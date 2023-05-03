@@ -11,13 +11,21 @@
 ##' \dontrun{
 ##' }
 check_index_changed <- function(old, new){
-  stopifnot(class(old)[1] == "pacea_t")
-  stopifnot(class(new)[1] == "pacea_t")
+  stopifnot(class(old)[1] %in% c("pacea_index",
+                                 "pacea_recruitment",
+                                 "pacea_biomass"))
+  stopifnot(class(new)[1] %in% c("pacea_index",
+                                 "pacea_recruitment",
+                                 "pacea_biomass"))
 
   # Tried testthat::expect_equal but it returned tibble of FALSE's, so need
   #  extra checks here
 
   index_changed = FALSE
+
+  if(class(old)[1] != class(new)[1]){
+    index_changed = TRUE
+  }
 
   if(nrow(old) != nrow(new) |
      ncol(old) != ncol(new) |

@@ -11,11 +11,11 @@ test_that("the stopifnot commands are working", {
 test_that("plotting works with various options", {
   expect_invisible(plot(npi_monthly,
                         smooth_over_year = TRUE,
-                        value = "val"))
+                        value = "value"))
   expect_invisible(plot(npi_monthly,
-                        value = "val"))
+                        value = "value"))
   expect_invisible(plot(npi_annual,
-                        value = "val"))
+                        value = "value"))
   expect_invisible(plot(oni,
                         xlim = c(lubridate::dmy(01011950),
                                  lubridate::dmy(01012040)))) # to expand x-axis

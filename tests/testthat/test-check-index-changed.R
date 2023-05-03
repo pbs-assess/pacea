@@ -1,4 +1,4 @@
-test_that("a non-pacea_t object returns an error", {
+test_that("a non-pacea_index object returns an error", {
   expect_error(check_index_changed(1, oni))
   expect_error(check_index_changed(oni, "abc"))
 })
@@ -16,11 +16,11 @@ test_that("a changed index is identified as changed", {
   #                                  oni[, -1]))
 
   oni2 <- oni
-  names(oni2)[4] <- "anomaly"
+  names(oni2)[4] <- "anomaly_schmanomaly"
   expect_true(check_index_changed(oni,
                                   oni2))
   expect_true(check_index_changed(oni,
-                                  dplyr::mutate(oni, val = 2 * val)))
+                                  dplyr::mutate(oni, value = 2 * value)))
   expect_true(check_index_changed(oni,
                                   rbind(oni, oni[1,])))
 })
