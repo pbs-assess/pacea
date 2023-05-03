@@ -231,10 +231,10 @@ soi_new <- dplyr::mutate_all(soi_new, function(x) as.numeric(x)) # also adds NA
 soi_new <- tidyr::pivot_longer(soi_new,
                                cols = "JAN":"DEC",
                                names_to = "month",
-                               values_to = "anom") %>%
+                               values_to = "anomaly") %>%
   mutate(month = as.numeric(match(month, toupper(month.abb))))
 
-class(soi_new) <- c("pacea_t",
+class(soi_new) <- c("pacea_index",
                     class(soi_new))
 
 attr(soi_new, "axis_name") <- "Southern Oscillation Index"
