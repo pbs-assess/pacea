@@ -138,7 +138,7 @@ usethis::use_data(roms_sf_test1_nogeom)  # 7.671 mb
 # TEST 2 - interpolate to raster then convert to stars.raster then sf polygons
 #  outputs sf polygon data (represents raster cells)
 #  processing time to run code - 48 months of roms data: 
-#  8.744 mins ?REDO?
+#  7.272 mins 
 
 ##
 start <- Sys.time()
@@ -182,6 +182,8 @@ t2_sf6 <- output6 %>%
 t2_sf26 <- rbind(t2_sf2, t2_sf6)
 
 # index points that dont intersect with bc coast shapefile
+## REDO SO SF objects aren't recut
+
 t2_sf26 <- t2_sf26 %>% st_difference(st_union(tbc))
 
 end <- Sys.time()
@@ -193,8 +195,8 @@ plot(t2_sf26[,1])
 # data size of sf object
 roms_sf_test2 <- t2_sf26
 roms_sf_test2_nogeom <- t2_sf26 %>% st_drop_geometry()
-usethis::use_data(roms_sf_test2, overwrite=T)  # 9.785 mb
-usethis::use_data(roms_sf_test2_nogeom, overwrite=T)  # 9.638 mb
+usethis::use_data(roms_sf_test2)  # 8.525 mb
+usethis::use_data(roms_sf_test2_nogeom)  # 8.19 mb
 
 # END TEST 2
 #####
@@ -251,5 +253,34 @@ usethis::use_data(roms_sf_test3_nogeom)  # 7.754 mb
 
 # END TEST 3
 #####
+
+dim(t1_sf26)  # 48,247 cells
+dim(t2_sf26)  # 52,776 cells
+dim(t3_sf26)  # 48,874 cells
+
+plot(t1_sf26[,1], pch=19)
+plot(t2_sf26[,1])
+plot(t3_sf26[,1], pch=19)
+
+ggplot(t1_sf26) +
+  geom_sf(aes(col=`1`), shape=15) +
+  scale_colour_gradient2(low = "blue", mid = "orange", high = "red", midpoint = median(as.vector(t1_sf26$`1`)))
+ggplot(t2_sf26) +
+  geom_sf(aes(fill=`2`), col=NA) +
+  scale_fill_gradient2(low = "blue", mid = "orange", high = "red", midpoint = median(as.vector(t1_sf26$`1`)))
+ggplot(t3_sf26) +
+  geom_sf(aes(col=`1`), shape=15) +
+  scale_colour_gradient2(low = "blue", mid = "orange", high = "red", midpoint = median(as.vector(t1_sf26$`1`)))
+
+
+
+tt <- st_centroid(t2_sf26)
+
+
+
+
+
+
+
 
 
