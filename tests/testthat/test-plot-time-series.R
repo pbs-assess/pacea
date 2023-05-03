@@ -1,4 +1,4 @@
-# These are on pacea_t objects, so call plot.pacea_t()
+# These are on pacea_index and then pacea_recruitment and pacea_biomass objects.
 
 test_that("the stopifnot commands are working", {
   expect_error(plot(oni,
@@ -32,3 +32,5 @@ test_that("plotting works with various options", {
                         style = "goa"))   # that isn't implemented yet
 
 })
+
+# TODO repeat some of above for hake_recruitment
