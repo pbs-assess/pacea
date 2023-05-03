@@ -50,13 +50,13 @@ stopifnot(colnames(oni_new) == c("SEAS", "YR", "TOTAL", "ANOM"),
 
 colnames(oni_new)<-c("month",
                      "year",
-                     "val",
-                     "anom")
+                     "value",
+                     "anomaly")
 
 oni_new$month <- as.numeric(factor(oni_new$month,
                                    levels=unique(oni_new$month),
                                    ordered=TRUE))
-class(oni_new) <- c("pacea_t",
+class(oni_new) <- c("pacea_index",
                     class(oni_new))
 
 attr(oni_new, "axis_name") <- "Oceanic Niño Index"
@@ -80,9 +80,9 @@ download.file("https://climatedataguide.ucar.edu/sites/default/files/2023-01/npi
               quiet = FALSE)
 
 npi_monthly_new <- readr::read_table("npi_monthly.txt",
-                             col_names = c("yearmonth", "val"),
-                             skip = 1,
-                             na = "-999.00")    # December 1944
+                                     col_names = c("yearmonth", "value"),
+                                     skip = 1,
+                                     na = "-999.00")    # December 1944
 
 stopifnot(npi_monthly_new[1,1] == 189901)    # Check still starts in 1899.
 
@@ -90,11 +90,11 @@ npi_monthly_new$month <- as.numeric(substr(npi_monthly_new$yearmonth, 5, 6))
 npi_monthly_new$year  <- as.numeric(substr(npi_monthly_new$yearmonth, 1, 4))
 
 npi_monthly_new <- dplyr::select(npi_monthly_new,
-                         year,
-                         month,
-                         val)
+                                 year,
+                                 month,
+                                 value)
 
-class(npi_monthly_new) <- c("pacea_t",
+class(npi_monthly_new) <- c("pacea_index",
                     class(npi_monthly_new))
 
 attr(npi_monthly_new, "axis_name") <- "North Pacific Index"
@@ -103,7 +103,7 @@ if(check_index_changed(npi_monthly, npi_monthly_new)){
   npi_monthly <- npi_monthly_new
   usethis::use_data(npi_monthly,
                     overwrite = TRUE)
-  plot(npi_monthly, value = "val", style = "plain")  # plain not a thing yet, just
+  plot(npi_monthly, value = "value", style = "plain")  # plain not a thing yet, just
                                              # not red-blue TODO add in average
                                              # value so can show colours
 }
@@ -118,7 +118,7 @@ download.file("https://climatedataguide.ucar.edu/sites/default/files/2022-10/npi
               quiet = FALSE)
 
 npi_annual_val_new <- readr::read_table("npi_annual_val.txt",
-                                        col_names = c("year", "val"),
+                                        col_names = c("year", "value"),
                                         skip = 1,
                                         na = "-999.00")    # 1899 (since no 1898 data)
 
@@ -131,7 +131,7 @@ download.file("https://climatedataguide.ucar.edu/sites/default/files/2023-01/npi
               quiet = FALSE)
 
 npi_annual_anom_new <- readr::read_table("npi_annual_anom.txt",
-                                         col_names = c("year", "anom"),
+                                         col_names = c("year", "anomaly"),
                                          skip = 1,
                                          na = "-999.00")    # 1899 (since no 1898 data)
 
@@ -141,7 +141,7 @@ npi_annual_new <- dplyr::left_join(npi_annual_val_new,
                                    npi_annual_anom_new,
                                    by = "year")
 
-class(npi_annual_new) <- c("pacea_t",
+class(npi_annual_new) <- c("pacea_index",
                            class(npi_annual_new))
 
 attr(npi_annual_new, "axis_name") <- "North Pacific Index"
@@ -150,7 +150,7 @@ if(check_index_changed(npi_annual, npi_annual_new)){
   npi_annual <- npi_annual_new
   usethis::use_data(npi_annual,
                     overwrite = TRUE)
-  plot(npi_annual, value = "val", style = "plain")  # plain not a thing yet, just
+  plot(npi_annual, value = "value", style = "plain")  # plain not a thing yet, just
                                              # not red-blue TODO add in average
                                              # value so can show colours
 }
@@ -172,11 +172,11 @@ stopifnot(pdo_new[1,1] == 1854) # Check still starts in 1854
 pdo_new <- tidyr::pivot_longer(pdo_new,
                                cols = "Jan":"Dec",
                                names_to = "month",
-                               values_to = "anom") %>%
+                               values_to = "anomaly") %>%
   mutate(month = as.numeric(match(month, month.abb))) %>%
   rename(year = Year)
 
-class(pdo_new) <- c("pacea_t",
+class(pdo_new) <- c("pacea_index",
                     class(pdo_new))
 
 attr(pdo_new, "axis_name") <- "Pacific Decadal Oscillation"

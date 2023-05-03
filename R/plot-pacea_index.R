@@ -38,10 +38,10 @@
 ##'      xlim = c(lubridate::dmy(01011950),
 ##'      lubridate::dmy(01012040))) # to expand x-axis
 ##' plot(npi_monthly,
-##'      value = "val")
+##'      value = "value")
 ##' }
 plot.pacea_index <- function(obj,
-                             value = "anom",
+                             value = "anomaly",
                              xlab = "Date",
                              ylab = attr(obj, "axis_name"),
                              smooth_over_year = FALSE,
@@ -181,13 +181,13 @@ plot_red_blue <- function(obj_lub,
 ##' # see plot.pacea_index()
 ##' }
 plot_red_blue_bar <- function(obj_lub,
-                          value,
-                          xlab,
-                          ylab,
-                          type,
-                          y_tick,
-                          x_tick_extra_years,
-                          ...){
+                              value,
+                              xlab,
+                              ylab,
+                              type,
+                              y_tick,
+                              x_tick_extra_years,
+                              ...){
   # TODO check if 0 within range
 
   obj_lub$y_pos <- ifelse(obj_lub[[value]] >= 0,
