@@ -9,9 +9,9 @@
   value = "median",
   xlab = "Year",
   ylab = attr(obj, "axis_name"),
-  smooth_over_year = FALSE,
   y_tick = 0.25,
   x_tick_extra_years = 20,
+  style = "no_uncertainty",
   uncertainty_bar_col = "blue",
   y_max = NULL,
   ...
@@ -29,16 +29,18 @@ will run on other objects (not give an error) but is not tested on those.}
 object. TODO Note that this isn't automated yet to refer to anomaly or absolute
 values, though for each time series there is probably only one choice}
 
-\item{smooth_over_year}{logical to smooth monthly values over each calendar
-year (as per Tetjana Ross' plots, see `?oni` for reference). Note that the
-corresponding `date` is for 1st January of each year. TODO when
-smoothed the red-blue figure isn't quite right (it isn't for monthly also,
-but that's not as obvious). See Issue #15.}
-
 \item{y_tick}{increment for y-axis ticks}
 
 \item{x_tick_extra_years}{number of extra years to expand around the range
 of data for which to add annual tick marks}
+
+\item{style}{what style of plot -- HERE TODO mention don't all work properly
+but can tweak lwd
+for "red_blue_bar" (default) for red bars above 0 and
+blue bars below 0, "red_blue" for colouring red above 0 and
+blue below (TODO needs splines or similar to smooth), TODO to implement:
+"goa" for Gulf of Alaska Ecosystem Report style plots; "plain"
+for just a line.}
 
 \item{uncertainty_bar_col}{colour for uncertainty bars for certain types of
 plot (e.g. estimated fish recruitment)}
@@ -56,7 +58,9 @@ plot of the time series as median with bars showing uncertainty (if
 }
 \description{
 Temporal plot for a pacea recruitment time series (of class
-`pacea_recruitment`) object.
+`pacea_recruitment`) object. The `style` option here (unlike for
+`plot.pacea_index()` defaults to `no_uncertainty` and gets changed to
+`uncertainty` if `low` and `high` are columns of `obj`.
 }
 \examples{
 \dontrun{

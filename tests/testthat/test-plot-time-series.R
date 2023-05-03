@@ -1,6 +1,6 @@
 # These are on plotting functions for pacea_index and then pacea_recruitment and pacea_biomass objects.
 
-test_that("the stopifnot commands are working", {
+test_that("index plotting: the stopifnot commands are working", {
   expect_error(plot(oni,
                     value = "foo"))
   expect_error(plot(npi_monthly))
@@ -38,7 +38,7 @@ test_that("index plotting works with various options", {
 
 # Adapting some of above for hake_recruitment
 
-test_that("the stopifnot commands are working", {
+test_that("recruitment plotting: the stopifnot commands are working", {
   expect_error(plot(hake_recruitment,
                     value = "foo"))
   expect_error(plot.hake_recruitment(npi_monthly))
