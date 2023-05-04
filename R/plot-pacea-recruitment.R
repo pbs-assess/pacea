@@ -7,13 +7,24 @@
 ##'
 ##' @param obj a `pacea_recruitment` object, which is a time series. Function
 ##'   will run on other objects (not give an error) but is not tested on those.
-##' @inherit plot.pacea_index
-##' @param x_tick_extra_years number of extra years to expand around the range
-##'   of data for which to add annual tick marks
+##' @param value the column to plot if no uncertainties, or what to plot as dots
+##'   if showing uncertainties (likely always `median`)
+##' @param xlab label for x-axis
+##' @param ylab label for y-axis (default is automatic from attribute of `obj`)
+##' @param style `no_uncertainty` for plain time series without uncertainty,
+##'   gets overridden to have uncertainty bars if `low` and `high` are columns
+##'   of `obj`
 ##' @param uncertainty_bar_col colour for uncertainty bars for certain types of
 ##'   plot (e.g. estimated fish recruitment)
 ##' @param y_max maximum y value for certain types of plot (use this if you get
 ##'   an error when specifying `ylim`)
+##' @param add_line_at_1 whether to add a horizontal line at 1 (only sensible for scaled recruitments)
+##' @param add_line_at_1_col colour for line at 1
+##' @param add_line_at_1_lty line type of line at 1
+##' @param ...
+##' @param x_tick_extra_years number of extra years to expand around the range
+##'   of data for which to add annual tick marks
+##' @inherit plot.pacea_index
 ##' @return plot of the time series as median with bars showing uncertainty (if
 ##'   `low` and `high` are columns of `obj) to the current device; returns nothing.
 ##' @export
@@ -24,6 +35,8 @@
 ##' plot(hake_recruitment,
 ##'      xlim = c(lubridate::dmy(01011950),
 ##'               lubridate::dmy(01012040))) # to expand x-axis
+##' plot(hake_recruitment_over_2010)  # automatically changes style of plot
+##'                                   #  if 'over' is in the object name
 ##' }
 plot.pacea_recruitment <- function(obj,
                                    value = "median",
@@ -35,6 +48,9 @@ plot.pacea_recruitment <- function(obj,
                                    style = "no_uncertainty",
                                    uncertainty_bar_col = "blue",
                                    y_max = NULL,
+                                   add_line_at_1 = FALSE,
+                                   add_line_at_1_col = "darkgreen",
+                                   add_line_at_1_lty = 2,
                                    ...
                                    ){
   stopifnot("value must be a column of the pacea_recruitment object" =
@@ -49,6 +65,18 @@ plot.pacea_recruitment <- function(obj,
     style = "uncertainty"
   }
 
+  if(grepl("over", deparse(substitute(obj)))){
+    add_line_at_1 = TRUE
+    # Set these defaults if user hasn't changed from default
+    if(uncertainty_bar_col == "blue"){
+      uncertainty_bar_col = "red"
+    }
+    if(is.null(y_max)){
+      y_max = 1.2
+    }
+
+  }
+
   if(style == "uncertainty"){
     plot_with_uncertainty(obj_lub,
                           value = value,
@@ -58,6 +86,9 @@ plot.pacea_recruitment <- function(obj,
                           x_tick_extra_years = x_tick_extra_years,
                           uncertainty_bar_col = uncertainty_bar_col,
                           y_max = y_max,
+                          add_line_at_1 = add_line_at_1,
+                          add_line_at_1_col = add_line_at_1_col,
+                          add_line_at_1_lty = add_line_at_1_lty,
                           ...)
   } else {
     plot.default(obj_lub$date,

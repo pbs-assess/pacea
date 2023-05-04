@@ -24,7 +24,7 @@ if(check_index_changed(hake_recruitment,
   hake_recruitment <- hake_recruitment_new
   usethis::use_data(hake_recruitment,
                     overwrite = TRUE)
-  plot(hake_recruitment, value = "val", style = "plain")
+  plot(hake_recruitment)
 }
 
 # Spawning biomass
@@ -43,4 +43,30 @@ if(check_index_changed(hake_biomass,
   usethis::use_data(hake_biomass,
                     overwrite = TRUE)
   plot(hake_biomass, value = "val", style = "plain")
+}
+
+# Recruitment scaled by 2010 value
+
+load("hake_recruitment_over_2010_new.rda")
+
+class(hake_recruitment_over_2010_new) <- c("pacea_recruitment",
+                                           class(hake_recruitment_over_2010_new))
+
+attr(hake_recruitment_over_2010_new, "axis_name") <-
+  "Age-0 Pacific Hake recruitment relative to that in 2010"
+
+if(check_index_changed(hake_recruitment_over_2010,
+                       hake_recruitment_over_2010_new)){
+  hake_recruitment_over_2010 <- hake_recruitment_over_2010_new
+  usethis::use_data(hake_recruitment_over_2010,
+                    overwrite = TRUE)
+  plot(hake_recruitment_over_2010,
+       uncertainty_bar_col = "red",
+       y_max = 1.2)
+  if(plot_rescale_yr){
+    abline(h = 1,
+           col = plot_rescale_yr_col,
+           lty = 2)
+  }
+
 }
