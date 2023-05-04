@@ -16,10 +16,6 @@ sf_use_s2(FALSE)  # remove spherical geometry (s2) for sf operations
 # load pacea
 load_all()
 
-# load functions from data-raw/roms folder
-source("./data-raw/roms/point2rast_interpolation.R")
-
-
 #####
 # START - load data to environment
 
