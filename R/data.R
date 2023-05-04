@@ -373,3 +373,34 @@
 ##'   `hake-assessment/sandbox/andy/pacea-save/pacea-save.R` and then here
 ##'   `data-raw/groundfish/hake.R`.
 "hake_recruitment_over_2010"
+
+##' Pacific Hake annual age-0 recruitments divided by unfished
+##' equilibrium recruitment, as estimated by the 2023 stock assessment.
+##'
+##' This is calculated to improve understanding when comparing recruitments
+##' between years, and somewhat scales out the uncertainty in the unfished
+##' equilibrium recruitment ($R_0$).
+##'
+##' See `?hake_recruitment_over_2010` and `?hake_recruitment` for further details and reference regarding hake.
+##'
+##' @format A tibble also of class `pacea_recruitment` with columns:
+##' \describe{
+##'   \item{year:}{year of the estimate of scaled recruitment}
+##'   \item{low:}{low end (2.5th percentile) of the 95\% credible interval for
+##'   the scaled recruitment}
+##'   \item{median:}{median estimate of scaled recruitment}
+##'   \item{low:}{high end (97.5th percentile) of the 95\% credible interval for
+##'   the scaled recruitment}
+##'  }
+##'
+##' @examples
+##' \dontrun{
+##' hake_recruitment_over_R0
+##' plot(hake_recruitment_over_R0)  # the code automatically plots in red and
+##'   adds the line at 1
+##' }
+##' @author Andrew Edwards
+##' @source Generated from Andy running (in the hake repository)
+##'   `hake-assessment/sandbox/andy/pacea-save/pacea-save.R` and then here
+##'   `data-raw/groundfish/hake.R`.
+"hake_recruitment_over_R0"

@@ -65,7 +65,7 @@ plot.pacea_recruitment <- function(obj,
     style = "uncertainty"
   }
 
-  if(grepl("over", deparse(substitute(obj)))){
+  if(grepl("over_2010", deparse(substitute(obj)))){
     add_line_at_1 = TRUE
     # Set these defaults if user hasn't changed from default
     if(uncertainty_bar_col == "blue"){
@@ -74,7 +74,17 @@ plot.pacea_recruitment <- function(obj,
     if(is.null(y_max)){
       y_max = 1.2
     }
+  }
 
+  if(grepl("over_R0", deparse(substitute(obj)))){
+    add_line_at_1 = TRUE
+    # Set these defaults if user hasn't changed from default
+    if(uncertainty_bar_col == "blue"){
+      uncertainty_bar_col = "red"
+    }
+    if(is.null(y_max)){
+      y_max = 10
+    }
   }
 
   if(style == "uncertainty"){

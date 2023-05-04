@@ -69,3 +69,22 @@ if(check_index_changed(hake_recruitment_over_2010,
   plot(hake_recruitment_over_2010)
   }
 }
+
+# Recruitment scaled by R0:
+
+load(paste0(hake_dir, "hake_recruitment_over_R0_new.rda"))
+
+class(hake_recruitment_over_R0_new) <- c("pacea_recruitment",
+                                           class(hake_recruitment_over_R0_new))
+
+attr(hake_recruitment_over_R0_new, "axis_name") <-
+  "Age-0 Pacific Hake recruitment relative to unfished equilibrium recruitment"
+
+if(check_index_changed(hake_recruitment_over_R0,
+                       hake_recruitment_over_R0_new)){
+  hake_recruitment_over_R0 <- hake_recruitment_over_R0_new
+  usethis::use_data(hake_recruitment_over_R0,
+                    overwrite = TRUE)
+  plot(hake_recruitment_over_R0)
+  }
+}
