@@ -21,7 +21,7 @@
 ##' @param add_line_at_1 whether to add a horizontal line at 1 (only sensible for scaled recruitments)
 ##' @param add_line_at_1_col colour for line at 1
 ##' @param add_line_at_1_lty line type of line at 1
-##' @param ...
+##' @param ... further options passed onto `plot.default()`
 ##' @param x_tick_extra_years number of extra years to expand around the range
 ##'   of data for which to add annual tick marks
 ##' @inherit plot.pacea_index

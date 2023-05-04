@@ -14,20 +14,24 @@ plot_with_uncertainty(
   x_tick_extra_years,
   uncertainty_bar_col,
   y_max,
+  add_line_at_1,
+  add_line_at_1_col,
+  add_line_at_1_lty,
   ...
 )
 }
 \arguments{
 \item{obj_lub}{obj a `pacea_recruitment` object, which is a time series, with a date
-column that is the lubridate `date` class.}
+column that is the lubridate `date` class. Can be absolute or relative
+recruitment (scaled by a particular year's recruitment or by assumed
+unfished equilibrium recruitment).}
 
-\item{value}{which column of `obj` to plot}
+\item{value}{the column to plot if no uncertainties, or what to plot as dots
+if showing uncertainties (likely always `median`)}
 
-\item{xlab}{x-axis label}
+\item{xlab}{label for x-axis}
 
-\item{ylab}{y-axis label, the default is an attribute of the `pacea_index`
-object. TODO Note that this isn't automated yet to refer to anomaly or absolute
-values, though for each time series there is probably only one choice}
+\item{ylab}{label for y-axis (default is automatic from attribute of `obj`)}
 
 \item{y_tick}{increment for y-axis ticks}
 
@@ -40,15 +44,20 @@ plot (e.g. estimated fish recruitment)}
 \item{y_max}{maximum y value for certain types of plot (use this if you get
 an error when specifying `ylim`)}
 
-\item{...}{optional arguments passed onto `plot()`. Note that the x-axis is
-constructed using a lubridate `date` object, so `xlim` needs to be a
-`date` object (see example).}
+\item{add_line_at_1}{whether to add a horizontal line at 1 (only sensible for scaled recruitments)}
+
+\item{add_line_at_1_col}{colour for line at 1}
+
+\item{add_line_at_1_lty}{line type of line at 1}
+
+\item{...}{further options passed onto `plot.default()`}
 }
 \value{
 plot of time series with median as circle and bars for uncertainty.
 }
 \description{
-Adapted from `make.mcmc.recruitment.plot()` from Pacific Hake assessment.
+Adapted from `make.mcmc.recruitment.plot()` from Pacific Hake
+assessment.
 }
 \examples{
 \dontrun{

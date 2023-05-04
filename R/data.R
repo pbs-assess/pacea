@@ -269,6 +269,13 @@
 ##' age-1 fish from the survey, annual commercial catch-at-age data, and
 ##' age-composition data from the survey and commercial fisheries.
 ##'
+##' Note that recruitments for current and recent years have little data to
+##' estimate them, and so can essentially come from the assumed distribution of
+##' recruitments. They should therefore likely be excluded from any analyses, as
+##' they are not based on data. Exactly how many years are affected can depend
+##' upon the timing of the assessment relative to the most recent biannual
+##' survey.
+##'
 ##' Results are from the most recent stock assessment:
 ##'
 ##' Berger, A.M., C.J. Grandin, K.F. Johnson and A.M. Edwards. 2023. Status of
@@ -325,3 +332,44 @@
 ##'   `hake-assessment/sandbox/andy/pacea-save/pacea-save.R` and then here
 ##'   `data-raw/groundfish/hake.R`.
 "hake_biomass"
+
+
+##' Pacific Hake annual age-0 recruitments divided by recruitments in 2010, as estimated by the 2023 stock assessment.
+##'
+##' This is calculated to improve understanding when comparing recruitments
+##' between years. A survey of participants in the stock assessment process
+##' found that all but one respondent correctly inferred from the standard plot
+##' `plot(hake_recruitment)` that the 2014 recruitment has zero probability of
+##' being as large as the (well-known large) 2010 recruitment.
+##'
+##' For each Markov chain Monte Carlo (MCMC) sample the recruitment in a year is
+##' divided by the recruitment in 2010, and then median and credible intervals
+##' are calculated for each year across all samples.
+##'
+##' For more details see Appendix H of the 2022 assessment at
+##' https://media.fisheries.noaa.gov/2022-02/2022-hake-assessment-post-srg.pdf.
+##' Figure 31 of the 2023 assessment shows the 2023 results.
+##'
+##' See `?hake_recruitment` for further details and reference regarding hake.
+##'
+##' @format A tibble also of class `pacea_recruitment` with columns:
+##' \describe{
+##'   \item{year:}{year of the estimate of scaled recruitment}
+##'   \item{low:}{low end (2.5th percentile) of the 95\% credible interval for
+##'   the scaled recruitment}
+##'   \item{median:}{median estimate of scaled recruitment}
+##'   \item{low:}{high end (97.5th percentile) of the 95\% credible interval for
+##'   the scaled recruitment}
+##'  }
+##'
+##' @examples
+##' \dontrun{
+##' hake_recruitment_over_2010
+##' plot(hake_recruitment_over_2010)  # the code automatically plots in red and
+##'   adds the line at 1
+##' }
+##' @author Andrew Edwards
+##' @source Generated from Andy running (in the hake repository)
+##'   `hake-assessment/sandbox/andy/pacea-save/pacea-save.R` and then here
+##'   `data-raw/groundfish/hake.R`.
+"hake_recruitment_over_2010"

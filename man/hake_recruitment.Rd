@@ -51,6 +51,13 @@ model, that is fit to the acoustic survey index of biomass, an index of
 age-1 fish from the survey, annual commercial catch-at-age data, and
 age-composition data from the survey and commercial fisheries.
 
+Note that recruitments for current and recent years have little data to
+estimate them, and so can essentially come from the assumed distribution of
+recruitments. They should therefore likely be excluded from any analyses, as
+they are not based on data. Exactly how many years are affected can depend
+upon the timing of the assessment relative to the most recent biannual
+survey.
+
 Results are from the most recent stock assessment:
 
 Berger, A.M., C.J. Grandin, K.F. Johnson and A.M. Edwards. 2023. Status of
