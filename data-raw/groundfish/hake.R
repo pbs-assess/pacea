@@ -5,13 +5,19 @@ load_all()
 
 # Get the .rda files from Andy running
 #  hake-assessment/sandbox/andy/pacea-save/pacea-save.R
-#  after 2023 hake assessment and copying it here.
+#  after 2023 hake assessment, gets file directly from that directory.
 #  For future assessments will maybe convert that to
 #  a function. Check with Andy or Chris Grandin.
 
 # Recruitment
 
-load("hake_recruitment_new.rda")
+# Comment this out if you have copied the .rda files to the local directory
+#  (you need to first run the code in the hake directory shown below), and
+#  uncomment the second line
+hake_dir <- paste0(here::here(), "/../hake-assessment/sandbox/andy/pacea-save/")
+# hake_dir <- getwd()
+
+load(paste0(hake_dir, "hake_recruitment_new.rda"))
 
 class(hake_recruitment_new) <- c("pacea_recruitment",
                                  class(hake_recruitment_new))
@@ -29,7 +35,7 @@ if(check_index_changed(hake_recruitment,
 
 # Spawning biomass
 
-load("hake_biomass_new.rda")                #
+load(paste0(hake_dir, "hake_biomass_new.rda"))
 
 class(hake_biomass_new) <- c("pacea_biomass",
                              class(hake_biomass_new))
@@ -47,7 +53,7 @@ if(check_index_changed(hake_biomass,
 
 # Recruitment scaled by 2010 value
 
-load("hake_recruitment_over_2010_new.rda")
+load(paste0(hake_dir, "hake_recruitment_over_2010_new.rda"))
 
 class(hake_recruitment_over_2010_new) <- c("pacea_recruitment",
                                            class(hake_recruitment_over_2010_new))
@@ -60,13 +66,6 @@ if(check_index_changed(hake_recruitment_over_2010,
   hake_recruitment_over_2010 <- hake_recruitment_over_2010_new
   usethis::use_data(hake_recruitment_over_2010,
                     overwrite = TRUE)
-  plot(hake_recruitment_over_2010,
-       uncertainty_bar_col = "red",
-       y_max = 1.2)
-  if(plot_rescale_yr){
-    abline(h = 1,
-           col = plot_rescale_yr_col,
-           lty = 2)
+  plot(hake_recruitment_over_2010)
   }
-
 }
