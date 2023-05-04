@@ -23,8 +23,13 @@
 ##'   "goa" for Gulf of Alaska Ecosystem Report style plots; "plain"
 ##'   for just a line.
 ##' @param y_tick_by increment for y-axis ticks
+##' @param y_tick_start where to start y-axis tickmarks, set automatically if not
+##'   specified (may need to occasionally specify)
+##' @param y_tick_end where to end y-axis tickmars, as for `y_tick_start`
 ##' @param x_tick_extra_years number of extra years to expand around the range
 ##'   of data for which to add annual tick marks (does not expand the axis)
+##' @param start_decade_ticks where to start tickmarks for decades (defaults to
+##'   1800 as hard to automate)
 ##' @param ... optional arguments passed onto `plot()`. Note that the x-axis is
 ##'   constructed using a lubridate `date` object, so `xlim` needs to be a
 ##'   `date` object (see example).
@@ -86,8 +91,8 @@ plot.pacea_index <- function(obj,
 
   add_tickmarks(obj_lub,
                 y_tick_by = y_tick_by,
-                y_tick_start = floor(par("usr")[3]),
-                y_tick_end = ceiling(par("usr")[4]),
+                y_tick_start = y_tick_start,
+                y_tick_end = y_tick_end,
                 x_tick_extra_years = x_tick_extra_years,
                 start_decade_ticks = start_decade_ticks)
 }

@@ -10,8 +10,9 @@
   value = "median",
   xlab = "Year",
   ylab = attr(obj, "axis_name"),
-  y_tick = 0.25,
+  y_tick_by = 1,
   x_tick_extra_years = 20,
+  start_decade_ticks = lubridate::ymd("1800-01-01", truncated = 2),
   style = "no_uncertainty",
   uncertainty_bar_col = "blue",
   y_max = NULL,
@@ -26,8 +27,9 @@
   value = "median",
   xlab = "Year",
   ylab = attr(obj, "axis_name"),
-  y_tick = 0.25,
+  y_tick_by = 1,
   x_tick_extra_years = 20,
+  start_decade_ticks = lubridate::ymd("1800-01-01", truncated = 2),
   style = "no_uncertainty",
   uncertainty_bar_col = "blue",
   y_max = NULL,
@@ -48,10 +50,13 @@ if showing uncertainties (likely always `median`)}
 
 \item{ylab}{label for y-axis (default is automatic from attribute of `obj`)}
 
-\item{y_tick}{increment for y-axis ticks}
+\item{y_tick_by}{increment for y-axis ticks}
 
 \item{x_tick_extra_years}{number of extra years to expand around the range
 of data for which to add annual tick marks}
+
+\item{start_decade_ticks}{where to start tickmarks for decades (defaults to
+1800 as hard to automate)}
 
 \item{style}{`no_uncertainty` for plain time series without uncertainty,
 gets overridden to have uncertainty bars if `low` and `high` are columns

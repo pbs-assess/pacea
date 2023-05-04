@@ -2,6 +2,7 @@
 
 S3method(plot,pacea_index)
 S3method(plot,pacea_recruitment)
+export(add_tickmarks)
 export(check_index_changed)
 export(lubridate_pacea_series)
 export(pacea_cache)

@@ -33,8 +33,6 @@ if showing uncertainties (likely always `median`)}
 
 \item{ylab}{label for y-axis (default is automatic from attribute of `obj`)}
 
-\item{y_tick}{increment for y-axis ticks}
-
 \item{x_tick_extra_years}{number of extra years to expand around the range
 of data for which to add annual tick marks}
 
