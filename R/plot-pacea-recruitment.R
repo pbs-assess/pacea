@@ -43,8 +43,10 @@ plot.pacea_recruitment <- function(obj,
                                    xlab = "Year",
                                    ylab = attr(obj, "axis_name"),
                                    # smooth_over_year = FALSE,
-                                   y_tick = 0.25,
+                                   y_tick_by = 1,
                                    x_tick_extra_years = 20,
+                                   start_decade_ticks = lubridate::ymd("1800-01-01",
+                                                                 truncated = 2),
                                    style = "no_uncertainty",
                                    uncertainty_bar_col = "blue",
                                    y_max = NULL,
@@ -74,6 +76,9 @@ plot.pacea_recruitment <- function(obj,
     if(is.null(y_max)){
       y_max = 1.2
     }
+    if(y_tick_by == 1){
+      y_tick_by = 0.1
+    }
   }
 
   if(grepl("over_R0", deparse(substitute(obj)))){
@@ -85,6 +90,10 @@ plot.pacea_recruitment <- function(obj,
     if(is.null(y_max)){
       y_max = 10
     }
+    if(y_tick_by == 1){
+      y_tick_by = 0.1
+    }
+
   }
 
   if(style == "uncertainty"){
@@ -108,6 +117,12 @@ plot.pacea_recruitment <- function(obj,
                  # y_tick = y_tick,
                  # x_tick_extra_years = x_tick_extra_years,
                  ...)
-    # Add tickmark function here
   }
+
+  add_tickmarks(obj_lub,
+                y_tick_by = y_tick_by,
+                y_tick_start = floor(par("usr")[3]),
+                y_tick_end = ceiling(par("usr")[4]),
+                x_tick_extra_years = x_tick_extra_years,
+                start_decade_ticks = start_decade_ticks)
 }

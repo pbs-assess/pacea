@@ -22,9 +22,9 @@
 ##'   blue below (TODO needs splines or similar to smooth), TODO to implement:
 ##'   "goa" for Gulf of Alaska Ecosystem Report style plots; "plain"
 ##'   for just a line.
-##' @param y_tick increment for y-axis ticks
+##' @param y_tick_by increment for y-axis ticks
 ##' @param x_tick_extra_years number of extra years to expand around the range
-##'   of data for which to add annual tick marks
+##'   of data for which to add annual tick marks (does not expand the axis)
 ##' @param ... optional arguments passed onto `plot()`. Note that the x-axis is
 ##'   constructed using a lubridate `date` object, so `xlim` needs to be a
 ##'   `date` object (see example).
@@ -47,8 +47,12 @@ plot.pacea_index <- function(obj,
                              smooth_over_year = FALSE,
                              type = "l",
                              style = "red_blue_bar",
-                             y_tick = 0.25,
+                             y_tick_by = 0.25,
+                             y_tick_start = NULL,
+                             y_tick_end = NULL,
                              x_tick_extra_years = 20,
+                             start_decade_ticks = lubridate::ymd("1800-01-01",
+                                                                 truncated = 2),
                              ...
                              ){
   stopifnot("value must be a column of the pacea_index object" =
@@ -63,7 +67,7 @@ plot.pacea_index <- function(obj,
                   xlab = xlab,
                   ylab = ylab,
                   type = type,
-                  y_tick = y_tick,
+                  y_tick_by = y_tick_by,
                   x_tick_extra_years = x_tick_extra_years,
                   ...)
   } else if(style == "red_blue_bar") {
@@ -72,7 +76,7 @@ plot.pacea_index <- function(obj,
                       xlab = xlab,
                       ylab = ylab,
                       type = type,
-                      y_tick = y_tick,
+                      y_tick_by = y_tick_by,
                       x_tick_extra_years = x_tick_extra_years,
                       ...)
   } else {
@@ -81,10 +85,17 @@ plot.pacea_index <- function(obj,
                  xlab = xlab,
                  ylab = ylab,
                  type = type,
-                 y_tick = y_tick,
-                 x_tick_extra_years = x_tick_extra_years,
+                 #y_tick_by = y_tick_by,
+                 #x_tick_extra_years = x_tick_extra_years,
                  ...)
   }
+
+  add_tickmarks(obj_lub,
+                y_tick_by = y_tick_by,
+                y_tick_start = floor(par("usr")[3]),
+                y_tick_end = ceiling(par("usr")[4]),
+                x_tick_extra_years = x_tick_extra_years,
+                start_decade_ticks = start_decade_ticks)
 }
 
 ##' Plot the red/blue style of anomaly plot; internal function called from `plot-pacea_index()`.
@@ -147,22 +158,6 @@ plot_red_blue <- function(obj_lub,
             obj_lub$y_neg,
             0),
           col = "blue")
-
-  min <- min(lubridate::floor_date(obj_lub$date, unit = "year")) - lubridate::years(x_tick_extra_years)
-  max <- max(lubridate::ceiling_date(obj_lub$date, unit = "year")) + lubridate::years(x_tick_extra_years)
-
-  axis(1,
-       seq(min,
-           max,
-           by = "years"),
-       labels = FALSE,
-       tcl = -0.2)
-  axis(2,
-       seq(floor(par("usr")[3]),
-           ceiling(par("usr")[4]),
-           by = y_tick),
-       labels = FALSE,
-       tcl = -0.2)
   invisible()
 }
 
