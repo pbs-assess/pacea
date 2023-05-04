@@ -90,10 +90,7 @@ plot.pacea_recruitment <- function(obj,
     if(is.null(y_max)){
       y_max = 10
     }
-    if(y_tick_by == 1){
-      y_tick_by = 0.1
-    }
-
+    # y_tick_by 1 = default is fine
   }
 
   if(style == "uncertainty"){
@@ -101,8 +98,6 @@ plot.pacea_recruitment <- function(obj,
                           value = value,
                           xlab = xlab,
                           ylab = ylab,
-                          y_tick = y_tick,
-                          x_tick_extra_years = x_tick_extra_years,
                           uncertainty_bar_col = uncertainty_bar_col,
                           y_max = y_max,
                           add_line_at_1 = add_line_at_1,
@@ -114,8 +109,6 @@ plot.pacea_recruitment <- function(obj,
                  obj_lub[[value]], # [[]] returns a vector not a tibble
                  xlab = xlab,
                  ylab = ylab,
-                 # y_tick = y_tick,
-                 # x_tick_extra_years = x_tick_extra_years,
                  ...)
   }
 

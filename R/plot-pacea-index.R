@@ -67,8 +67,6 @@ plot.pacea_index <- function(obj,
                   xlab = xlab,
                   ylab = ylab,
                   type = type,
-                  y_tick_by = y_tick_by,
-                  x_tick_extra_years = x_tick_extra_years,
                   ...)
   } else if(style == "red_blue_bar") {
     plot_red_blue_bar(obj_lub,
@@ -76,8 +74,6 @@ plot.pacea_index <- function(obj,
                       xlab = xlab,
                       ylab = ylab,
                       type = type,
-                      y_tick_by = y_tick_by,
-                      x_tick_extra_years = x_tick_extra_years,
                       ...)
   } else {
     plot.default(obj_lub$date,
@@ -85,8 +81,6 @@ plot.pacea_index <- function(obj,
                  xlab = xlab,
                  ylab = ylab,
                  type = type,
-                 #y_tick_by = y_tick_by,
-                 #x_tick_extra_years = x_tick_extra_years,
                  ...)
   }
 
@@ -118,8 +112,6 @@ plot_red_blue <- function(obj_lub,
                           xlab,
                           ylab,
                           type,
-                          y_tick,
-                          x_tick_extra_years,
                           ...){
   # TODO check if 0 within range
   obj_lub$y_pos <- ifelse(obj_lub[[value]] >= 0,
@@ -180,8 +172,6 @@ plot_red_blue_bar <- function(obj_lub,
                               xlab,
                               ylab,
                               type,
-                              y_tick,
-                              x_tick_extra_years,
                               ...){
   # TODO check if 0 within range
 
@@ -227,20 +217,5 @@ plot_red_blue_bar <- function(obj_lub,
   ##           0),
   ##         col = "blue")
 
-  min <- min(lubridate::floor_date(obj_lub$date, unit = "year")) - lubridate::years(x_tick_extra_years)
-  max <- max(lubridate::ceiling_date(obj_lub$date, unit = "year")) + lubridate::years(x_tick_extra_years)
-
-  axis(1,
-       seq(min,
-           max,
-           by = "years"),
-       labels = FALSE,
-       tcl = -0.2)
-  axis(2,
-       seq(floor(par("usr")[3]),
-           ceiling(par("usr")[4]),
-           by = y_tick),
-       labels = FALSE,
-       tcl = -0.2)
   invisible()
 }
