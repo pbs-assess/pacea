@@ -52,4 +52,6 @@ test_that("recruitment plotting works with various options", {
                                       -c("low"))))
   expect_invisible(plot(hake_recruitment,
                         y_max = 100))
+  expect_invisible(plot(hake_recruitment_over_2010))
+  expect_invisible(plot(hake_recruitment_over_R0))
 })
