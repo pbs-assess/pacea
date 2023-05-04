@@ -80,7 +80,7 @@ system.time(output <- point2rast(data = dat, spatobj = sobj, loc = llnames, cell
 # TEST 1 - interpolate to spatvector then convert to sf before masking
 #  outputs sf points data
 #  processing time to run code - 48 months of roms data: 
-#  6.627 mins
+#  6.772 mins
 
 ##
 start <- Sys.time()
@@ -110,17 +110,19 @@ t1_sf2 <- st_as_sf(output2) %>%
 t1_sf6 <- st_as_sf(output6) %>% 
   st_filter(romseez_poly) %>%
   st_filter(offshore_poly)
-t1_sf6 <- t1_sf6[!st_intersects(t1_sf6, st_convex_hull(st_union(t1_sf2)), sparse=F),] %>%   
+system.time(
+t1_sf6 <- t1_sf6[!st_intersects(st_convex_hull(st_union(t1_sf2)), t1_sf6, sparse=F, prepared=T),] %>%   
   st_as_sf() 
+)
 
 # combine grids
 t1_sf26 <- t1_sf2 %>% rbind(t1_sf6)
 
 # index points that dont intersect with bc coast shapefile
-t1_sf26 <- t1_sf26[!st_intersects(t1_sf26, st_union(tbc), sparse=F),]
+t1_sf26 <- t1_sf26[!st_intersects(st_union(tbc), t1_sf26, sparse=F, prepared=T),]
 
 end <- Sys.time()
-end-start
+t1time <- end-start
 ##
 
 # data size of sf object
@@ -138,7 +140,7 @@ usethis::use_data(roms_sf_test1_nogeom)  # 7.671 mb
 # TEST 2 - interpolate to raster then convert to stars.raster then sf polygons
 #  outputs sf polygon data (represents raster cells)
 #  processing time to run code - 48 months of roms data: 
-#  7.272 mins 
+#  6.669 mins
 
 ##
 start <- Sys.time()
@@ -175,28 +177,38 @@ t2_sf6 <- output6 %>%
   mask(romseez_poly) %>%
   mask(offshore_poly) %>%
   stars::st_as_stars() %>%
-  st_as_sf() %>% 
-  st_difference(st_union(t2_sf2))  # can't do convex hull as it cuts off some areas along border of geometry cells
+  st_as_sf()
 
-# combine grids
-t2_sf26 <- rbind(t2_sf2, t2_sf6)
+st_difference(st_union(t2_sf2))  # can't do convex hull as it cuts off some areas along border of geometry cells
+
+# mask 2k grid with 6k grid, then combine grids
+t2_sf2 <- t2_sf2[!st_intersects(st_union(t2_sf6), t2_sf2, sparse=F, prepared=T),] %>%
+  rbind(t2_sf2[st_intersects(st_union(t2_sf6), t2_sf2, sparse=F, prepared=T),])
+t2_sf26 <- t2_sf2 %>% rbind(t2_sf6)
 
 # index points that dont intersect with bc coast shapefile
-## REDO SO SF objects aren't recut
+#  disjoint - do not share space
+dis2 <- t2_sf26[st_disjoint(st_union(tbc), t2_sf26, sparse=F, prepared=T),]
 
-t2_sf26 <- t2_sf26 %>% st_difference(st_union(tbc))
+#  convert bc coast to sf linestring and finding coastline intserections separately - increased processing speed
+#  using st_intersects is much faster than other predicate functionss
+tbc.line <- st_cast(tbc, "MULTILINESTRING")
+sub.t2 <- t2_sf26[st_intersects(st_union(tbc), t2_sf26, sparse=F, prepared=T),]
+inter.line <- sub.t2[st_intersects(tbc.line, sub.t2, sparse=F, prepared=T),]
+t2_sf26 <- rbind(dis2, inter.line)
 
 end <- Sys.time()
-end-start
+t2time <- end-start
 ##
 
 plot(t2_sf26[,1])
 
+
 # data size of sf object
 roms_sf_test2 <- t2_sf26
 roms_sf_test2_nogeom <- t2_sf26 %>% st_drop_geometry()
-usethis::use_data(roms_sf_test2)  # 8.525 mb
-usethis::use_data(roms_sf_test2_nogeom)  # 8.19 mb
+usethis::use_data(roms_sf_test2)  # 8.362 mb
+usethis::use_data(roms_sf_test2_nogeom)  # 8.252 mb
 
 # END TEST 2
 #####
@@ -206,7 +218,7 @@ usethis::use_data(roms_sf_test2_nogeom)  # 8.19 mb
 # TEST 3 - interpolate to raster then convert to stars.raster then sf points
 #  outputs sf points data 
 #  processing time to run code - 48 months of roms data: 
-#  6.428 mins
+#  6.723 mins
 
 ##
 start <- Sys.time()
@@ -230,7 +242,7 @@ t3_sf6 <- output6 %>%
   mask(offshore_poly) %>%
   stars::st_as_stars() %>%
   st_as_sf(as_points=T)
-t3_sf6 <- t3_sf6[!st_intersects(t3_sf6, st_convex_hull(st_union(t3_sf2)), sparse=F),] %>%   
+t3_sf6 <- t3_sf6[!st_intersects(st_convex_hull(st_union(t3_sf2)), t3_sf6, sparse=F, prepared=T),] %>%   
   st_as_sf() 
 
 # combine grids
@@ -240,7 +252,7 @@ t3_sf26 <- rbind(t3_sf2, t3_sf6)
 t3_sf26 <- t3_sf26[!st_intersects(t3_sf26, st_union(tbc), sparse=F),]
 
 end <- Sys.time()
-end-start
+t3time <- end-start
 ##
 
 plot(t3_sf26[,2])
@@ -255,29 +267,25 @@ usethis::use_data(roms_sf_test3_nogeom)  # 7.754 mb
 #####
 
 dim(t1_sf26)  # 48,247 cells
-dim(t2_sf26)  # 52,776 cells
+dim(t2_sf26)  # 52,861 cells
 dim(t3_sf26)  # 48,874 cells
 
-plot(t1_sf26[,1], pch=19)
+plot(t1_sf26[,1], pch=15)
 plot(t2_sf26[,1])
-plot(t3_sf26[,1], pch=19)
+plot(t3_sf26[,1], pch=15)
 
 ggplot(t1_sf26) +
   geom_sf(aes(col=`1`), shape=15) +
+  geom_sf(data=tbc) + 
   scale_colour_gradient2(low = "blue", mid = "orange", high = "red", midpoint = median(as.vector(t1_sf26$`1`)))
 ggplot(t2_sf26) +
-  geom_sf(aes(fill=`2`), col=NA) +
+  geom_sf(aes(fill=`1`), col=NA) +
+  geom_sf(data=tbc) + 
   scale_fill_gradient2(low = "blue", mid = "orange", high = "red", midpoint = median(as.vector(t1_sf26$`1`)))
 ggplot(t3_sf26) +
   geom_sf(aes(col=`1`), shape=15) +
+  geom_sf(data=tbc) + 
   scale_colour_gradient2(low = "blue", mid = "orange", high = "red", midpoint = median(as.vector(t1_sf26$`1`)))
-
-
-
-tt <- st_centroid(t2_sf26)
-
-
-
 
 
 
