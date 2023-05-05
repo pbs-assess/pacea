@@ -30,7 +30,7 @@ data(bc_coast)
 data(bc_eez)
 
 # open ncdf and load sst data
-nc_dat <- nc_open("Roms_bcc42_mon_2008to2011_sst.nc")
+nc_dat <- nc_open("data-raw/roms/Roms_bcc42_mon_2008to2011_sst.nc")
 nc_sstarray <- ncvar_get(nc_dat, "sst")
 
 # load lon-lat and mask layers from netcdf
