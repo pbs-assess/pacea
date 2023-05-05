@@ -449,11 +449,11 @@
 #' GIS hub Pacific Marine Habitat Classes - obtained from: https://www.gis-hub.ca/dataset/marine-habitat-classes
 #' 
 #' @format A simple features polygon dataframe.
-#' ##' \describe{
-##'   \item{romseez_poly}{BC EEZ boundary witha 10km buffer and clipped with ROMs data output boundary}
-##'   \item{inshore_poly}{inshore (continental shelf) region of romseez_poly}
-##'   \item{offshore_poly}{offshore (deep seafloor) region of roms eez_poly}
-##'  }
+#' \describe{
+#'   \item{romseez_poly}{BC EEZ boundary witha 10km buffer and clipped with ROMs data output boundary}
+#'   \item{inshore_poly}{inshore (continental shelf) region of romseez_poly}
+#'   \item{offshore_poly}{offshore (deep seafloor) region of roms eez_poly}
+#' }
 #' @examples 
 #' \dontrun{
 #' romseez_poly
@@ -466,6 +466,9 @@
 #' 
 #' @source Generated from running `data-raw/grids/make-mask-layer.R`.
 "romseez_poly"
-"inshore_poly"
-"offshore_poly"
 
+#' @rdname romseez_poly
+"inshore_poly"
+
+#' @rdname romseez_poly
+"offshore_poly"
