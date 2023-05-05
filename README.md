@@ -17,7 +17,7 @@ We are still developing pacea, and so it is not meant to be fully operational ye
 
 ```
 install.packages("remotes")    # If you do not already have the "remotes" package
-remotes::install_github("pbs-assess/pacea@TODO")
+remotes::install_github("pbs-assess/pacea@51b47d3")
 ```
 
 Currently, this version includes some climate indices and Pacific Hake stock assessment results, plus other code we are working on, including to use output from a British Columbia ROMS (Regional Ocean Modeling System) model. We do have context-specific plotting functions that relate to each type of data set.
