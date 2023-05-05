@@ -28,6 +28,8 @@ Here's a very brief list of some useful commands for what's currently available 
 
 Type these to see the values, help file, and then a plot:
 ```
+library(pacea)
+
 hake_recruitment              # estimated annual recruitment
 ?hake_recruitment
 plot(hake_recruitment)
