@@ -1,6 +1,6 @@
 Package: pacea
 Type: Package
-Title: An R package to house Pacific Region ecosystem data to help facilitate an ecosystem approach to fisheries
+Title: An R package to house Pacific Region ecosystem data to help facilitate an ecosystem approach to fisheries management
 Version: 0.1.0
 Author: Andrew M. Edwards and Joe Watson
 Maintainer: Andrew Edwards <andrew.edwards@dfo-mpo.gc.ca>

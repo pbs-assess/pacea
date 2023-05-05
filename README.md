@@ -5,28 +5,69 @@
 [![Codecov test coverage](https://codecov.io/gh/pbs-assess/pacea/branch/main/graph/badge.svg)](https://app.codecov.io/gh/pbs-assess/pacea?branch=main)
 <!-- badges: end -->
 
-An R package to house Pacific Region ecosystem data to help operationalise an ecosystem approach to fisheries.
+An R package to house Pacific Region ecosystem data to help operationalise an ecosystem approach to fisheries management.
 
-pacea stands for PACific Ecosystem Approach.
+pacea stands for PACific Ecosystem Approach. 
 
-The primary audience is stock assessment scientists who want to analyse environmental variables in the context of their stock assessment. The Fisheries Act requires management of fisheries to take into account "[the biology of the fish and the environmental conditions affecting the stock](https://laws-lois.justice.gc.ca/eng/acts/f-14/page-3.html#h-1175547)".  
-Such an Ecosystem Approach to Fisheries Management requires data. 
+pacea is intended to be a data platform containing somewhat disparate data sets (we basically wrangle the data sets behind the scenes to get them into usable consistent formats in R, along with related plotting functions). Is is *not* a primary database of lots of raw data. All data sets include documentation regarding the original authors, who should be cited as appropriate. 
+
+# Installation
+
+We are still developing pacea, and so it is not meant to be fully operational yet. However, to install a version that we know builds:
+
+```
+install.packages("remotes")    # If you do not already have the "remotes" package
+remotes::install_github("pbs-assess/pacea@TODO")
+```
+
+Currently, this version includes some climate indices and Pacific Hake stock assessment results, plus other code we are working on, including to use output from a British Columbia ROMS (Regional Ocean Modeling System) model. We do have context-specific plotting functions that relate to each type of data set.
+
+Here's a very brief list of some useful commands for what's currently available (that we will turn into more detailed vignettes):
+
+## Pacific Hake stock assessment results
+
+Type these to see the values, help file, and then a plot:
+```
+hake_recruitment              # estimated annual recruitment
+?hake_recruitment
+plot(hake_recruitment)
+
+# Similar commands work for scaled versions:
+hake_recruitment_over_2010    # see for details
+?hake_recruitment_over_2010 
+plot(hake_recruitment_over_2010)
+
+hake_recruitment_over_R0
+?hake_recruitment_over_R0
+plot(hake_recruitment_over_R0)
+
+hake_biomass                  # estimated annual spawning stock biomass
+?hake_biomass                 
+# plot(biomass) not finished yet 
+```
+
+## Climatic and oceanographic indices
+
+See `?oni` etc. for descriptions. `plot(oni)` etc. somewhat work but not all default options are sensible yet. See `?plot.pacea_index`. 
+```
+oni
+pdo
+soi
+npi_monthly
+npi_annual 
+```
+
+# Audience and motivation
+
+The primary audience is stock assessment scientists who want to analyse environmental variables in the context of their stock assessment. The Fisheries Act requires management of fisheries to take into account "[the biology of the fish and the environmental conditions affecting the stock](https://laws-lois.justice.gc.ca/eng/acts/f-14/page-3.html#h-1175547)". Such an Ecosystem Approach to Fisheries Management requires data. 
 
 A comprehensive [2022 analysis of Canadian stock assessments](https://publications.gc.ca/collections/collection_2022/mpo-dfo/Fs97-6-3473-eng.pdf) found that availability of data on environmental variables was the leading cause of not integrating such information into assessments. pacea aims to help make data availability more streamlined, and avoid each individual assessment scientist having to figure out themselves where to get appropriate data.
 
-pacea is intended to be a data platform, *not* a primary database of lots of raw data. All data sets include documentation regarding the original authors, who should be cited as appropriate. 
-
-It is not fully operational yet (some of the data are just example data to set up the infrastructure of the package) while we are developing it; there will be vignettes to explain functionality.
-
-While being an R package, for non-R users we hope to add functionality to extract the data as a simple .csv file. Though this may be prove harder than we originally envisioned, given how we are storing the data (and the ROMS outputs are large). 
-
-Below are some rough notes and references from our original planning meeting (later notes are elsewhere). Work is ongoing.
-
-# Motivation
-
 This work is strongly motivated by, and based on, the [GSLea](https://github.com/duplisea/gslea) R package by Dan Duplisea and colleagues for the Gulf of St Lawrence.
 
-# Notes
+# Rough notes for developers
+
+Below are some rough notes and references from our original planning meeting, so just ignore these. Work is ongoing.
 
 ## Geographic area - rough ideas
 
