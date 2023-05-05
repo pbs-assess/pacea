@@ -404,3 +404,23 @@
 ##'   `hake-assessment/sandbox/andy/pacea-save/pacea-save.R` and then here
 ##'   `data-raw/groundfish/hake.R`.
 "hake_recruitment_over_R0"
+
+#' BC coastline
+#'
+#' A simple features object of the BC coastline 
+#' 
+#' Extent of BC coast includes the BC coast and Pacific portion of Canada's Exclusive Economic Zone, and any neighbouring land (e.g. US States). 
+#' 
+#' Source of initial bc_coast geometry shapes were loaded from 'rnaturalearth::ne_countries' at a 1:10M scale.
+#' 
+#' @format A simple features multipolygon dataframe.
+#' @examples 
+#' \dontrun{
+#' bc_coast
+#' plot(bc_coast)
+#' }
+#' 
+#' @author Travis Tai
+#' @source Generated from running `data-raw/coastline/coastline-eez.R`.
+"bc_coast"
+
