@@ -420,7 +420,23 @@
 #' plot(bc_coast)
 #' }
 #' 
-#' @author Travis Tai
 #' @source Generated from running `data-raw/coastline/coastline-eez.R`.
 "bc_coast"
+
+#' BC Exclusive Economic Zone (EEZ)
+#'
+#' A simple features object of the BC EEZ 
+#' 
+#' Source of BC EEZ is from 'PBSdata'.
+#' 
+#' @format A simple features polygon dataframe.
+#' @examples 
+#' \dontrun{
+#' bc_eez
+#' plot(bc_eez)
+#' }
+#' 
+#' @source Generated from running `data-raw/coastline/coastline-eez.R`.
+"bc_eez"
+
 
