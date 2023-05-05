@@ -439,25 +439,33 @@
 #' @source Generated from running `data-raw/coastline/coastline-eez.R`.
 "bc_eez"
 
-#' Inshore and offshore region of BC Exclusive Economic Zone (EEZ) waters
-#'
-#' Simple features objects of inshore and offshore regions of BC EEZ for masking ROMs data output. 
+#' Polygons masking layers for BC waters
 #' 
-#' Bathymetric classifications were used to derive a line to seperate continental shelf (inshore) and deep sea regions. Includes a 10km buffer around the EEZ and limited by ROMs data coverage.
+#' Simple features objects of ROMs data, inshore, and offshore regions of BC Exclusive Economic Zone (EEZ) waters.
+#' 
+#' Bathymetric classifications were used to derive a line to separate continental shelf (inshore) and deep sea regions. Includes a 10km buffer around the EEZ and limited by ROMs data coverage.
 #' 
 #' Source of bathymetric classifications:
 #' GIS hub Pacific Marine Habitat Classes - obtained from: https://www.gis-hub.ca/dataset/marine-habitat-classes
 #' 
 #' @format A simple features polygon dataframe.
+#' ##' \describe{
+##'   \item{romseez_poly}{BC EEZ boundary witha 10km buffer and clipped with ROMs data output boundary}
+##'   \item{inshore_poly}{inshore (continental shelf) region of romseez_poly}
+##'   \item{offshore_poly}{offshore (deep seafloor) region of roms eez_poly}
+##'  }
 #' @examples 
 #' \dontrun{
+#' romseez_poly
 #' inshore_poly
 #' offshore_poly
+#' plot(romseez_poly)
 #' plot(inshore_poly)
 #' plot(offshore_poly)
 #' }
 #' 
 #' @source Generated from running `data-raw/grids/make-mask-layer.R`.
+"romseez_poly"
 "inshore_poly"
 "offshore_poly"
 
