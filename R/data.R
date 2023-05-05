@@ -439,4 +439,25 @@
 #' @source Generated from running `data-raw/coastline/coastline-eez.R`.
 "bc_eez"
 
+#' Inshore and offshore region of BC Exclusive Economic Zone (EEZ) waters
+#'
+#' Simple features objects of inshore and offshore regions of BC EEZ for masking ROMs data output. 
+#' 
+#' Bathymetric classifications were used to derive a line to seperate continental shelf (inshore) and deep sea regions. Includes a 10km buffer around the EEZ and limited by ROMs data coverage.
+#' 
+#' Source of bathymetric classifications:
+#' GIS hub Pacific Marine Habitat Classes - obtained from: https://www.gis-hub.ca/dataset/marine-habitat-classes
+#' 
+#' @format A simple features polygon dataframe.
+#' @examples 
+#' \dontrun{
+#' inshore_poly
+#' offshore_poly
+#' plot(inshore_poly)
+#' plot(offshore_poly)
+#' }
+#' 
+#' @source Generated from running `data-raw/grids/make-mask-layer.R`.
+"inshore_poly"
+"offshore_poly"
 

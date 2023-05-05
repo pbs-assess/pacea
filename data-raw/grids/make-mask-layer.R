@@ -12,7 +12,7 @@ sf_use_s2(FALSE)  # remove spherical geometry (s2) for sf operations
 # GIS hub Pacific Marine Habitat Classes
 #  obtained from: https://www.gis-hub.ca/dataset/marine-habitat-classes
 #  requires access to gis-hub
-pmhc_dir <- "pacific_marine_habitat_classes/Pacific_Marine_Habitat_Classes.gdb"
+pmhc_dir <- "./data-raw/pacific_marine_habitat_classes/Pacific_Marine_Habitat_Classes.gdb"
 (pmhc_layers <- st_layers(pmhc_dir))
 
 # use benthic habitat (bh) layer
