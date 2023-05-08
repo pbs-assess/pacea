@@ -2,6 +2,8 @@
 ##  should it be interpolated for just the extent of inshore and offshore, respectively? Could save a bit of time and every bit counts
 
 
+#  testing differences between sf point vs polygon outputs and determining best masking layer code
+
 library(devtools)
 library(dplyr)
 library(terra)
