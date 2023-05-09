@@ -10,9 +10,6 @@
 #' @return A terra SpatRaster or SpatVector object 
 #' 
 #' @author Travis Tai
-#' 
-#' @import terra
-#' @importFrom gstat gstat
 #'
 #' @examples
 #' \dontrun{
