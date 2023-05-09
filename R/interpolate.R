@@ -10,8 +10,18 @@
 #' @return A terra SpatRaster or SpatVector object 
 #' 
 #' @author Travis Tai
+#' 
+#' @import terra
+#' @importFrom gstat gstat
 #'
 #' @examples
+#' \dontrun{
+#' dat <- data.frame(x = runif(5, 0, 10), y = runif(5, 0, 10), var = rnorm(5))
+#' extent <- st_bbox(c(xmin = 0, ymin = 0, xmax= 10, ymax = 10),crs = NA)
+#' output <- point2rast(dat, extent, loc = c("x","y"), cellsize = 0.5, nnmax = 2, as = "SpatRast")
+#' output
+#' plot(output)
+#' }
 point2rast <- function(data, spatobj, loc = c("x", "y"), cellsize, nnmax = 4, 
                        as = c("SpatRast","SpatVect")) {
   
@@ -59,7 +69,13 @@ point2rast <- function(data, spatobj, loc = c("x", "y"), cellsize, nnmax = 4,
     warning("loc coordinates within spatobj extent = 0; check crs or extent of spatobj")
   }
   
-  r <- rast(ext(spatobj), res = c(cellsize), crs = crs(spatobj))
+  terror <- try(crs(spatobj), silent=T)
+  if("try-error" %in% class(terror)) {
+    r <- rast(ext(spatobj), res = c(cellsize))
+  } else {
+    r <- rast(ext(spatobj), res = c(cellsize), crs = crs(spatobj))
+  }
+  
   nn.pred <- apply(tdat, 2, FUN = nnfit, r=r, loc=loc, coords=coords, nnmax=nnmax)
   xyz <- cbind(as.data.frame(suppressWarnings(crds(r))), nn.pred)
   

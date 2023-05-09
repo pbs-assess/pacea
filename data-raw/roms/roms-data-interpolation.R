@@ -30,6 +30,9 @@ tbc.line <- st_cast(tbc, "MULTILINESTRING")
 idepth <- c("bot", "sur")
 jvars <- c("temp", "salt", "Oxygen")
 
+idepth <- c("sur")
+jvars <- c("salt", "Oxygen")
+
 llnames <- c("x", "y")
 nmax <- 4
 
