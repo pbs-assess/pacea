@@ -10,6 +10,7 @@
 #' @return A terra SpatRaster or SpatVector object 
 #' 
 #' @author Travis Tai
+#' @import sf
 #'
 #' @examples
 #' \dontrun{
@@ -60,27 +61,27 @@ point2rast <- function(data, spatobj, loc = c("x", "y"), cellsize, nnmax = 4,
     tdat <- as.data.frame(data)[, -which(names(data) == "geometry")]
   }
   
-  tbb <- ext(spatobj)
+  tbb <- terra::ext(spatobj)
   if(!any(coords$x >= tbb$xmin & coords$x <= tbb$xmax & 
           coords$y >= tbb$ymin & coords$y <= tbb$ymax)) {
     warning("loc coordinates within spatobj extent = 0; check crs or extent of spatobj")
   }
   
-  terror <- try(crs(spatobj), silent=T)
+  terror <- try(terra::crs(spatobj), silent=T)
   if("try-error" %in% class(terror)) {
-    r <- rast(ext(spatobj), res = c(cellsize))
+    r <- terra::rast(terra::ext(spatobj), res = c(cellsize))
   } else {
-    r <- rast(ext(spatobj), res = c(cellsize), crs = crs(spatobj))
+    r <- terra::rast(terra::ext(spatobj), res = c(cellsize), crs = terra::crs(spatobj))
   }
   
   nn.pred <- apply(tdat, 2, FUN = nnfit, r=r, loc=loc, coords=coords, nnmax=nnmax)
   xyz <- cbind(as.data.frame(suppressWarnings(crds(r))), nn.pred)
   
   if(as[1]=="SpatRast"){
-    spat <- terra::rast(xyz, type="xyz", crs = crs(r))
+    spat <- terra::rast(xyz, type="xyz", crs = terra::crs(r))
   } 
   if(as[1]=="SpatVect"){
-    spat <- terra::vect(xyz, geom = c("x", "y"), crs = crs(r))
+    spat <- terra::vect(xyz, geom = c("x", "y"), crs = terra::crs(r))
   } 
   
   return(spat)
@@ -93,7 +94,7 @@ nnfit <- function(x, r, loc, coords, nnmax) {
   f <- paste0("xvar", " ~ 1")
   lf <- paste0("~", paste(loc, collapse = "+"))
   
-  gs <- gstat(formula = xvar~1, locations = ~x+y, data = xdat, nmax = nnmax, set=list(idp = 0))
+  gs <- gstat::gstat(formula = xvar~1, locations = ~x+y, data = xdat, nmax = nnmax, set=list(idp = 0))
   nn <- terra::interpolate(r, gs, debug.level=0)
   return(as.vector(nn$var1.pred))
 }
