@@ -10,3 +10,4 @@ data/older-data/*
 ^\.Rproj\.user$
 
 data-raw/pacific_marine_habitat_classes/*
+data-raw/*
