@@ -11,6 +11,8 @@ lib/
 /data-raw/coastwide-indices/SOI.dat
 
 /data-raw/roms/Roms_bcc42_mon_2008to2011_sst.nc
+/data-raw/roms/bcc42_era5glo12r4_mon1993to2019_botTSO.nc
+/data-raw/roms/bcc42_era5glo12r4_mon1993to2019_surTSO.nc
 /data-raw/roms/BCC03_grd_b5.nc
 /data-raw/roms/Roms_bcc42_mask.nc
 /data-raw/roms/temp_nc.txt
