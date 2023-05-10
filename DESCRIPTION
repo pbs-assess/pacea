@@ -14,14 +14,14 @@ Depends:
 Imports:
     dplyr (>= 1.0.2),
     lubridate (>= 1.8.0),
-    rappdirs
+    rappdirs,
+    sf
 RoxygenNote: 7.2.3
 Remotes: github::pbs-assess/gfiphc
 Suggests:
     rmarkdown,
     knitr,
     rgdal (>= 1.5.23),
-    sf,
     sp (>= 1.4.5),
     maptools (>= 1.1.1),
     plyr (>= 1.8.6),
@@ -45,6 +45,8 @@ Suggests:
     assertthat (>= 0.2.1),
     exactextractr (>= 0.7.1),
     Matrix,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    terra,
+    gstat
 VignetteBuilder: knitr
 Config/testthat/edition: 3
