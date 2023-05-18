@@ -2,7 +2,8 @@
 
 # code adapted from 'bcmaps' package
 
-layer <- "pcod"
+layer <- "grid26"
+layer <- "grid26TEST"
 
 get_data <- function(layer, ask = interactive(), force = FALSE) {
   
@@ -12,17 +13,16 @@ get_data <- function(layer, ask = interactive(), force = FALSE) {
          Use the function available_layers() to get a list of layers")
   }
   
-  ## find data in row
-  data_list <- pacea_data
-  data_row <- data_list[data_list[["data_name"]]==layer, ]
-  if (nrow(data_row) != 1L) {
-    stop(layer, " is not an available data object")
-  }
+  ## find data in row - CHANGE datalist name if necessary
+  # data_list <- pacea_data
+  # data_row <- data_list[data_list[["data_name"]]==layer, ]
+  # if (nrow(data_row) != 1L) {
+  #   stop(layer, " is not an available data object")
+  # }
   
   # look for data in pacea cache folder, return dataset
   cache_dir <- pacea_cache()
   file_dir <- paste0(cache_dir, "/", layer, ".rds")
-  file_dir <- "C:\\github\\pacea\\data/grid26.rda"  #test
   
   
   
@@ -30,8 +30,8 @@ get_data <- function(layer, ask = interactive(), force = FALSE) {
   if (file.exists(file_dir)) {
     
     ## ISSUE: figure out how to read and save file to cache without it loading the same object name (SEE bcmaps), might have to save pacea data using saveRDS() function as .rds file?
-    readRDS(file_dir)
-    
+    dat <- readRDS(file_dir)
+    return(dat)
   } else {
     
     
@@ -58,50 +58,28 @@ get_data <- function(layer, ask = interactive(), force = FALSE) {
     # download data using url, potentially use pacea_cache to store datafiles in a cache folder?
     #  this function (Rfssa) loads the compressed data as its original object name
     #  will need to use the user-identified name ("layer") to save data to cached folder to then be lazydata loaded
-    fileurl <- "https://github.com/pbs-assess/pacea/blob/main/data/oni.rda?raw=true"
-    fileurl <- paste0("https://github.com/pbs-assess/sdmTMB/blob/main/data/", layer, ".rda?raw=true")
-    
-    saveRDS(Rfssa::load_github_data(fileurl), file = paste0(cache_dir, "/", layer, ".rds"))
     
     
+    fileurl <- paste0("https://github.com/pbs-assess/pacea/blob/main/data/", layer, ".rda?raw=true")
     
+    Rfssa::load_github_data(fileurl)
     
+    dat <- get(layer)
     
+    saveRDS(dat, file = paste0(cache_dir, "/", layer, ".rds"), compress = "xz")
     
+    return(dat)
     
   }
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  # save layer to local cached pacea folder; make sure that data is loaded when pacakage is loaded for use
-  saveRDS()
-  
-  
-  
-  ret <- get_catalogue_data(layer, ask = ask, force = force)
-  
-  ret
-  
 }
 
+## testing get_data
 
-# list of pacea data
-pacea_data <- function() {
-  
-  
-}
+layer <- "grid26"
+dat <- get_data(layer)
+
+
+
 
 # #' @noRd
 ask <- function(...) {
@@ -111,6 +89,10 @@ ask <- function(...) {
 }
 
 
-
+# list of pacea data
+pacea_data <- function() {
+  
+  
+}
 
 
