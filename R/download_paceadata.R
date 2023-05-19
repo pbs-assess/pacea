@@ -1,11 +1,28 @@
+#' Get data from paceaData
+#'
+#' Large spatiotemporal pacea data files can be downloaded individually from paceaData.
+#' 
+#' Some large pacea data sets are stored in paceaData and get_data allows users to choose which data to download locally. Refer to paceadata_list to view the data files available for download.
+#'
+#' @param layer Name of the data object.
+#' @param ask Logical. Should the user be asked before downloading the data to local cache? Defaults to the value of interactive().
+#'
+#' @return Data object requested
+#' 
+#' @importFrom curl has_internet
+#' @importFrom Rfssa load_github_data
+#' 
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' get_data("roms_temperature_surface")
+#' }
+#' 
+
 # get data from paceaData
-
 # code adapted from 'bcmaps' package
-
-layer <- "grid26"
-layer <- "grid26TEST"
-
-get_data <- function(layer, ask = interactive(), force = FALSE) {
+get_data <- function(layer, ask = interactive()) {
   
   ## edit message
   if (!is.character(layer)) {
@@ -25,16 +42,12 @@ get_data <- function(layer, ask = interactive(), force = FALSE) {
   file_dir <- paste0(cache_dir, "/", layer, ".rds")
   
   
-  
   # if file already exists
   if (file.exists(file_dir)) {
     
-    ## ISSUE: figure out how to read and save file to cache without it loading the same object name (SEE bcmaps), might have to save pacea data using saveRDS() function as .rds file?
     dat <- readRDS(file_dir)
     return(dat)
   } else {
-    
-    
     
     ## internet errors for downloading
     if (!curl::has_internet()) stop("No access to internet", call. = FALSE) 
@@ -47,6 +60,8 @@ get_data <- function(layer, ask = interactive(), force = FALSE) {
     }
     
     # check if directory exists
+    ## CHANGE - maybe want to change the pacea_cache directory?
+    
     if (!dir.exists(cache_dir)) {
       message("Creating directory to hold pacea data at \n", cache_dir)
       dir.create(cache_dir, recursive = T)
@@ -73,26 +88,12 @@ get_data <- function(layer, ask = interactive(), force = FALSE) {
   }
 }
 
-## testing get_data
 
-layer <- "grid26"
-dat <- get_data(layer)
-
-
-
-
-# #' @noRd
+#' @noRd
 ask <- function(...) {
   choices <- c("Yes", "No")
   cat(paste0(..., collapse = ""))
   utils::menu(choices) == which(choices == "Yes")
-}
-
-
-# list of pacea data
-pacea_data <- function() {
-  
-  
 }
 
 
