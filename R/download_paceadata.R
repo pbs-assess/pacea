@@ -2,7 +2,7 @@
 #'
 #' Large spatiotemporal pacea data files can be downloaded individually from paceaData.
 #' 
-#' Some large pacea data sets are stored in paceaData and get_data allows users to choose which data to download locally. Refer to paceadata_list to view the data files available for download.
+#' Some large pacea data sets are stored in paceaData and get_data allows users to choose which data to download locally. Refer to paceadata_list(?EDIT?) to view the data files available for download. Code adapted from 'bcmaps'
 #'
 #' @param layer Name of the data object.
 #' @param ask Logical. Should the user be asked before downloading the data to local cache? Defaults to the value of interactive().
@@ -20,14 +20,12 @@
 #' }
 #' 
 
-# get data from paceaData
-# code adapted from 'bcmaps' package
 get_data <- function(layer, ask = interactive()) {
   
   ## edit message
   if (!is.character(layer)) {
-    stop("You must refer to the map layer as a character string (in 'quotes')\n
-         Use the function available_layers() to get a list of layers")
+    stop("Data object must be referred to as a character string (in 'quotes')\n
+         Use the function ?...? to get a list of data objects available")
   }
   
   ## find data in row - CHANGE datalist name if necessary
@@ -60,13 +58,12 @@ get_data <- function(layer, ask = interactive()) {
     }
     
     # check if directory exists
-    ## CHANGE - maybe want to change the pacea_cache directory?
     
     if (!dir.exists(cache_dir)) {
       message("Creating directory to hold pacea data at \n", cache_dir)
       dir.create(cache_dir, recursive = T)
     } else {
-      message("Saving to pacea data directory at \n", cache_dir)
+      message("Saving to pacea cache directory at \n", cache_dir)
     }
     
     
@@ -75,7 +72,7 @@ get_data <- function(layer, ask = interactive()) {
     #  will need to use the user-identified name ("layer") to save data to cached folder to then be lazydata loaded
     
     
-    fileurl <- paste0("https://github.com/pbs-assess/pacea/blob/main/data/", layer, ".rda?raw=true")
+    fileurl <- paste0("https://github.com/pbs-assess/pacea/blob/main/data/", layer, ".rda?raw=true")  ## CHANGE URL 
     
     Rfssa::load_github_data(fileurl)
     
@@ -89,6 +86,7 @@ get_data <- function(layer, ask = interactive()) {
 }
 
 
+#' Interactive function for Yes/No question
 #' @noRd
 ask <- function(...) {
   choices <- c("Yes", "No")
