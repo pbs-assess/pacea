@@ -286,19 +286,22 @@ if(check_index_changed(npgo, npgo_new)){
 stop("Got to here")
 
 # ENSO MEI
-nlines <- as.numeric(format(Sys.time(),
-                            "%Y")) - 1978     # Then double check later that
-                                              #  first year is 1979
+n_lines <- as.numeric(format(Sys.time(),
+                             "%Y")) - 1978     # Then double check later that
+                                              #  first year is 1979 and last is
+                                              #  current year (ish)
+# TODO think about that above line more, as to when things get updated
 
 download.file("https://psl.noaa.gov/enso/mei/data/meiv2.data",
-              destfile="ENSO_MEI.txt",
+              destfile="enso_mei.txt",
               mode="wb",
               quiet = FALSE)
 
-ENSO_MEI <- read.table("ENSO_MEI.txt",
+enso_mei <- read.table("enso_mei.txt",
                        skip = 1,
                        as.is = TRUE,
-                       nrows = nlines)
+                       nrows = n_lines)
+HERE
 
 colnames(ENSO_MEI) <- year_months
 

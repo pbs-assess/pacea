@@ -17,9 +17,12 @@
 ##' @param type usual argument for `plot()`
 ##' @param style what style of plot -- HERE TODO mention don't all work properly
 ##'   but can tweak lwd
-##'   for "red_blue_bar" (default) for red bars above 0 and
-##'   blue bars below 0, "red_blue" for colouring red above 0 and
-##'   blue below (TODO needs splines or similar to smooth), TODO to implement:
+##'   * "red_blue_bar" (default) for red bars above 0 and
+##'   blue bars below 0, but need to manually adjust `lwd` for width of bars
+##'   TODO check that
+##'   * "red_blue" for colouring red above 0 and
+##'   blue below (TODO needs splines or similar to smooth),
+##'   TODO to implement:
 ##'   "goa" for Gulf of Alaska Ecosystem Report style plots; "plain"
 ##'   for just a line.
 ##' @param y_tick_by increment for y-axis ticks
@@ -97,11 +100,12 @@ plot.pacea_index <- function(obj,
                 start_decade_ticks = start_decade_ticks)
 }
 
-##' Plot the red/blue style of anomaly plot; internal function called from `plot-pacea_index()`.
+##' Plot the red/blue style of anomaly plot, linearly interpolating to make
+##' smooth (needed when crossing x-axis); internal function called from `plot-pacea_index()`.
 ##'
 ##' Adapted from
 ##' https://stackoverflow.com/questions/74902499/shading-below-line-graph-in-r/74903305#74903305
-##' but original attempt doesn't cross the time correctly.
+##' and interpolated.
 ##'
 ##' @param obj_lub obj a `pacea_index` object, which is a time series, with a date
 ##'   column that is the lubridate `date` class.
@@ -118,48 +122,55 @@ plot_red_blue <- function(obj_lub,
                           ylab,
                           type,
                           ...){
-  # TODO check if 0 within range
-  obj_lub$y_pos <- ifelse(obj_lub[[value]] >= 0,
-                          obj_lub[[value]],
+  # TODO check if 0 within range, or test it works for all positive anomalies
+
+  # Need to interpolate (do to 1 day) to make the crossing of time axis smooth,
+  #  else get red and blue for same point in time:
+  obj_lub_interp_list <- approx(x = obj_lub$date,
+                                y = obj_lub[[value]],
+                                xout = seq(min(obj_lub$date),
+                                           max(obj_lub$date),
+                                           "days"))
+
+  obj_lub_interp <- tibble::tibble(date = obj_lub_interp_list$x,
+                                         y = obj_lub_interp_list$y)
+  names(obj_lub_interp)[2] <- value
+
+  obj_lub_interp$y_pos <- ifelse(obj_lub_interp[[value]] >= 0,
+                          obj_lub_interp[[value]],
                           0)
-  obj_lub$y_neg <- ifelse(obj_lub[[value]] < 0,
-                          obj_lub[[value]],
+  obj_lub_interp$y_neg <- ifelse(obj_lub_interp[[value]] < 0,
+                          obj_lub_interp[[value]],
                           0)
 
-  plot(obj_lub$date,
-       obj_lub[[value]], # [[]] returns a vector not a tibble
+  plot(obj_lub_interp$date,
+       obj_lub_interp[[value]], # [[]] returns a vector not a tibble
        type = type,
        xlab = xlab,
        ylab = ylab,
        ...)
   abline(h = 0)
 
-  # GOA code:
-  # segments(topX,topY,topX,e_md+e_sd,lwd=2*SC,col="#FFCC00",lend="square" )
-  # TODO. They use spline also, which will likely work for me also; unless we
-  # want just single bars for annual values, I'd rather avoid smoothing. Maybe
-  # do spline for monthly ones.
-
-  polygon(c(obj_lub$date[1],
-            obj_lub$date,
-            tail(obj_lub$date, 1)),
+  polygon(c(obj_lub_interp$date[1],
+            obj_lub_interp$date,
+            tail(obj_lub_interp$date, 1)),
           c(0,
-            obj_lub$y_pos,
+            obj_lub_interp$y_pos,
             0),
           col = "red")
 
-  polygon(c(obj_lub$date[1],
-            obj_lub$date,
-            tail(obj_lub$date, 1)),
+  polygon(c(obj_lub_interp$date[1],
+            obj_lub_interp$date,
+            tail(obj_lub_interp$date, 1)),
           c(0,
-            obj_lub$y_neg,
+            obj_lub_interp$y_neg,
             0),
           col = "blue")
   invisible()
 }
 
 
-##' Plot the red/blue style of anomaly plot as barplots; internal function called from `plot.pacea_index()`.
+##' Plot the red/blue style of anomaly plot as barplots without any smoothing; internal function called from `plot.pacea_index()`.
 ##'
 ##' Adapted from `plot_red_blue()`.
 ##'
@@ -221,6 +232,5 @@ plot_red_blue_bar <- function(obj_lub,
   ##           obj_lub$y_neg,
   ##           0),
   ##         col = "blue")
-
   invisible()
 }
