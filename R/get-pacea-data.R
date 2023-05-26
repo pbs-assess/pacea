@@ -43,6 +43,10 @@ get_pacea_data <- function(layer, ask = interactive()) {
     
     dat <- readRDS(file_dir)
     return(dat)
+    
+    # dat <- get(load(file_dir, envir = .GlobalEnv))
+    # return(dat)
+    
   } else {
     
     ## internet errors for downloading
@@ -83,16 +87,15 @@ get_pacea_data <- function(layer, ask = interactive()) {
       writeBin(content_raw, temp_file)
       
       # Read the .rds file into R
-      dat <- load(temp_file, envir = .GlobalEnv)
-      
-      dat <- get(layer)
+      dat <- get(load(temp_file))
       
       # Remove the temporary file
       file.remove(temp_file) 
       
       saveRDS(dat, file = file_dir, compress = "xz")
-      
+
       return(dat)
+      
     } else {
       
       stop("Error: Failed to download the file.")
