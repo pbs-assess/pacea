@@ -13,12 +13,10 @@ Depends:
     R (>= 3.5.0),
     stats (>= 4.0.2)
 Imports:
-    curl,
     dplyr (>= 1.0.2),
     httr,
     lubridate (>= 1.8.0),
     rappdirs,
-    Rfssa,
     sf (>= 1.0.10)
 RoxygenNote: 7.2.3
 Remotes: github::pbs-assess/gfiphc
