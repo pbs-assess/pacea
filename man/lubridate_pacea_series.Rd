@@ -12,9 +12,7 @@ lubridate_pacea_series(obj, smooth_over_year = FALSE)
 
 \item{smooth_over_year}{logical to smooth monthly values over each calendar
 year (as per Tetjana Ross' plots, see `?oni` for reference). Note that the
-corresponding `date` is for 1st January of each year. TODO when
-smoothed the red-blue figure isn't quite right (it isn't for monthly also,
-but that's not as obvious). See Issue #15.}
+corresponding `date` is for 1st January of each year.}
 }
 \value{
 original object with month values smoothed (averaged) over the year if

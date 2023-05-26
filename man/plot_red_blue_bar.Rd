@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot-pacea-index.R
 \name{plot_red_blue_bar}
 \alias{plot_red_blue_bar}
-\title{Plot the red/blue style of anomaly plot as barplots; internal function called from `plot.pacea_index()`.}
+\title{Plot the red/blue style of anomaly plot as barplots without any smoothing; internal function called from `plot.pacea_index()`.}
 \usage{
 plot_red_blue_bar(obj_lub, value, xlab, ylab, type, ...)
 }
@@ -15,14 +15,14 @@ column that is the lubridate `date` class.}
 \item{xlab}{x-axis label}
 
 \item{ylab}{y-axis label, the default is an attribute of the `pacea_index`
-object. TODO Note that this isn't automated yet to refer to anomaly or absolute
-values, though for each time series there is probably only one choice}
+object.}
 
 \item{type}{usual argument for `plot()`}
 
 \item{...}{optional arguments passed onto `plot()`. Note that the x-axis is
-constructed using a lubridate `date` object, so `xlim` needs to be a
-`date` object (see example).}
+  constructed using a lubridate `date` object, so `xlim` needs to be a
+  `date` object (see example).
+##' @return plot of the time series to the current device (returns nothing)}
 }
 \value{
 plot of time series

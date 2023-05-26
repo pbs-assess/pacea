@@ -7,24 +7,22 @@
 ##' @param value which column of `obj` to plot
 ##' @param xlab x-axis label
 ##' @param ylab y-axis label, the default is an attribute of the `pacea_index`
-##'   object. TODO Note that this isn't automated yet to refer to anomaly or absolute
-##'   values, though for each time series there is probably only one choice
+##'   object.
 ##' @param smooth_over_year logical to smooth monthly values over each calendar
 ##'   year (as per Tetjana Ross' plots, see `?oni` for reference). Note that the
-##'   corresponding `date` is for 1st January of each year. TODO when
-##'   smoothed the red-blue figure isn't quite right (it isn't for monthly also,
-##'   but that's not as obvious). See Issue #15.
+##'   corresponding `date` is for 1st January of each year.
 ##' @param type usual argument for `plot()`
-##' @param style what style of plot -- HERE TODO mention don't all work properly
-##'   but can tweak lwd
-##'   * "red_blue_bar" (default) for red bars above 0 and
-##'   blue bars below 0, but need to manually adjust `lwd` for width of bars
-##'   TODO check that
-##'   * "red_blue" for colouring red above 0 and
-##'   blue below (TODO needs splines or similar to smooth),
-##'   TODO to implement:
-##'   "goa" for Gulf of Alaska Ecosystem Report style plots; "plain"
-##'   for just a line.
+##' @param style what style of plot:
+##' \describe{
+##'   \item{"red_blue_bar" (TODO default):}{for red bars above 0 and
+##'   blue bars below 0, but need to manually adjust the thickness `lwd` for
+##'   width of bars to look good for your specific plot}
+##'   \item{"red_blue":}{for a line with filled in colouring for red above 0 and
+##'   blue below 0}
+##'   \item{"goa":}{TODO (not implemented yet) for Gulf of Alaska Ecosystem
+##'   Report style plots}
+##'   \item{"plain":}{just a plain line}
+##' }
 ##' @param y_tick_by increment for y-axis ticks
 ##' @param y_tick_start where to start y-axis tickmarks, set automatically if not
 ##'   specified (may need to occasionally specify)
@@ -36,12 +34,12 @@
 ##' @param ... optional arguments passed onto `plot()`. Note that the x-axis is
 ##'   constructed using a lubridate `date` object, so `xlim` needs to be a
 ##'   `date` object (see example).
-##' @return plot of the time series to the current device (returns nothing)
+##' ##' @return plot of the time series to the current device (returns nothing)
 ##' @export
 ##' @author Andrew Edwards
 ##' @examples
 ##' \dontrun{
-##' plot(oni)
+##' plot(oni)  # TODO add all examples, and wrapper for plotting multiple
 ##' plot(oni,
 ##'      xlim = c(lubridate::dmy(01011950),
 ##'      lubridate::dmy(01012040))) # to expand x-axis
