@@ -17,11 +17,6 @@ A tibble also of class `pacea_index` with columns:
   notes that values after 2004 were updated. This might be why
   numbers do not seem to quite agree.}
 }
-
-\dontrun{
-npgo
-plot(npgo)
-}
 }
 \source{
 Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
@@ -55,6 +50,12 @@ links ocean climate and ecosystem change. Geophysical Research Letters, 35:
 L08607. doi:10.1029/2007GL032838
 
 Associated code adapted from code generously shared by Chris Rooper.
+}
+\examples{
+\dontrun{
+npgo
+plot(npgo)
+}
 }
 \author{
 Andrew Edwards

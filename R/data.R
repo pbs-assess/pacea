@@ -278,7 +278,7 @@
 ##'   notes that values after 2004 were updated. This might be why
 ##'   numbers do not seem to quite agree.}
 ##' }
-##'
+##' @examples
 ##' \dontrun{
 ##' npgo
 ##' plot(npgo)
