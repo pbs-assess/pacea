@@ -34,6 +34,7 @@
 #                  "11", "12")
 
 load_all()
+library(dplyr)
 
 # ENSO ONI
 download.file("https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
@@ -82,7 +83,8 @@ download.file("https://climatedataguide.ucar.edu/sites/default/files/2023-01/npi
 npi_monthly_new <- readr::read_table("npi_monthly.txt",
                                      col_names = c("yearmonth", "value"),
                                      skip = 1,
-                                     na = "-999.00")    # December 1944
+                                     na = "-999.00")    # December 1944, need to
+                                        # keep in
 
 stopifnot(npi_monthly_new[1,1] == 189901)    # Check still starts in 1899.
 
@@ -176,6 +178,9 @@ pdo_new <- tidyr::pivot_longer(pdo_new,
   mutate(month = as.numeric(match(month, month.abb))) %>%
   rename(year = Year)
 
+pdo_new <- filter(pdo_new,
+                  !is.na(anomaly))
+
 class(pdo_new) <- c("pacea_index",
                     class(pdo_new))
 
@@ -211,14 +216,14 @@ stopifnot(soi_new[1,1] == 1951) # Check still starts in 1951
 # Year after current year (currently 2023) gets saved as
 #  "2024-999.9-999.9-999.9-999.9-999.9-999.9-999.9-999.9-999.9-999.9-999.9-999.9"
 # Tetjana only uses the anomaly data in the first half of the file, not the
-#  second half (STANDARDIZED DATA), so can just fine the above year and delete
+#  second half (STANDARDIZED DATA), so can just find the above year and delete
 #  everything after that.
 
 names(soi_new)[1] <- "year"
 
-soi_new$year <- as.numeric(soi_new$year)   # Converts that 2024 year to NA
+soi_new$year <- as.numeric(soi_new$year)   # Converts that 2024 (next) year to NA
 
-soi_new <- soi_new[1:(min(which(is.na(soi_new$year))) - 1), ]  # Remove 2024
+soi_new <- soi_new[1:(min(which(is.na(soi_new$year))) - 1), ]  # Remove next year
                                                                # onwards
 # Now just have to fix the final month of data (currently March 2023) which is
 #  0.3-999.9-.... (without a space between the actual 0.3 value).
@@ -226,13 +231,17 @@ soi_new[nrow(soi_new), ] <-  stringr::str_replace_all(soi_new[nrow(soi_new), ],
                                                       "-999.9",
                                                       "")
 
-soi_new <- dplyr::mutate_all(soi_new, function(x) as.numeric(x)) # also adds NA
+soi_new <- dplyr::mutate_all(soi_new,
+                             function(x) as.numeric(x)) # also adds NA
                                                                  # in final row as needed
 soi_new <- tidyr::pivot_longer(soi_new,
                                cols = "JAN":"DEC",
                                names_to = "month",
                                values_to = "anomaly") %>%
   mutate(month = as.numeric(match(month, toupper(month.abb))))
+
+soi_new <- filter(soi_new,
+                  !is.na(anomaly))
 
 class(soi_new) <- c("pacea_index",
                     class(soi_new))
