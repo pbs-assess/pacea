@@ -17,7 +17,7 @@ bc_coast
 A simple features object of the BC coastline
 }
 \details{
-Extent of BC coast includes the BC coast and Pacific portion of Canada's Exclusive Economic Zone, and any neighbouring land (e.g. US States). 
+Extent of BC coast includes the BC coast and Pacific portion of Canada's Exclusive Economic Zone, and any neighbouring land (e.g. US States).
 
 Source of initial bc_coast geometry shapes were loaded from 'rnaturalearth::ne_countries' at a 1:10M scale.
 }

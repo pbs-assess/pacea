@@ -239,6 +239,55 @@
 ##' @source Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
 "pdo"
 
+##' NPGO -- North Pacific Gyre Oscillation
+##'
+##' The North Pacific Gyre Oscillation (NPGO) is a climate pattern that
+##' is significantly correlated with fluctuations of salinity, nutrients, and chlorophyll-a
+##' in long-term observations in the California Current (CalCOFI) and Gulf of
+##' Alaska (Line P).
+##'
+##' Adapted from http://www.o3d.org/npgo/
+##' The NPGO emerges
+##' as the second dominant mode of sea-surface height variability in the
+##' Northeast Pacific. The term NPGO is used because fluctuations reflect
+##' changes in the intensity of the central and eastern branches of the North
+##' Pacific gyre circulations as evident from the NPGO sea-surface height
+##' anomalies. Fluctuations in the NPGO are driven by regional and basin-scale
+##' variations in wind-driven upwelling and horizontal advection -- the
+##' fundamental processes controlling salinity and nutrient
+##' concentrations. Nutrient fluctuations drive concomitant changes in
+##' phytoplankton concentrations, and may force similar variability in higher
+##' trophic levels. The NPGO thus provides a strong indicator of fluctuations in
+##' the mechanisms driving planktonic ecosystem dynamics.
+##'
+##' Key reference is Di Lorenzo et al. (2008): North Pacific Gyre Oscillation
+##' links ocean climate and ecosystem change. Geophysical Research Letters, 35:
+##' L08607. doi:10.1029/2007GL032838
+##'
+##' Associated code adapted from code generously shared by Chris Rooper.
+##'
+##' @format A tibble also of class `pacea_index` with columns:
+##' \describe{
+##'   \item{year:}{year of value}
+##'   \item{month:}{month (1 to 12) of value}
+##'   \item{anomaly:}{calculated as the second dominant mode of sea-surface height
+##'   anomaly over the Northeast Pacific (180 deg W to 100 deg W, 25 deg N to 62
+##'   deg N), and then maybe converted to standard deviation units as in Figure
+##'   1 of Di Lorenzo et al. (2008), though the numbers do not exactly match
+##'   that figure (and come from Di Lorenzo's website, which
+##'   notes that values after 2004 were updated. This might be why
+##'   numbers do not seem to quite agree.}
+##' }
+##'
+##' \dontrun{
+##' npgo
+##' plot(npgo)
+##' }
+##' @author Andrew Edwards
+##' @source Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
+"npgo"
+
+
 ##' Pacific Hake annual age-0 recruitments as estimated by the 2023 stock
 ##' assessment.
 ##'
@@ -407,54 +456,54 @@
 
 #' BC coastline
 #'
-#' A simple features object of the BC coastline 
-#' 
-#' Extent of BC coast includes the BC coast and Pacific portion of Canada's Exclusive Economic Zone, and any neighbouring land (e.g. US States). 
-#' 
+#' A simple features object of the BC coastline
+#'
+#' Extent of BC coast includes the BC coast and Pacific portion of Canada's Exclusive Economic Zone, and any neighbouring land (e.g. US States).
+#'
 #' Source of initial bc_coast geometry shapes were loaded from 'rnaturalearth::ne_countries' at a 1:10M scale.
-#' 
+#'
 #' @format A simple features multipolygon dataframe.
-#' @examples 
+#' @examples
 #' \dontrun{
 #' bc_coast
 #' plot(bc_coast)
 #' }
-#' 
+#'
 #' @source Generated from running `data-raw/coastline/coastline-eez.R`.
 "bc_coast"
 
 #' BC Exclusive Economic Zone (EEZ)
 #'
-#' A simple features object of the BC EEZ 
-#' 
+#' A simple features object of the BC EEZ
+#'
 #' Source of BC EEZ is from 'PBSdata'.
-#' 
+#'
 #' @format A simple features polygon dataframe.
-#' @examples 
+#' @examples
 #' \dontrun{
 #' bc_eez
 #' plot(bc_eez)
 #' }
-#' 
+#'
 #' @source Generated from running `data-raw/coastline/coastline-eez.R`.
 "bc_eez"
 
 #' Polygons masking layers for BC waters
-#' 
+#'
 #' Simple features objects of ROMs data, inshore, and offshore regions of BC Exclusive Economic Zone (EEZ) waters.
-#' 
+#'
 #' Bathymetric classifications were used to derive a line to separate continental shelf (inshore) and deep sea regions. Includes a 10km buffer around the EEZ and limited by ROMs data coverage.
-#' 
+#'
 #' Source of bathymetric classifications:
 #' GIS hub Pacific Marine Habitat Classes - obtained from: https://www.gis-hub.ca/dataset/marine-habitat-classes
-#' 
+#'
 #' @format A simple features polygon dataframe.
 #' \describe{
 #'   \item{romseez_poly}{BC EEZ boundary witha 10km buffer and clipped with ROMs data output boundary}
 #'   \item{inshore_poly}{inshore (continental shelf) region of romseez_poly}
 #'   \item{offshore_poly}{offshore (deep seafloor) region of roms eez_poly}
 #' }
-#' @examples 
+#' @examples
 #' \dontrun{
 #' romseez_poly
 #' inshore_poly
@@ -463,7 +512,7 @@
 #' plot(inshore_poly)
 #' plot(offshore_poly)
 #' }
-#' 
+#'
 #' @source Generated from running `data-raw/grids/make-mask-layer.R`.
 "romseez_poly"
 

@@ -109,7 +109,7 @@ if(check_index_changed(npi_monthly, npi_monthly_new)){
 }
 
 # NPI annual
-# This webiste has 2022-10 in it but includes value for 2022 (which by definition
+# This website has 2022-10 in it but includes value for 2022 (which by definition
 #  includes data from 2023), so not sure about their naming convention.
 
 download.file("https://climatedataguide.ucar.edu/sites/default/files/2022-10/npindex_ndjfm.txt",
@@ -200,7 +200,7 @@ download.file("https://www.cpc.ncep.noaa.gov/data/indices/soi",
                                         # but is next to the true final month
 
 # Need Chris's approach due to "-999.9" adjacent to final month of data, and more.
-soi_new<-read.table("soi.txt",
+soi_new <- read.table("soi.txt",
                     skip = 3,
                     as.is = TRUE,
                     header = TRUE,
@@ -246,8 +246,44 @@ if(check_index_changed(soi, soi_new)){
   plot(soi)
 }
 
-stop("Got to here")
 
+#NGPO
+# Useful background:
+#  http://www.o3d.org/npgo/
+download.file("http://www.o3d.org/npgo/npgo.php",
+              destfile="npgo.txt",
+              mode="wb",
+              quiet = FALSE)
+
+# Adapting Chris's original, as html code in file is otherwise fiddly to deal with
+npgo_new <-read.table("npgo.txt",
+                 skip = 5,
+                 as.is = TRUE,
+                 header = FALSE,
+                 fill = TRUE,
+                 comment = "#") %>%
+  as_tibble() %>%
+  dplyr::rename("year" = "V1",
+                "month" = "V2",
+                "anomaly" = "V3") %>%
+  filter(!is.na(month)) %>%
+  mutate(year = as.numeric(year))
+
+stopifnot(npgo_new[1, 1:2] == c(1950, 1)) # Check still starts in January 1950
+
+class(npgo_new) <- c("pacea_index",
+                    class(npgo_new))
+
+attr(npgo_new, "axis_name") <- "North Pacific Gyre Oscillation"
+
+if(check_index_changed(npgo, npgo_new)){
+  npgo <- npgo_new
+  usethis::use_data(npgo,
+                    overwrite = TRUE)
+  plot(npgo)  # TODO maybe update when plotting functions finalised
+}
+
+stop("Got to here")
 
 # ENSO MEI
 nlines <- as.numeric(format(Sys.time(),
@@ -311,28 +347,6 @@ colnames(AO) <- c('Year',
 AO$Month <- as.numeric(AO$Month)
 
 **GOT TO HERE**
-
-#NGPO
-# Useful background:
-#  http://www.o3d.org/npgo/
-download.file("http://www.o3d.org/npgo/npgo.php",
-              destfile="NPGO.txt",
-              mode="wb",
-              quiet = FALSE)
-
-NPGO<-read.table("NPGO.txt",
-                 skip=30,
-                 as.is=TRUE,
-                 header=FALSE,
-                 fill=TRUE)
-
-colnames(NPGO)<-c("Year",
-                  "Month",
-                  "NPGO_index")
-
-NPGO$Year<-as.numeric(NPGO$Year)
-
-NPGO<-subset(NPGO,is.na(NPGO$NPGO_index)==FALSE)
 
 #ALPI - CURRENT DATA NOT AVAILABLE - LAST UPDATE 2015
 download.file("http://www.pac.dfo-mpo.gc.ca/od-ds/science/alpi-idda/ALPI_1900_2015_EN.csv",
