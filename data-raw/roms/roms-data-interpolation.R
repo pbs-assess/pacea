@@ -8,6 +8,7 @@ library(sf)
 library(stars)
 library(ncdf4)
 library(ggplot2)
+library(concaveman)
 
 sf_use_s2(FALSE)  # remove spherical geometry (s2) for sf operations
 
