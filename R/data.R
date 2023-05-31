@@ -230,7 +230,7 @@
 ##'   Pacific (poleward of 20 deg N) after the global average sea surface
 ##'   temperature has been removed.}
 ##' }
-##'
+##' @examples
 ##' \dontrun{
 ##' pdo
 ##' plot(pdo)
@@ -286,6 +286,71 @@
 ##' @author Andrew Edwards
 ##' @source Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
 "npgo"
+
+##' ENSO MEI -- Multivariate ENSO Index
+##'
+##' The Multivariate ENSO (El Niño-Southern Oscillation) Index
+##' combines both oceanic and atmospheric variables, to an assessment of ENSO in
+##' in a single index.
+##'
+##' The bi-monthly Multivariate ENSO index (MEI.v2) is the time series of the
+##' leading combined Empirical Orthogonal Function (EOF) of five different
+##' variables:
+##' \itemize{
+##'   \item{sea level pressure (SLP)}
+##'   \item{sea surface temperature (SST)}
+##'   \item{zonal components of the surface wind}
+##'   \item{meridional components of the surface wind}
+##'   \item{outgoing longwave radiation (OLR)}
+##' }
+##' These are calculated  over the tropical Pacific basin (30 deg S to 30 deg N and
+##' 100 deg E to 70 deg W). The EOFs are calculated for 12 overlapping
+##' bi-monthly "seasons" (Dec-Jan, Jan-Feb, Feb-Mar, ..., Nov-Dec) in order to
+##' take into account ENSO's seasonality, and reduce effects of higher frequency
+##' intraseasonal variability.
+##'
+##' Key features of composite positive MEI events (warm, El Niño) include:
+##' \itemize{
+##' \item{anomalously warm SSTs across the east-central equatorial Pacific}
+##' \item{anomalously high SLP over Indonesia and the western tropical Pacific}
+##' \item{anomalously low SLP over the eastern tropical Pacific}
+##' \item{reduction or reversal of tropical Pacific easterly winds (trade winds)}
+##' \item{suppressed tropical convection(positive OLR) over Indonesia and
+##' the Western Pacific}
+##' \item{enhanced convection (negative OLR) over the central Pacific}
+##' }
+##' Key features of composite negative
+##' MEI events (cold, La Niña) are of mostly opposite phase. For any
+##' single El Niño or La Niña situation, the atmospheric articulations may
+##' depart from this canonical view.
+##'
+##' The above description is adapted from NOAA's Physical Sciences Laboratory
+##' website https://www.psl.noaa.gov/enso/mei/, which has more details and
+##' references(and is
+##' where the values come from). The data on that website are updated on the
+##' 10th of each month (if source data are available). Warm and cold thresholds
+##' are considered as being +0.5 (warm) and -0.5 (cold) away from 0. Values are
+##' calculated for overlapping two-month `seasons', with, for example, February
+##' 2023 in `pacea` representing the January-February calculation.
+##'
+##' Associated code adapted from code generously shared by Chris Rooper.
+##'
+##' @format A tibble also of class `pacea_index` with columns:
+##' \describe{
+##'   \item{year:}{year of value}
+##'   \item{month:}{month (1 to 12) of value, representing the two-month
+##'   calculation covering the given month and the preceding month (i.e. month 2
+##'   in year 2023 represents the January-February 2023 value)}
+##'   \item{anomaly:}{anomalies based on a reference period of 1980-2018}
+##'  }
+##' @examples
+##' \dontrun{
+##' enso_mei
+##' plot(enso_mei)
+##' }
+##' @author Andrew Edwards
+##' @source Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
+"enso_mei"
 
 
 ##' Pacific Hake annual age-0 recruitments as estimated by the 2023 stock

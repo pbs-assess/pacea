@@ -105,9 +105,11 @@ if(check_index_changed(npi_monthly, npi_monthly_new)){
   npi_monthly <- npi_monthly_new
   usethis::use_data(npi_monthly,
                     overwrite = TRUE)
-  plot(npi_monthly, value = "value", style = "plain")  # plain not a thing yet, just
-                                             # not red-blue TODO add in average
-                                             # value so can show colours
+  plot(npi_monthly,
+       value = "value",
+       style = "plain")  # plain not a thing yet, just
+                         # not red-blue TODO add in average
+                         # value so can show colours
 }
 
 # NPI annual
@@ -161,8 +163,8 @@ if(check_index_changed(npi_annual, npi_annual_new)){
 # UCAR's second link going to Chris's one that we use below:
 # https://climatedataguide.ucar.edu/climate-data/pacific-decadal-oscillation-pdo-definition-and-indices
 download.file("https://www.ncei.noaa.gov/pub/data/cmb/ersst/v5/index/ersst.v5.pdo.dat",
-              destfile="pdo.txt",
-              mode="wb",
+              destfile = "pdo.txt",
+              mode = "wb",
               quiet = FALSE)
 
 pdo_new <- readr::read_table("pdo.txt",
@@ -209,7 +211,7 @@ soi_new <- read.table("soi.txt",
                     skip = 3,
                     as.is = TRUE,
                     header = TRUE,
-                    fill=T)
+                    fill = TRUE)
 
 stopifnot(soi_new[1,1] == 1951) # Check still starts in 1951
 
@@ -292,48 +294,55 @@ if(check_index_changed(npgo, npgo_new)){
   plot(npgo)  # TODO maybe update when plotting functions finalised
 }
 
-stop("Got to here")
-
-# ENSO MEI
-n_lines <- as.numeric(format(Sys.time(),
-                             "%Y")) - 1978     # Then double check later that
-                                              #  first year is 1979 and last is
-                                              #  current year (ish)
-# TODO think about that above line more, as to when things get updated
-
-download.file("https://psl.noaa.gov/enso/mei/data/meiv2.data",
-              destfile="enso_mei.txt",
-              mode="wb",
-              quiet = FALSE)
-
-enso_mei <- read.table("enso_mei.txt",
-                       skip = 1,
-                       as.is = TRUE,
-                       nrows = n_lines)
-HERE
-
-colnames(ENSO_MEI) <- year_months
-
-ENSO_MEI[ENSO_MEI == -999] <- NA
-
-ENSO_MEI <- reshape::melt(ENSO_MEI,
-                          id="Year")
-
-colnames(ENSO_MEI)<-c("Year","Month","ENSO_MEI")
-
-ENSO_MEI$Month <- as.numeric(ENSO_MEI$Month)
-
-# If get an error (or earlier) then likely that it's early in a year and there
-#  are no values for that year yet. Depends when the website updates their table length.
-stopifnot(min(ENSO_MEI$Year) == 1979,
-          max(ENSO_MEI$Year) ==  format(Sys.time(), "%Y"))
-
+# ENSO MEI https://www.psl.noaa.gov/enso/mei
 # Add to help:
 # Multivariate ENSO Index Version 2 (MEI.v2)
 # https://www.psl.noaa.gov/enso/mei
 # Row values are 2 month seasons (YEAR DJ JF FM MA AM MJ JJ JA AS SO ON ND)
+download.file("https://psl.noaa.gov/enso/mei/data/meiv2.data",
+              destfile = "enso_mei.txt",
+              mode = "wb",
+              quiet = FALSE)
 
+enso_mei_new <- read.table("enso_mei.txt",
+                           skip = 1,
+                           as.is = TRUE,
+                           fill = TRUE) %>%
+  as_tibble()
 
+names(enso_mei_new) <- c("year", 1:12)  # Note in help that months are two-month combinations
+
+enso_mei_new$year <- as.numeric(enso_mei_new$year)  # gives warning; puts NA's
+                                        # at end, the strange -999 after the
+                                        # last year of values stays, so remove it and
+                                        # later rows next:
+enso_mei_new <-  enso_mei_new[-(seq(which(enso_mei_new$year == -999),
+                                     nrow(enso_mei_new))), ]
+
+enso_mei_new <- tidyr::pivot_longer(enso_mei_new,
+                               cols = "1":"12",
+                               names_to = "month",
+                               values_to = "anomaly") %>%
+  mutate(month = as.numeric(month),
+         anomaly = as.numeric(anomaly)) %>%
+  filter(anomaly != -999)
+
+summary(enso_mei_new)     # check no NA's
+
+class(enso_mei_new) <- c("pacea_index",
+                    class(enso_mei_new))
+
+attr(enso_mei_new, "axis_name") <- "Multivariate ENSO Index"
+
+if(check_index_changed(enso_mei,
+                       enso_mei_new)){
+  enso_mei <- enso_mei_new
+  usethis::use_data(enso_mei,
+                    overwrite = TRUE)
+  plot(enso_mei)  # TODO maybe update when plotting functions finalised
+}
+
+HERE
 
 # AO
 download.file("https://www.cpc.ncep.noaa.gov/products/precip/CWlink/daily_ao_index/monthly.ao.index.b50.current.ascii.table",
@@ -357,8 +366,6 @@ colnames(AO) <- c('Year',
                   'AO_Index')
 
 AO$Month <- as.numeric(AO$Month)
-
-**GOT TO HERE**
 
 #ALPI - CURRENT DATA NOT AVAILABLE - LAST UPDATE 2015
 download.file("http://www.pac.dfo-mpo.gc.ca/od-ds/science/alpi-idda/ALPI_1900_2015_EN.csv",

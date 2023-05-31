@@ -14,11 +14,6 @@ A tibble also of class `pacea_index` with columns:
   Pacific (poleward of 20 deg N) after the global average sea surface
   temperature has been removed.}
 }
-
-\dontrun{
-pdo
-plot(pdo)
-}
 }
 \source{
 Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
@@ -107,6 +102,12 @@ reconstructed as far back as 1661 through tree-ring chronologies in the Baja
 California area.
 
 Associated code adapted from code generously shared by Chris Rooper.
+}
+\examples{
+\dontrun{
+pdo
+plot(pdo)
+}
 }
 \author{
 Andrew Edwards
