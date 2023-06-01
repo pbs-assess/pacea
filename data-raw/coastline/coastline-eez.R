@@ -30,8 +30,8 @@ tbc_coast <- tbc_coast[,c("admin","geometry")]
 
 # combine data rows of bc_coast into one multipolygon
 tbc_coast <- st_combine(tbc_coast) # converts to sfc_MULTIPOLYGON object
-st_geometry(tbc_coast) <- "geometry"
 tbc_coast <- st_as_sf(tbc_coast)
+st_geometry(tbc_coast) <- "geometry"
 #####
 
 bc_coast <- tbc_coast
@@ -42,6 +42,10 @@ data(eez.bc)
 # convert to sf
 bc_eez <- maptools::PolySet2SpatialPolygons(eez.bc)
 bc_eez <- sf::st_as_sf(bc_eez)
+
+# reproject to bcalbers
+bc_coast <- st_transform(bc_coast, crs = "EPSG:3005")
+bc_eez <- st_transform(bc_eez, crs = "EPSG:3005")
 
 # test plot
 ggplot() +
