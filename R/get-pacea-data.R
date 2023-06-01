@@ -36,10 +36,15 @@ get_pacea_data <- function(layer, ask = interactive()) {
   
   # look for data in pacea cache folder, return dataset
   cache_dir <- pacea_cache()
-  file_dir <- paste0(cache_dir, "/", layer, ".rds")
-
+  file_list <- list.files(cache_dir)
+  grep_list <- file_list[grep(layer, file_list)]
+  
   # if file already exists
-  if (file.exists(file_dir)) {
+  if (length(grep_list) > 0) {
+    
+    filename <- grep_list[order(grep_list, decreasing = T)][1]
+    
+    file_dir <- paste0(cache_dir, "/", filename)
     
     dat <- readRDS(file_dir)
     return(dat)
@@ -63,7 +68,7 @@ get_pacea_data <- function(layer, ask = interactive()) {
     
     if (!dir.exists(cache_dir)) {
       message("Creating directory to hold pacea data at \n", cache_dir)
-      dir.create(cache_dir, recursive = T)
+      dir.create(cache_dir, recursive = TRUE)
     } else {
       message("Saving to pacea cache directory at \n", cache_dir)
     }
