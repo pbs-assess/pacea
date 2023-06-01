@@ -15,7 +15,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' get_pacea_data("roms_temperature_surface")
+#' get_pacea_data("roms_surface_temperature")
 #' }
 #' 
 
@@ -37,7 +37,7 @@ get_pacea_data <- function(layer, ask = interactive()) {
   # look for data in pacea cache folder, return dataset
   cache_dir <- pacea_cache()
   file_dir <- paste0(cache_dir, "/", layer, ".rds")
-  
+
   # if file already exists
   if (file.exists(file_dir)) {
     

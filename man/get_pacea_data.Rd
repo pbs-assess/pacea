@@ -22,7 +22,7 @@ Some large pacea data sets are stored in a GitHub repository, pacea-data, and ge
 }
 \examples{
 \dontrun{
-get_pacea_data("roms_temperature_surface")
+get_pacea_data("roms_surface_temperature")
 }
 
 }
