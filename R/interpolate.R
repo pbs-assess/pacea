@@ -47,7 +47,7 @@ point2rast <- function(data, spatobj, loc = c("x", "y"), cellsize, nnmax = 4,
       
       coords <- setNames(as.data.frame(loc), c("x", "y"))
       
-      tdat <- as.data.frame(data[, !colnames(data) %in% colnames(loc)])
+      tdat <- as.data.frame(data[, !colnames(data) %in% colnames(loc)], drop = F)
     }
   }
   
@@ -58,7 +58,7 @@ point2rast <- function(data, spatobj, loc = c("x", "y"), cellsize, nnmax = 4,
   
   if(is(data, "sf")) {
     coords <- setNames(as.data.frame(matrix(unlist(data$geometry), ncol=2, byrow=T)), c("x", "y"))
-    tdat <- as.data.frame(data)[, -which(names(data) == "geometry")]
+    tdat <- as.data.frame(data)[, -which(names(data) == "geometry"), drop=F]
   }
   
   tbb <- terra::ext(spatobj)
