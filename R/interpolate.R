@@ -37,7 +37,7 @@ point2rast <- function(data, spatobj, loc = c("x", "y"), cellsize, nnmax = 4,
       
       coords <- setNames(as.data.frame(data[, loc]), c("x", "y"))
       
-      tdat <- as.data.frame(data[, -which(colnames(data) %in% loc), drop=F])
+      tdat <- as.data.frame(data[, -which(colnames(data) %in% loc), drop = FALSE])
       
     } else { 
       
@@ -47,18 +47,18 @@ point2rast <- function(data, spatobj, loc = c("x", "y"), cellsize, nnmax = 4,
       
       coords <- setNames(as.data.frame(loc), c("x", "y"))
       
-      tdat <- as.data.frame(data[, !colnames(data) %in% colnames(loc)], drop = F)
+      tdat <- as.data.frame(data[, !colnames(data) %in% colnames(loc)], drop = FALSE)
     }
   }
   
   if(is(data, "Spatial")) {
     coords <- setNames(as.data.frame(data)[,c("coords.x1", "coords.x2")], c("x", "y"))
-    tdat <- as.data.frame(data)[, names(data), drop=F]    
+    tdat <- as.data.frame(data)[, names(data), drop = FALSE]    
   }
   
   if(is(data, "sf")) {
-    coords <- setNames(as.data.frame(matrix(unlist(data$geometry), ncol=2, byrow=T)), c("x", "y"))
-    tdat <- as.data.frame(data)[, -which(names(data) == "geometry"), drop=F]
+    coords <- setNames(as.data.frame(matrix(unlist(data$geometry), ncol=2, byrow = TRUE)), c("x", "y"))
+    tdat <- as.data.frame(data)[, -which(names(data) == "geometry"), drop = FALSE]
   }
   
   tbb <- terra::ext(spatobj)
@@ -67,7 +67,7 @@ point2rast <- function(data, spatobj, loc = c("x", "y"), cellsize, nnmax = 4,
     warning("loc coordinates within spatobj extent = 0; check crs or extent of spatobj")
   }
   
-  terror <- try(terra::crs(spatobj), silent=T)
+  terror <- try(terra::crs(spatobj), silent = TRUE)
   if("try-error" %in% class(terror)) {
     r <- terra::rast(terra::ext(spatobj), res = c(cellsize))
   } else {
