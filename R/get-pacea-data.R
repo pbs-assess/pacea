@@ -49,9 +49,6 @@ get_pacea_data <- function(layer, ask = interactive()) {
     dat <- readRDS(file_dir)
     return(dat)
     
-    # dat <- get(load(file_dir, envir = .GlobalEnv))
-    # return(dat)
-    
   } else {
     
     ## internet errors for downloading
@@ -76,6 +73,8 @@ get_pacea_data <- function(layer, ask = interactive()) {
     fileurl <- paste0("https://github.com/pbs-assess/pacea-data/blob/main/data/", layer, ".rds?raw=true") 
     
     filename <- paste0(layer,".rds")
+    
+    file_dir <- paste0(cache_dir, "/", filename)
     
     # Send GET request to retrieve the file
     response <- httr::GET(fileurl)
