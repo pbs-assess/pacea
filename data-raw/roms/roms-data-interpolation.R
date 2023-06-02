@@ -150,8 +150,10 @@ for(i in idepth) {
     # use roms_buff to get haida gwaii outline
     t2_sf26 <- t2_sf26[roms_buff,]
     
+    
+    
     # assign column names as year_month
-    names(t2_sf26)[1:(ncol(t2_sf26) - 1)] <- cnames[1] 
+    names(t2_sf26)[1:(ncol(t2_sf26) - 1)] <- cnames 
     
     # assign pacea class 
     class(t2_sf26) <- c("pacea_st", class(t2_sf26))
