@@ -59,81 +59,75 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive()) {
         
       }
       
-      fileurl <- paste0("https://github.com/pbs-assess/pacea-data/blob/main/data/", layer, ".rds?raw=true") 
+      # list files from github repository
+      listurl <- "https://api.github.com/repos/pbs-assess/pacea-data/git/trees/main?recursive=1"
+      req <- httr::GET(listurl)
+      httr::stop_for_status(req)
       
-      # Send GET request to retrieve the file
-      response <- httr::GET(fileurl)
+      git_file_list <- unlist(lapply(content(req)$tree, "[", "path"), use.names=F)
+      git_filename <- git_file_list[grep(paste0("data/", layer), git_file_list)]
+      git_filename <- git_filename[order(git_filename, decreasing = T)][1]
+      git_filename <- strsplit(git_filename, "/")[[1]][2]
       
-      # Check if the request was successful
-      if (httr::status_code(response) == 200) {
+      # compare versions
+      if(local_filename == git_filename) {
         
-        # Read the content of the response as raw data
-        content_raw <- httr::content(response, "raw")
+        message("Most recent version of data already downloaded in cache folder!")
         
-        # Create a temporary file path
-        temp_file <- tempfile()
+        dat <- readRDS(local_file_dir)
+        return(dat)
         
-        # Write the raw data to the temporary file
-        writeBin(content_raw, temp_file)
+      } else {
         
-        # Read the .rds file into R and get name of file (can be different than path name)
-        dat_name <- load(temp_file)
-        
-        # name data to generic object name
-        dat <- get(dat_name)
-        
-        # Remove the temporary file
-        file.remove(temp_file) 
-        
-        # compare versions of local file vs internet file
-        tlocal_filename <- substr(local_filename, 1, nchar(local_filename) - 4)
-        local_file_version <- substr(tlocal_filename, nchar(tlocal_filename) - 1, nchar(tlocal_filename))
-        web_file_version <- substr(dat_name, nchar(dat_name) - 1, nchar(dat_name))
-        
-        if(local_file_version == web_file_version){
+        ans <- ask(paste("Newer version of data available and will delete previous version in local cache folder:",
+                         cache_dir, "Is that okay?", sep = "\n"))
+        if (!ans) {
           
-          message("Most recent version of data already downloaded in cache folder!")
+          message("Returned local version of data.")
           
           dat <- readRDS(local_file_dir)
           return(dat)
           
         } else {
+
+          fileurl <- paste0("https://github.com/pbs-assess/pacea-data/blob/main/data/", git_filename, "?raw=true") 
           
-          if (ask) {
-            ans <- ask(paste("Newer version of data available and will delete previous version in local cache folder:",
-                             cache_dir, "Is that okay?", sep = "\n"))
-            if (!ans) {
-              
-              message("Returned local version of data.")
-              
-              dat <- readRDS(local_file_dir)
-              return(dat)
-              
-            } else {
-              
-              # create file name with version number
-              filename <- paste0(dat_name,".rds")
-              file_dir <- paste0(cache_dir, "/", filename)
-              
-              saveRDS(dat, file = file_dir, compress = "xz")
-              
-              # delete previous version in local folder
-              unlink(local_file_dir)
-              
-              return(dat)
-              
-              message("Data successfully updated!")
-              
-            }
-          } 
+          # Send GET request to retrieve the file
+          response <- httr::GET(fileurl)
+          httr::stop_for_status(response)
+          
+          # Read the content of the response as raw data
+          content_raw <- httr::content(response, "raw")
+          
+          # Create a temporary file path
+          temp_file <- tempfile()
+          
+          # Write the raw data to the temporary file
+          writeBin(content_raw, temp_file)
+          
+          # Read the .rds file into R and get name of file (can be different than path name)
+          dat_name <- load(temp_file)
+          
+          # name data to generic object name
+          dat <- get(dat_name)
+          
+          # Remove the temporary file
+          file.remove(temp_file) 
+          
+          # create file name with version number
+          filename <- paste0(dat_name,".rds")
+          file_dir <- paste0(cache_dir, "/", filename)
+          
+          saveRDS(dat, file = file_dir, compress = "xz")
+          
+          # delete previous version in local folder
+          unlink(local_file_dir)
+          
+          return(dat)
+          
+          message("Data successfully updated!")
+          
         }
-        
-      } else { 
-        
-        dat <- readRDS(local_file_dir)
-        return(dat)
-        
-        warning("Failed to download an updated version of the file.")
       }
       
     } else { # no update
@@ -163,45 +157,49 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive()) {
       message("Saving to pacea cache directory at \n", cache_dir)
     }
     
-    fileurl <- paste0("https://github.com/pbs-assess/pacea-data/blob/main/data/", layer, ".rds?raw=true") 
+    # list files from github repository
+    listurl <- "https://api.github.com/repos/pbs-assess/pacea-data/git/trees/main?recursive=1"
+    req <- httr::GET(listurl)
+    httr::stop_for_status(req)
+    
+    git_file_list <- unlist(lapply(content(req)$tree, "[", "path"), use.names=F)
+    git_file_dir <- git_file_list[grep(paste0("data/", layer), git_file_list)]
+    git_file_dir <- git_file_dir[order(git_file_dir, decreasing = T)][1]
+    git_filename <- strsplit(git_file_dir, "/")[[1]][2]
+    
+    # download data
+    fileurl <- paste0("https://github.com/pbs-assess/pacea-data/blob/main/data/", git_filename, "?raw=true") 
     
     # Send GET request to retrieve the file
     response <- httr::GET(fileurl)
+    httr::stop_for_status(response)
     
-    # Check if the request was successful
-    if (httr::status_code(response) == 200) {
-      # Read the content of the response as raw data
-      content_raw <- httr::content(response, "raw")
-      
-      # Create a temporary file path
-      temp_file <- tempfile()
-      
-      # Write the raw data to the temporary file
-      writeBin(content_raw, temp_file)
-      
-      # Read the .rds file into R and get name of file (can be different than path name)
-      #dat <- get(load(temp_file))
-      dat_name <- load(temp_file)
-      
-      # name data to generic object name
-      dat <- get(dat_name)
-      
-      # Remove the temporary file
-      file.remove(temp_file)
-      
-      # create file name with version number
-      filename <- paste0(dat_name,".rds")
-      file_dir <- paste0(cache_dir, "/", filename)
-      
-      saveRDS(dat, file = file_dir, compress = "xz")
-
-      return(dat)
-      
-    } else {
-      
-      stop("Error: Failed to download the file.")
-      
-    }
+    # Read the content of the response as raw data
+    content_raw <- httr::content(response, "raw")
+    
+    # Create a temporary file path
+    temp_file <- tempfile()
+    
+    # Write the raw data to the temporary file
+    writeBin(content_raw, temp_file)
+    
+    # Read the .rds file into R and get name of file (can be different than path name)
+    dat_name <- load(temp_file)
+    
+    # name data to generic object name
+    dat <- get(dat_name)
+    
+    # Remove the temporary file
+    file.remove(temp_file) 
+    
+    # create file name with version number
+    filename <- paste0(dat_name,".rds")
+    file_dir <- paste0(cache_dir, "/", filename)
+    
+    saveRDS(dat, file = file_dir, compress = "xz")
+    
+    return(dat)
+    
   }
 }
 
