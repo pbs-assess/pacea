@@ -25,7 +25,7 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive()) {
   ## edit message
   if (!is.character(layer)) {
     stop("Data object must be referred to as a character string (in 'quotes')\n
-         Use the function ?...? to get a list of data objects available")
+         Use the function ?...? to get a list of data objects available", call. = FALSE)
   }
   
   ## find data in row - CHANGE datalist name if necessary
@@ -72,7 +72,7 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive()) {
       # compare versions
       if(local_filename == git_filename) {
         
-        message("Most recent version of data already downloaded in cache folder!")
+        warning("Most recent version of data already downloaded in cache folder!", call. = FALSE)
         
         dat <- readRDS(local_file_dir)
         return(dat)
@@ -83,7 +83,7 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive()) {
                          cache_dir, "Is that okay?", sep = "\n"))
         if (!ans) {
           
-          message("Returned local version of data.")
+          warning("Returned local version of data.", call. = FALSE)
           
           dat <- readRDS(local_file_dir)
           return(dat)
@@ -123,9 +123,9 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive()) {
           # delete previous version in local folder
           unlink(local_file_dir)
           
-          return(dat)
+          message("Data successfully updated and downloaded to local cache folder!")
           
-          message("Data successfully updated!")
+          return(dat)
           
         }
       }

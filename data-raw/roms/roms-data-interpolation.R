@@ -165,8 +165,8 @@ for(i in idepth) {
     if(i == "bot") {ti <- "bottom"} else {ti <- "surface"}
     tj <- jvars_table[which(jvars_table[, 1] == j), 2]
     objname <- paste("roms", ti, tj, sep = "_")
-    #filename <- paste0("../pacea-data/data/",objname, "_", version, ".rds")
-    filename <- paste0("../pacea-data/data/",objname, ".rds")
+    filename <- paste0("../pacea-data/data/",objname, "_", version, ".rds")
+    #filename <- paste0("../pacea-data/data/",objname, ".rds")
     assign(objname, t2_sf26)
     
     do.call("save", list(as.name(objname), file = filename, compress = "xz"))

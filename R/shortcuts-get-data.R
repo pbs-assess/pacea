@@ -24,32 +24,32 @@
 #' \dontrun{
 #' my_data <- roms_bottom_oxygen()
 #' }
-roms_bottom_oxygen <- function(ask = interactive()) {
-  get_pacea_data("roms_bottom_oxygen", ask = ask)
+roms_bottom_oxygen <- function(update = FALSE, ask = interactive()) {
+  get_pacea_data("roms_bottom_oxygen", update = update, ask = ask)
 }
 
 #' @rdname roms_bottom_oxygen
-roms_bottom_salinity <- function(ask = interactive()) {
-  get_pacea_data("roms_bottom_salinity", ask = ask)
+roms_bottom_salinity <- function(update = FALSE, ask = interactive()) {
+  get_pacea_data("roms_bottom_salinity", update = update, ask = ask)
 }
 
 #' @rdname roms_bottom_oxygen
-roms_bottom_temperature <- function(ask = interactive()) {
-  get_pacea_data("roms_bottom_temperature", ask = ask)
+roms_bottom_temperature <- function(update = FALSE, ask = interactive()) {
+  get_pacea_data("roms_bottom_temperature", update = update, ask = ask)
 }
 
 #' @rdname roms_bottom_oxygen
-roms_surface_oxygen <- function(ask = interactive()) {
-  get_pacea_data("roms_surface_oxygen", ask = ask)
+roms_surface_oxygen <- function(update = FALSE, ask = interactive()) {
+  get_pacea_data("roms_surface_oxygen", update = update, ask = ask)
 }
 
 #' @rdname roms_bottom_oxygen
-roms_surface_salinity <- function(ask = interactive()) {
-  get_pacea_data("roms_surface_salinity", ask = ask)
+roms_surface_salinity <- function(update = FALSE, ask = interactive()) {
+  get_pacea_data("roms_surface_salinity", update = update, ask = ask)
 }
 
 #' @rdname roms_bottom_oxygen
-roms_surface_temperature <- function(ask = interactive()) {
-  get_pacea_data("roms_surface_temperature", ask = ask)
+roms_surface_temperature <- function(update = FALSE, ask = interactive()) {
+  get_pacea_data("roms_surface_temperature", update = update, ask = ask)
 }
 
