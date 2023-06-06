@@ -65,9 +65,9 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive()) {
       httr::stop_for_status(req)
       
       git_file_list <- unlist(lapply(content(req)$tree, "[", "path"), use.names=F)
-      git_filename <- git_file_list[grep(paste0("data/", layer), git_file_list)]
-      git_filename <- git_filename[order(git_filename, decreasing = T)][1]
-      git_filename <- strsplit(git_filename, "/")[[1]][2]
+      git_file_dir <- git_file_list[grep(paste0("data/", layer), git_file_list)]
+      git_file_dir <- git_file_dir[order(git_file_dir, decreasing = T)][1]
+      git_filename <- strsplit(git_file_dir, "/")[[1]][2]
       
       # compare versions
       if(local_filename == git_filename) {
@@ -79,7 +79,7 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive()) {
         
       } else {
         
-        ans <- ask(paste("Newer version of data available and will delete previous version in local cache folder:",
+        ans <- ask(paste("Newer version of data available and previous version will be deleted from local cache folder:",
                          cache_dir, "Is that okay?", sep = "\n"))
         if (!ans) {
           
@@ -115,7 +115,7 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive()) {
           file.remove(temp_file) 
           
           # create file name with version number
-          filename <- paste0(dat_name,".rds")
+          filename <- paste0(git_filename)
           file_dir <- paste0(cache_dir, "/", filename)
           
           saveRDS(dat, file = file_dir, compress = "xz")
@@ -193,7 +193,7 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive()) {
     file.remove(temp_file) 
     
     # create file name with version number
-    filename <- paste0(dat_name,".rds")
+    filename <- paste0(git_filename)
     file_dir <- paste0(cache_dir, "/", filename)
     
     saveRDS(dat, file = file_dir, compress = "xz")
