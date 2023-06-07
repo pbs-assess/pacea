@@ -4,10 +4,12 @@
 \alias{get_pacea_data}
 \title{Get large pacea data from repository}
 \usage{
-get_pacea_data(layer, ask = interactive())
+get_pacea_data(layer, update = FALSE, ask = interactive())
 }
 \arguments{
 \item{layer}{Name of the data object.}
+
+\item{update}{Logical. Would you like to check for a newer version of the layer?}
 
 \item{ask}{Logical. Should the user be asked before downloading the data to local cache? Defaults to the value of interactive().}
 }

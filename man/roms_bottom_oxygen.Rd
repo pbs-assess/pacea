@@ -12,17 +12,17 @@
 A simple features dataframe.
 }
 \usage{
-roms_bottom_oxygen(ask = interactive())
+roms_bottom_oxygen(update = FALSE, ask = interactive())
 
-roms_bottom_salinity(ask = interactive())
+roms_bottom_salinity(update = FALSE, ask = interactive())
 
-roms_bottom_temperature(ask = interactive())
+roms_bottom_temperature(update = FALSE, ask = interactive())
 
-roms_surface_oxygen(ask = interactive())
+roms_surface_oxygen(update = FALSE, ask = interactive())
 
-roms_surface_salinity(ask = interactive())
+roms_surface_salinity(update = FALSE, ask = interactive())
 
-roms_surface_temperature(ask = interactive())
+roms_surface_temperature(update = FALSE, ask = interactive())
 }
 \arguments{
 \item{ask}{Logical. Should the user be asked before downloading the data to local cache? Defaults to the value of interactive().}
