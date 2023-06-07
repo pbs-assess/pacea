@@ -27,6 +27,18 @@ test_that("index plotting works with various options", {
   expect_invisible(plot(oni,
                         main = "My nice plot"))  # passed onto plot()
 
+  expect_invisible(plot(pdo,
+                        event_years = c(2007, 2008, 2010)))
+
+  expect_invisible(plot(oni,
+                        event_years = c(2007, 2008, 2010),
+                        value = "value",
+                        style = "plain"))
+
+  expect_invisible(plot(oni,
+                        event_lub = c(lubridate::dmy(02081972),
+                                      lubridate::dmy(31121999))))
+
   suppressWarnings(expect_warning(plot(oni,
                                        not_an_option = "My nice plot")))
                                        # nonsensical ... option
