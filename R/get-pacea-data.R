@@ -29,11 +29,11 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive()) {
   }
   
   ## find data in row - CHANGE datalist name if necessary
-  # data_list <- pacea_data
-  # data_row <- data_list[data_list[["data_name"]]==layer, ]
-  # if (nrow(data_row) != 1L) {
-  #   stop(layer, " is not an available data object")
-  # }
+  data_list <- pacea_data
+  data_row <- data_list[data_list[["data_name"]]==layer, ]
+  if (nrow(data_row) != 1L) {
+    stop(layer, " is not an available data object")
+  }
   
   # look for data in pacea cache folder, return dataset
   cache_dir <- pacea_cache()
