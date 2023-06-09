@@ -102,7 +102,7 @@ plot(oni,
 plot(npi_monthly,
      value = "value")
 
-TODO Move this to vignette, keeping final one for the xample
+TODO Move this to vignette, keeping final one for the example
 The overlaying of events idea was inspired from a lunchtime conversation regarding a
 rare sighting of a Bluntnose Sixgill Shark by divers in Port Alberni, that garnered
 [media attention](https://www.timescolonist.com/local-news/divers-encounter-deep-water-shark-in-alberni-inlet-7102038).
