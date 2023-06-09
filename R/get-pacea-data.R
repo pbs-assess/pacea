@@ -7,6 +7,7 @@
 #' @param layer Name of the data object.
 #' @param update Logical. Would you like to check for a newer version of the layer? 
 #' @param ask Logical. Should the user be asked before downloading the data to local cache? Defaults to the value of interactive().
+#' @param force Logical. Should download of data be forced? Overrides `ask` argument if TRUE. 
 #'
 #' @return Data object requested
 #' 
@@ -20,7 +21,7 @@
 #' }
 #' 
 
-get_pacea_data <- function(layer, update = FALSE, ask = interactive()) {
+get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = FALSE) {
   
   ## edit message
   if (!is.character(layer)) {
@@ -31,7 +32,8 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive()) {
   ## find data in row - CHANGE datalist name if necessary
   data_list <- pacea_data
   data_row <- data_list[data_list[["data_name"]]==layer, ]
-  if (nrow(data_row) != 1L) {
+  test_names <- c("test_data", "test_data_01", "test_data_02")
+  if (nrow(data_row) != 1L && !(layer %in% test_names)) {
     stop(layer, " is not an available data object")
   }
   
@@ -79,8 +81,13 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive()) {
         
       } else {
         
-        ans <- ask(paste("Newer version of data available and previous version will be deleted from local cache folder:",
-                         cache_dir, "Is that okay?", sep = "\n"))
+        ans <- TRUE
+        
+        if(ask && !force){
+          ans <- ask(paste("Newer version of data available and previous version will be deleted from local cache folder:",
+                           cache_dir, "Is that okay?", sep = "\n"))
+        }
+        
         if (!ans) {
           
           warning("Returned local version of data.", call. = FALSE)
@@ -142,7 +149,7 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive()) {
     if (!checkInternetConnection()) stop("No access to internet", call. = FALSE) 
     
     ## interactive ask to store in cache folder - from bcmaps package
-    if (ask) {
+    if (ask && !force) {
       ans <- ask(paste("pacea would like to download and store these data in the directory:",
                        cache_dir, "Is that okay?", sep = "\n"))
       if (!ans) stop("Exiting...", call. = FALSE)
