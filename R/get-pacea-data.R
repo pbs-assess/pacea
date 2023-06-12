@@ -31,7 +31,7 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
   
   ## find data in row - CHANGE datalist name if necessary
   data_list <- pacea_data
-  data_row <- data_list[data_list[["data_name"]]==layer, ]
+  data_row <- data_list[data_list[["data_name"]]==layer, , drop = F]
   test_names <- c("test_data", "test_data_01", "test_data_02")
   if (nrow(data_row) != 1L && !(layer %in% test_names)) {
     stop(layer, " is not an available data object")
