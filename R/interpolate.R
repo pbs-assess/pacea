@@ -75,7 +75,7 @@ point2rast <- function(data, spatobj, loc = c("x", "y"), cellsize, nnmax = 4,
   }
   
   nn.pred <- apply(tdat, 2, FUN = nnfit, r=r, loc=loc, coords=coords, nnmax=nnmax)
-  xyz <- cbind(as.data.frame(suppressWarnings(crds(r))), nn.pred)
+  xyz <- cbind(as.data.frame(suppressWarnings(terra::crds(r))), nn.pred)
   
   if(as[1]=="SpatRast"){
     spat <- terra::rast(xyz, type="xyz", crs = terra::crs(r))
