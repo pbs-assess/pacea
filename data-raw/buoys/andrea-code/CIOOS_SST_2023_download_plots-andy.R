@@ -9,7 +9,7 @@ library(rnaturalearth)
 library(lubridate)
 library(stringr)
 
-LOAD_DATA = FALSE
+LOAD_DATA = TRUE   # Is data already loaded?
 
 plot_yrs = c(2022, 2023)
 
@@ -23,12 +23,15 @@ glasbey_32 <- c("#0000FF","#FF0000","#00FF00","#000033","#FF00B6","#005300",
 glasbey_mod <- glasbey_32[!(glasbey_32 %in% c("#B1CC71","#201A01","#F1085C","#720055","#766C95"))]
 # CIOOS flags for the DFO MEDS record
 use_flags = c(4, 9, 11, 12, 13, 14, 15, 16) # https://catalogue.cioospacific.ca/dataset/ca-cioos_b9c71eb2-b750-43d5-a50a-aee173916736
+# TODO double check the flags.
+# Kellog et al. quality control description, which gives the flags: https://drive.google.com/file/d/1J6I8PFuDN0Ca-8wdjfmAWRmeylPGn_s4/view
+
 
 # CIOOS buoy source ####
 
 if (LOAD_DATA == FALSE) {
   cache_delete_all() # USE IF NOT UPDATING PROPERLY
-  sstInfo <- info("DFO_MEDS_BUOYS", url = "https://data.cioospacific.ca/erddap/")
+  sstInfo <- rerddap::info("DFO_MEDS_BUOYS", url = "https://data.cioospacific.ca/erddap/")
   sstdata <- tabledap(x = sstInfo,
                       fields = c("time","longitude","latitude","STN_ID", "SSTP", "SSTP_flags"))
   # Filter out bad SST values
@@ -119,7 +122,7 @@ metaopp$start_date = as.Date(metaopp$start_date)
 metaopp$end_date = as.Date(metaopp$end_date)
 metaopp$life_span <- NULL
 # attr(oppdata$time,"tzone") <- "UTC" # KEEPING PST FOR NOW FOR BETTER DAY AVGS
-oppdata <- oppdata %>% filter(year(time) >= plot_yrs[1])
+oppdata <- oppdata %>% filter(lubridate::year(time) >= plot_yrs[1])
 # oppdata$time_hr = round_date(oppdata$time, unit = "hour")
 oppdata$time_day = as.Date(oppdata$time)
 oppagg = oppdata %>% group_by(year = year(time), time=time_day, wmo_synop_id) %>%
@@ -134,7 +137,7 @@ sstmean <- sstdata %>%
   summarise(SSTP_mean_day = mean(SSTP, na.rm=T)) %>%
   ungroup()
 
-source("scripts/POI_latlon.R")
+source(paste0(here::here(), "/../Pacific_SST_Monitoring/scripts/POI_latlon.R"))
 buoys$STN_ID <- paste0("C", buoys$wmo_id) # Buoy latlon from file
 colnames(sstmean)
 names(sstmean)[names(sstmean) == "SSTP_mean_day"] <- "SSTP"
@@ -247,6 +250,3 @@ gg <- plot_grid(s, g,rel_heights = c(1,1), rel_widths = c(1.1,0.9))
 ggsave(filename = paste0("Daily_mean_buoy_overview_",plot_yrs[2],".png"),
        plot = gg, width = 10, height = 7,
        units = "in", scale = 1.25)
-
-
-beepr::beep()

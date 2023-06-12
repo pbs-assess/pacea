@@ -33,3 +33,8 @@ lib/
 /data-raw/dummy.txt
 
 /data-raw/pacific_marine_habitat_classes/*
+/data-raw/buoys/andrea-code/Daily_mean_buoy_overview_2023-orig.png
+/data-raw/buoys/andrea-code/andrea-emails.txt
+/data-raw/buoys/andrea-code/*
+/data-raw/groundfish/hake-recruitment-over-2010.csv
+/data-raw/groundfish/hake-recruitment.csv
