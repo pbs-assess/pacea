@@ -7,6 +7,8 @@
 
 An R package to house Pacific Region ecosystem data to help operationalise an ecosystem approach to fisheries management.
 
+*We wrangle the data so you don't have to*
+
 pacea stands for PACific Ecosystem Approach. 
 
 pacea is intended to be a data platform containing somewhat disparate data sets (we basically wrangle the data sets behind the scenes to get them into usable consistent formats in R, along with related plotting functions). Is is *not* a primary database of lots of raw data. All data sets include documentation regarding the original authors, who should be cited as appropriate. 
