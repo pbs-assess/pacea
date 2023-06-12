@@ -11,6 +11,7 @@ library(rerddap)
 library(dplyr)
 library(ggplot2)
 library(lubridate)
+# library(tibble)
 
 # library(rnaturalearthdata)
 # library(rnaturalearthhires)
@@ -18,25 +19,20 @@ library(lubridate)
 # library(stringr)
 
 #theme_set(theme_bw())
-LOAD_DATA = TRUE   # Is data already loaded?
-
-
 
 # CIOOS flags for the DFO MEDS record, flags to include:
 
-use_flags = c(4, 9, 11, 12, 13, 14, 15, 16) # https://catalogue.cioospacific.ca/dataset/ca-cioos_b9c71eb2-b750-43d5-a50a-aee173916736
+use_flags = c(4, 9, 11, 12, 13, 14, 15, 16)
+# https://catalogue.cioospacific.ca/dataset/ca-cioos_b9c71eb2-b750-43d5-a50a-aee173916736
 
 # Kellog et al. quality control description, which gives the flags: https://drive.google.com/file/d/1J6I8PFuDN0Ca-8wdjfmAWRmeylPGn_s4/view
 
 
-# CIOOS buoy source ####
+# CIOOS buoy source
 
-# if (LOAD_DATA == FALSE) {
-#   rerddap::cache_delete_all() # USE IF NOT UPDATING PROPERLY
-
-
+TODO make if statements
 # For developing, downloading once then saving locally:
-#sst_info <- rerddap::info("DFO_MEDS_BUOYS",
+# sst_info <- rerddap::info("DFO_MEDS_BUOYS",
 #                         url = "https://data.cioospacific.ca/erddap/")
 # saveRDS(sst_info, "sst_info.Rds")
 sst_info <- readRDS("sst_info.Rds")
@@ -50,42 +46,45 @@ sst_info <- readRDS("sst_info.Rds")
 #                                "SSTP",
 #                                "SSTP_flags"))
 # saveRDS(sst_data_raw, "sst_data_raw.Rds")
-sst_data_raw <- readRDS("sst_data_raw.Rds")
+sst_data_raw <- readRDS("sst_data_raw.Rds")     # A tabledap which is a tibble
 
 # Filtering, using the flags, wrangling, etc. Quality control has already
-#  occurred (see above)
+#  occurred (see above reference, and the flags will get used)
+#  Losing the extra metadata (with as_tibble()) as mutate etc don't seem to work
+#  with it properly
 
-TODO - redo all filtering (maybe) and as.numeric in one go
+sst_data <- as_tibble(sst_data_raw[2000000:2100000, ]) %>%  # Don't do first
+                                        # 10000 as NA's
+  mutate(time = as.POSIXct(time,
+                           format="%Y-%m-%dT%H:%M:%SZ"),
+         longitude = as.numeric(longitude),
+         latitude = as.numeric(latitude),
+         SSTP = as.numeric(SSTP),
+         SSTP_flags = as.numeric(SSTP_flags)) #%>%   HERE - debugging the next
+                                        #stuff, was trying to on first 10000
+                                        #but lots of NA's
+  rename(stn_id = STN_ID,
+         sstp = SSTP,
+         sstp_flags = SSTP_flags)# %>%
+  filter(sstp > -10,                # Too cold
+         time >= as.POSIXct("1991-01-01T00:00:00"),
+         # TODO ask Andrea why throw out those (400,000 records, about 10% here)
+         longitude < -100,
+         latitude < 60)
 
-sst_data <- sst_data_raw                     # 9.7 million x 6
-tail(sst_data)                               # Every few minutes, but is for all stations
+,
+         sstp_flags %in% use_flags | is.na(sstp_flags))  # na's were not flagged
+
+                   # stn_id = as.factor(STN_ID),  # maybe
+
+                     # 9.7 million x 6
+tail(sst_data)       # Every few minutes, but is for all stations
 
 # Filter out bad SST values
-sst_data$SSTP <- as.numeric(sst_data$SSTP)
 
-sst_data$SSTP[sst_data$SSTP < -10] <- NA
+# sst_data$SSTP[sst_data$SSTP < -10] <- NA
 
-# Keep some flags, plus the NA's (which means that value wasn't flagged)
-sst_data$SSTP_flags <- as.numeric(sst_data$SSTP_flags)
 
-sst_data$flag_col <- if_else((sst_data$SSTP_flags %in% use_flags) |
-                             is.na(sst_data$SSTP_flags),
-                             1,
-                             0)
-
-# Convert other fields
-sst_data$longitude <- as.numeric(sst_data$longitude)
-
-sst_data = sst_data %>% filter(longitude < -100,
-                               flag_col == 1)
-
-sst_data$time <- as.POSIXct(sst_data$time,
-                            format="%Y-%m-%dT%H:%M:%SZ")
-
-sst_data = sst_data[sst_data$time >= as.POSIXct("1991-01-01T00:00:00"), ]   # TODO ask Andrea why throw out (400,000 records, about 10% here)
-
-sst_data$latitude <- as.numeric(sst_data$latitude)
-sst_data = sst_data %>% filter(latitude < 60)
 saveRDS(sst_data,"cioos_buoy_backup2.rds")
 
 
@@ -171,6 +170,7 @@ sstmean <- sst_data %>%
   summarise(SSTP_mean_day = mean(SSTP, na.rm=T)) %>%
   ungroup()
 
+# Now all in buoys_metadata
 source(paste0(here::here(), "/../../Pacific_SST_Monitoring/scripts/POI_latlon.R"))
 buoys$STN_ID <- paste0("C", buoys$wmo_id) # Buoy latlon from file
 colnames(sstmean)
