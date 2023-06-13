@@ -326,20 +326,30 @@ summary(filter(opp_agg, wmo_synop_id %in% c(46303, 46304)))
 
 # Now all in buoys_metadata
 # source(paste0(here::here(), "/../../Pacific_SST_Monitoring/scripts/POI_latlon.R"))
-buoys$STN_ID <- paste0("C", buoys$wmo_id) # Buoy latlon from file
-colnames(sstmean)
-names(sstmean)[names(sstmean) == "SSTP_mean_day"] <- "SSTP"
-colnames(oppagg)
-names(oppagg)[names(oppagg) == "sst"] <- "SSTP"
-names(oppagg)[names(oppagg) == "time"] <- "date"
-oppagg$STN_ID = paste0("C",oppagg$wmo_synop_id)
-oppagg <- oppagg %>% select(date, STN_ID, SSTP)
 
-databuoyfull = full_join(sstmean, oppagg)
+buoys$stn_id <- paste0("C", buoys_metadata$wmo_id) # Buoy latlon from saved metadata
+
+colnames(sst_daily_mean)
+# names(sst_daily_mean)[names(sst_daily_mean) == "SSTP_mean_day"] <- "SSTP"
+colnames(opp_agg)
+
+names(opp_agg)[names(opp_agg) == "sst"] <- "sst_mean_day"
+names(opp_agg)[names(opp_agg) == "time"] <- "date"
+opp_agg$stn_id = paste0("C", opp_agg$wmo_synop_id)
+opp_agg <- opp_agg %>%
+  select(date,
+         stn_id,
+         sst)
+
+databuoyfull = full_join(sst_daily_mean, opp_agg)
+
+HERE
+
 # Joining to buoy metadata
 databuoyfull2 <- full_join(databuoyfull, buoys, by = "STN_ID")
 buoys$name_key <- paste(buoys$STN_ID, buoys$buoy_name)
 databuoyfull2$name_key <- paste(databuoyfull2$STN_ID, databuoyfull2$buoy_name)
+
 # Remove erroneous buoys
 databuoyfull3 <- databuoyfull2 %>% group_by(name_key) %>%
   mutate(numobs = n()) %>% filter(numobs > 1) %>% ungroup()
@@ -378,9 +388,9 @@ g <- ggplot() +
                            aes(x = lon, y = lat, label = name_key),
                            size = 2.5) + #, nudge_x = 1, nudge_y = -0.1
   theme(legend.position = "none") +
-  labs(caption = paste0("DFO_MEDS_BUOYS data last updated: ", max(sstmean$date,na.rm=T),
+  labs(caption = paste0("DFO_MEDS_BUOYS data last updated: ", max(sst_daily_mean$date,na.rm=T),
                         "\nECCC_MSC_BUOYS data last updated: ",
-                        if_else(max(oppagg$date,na.rm=T) <= Sys.Date(), max(oppagg$date,na.rm=T), Sys.Date()),
+                        if_else(max(opp_agg$date,na.rm=T) <= Sys.Date(), max(opp_agg$date,na.rm=T), Sys.Date()),
                        "\nPlot last updated:", Sys.Date()))
 # ggsave("Buoy_quickmap_colours.png", units = "in", width = 4, height = 4, scale = 1.9)
 
