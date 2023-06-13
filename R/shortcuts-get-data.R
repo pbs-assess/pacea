@@ -24,32 +24,32 @@
 #' \dontrun{
 #' my_data <- roms_bottom_oxygen()
 #' }
-roms_bottom_oxygen <- function(update = FALSE, ask = interactive()) {
-  get_pacea_data("roms_bottom_oxygen", update = update, ask = ask)
+roms_bottom_oxygen <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("roms_bottom_oxygen", update = update, ask = ask, force = force)
 }
 
 #' @rdname roms_bottom_oxygen
-roms_bottom_salinity <- function(update = FALSE, ask = interactive()) {
-  get_pacea_data("roms_bottom_salinity", update = update, ask = ask)
+roms_bottom_salinity <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("roms_bottom_salinity", update = update, ask = ask, force = force)
 }
 
 #' @rdname roms_bottom_oxygen
-roms_bottom_temperature <- function(update = FALSE, ask = interactive()) {
-  get_pacea_data("roms_bottom_temperature", update = update, ask = ask)
+roms_bottom_temperature <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("roms_bottom_temperature", update = update, ask = ask, force = force)
 }
 
 #' @rdname roms_bottom_oxygen
-roms_surface_oxygen <- function(update = FALSE, ask = interactive()) {
-  get_pacea_data("roms_surface_oxygen", update = update, ask = ask)
+roms_surface_oxygen <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("roms_surface_oxygen", update = update, ask = ask, force = force)
 }
 
 #' @rdname roms_bottom_oxygen
-roms_surface_salinity <- function(update = FALSE, ask = interactive()) {
-  get_pacea_data("roms_surface_salinity", update = update, ask = ask)
+roms_surface_salinity <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("roms_surface_salinity", update = update, ask = ask, force = force)
 }
 
 #' @rdname roms_bottom_oxygen
-roms_surface_temperature <- function(update = FALSE, ask = interactive()) {
-  get_pacea_data("roms_surface_temperature", update = update, ask = ask)
+roms_surface_temperature <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("roms_surface_temperature", update = update, ask = ask, force = force)
 }
 
