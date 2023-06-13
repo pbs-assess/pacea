@@ -52,7 +52,7 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
     if (update) {
       
       ## internet errors for downloading
-      if (!checkInternetConnection()) {
+      if (!checkInternetConnection() || force == "testInternetError") {
         
         warning("No access to internet - could not check for updates.", call. = FALSE) 
         
@@ -146,7 +146,7 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
   } else { # if file doesn't exist
     
     ## internet errors for downloading
-    if (!checkInternetConnection()) stop("No access to internet", call. = FALSE) 
+    if (!checkInternetConnection() || force == "testInternetError") stop("No access to internet", call. = FALSE) 
     
     ## interactive ask to store in cache folder - from bcmaps package
     if (ask && !force) {
