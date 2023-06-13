@@ -177,7 +177,7 @@ buoy_1[250:260, ]
 #  interested more in 1991-2020 climatology and ongoing data), so I could maybe
 #  look at. I want to not just look at 1991 onwards, so may need to do my own filtering.
 
-buoys_list <- c("MEDS107",
+buoy_list <- c("MEDS107",
                                    "MEDS097",
                                    "MEDS106",
                                    "MEDS102",
@@ -223,56 +223,104 @@ buoys_list <- c("MEDS107",
 # AH had
 # sstdata = sstdata %>% filter(!(STN_ID %in% c("MEDS107",....[the above list]
 
+filter(sst_daily_mean, stn_id %in% buoy_list)    # 5477 out of 172,236. Come
+                                        # back to at end after doing ECCC data. TODO
 
 
 
-# OPP Buoys ####
 
-if (LOAD_DATA == FALSE) {
+# OPP Buoys ####  OPP? Presumably Oceans Protection Plan. TODO AH asking.
+#  Starts in 2019, so could well be.
 
-  oppInfo <- info("ECCC_MSC_BUOYS", url = "https://data.cioospacific.ca/erddap/")
-  oppdata <- tabledap(x = oppInfo,
-                      fields = c("avg_sea_sfc_temp_pst10mts", # checked out the field with '1' after, no data
-                                 "avg_sea_sfc_temp_pst10mts_data_flag",
-                                 "avg_sea_sfc_temp_pst10mts_qa_summary",
-                                 "date_tm",
-                                 "latitude",
-                                 "longitude",
-                                 "avg_sea_sfc_temp_pst10mts_1_data_flag",
-                                 "avg_sea_sfc_temp_pst10mts_1_qa_summary",
-                                 # "result_time",
-                                 "stn_nam","time","wmo_synop_id"))
-  oppdata$longitude = as.numeric(oppdata$longitude)
-  oppdata$latitude = as.numeric(oppdata$latitude)
-  oppdata = oppdata %>% filter(longitude <= -120)
-  oppdata$avg_sea_sfc_temp_pst10mts = as.numeric(oppdata$avg_sea_sfc_temp_pst10mts)
+if(redownload_data)) {
+  opp_info <- info("ECCC_MSC_BUOYS",
+                   url = "https://data.cioospacific.ca/erddap/")
+  saveRDS(opp_info, "opp_info.Rds")
 
-  oppdata$avg_sea_sfc_temp_pst10mts[oppdata$avg_sea_sfc_temp_pst10mts <= -1.89] <- NA
-  # oppdata <- oppdata %>% filter(wmo_synop_id %in% c("46303","46304"))
-  saveRDS(oppdata,"opp_buoy_backup.rds")
-} else if (LOAD_DATA == TRUE) {
-  oppdata <- readRDS("opp_buoy_backup.rds")
+  opp_data_raw <- tabledap(x = opp_info,
+                           fields = c("avg_sea_sfc_temp_pst10mts", # checked out the field with '1' after, no data
+                                      "avg_sea_sfc_temp_pst10mts_data_flag",
+                                      "avg_sea_sfc_temp_pst10mts_qa_summary",
+                                      "date_tm",
+                                      "latitude",
+                                      "longitude",
+                                      "avg_sea_sfc_temp_pst10mts_1_data_flag",
+                                      "avg_sea_sfc_temp_pst10mts_1_qa_summary",
+                                      # "result_time",
+                                      "stn_nam","time","wmo_synop_id"))
+  saveRDS(opp_data_raw, "opp_data_raw.Rds")
+} else {
+  opp_data_raw <- readRDS("opp_data_raw.Rds")
 }
-oppdata$time <- as.POSIXct(oppdata$time, format="%Y-%m-%dT%H:%M:%SZ", tz = "America/Los_Angeles")
 
-metaopp = oppdata %>% group_by(stn_nam) %>%
-  summarise(start_date = min(time, na.rm=T),
-            end_date = max(time, na.rm=T),
-            life_span = end_date - start_date,
-            lon = mean(longitude, na.rm=T),
-            lat = mean(latitude, na.rm=T))
-units(metaopp$life_span) <- "days"
-metaopp$life_span_yrs <- metaopp$life_span/365 # need to fix suffix...
-metaopp$life_span_yrs = as.numeric(metaopp$life_span_yrs)
-metaopp$start_date = as.Date(metaopp$start_date)
-metaopp$end_date = as.Date(metaopp$end_date)
-metaopp$life_span <- NULL
-# attr(oppdata$time,"tzone") <- "UTC" # KEEPING PST FOR NOW FOR BETTER DAY AVGS
-oppdata <- oppdata %>% filter(lubridate::year(time) >= plot_yrs[1])
-# oppdata$time_hr = round_date(oppdata$time, unit = "hour")
-oppdata$time_day = as.Date(oppdata$time)
-oppagg = oppdata %>% group_by(year = year(time), time=time_day, wmo_synop_id) %>%
-  summarise(sst = mean(avg_sea_sfc_temp_pst10mts, na.rm=T)) %>% ungroup()
+opp_data_raw   #  A tibble: 1,277,438 × 11. File size (of temp download file I think) is 119 Mb
+
+# AH's, check these work first, then do in one go like above for DFO data
+
+opp_data$longitude = as.numeric(opp_data$longitude)
+opp_data$latitude = as.numeric(opp_data$latitude)
+opp_data = opp_data %>% filter(longitude <= -120)
+opp_data$avg_sea_sfc_temp_pst10mts = as.numeric(opp_data$avg_sea_sfc_temp_pst10mts)
+
+opp_data$avg_sea_sfc_temp_pst10mts[opp_data$avg_sea_sfc_temp_pst10mts <= -1.89] <- NA
+# opp_data <- opp_data %>% filter(wmo_synop_id %in% c("46303","46304"))
+
+opp_data$time <- as.POSIXct(opp_data$time, format="%Y-%m-%dT%H:%M:%SZ", tz = "America/Los_Angeles")
+
+opp_data # A tibble: 544,407 × 11
+
+
+# Don't think I need
+## metaopp = opp_data %>% group_by(stn_nam) %>%
+##   summarise(start_date = min(time, na.rm=T),
+##             end_date = max(time, na.rm=T),
+##             life_span = end_date - start_date,
+##             lon = mean(longitude, na.rm=T),
+##             lat = mean(latitude, na.rm=T))
+## units(metaopp$life_span) <- "days"
+## metaopp$life_span_yrs <- metaopp$life_span/365 # need to fix suffix...
+## metaopp$life_span_yrs = as.numeric(metaopp$life_span_yrs)
+## metaopp$start_date = as.Date(metaopp$start_date)
+## metaopp$end_date = as.Date(metaopp$end_date)
+## metaopp$life_span <- NULL
+
+# attr(opp_data$time,"tzone") <- "UTC" # AH: KEEPING PST FOR NOW FOR BETTER DAY AVGS
+
+# opp_data$time_hr = round_date(opp_data$time, unit = "hour")
+
+opp_data$time_day = as.Date(opp_data$time)
+opp_agg = opp_data %>%
+  group_by(year = year(time),
+           time=time_day,
+           wmo_synop_id) %>%
+  summarise(sst = mean(avg_sea_sfc_temp_pst10mts,
+                       na.rm=T)) %>%
+  ungroup()
+
+opp_agg # A tibble: 11,271 × 4
+
+# Okay, it's only 2019 to 2023.
+
+# Just manually saying which are unique (*), not duplicated in other data
+unique(sst_daily_mean$stn_id)
+# C46004 C46036 C46131 C46132 C46134* C46145 C46146 C46147 C46181 C46182*
+# C46183 C46184 C46185 C46204 C46205 C46206 C46207 C46208
+
+sort(unique(opp_agg$wmo_synop_id))
+# 46004 46036 46131 46132 46145 46146 46147 46181 46183 46184 46185 46204
+# 46205 46206 46207 46208 46303* 46304*
+
+range(filter(sst_daily_mean, stn_id == "C46134")$date)
+# "2001-02-20" "2016-12-09"
+# So keep that one in (Andrea probably excluded)
+# Though filter(buoys_metadata, wmo_id == 46134) says start date of 1999-01-01.
+
+range(filter(sst_daily_mean, stn_id == "C46182")$date)
+#  "1989-09-08" "1991-11-22"
+# Hence ignore that one in the first data set. TODO
+
+summary(filter(opp_agg, wmo_synop_id %in% c(46303, 46304)))
+# Still two NA's in dates should get rid of earlier
 
 # AVERAGE AND COMBINE DATA SOURCES
 
@@ -390,3 +438,5 @@ gg <- plot_grid(s, g,rel_heights = c(1,1), rel_widths = c(1.1,0.9))
 ggsave(filename = paste0("Daily_mean_buoy_overview_",plot_yrs[2],".png"),
        plot = gg, width = 10, height = 7,
        units = "in", scale = 1.25)
+
+# TODO See if any raw data are from Wallace, do up a figure. 45deg 48 min N, 63deg 28 min W.
