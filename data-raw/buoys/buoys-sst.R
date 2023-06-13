@@ -20,43 +20,53 @@ library(lubridate)
 
 #theme_set(theme_bw())
 
+# Andrea: all buoys are EC buoys. DFO has historical data (but it seems to
+# be getting updated with a lag of only a few days), EC is recent data and do
+# not have flags (she didn't filter by flags as the flags looked wrong). Some
+# data will overlap and should be identical. TODO add to help.
+
+# TODO She used Pacific Time (not sure about time changes) to do daily averages, then
+# maybe converted back to UTC. Maybe it makes sense to just work in PDT, tell R
+# not to deal with time changes.
+
+redownload_data = FALSE       # FALSE while developing, TRUE to update.
+
 # CIOOS flags for the DFO MEDS record, flags to include:
 
 use_flags = c(4, 9, 11, 12, 13, 14, 15, 16)
 # https://catalogue.cioospacific.ca/dataset/ca-cioos_b9c71eb2-b750-43d5-a50a-aee173916736
-
 # Kellog et al. quality control description, which gives the flags: https://drive.google.com/file/d/1J6I8PFuDN0Ca-8wdjfmAWRmeylPGn_s4/view
-
 
 # CIOOS buoy source
 
-TODO make if statements
-# For developing, downloading once then saving locally:
-# sst_info <- rerddap::info("DFO_MEDS_BUOYS",
-#                         url = "https://data.cioospacific.ca/erddap/")
-# saveRDS(sst_info, "sst_info.Rds")
-sst_info <- readRDS("sst_info.Rds")
+# TODO rename with dfo in title
 
-# For developing, downloading once then saving locally:
-# sst_data_raw <- tabledap(x = sst_info,
-#                     fields = c("time",
-#                                "longitude",
-#                                "latitude",
-#                                "STN_ID",
-#                                "SSTP",
-#                                "SSTP_flags"))
-# saveRDS(sst_data_raw, "sst_data_raw.Rds")
-sst_data_raw <- readRDS("sst_data_raw.Rds")     # A tabledap which is a tibble
+if(redownload_data){
+  sst_info <- rerddap::info("DFO_MEDS_BUOYS",
+                            url = "https://data.cioospacific.ca/erddap/")
+  saveRDS(sst_info, "sst_info.Rds")
+
+  sst_data_raw <- tabledap(x = sst_info,
+                           fields = c("time",
+                                      "longitude",
+                                      "latitude",
+                                      "STN_ID",
+                                      "SSTP",
+                                      "SSTP_flags"))
+  saveRDS(sst_data_raw, "sst_data_raw.Rds")
+} else {
+    # sst_info <- readRDS("sst_info.Rds")    # Don't actually need again
+    sst_data_raw <- readRDS("sst_data_raw.Rds")     # A tabledap which is a tibble
+}
+
 sst_data_raw      # 9.7 million rows
-
 
 # Filtering, using the flags, wrangling, etc. Quality control has already
 #  occurred (see above reference, and the flags will get used)
 #  Losing the extra metadata of tabledap class (by using as_tibble()) as mutate
 #  etc. didn't seem to work properly
 
-sst_data <- as_tibble(sst_data_raw) %>%  # Don't do first
-                                        # 10000 as NA's
+sst_data <- as_tibble(sst_data_raw) %>%
   mutate(time = as.POSIXct(time,
                            format="%Y-%m-%dT%H:%M:%SZ"),
          longitude = as.numeric(longitude),
@@ -76,16 +86,11 @@ sst_data <- as_tibble(sst_data_raw) %>%  # Don't do first
 
 sst_data       # 3.666 million rows. Every few minutes, but is for all stations
 
-# saveRDS(sst_data,"cioos_buoy_backup2.rds")
 
-
-} else if (LOAD_DATA == TRUE) {
-  sst_data <- readRDS("cioos_buoy_backup2.rds")
-}
-
-
+AH:
 sst_data <- sst_data %>% group_by(STN_ID) %>% mutate(max_date = as.Date(max(time,na.rm=T))) %>% ungroup()
-yearfilt = plot_yrs[2]
+
+yearfilt = plot_yrs[2]    # more for plotting
 yearfilt = 2022
 # sst_data <- sst_data %>% filter(year(max_date) >= yearfilt)
 sst_data$max_date <- NULL
@@ -103,6 +108,105 @@ metadata <- sst_data %>% group_by(STN_ID) %>%
 units(metadata$life_span) <- "days"
 metadata$life_span_yrs <- metadata$life_span/365 # need to fix suffix...
 metadata$life_span_yrs = as.numeric(metadata$life_span_yrs)
+
+
+# From Andrea, to keep all buoys that were older and went to 'relatively
+#  present'. TODO
+#
+# List of ones that she would get rid of, could be old naming convention, some
+#  might only be a year. See metadata fields. Some might be useful for me (she's
+#  interested more in 1991-2020 climatology and ongoing data), so I could maybe
+#  look at. I want to not just look at 1991 onwards, so may need to do my own filtering.
+
+buoys_list <- c("MEDS107",
+                                   "MEDS097",
+                                   "MEDS106",
+                                   "MEDS102",
+                                   "MEDS104",
+                                   "MEDS095",
+                                   "MEDS114",
+                                   "MEDS111",
+                                   "MEDS112",
+                                   "MEDS115",
+                                   "MEDS004",
+                                   "MEDS113",
+                                   "MEDS116",
+                                   "MEDS118",
+                                   "MEDS117",
+                                   "MEDS121",
+                                   "MEDS122",
+                                   "MEDS123",
+                                   "MEDS124",
+                                   "MEDS001",
+                                   "MEDS100",
+                                   "MEDS108",
+                                   "MEDS126",
+                                   "MEDS226",
+                                   "MEDS259",
+                                   "MEDS257",
+                                   "MEDS273",
+                                   "MEDS503W",
+                                   "MEDS211",
+                                   "MEDS213",
+                                   "MEDS502W",
+                                   "MEDS285",
+                                   "C46182",
+                                   "MEDS317",
+                                   "MEDS336",
+                                   "MEDS103",
+                                   "MEDS303",
+                                   "C46138",
+                                   "C46139",
+                                   "MEDS350",
+                "C46134")
+
+
+
+sstdata = sstdata %>% filter(!(STN_ID %in% c("MEDS107",
+                                   "MEDS097",
+                                   "MEDS106",
+                                   "MEDS102",
+                                   "MEDS104",
+                                   "MEDS095",
+                                   "MEDS114",
+                                   "MEDS111",
+                                   "MEDS112",
+                                   "MEDS115",
+                                   "MEDS004",
+                                   "MEDS113",
+                                   "MEDS116",
+                                   "MEDS118",
+                                   "MEDS117",
+                                   "MEDS121",
+                                   "MEDS122",
+                                   "MEDS123",
+                                   "MEDS124",
+                                   "MEDS001",
+                                   "MEDS100",
+                                   "MEDS108",
+                                   "MEDS126",
+                                   "MEDS226",
+                                   "MEDS259",
+                                   "MEDS257",
+                                   "MEDS273",
+                                   "MEDS503W",
+                                   "MEDS211",
+                                   "MEDS213",
+                                   "MEDS502W",
+                                   "MEDS285",
+                                   "C46182",
+                                   "MEDS317",
+                                   "MEDS336",
+                                   "MEDS103",
+                                   "MEDS303",
+                                   "C46138",
+                                   "C46139",
+                                   "MEDS350",
+                                   "C46134")))
+
+
+
+
 
 # OPP Buoys ####
 
