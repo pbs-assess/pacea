@@ -47,45 +47,36 @@ sst_info <- readRDS("sst_info.Rds")
 #                                "SSTP_flags"))
 # saveRDS(sst_data_raw, "sst_data_raw.Rds")
 sst_data_raw <- readRDS("sst_data_raw.Rds")     # A tabledap which is a tibble
+sst_data_raw      # 9.7 million rows
+
 
 # Filtering, using the flags, wrangling, etc. Quality control has already
 #  occurred (see above reference, and the flags will get used)
-#  Losing the extra metadata (with as_tibble()) as mutate etc don't seem to work
-#  with it properly
+#  Losing the extra metadata of tabledap class (by using as_tibble()) as mutate
+#  etc. didn't seem to work properly
 
-sst_data <- as_tibble(sst_data_raw[2000000:2100000, ]) %>%  # Don't do first
+sst_data <- as_tibble(sst_data_raw) %>%  # Don't do first
                                         # 10000 as NA's
   mutate(time = as.POSIXct(time,
                            format="%Y-%m-%dT%H:%M:%SZ"),
          longitude = as.numeric(longitude),
          latitude = as.numeric(latitude),
          SSTP = as.numeric(SSTP),
-         SSTP_flags = as.numeric(SSTP_flags)) #%>%   HERE - debugging the next
-                                        #stuff, was trying to on first 10000
-                                        #but lots of NA's
+         SSTP_flags = as.numeric(SSTP_flags),
+         STN_ID = as.factor(STN_ID)) %>%
   rename(stn_id = STN_ID,
          sstp = SSTP,
-         sstp_flags = SSTP_flags)# %>%
+         sstp_flags = SSTP_flags) %>%
   filter(sstp > -10,                # Too cold
          time >= as.POSIXct("1991-01-01T00:00:00"),
          # TODO ask Andrea why throw out those (400,000 records, about 10% here)
          longitude < -100,
-         latitude < 60)
-
-,
+         latitude < 60,
          sstp_flags %in% use_flags | is.na(sstp_flags))  # na's were not flagged
 
-                   # stn_id = as.factor(STN_ID),  # maybe
+sst_data       # 3.666 million rows. Every few minutes, but is for all stations
 
-                     # 9.7 million x 6
-tail(sst_data)       # Every few minutes, but is for all stations
-
-# Filter out bad SST values
-
-# sst_data$SSTP[sst_data$SSTP < -10] <- NA
-
-
-saveRDS(sst_data,"cioos_buoy_backup2.rds")
+# saveRDS(sst_data,"cioos_buoy_backup2.rds")
 
 
 } else if (LOAD_DATA == TRUE) {
