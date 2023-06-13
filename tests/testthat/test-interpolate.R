@@ -50,6 +50,20 @@ test_that("Output of SpatialRaster and SpatialVector from dataframe successful."
 })
 
 
+test_that("Output from vector and matrix of data and coordinates successful.", {
+  dat <- rnorm(5)
+  ll <- matrix(runif(10, 0, 10), ncol = 2)
+  
+  extent <- st_bbox(c(xmin = 0, ymin = 0, xmax= 10, ymax = 10), crs = NA)
+  
+  output.rast <- point2rast(dat, spatobj = extent, loc = ll, cellsize = 0.5, nnmax = 2, as = "SpatRast")
+  
+  expect_equal(class(output.rast)[1], "SpatRaster")
+  expect_equal(nrow(output.rast), 20)
+  
+})
+
+
 test_that("Output from sf object successful", {
   dat <- data.frame(x = runif(5, 0, 10), y = runif(5, 0, 10), var = rnorm(5)) %>% 
     st_as_sf(coords = c("x", "y"))

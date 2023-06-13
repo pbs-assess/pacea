@@ -26,9 +26,9 @@ point2rast <- function(data, spatobj, loc = c("x", "y"), cellsize, nnmax = 4,
   stopifnot("must provide cellsize value" = exists("cellsize"))
   stopifnot("must specify valid value for 'as'" = as %in% c("SpatRast", "SpatVect"))
   
-  if(!length(dim(data))) { data <- as.matrix(data) }
-  
   if(!any(sapply(c("sf", "Spatial"), function(cl) is(data, cl)))) {
+    
+    data <- as.data.frame(data)
     
     if(!length(dim(loc))){
       
@@ -47,7 +47,8 @@ point2rast <- function(data, spatobj, loc = c("x", "y"), cellsize, nnmax = 4,
       
       coords <- setNames(as.data.frame(loc), c("x", "y"))
       
-      tdat <- as.data.frame(data[, !colnames(data) %in% colnames(loc)], drop = FALSE)
+      tdat <- as.data.frame(data[, !colnames(data) %in% colnames(loc), drop = FALSE])
+      
     }
   }
   
