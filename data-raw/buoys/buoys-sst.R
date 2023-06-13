@@ -5,6 +5,8 @@
 # Run line-by-line while developing. To make plotting functions go back to
 #  original code (I'll just delete those parts from here).
 
+# TODO - buoys-metadata -> buoy-metadata
+
 load_all()
 
 library(rerddap)
@@ -25,9 +27,13 @@ library(lubridate)
 # not have flags (she didn't filter by flags as the flags looked wrong). Some
 # data will overlap and should be identical. TODO add to help.
 
+# Andrea took out pre-1991 data to look at 1991-2020 climatology and compare
+# with recent years. We should keep it all, which seems fine.
+
 # TODO She used Pacific Time (not sure about time changes) to do daily averages, then
 # maybe converted back to UTC. Maybe it makes sense to just work in PDT, tell R
 # not to deal with time changes.
+
 
 redownload_data = FALSE       # FALSE while developing, TRUE to update.
 
@@ -36,6 +42,7 @@ redownload_data = FALSE       # FALSE while developing, TRUE to update.
 use_flags = c(4, 9, 11, 12, 13, 14, 15, 16)
 # https://catalogue.cioospacific.ca/dataset/ca-cioos_b9c71eb2-b750-43d5-a50a-aee173916736
 # Kellog et al. quality control description, which gives the flags: https://drive.google.com/file/d/1J6I8PFuDN0Ca-8wdjfmAWRmeylPGn_s4/view
+# 16 is 'good'
 
 # CIOOS buoy source
 
@@ -72,43 +79,95 @@ sst_data <- as_tibble(sst_data_raw) %>%
          longitude = as.numeric(longitude),
          latitude = as.numeric(latitude),
          SSTP = as.numeric(SSTP),
-         SSTP_flags = as.numeric(SSTP_flags),
+         SSTP_flags = as.numeric(SSTP_flags),   # not as.factor due to NA's
          STN_ID = as.factor(STN_ID)) %>%
   rename(stn_id = STN_ID,
          sstp = SSTP,
          sstp_flags = SSTP_flags) %>%
-  filter(sstp > -10,                # Too cold
-         time >= as.POSIXct("1991-01-01T00:00:00"),
-         # TODO ask Andrea why throw out those (400,000 records, about 10% here)
+  filter(!is.na(time),
+         # time >= as.POSIXct("1991-01-01T00:00:00"),
+         sstp > -10,                # Too cold
          longitude < -100,
          latitude < 60,
-         sstp_flags %in% use_flags | is.na(sstp_flags))  # na's were not flagged
+         sstp_flags %in% use_flags | is.na(sstp_flags))
 
-sst_data       # 3.666 million rows. Every few minutes, but is for all stations
+sst_data       # 3.666 million rows when removing pre-1991 . Every few minutes,
+               # but is for all stations
+               # 3.767 million rows when not removing pre-1991. So 100,000 more rows.
+               # Now removing 414 is.na(time) but not resaving these
+
+summary(sst_data)   # Earliest is 1987, so not adding tons (and not really worth
+                    # excluding 1987-1991 for our purposes).
+
+# Commenting these to not overwrite. But were not filtering by flags at all,
+# which is okay.
+# unique_id_after_1991 <- unique(sst_data$stn_id)
+# saveRDS(unique_id_after_1991, "unique_id_after_1991.Rds")
+# > unique(sst_data$stn_id)
+# [1] C46206 C46004 C46184 C46036 C46208 C46205 C46207 C46181 C46204 C46145
+#[11] C46183 C46182 C46185 C46146 C46131 C46147 C46132 C46134
+# 83 Levels: C44131 C44137 C44138 C44139 C44140 C44141 C44142 C44143 ... WEL451
+
+# unique_id_all_years <- unique(sst_data$stn_id)
+# saveRDS(unique_id_all_years, "unique_id_all_years.Rds")
+# unique_id_all_years
+
+# Same length:
+# expect_equal(length(unique_id_all_years), length(unique_id_after_1991))
+
+# So the pre-1991 data adds another 100,000 rows (still multiple per day), but
+#  no new stations. Worth keeping in for our purposes.
 
 
-AH:
-sst_data <- sst_data %>% group_by(STN_ID) %>% mutate(max_date = as.Date(max(time,na.rm=T))) %>% ungroup()
 
-yearfilt = plot_yrs[2]    # more for plotting
-yearfilt = 2022
-# sst_data <- sst_data %>% filter(year(max_date) >= yearfilt)
-sst_data$max_date <- NULL
-# FILTER OUT DATA PAST CURRENT DATE
-time_curr <- Sys.time()
-attr(time_curr, "tzone") <- "UTC"
-sst_data <- sst_data %>% filter(time <= time_curr)
+# Don't think I need the max date calculations really
+## # AH:
+## sst_data <- sst_data %>%
+##   group_by(STN_ID) %>%
+##   mutate(max_date = as.Date(max(time, na.rm=T))) %>%
+##   ungroup()
 
-metadata <- sst_data %>% group_by(STN_ID) %>%
-  summarise(start_date = min(time, na.rm=T),
-            end_date = max(time, na.rm=T),
-            life_span = end_date - start_date,
-            lon = mean(longitude, na.rm=T),
-            lat = mean(latitude, na.rm=T))
-units(metadata$life_span) <- "days"
-metadata$life_span_yrs <- metadata$life_span/365 # need to fix suffix...
-metadata$life_span_yrs = as.numeric(metadata$life_span_yrs)
 
+## yearfilt = plot_yrs[2]    # more for plotting
+## yearfilt = 2022
+## # sst_data <- sst_data %>% filter(year(max_date) >= yearfilt)
+## sst_data$max_date <- NULL
+## # FILTER OUT DATA PAST CURRENT DATE
+## time_curr <- Sys.time()
+## attr(time_curr, "tzone") <- "UTC"
+## sst_data <- sst_data %>% filter(time <= time_curr)
+
+
+## metadata <- sst_data %>% group_by(STN_ID) %>%
+##   summarise(start_date = min(time, na.rm=T),
+##             end_date = max(time, na.rm=T),
+##             life_span = end_date - start_date,
+##             lon = mean(longitude, na.rm=T),
+##             lat = mean(latitude, na.rm=T))
+## units(metadata$life_span) <- "days"
+## metadata$life_span_yrs <- metadata$life_span/365 # need to fix suffix...
+## metadata$life_span_yrs = as.numeric(metadata$life_span_yrs)
+
+
+
+# Daily mean values
+# TODO: switch to PDT, wait to see what AH says
+sst_daily_mean <- sst_data %>%
+  arrange(desc(latitude), longitude) %>%
+  # mutate_at(vars(name_key), funs(factor(., levels=unique(.)))) %>%
+  group_by(stn_id,
+           date = as.Date(time)) %>%
+  summarise(sstp_mean_day = mean(sstp)) %>%
+  ungroup()
+
+# Just looking at first buoy, looks like an outlier early on (pre-1991). Should
+#  analyse these once have plotting functions nicely done.
+buoy_1 <- filter(sst_daily_mean, stn_id == "C46207")
+plot(buoy_1$date, buoy_1$sstp_mean_day)
+which(buoy_1$sstp_mean_day > 20)   # 254
+buoy_1[250:260, ]
+
+# So have sst_daily_mean which has all buoys.
 
 # From Andrea, to keep all buoys that were older and went to 'relatively
 #  present'. TODO
@@ -161,49 +220,8 @@ buoys_list <- c("MEDS107",
                 "C46134")
 
 
-
-sstdata = sstdata %>% filter(!(STN_ID %in% c("MEDS107",
-                                   "MEDS097",
-                                   "MEDS106",
-                                   "MEDS102",
-                                   "MEDS104",
-                                   "MEDS095",
-                                   "MEDS114",
-                                   "MEDS111",
-                                   "MEDS112",
-                                   "MEDS115",
-                                   "MEDS004",
-                                   "MEDS113",
-                                   "MEDS116",
-                                   "MEDS118",
-                                   "MEDS117",
-                                   "MEDS121",
-                                   "MEDS122",
-                                   "MEDS123",
-                                   "MEDS124",
-                                   "MEDS001",
-                                   "MEDS100",
-                                   "MEDS108",
-                                   "MEDS126",
-                                   "MEDS226",
-                                   "MEDS259",
-                                   "MEDS257",
-                                   "MEDS273",
-                                   "MEDS503W",
-                                   "MEDS211",
-                                   "MEDS213",
-                                   "MEDS502W",
-                                   "MEDS285",
-                                   "C46182",
-                                   "MEDS317",
-                                   "MEDS336",
-                                   "MEDS103",
-                                   "MEDS303",
-                                   "C46138",
-                                   "C46139",
-                                   "MEDS350",
-                                   "C46134")))
-
+# AH had
+# sstdata = sstdata %>% filter(!(STN_ID %in% c("MEDS107",....[the above list]
 
 
 
@@ -257,16 +275,9 @@ oppagg = oppdata %>% group_by(year = year(time), time=time_day, wmo_synop_id) %>
   summarise(sst = mean(avg_sea_sfc_temp_pst10mts, na.rm=T)) %>% ungroup()
 
 # AVERAGE AND COMBINE DATA SOURCES
-# Daily mean values
-sstmean <- sst_data %>%
-  arrange(desc(latitude), longitude) %>%
-  # mutate_at(vars(name_key), funs(factor(., levels=unique(.)))) %>%
-  group_by(STN_ID, date = as.Date(time)) %>%
-  summarise(SSTP_mean_day = mean(SSTP, na.rm=T)) %>%
-  ungroup()
 
 # Now all in buoys_metadata
-source(paste0(here::here(), "/../../Pacific_SST_Monitoring/scripts/POI_latlon.R"))
+# source(paste0(here::here(), "/../../Pacific_SST_Monitoring/scripts/POI_latlon.R"))
 buoys$STN_ID <- paste0("C", buoys$wmo_id) # Buoy latlon from file
 colnames(sstmean)
 names(sstmean)[names(sstmean) == "SSTP_mean_day"] <- "SSTP"
