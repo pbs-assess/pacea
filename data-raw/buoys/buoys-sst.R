@@ -252,9 +252,8 @@ range(filter(dfo_daily_mean, stn_id == "C46182")$date)
 # Less than 2 years of data, 30 years ago, so removing as likely not useful for
 # anyone.
 
-dfo_daily_mean %>% filter(stn_id != "C46182")
-
-
+dfo_daily_mean <- filter(dfo_daily_mean,
+                         stn_id != "C46182")
 
 # OPP Buoys. Presumably Oceans Protection Plan. Makes sense, as starts in 2019.
 # On 2023-06-14 redownloaded data and the latest value was only an hour beforehand!
@@ -283,7 +282,7 @@ if(redownload_data){
   opp_data_raw <- readRDS("opp_data_raw.Rds")
 }
 
-opp_data_raw   #  A tibble: 1,278,562 × 11. File size (of temp download file I
+opp_data_raw   #  A tibble: 1,278,688 × 11. File size (of temp download file I
                #  think) is 119 Mb. First rows have NaN's.
 
 # Andrea doesn't use the flags in these data, so not using here. Keeping only
@@ -293,49 +292,75 @@ opp_data <- as_tibble(opp_data_raw) %>%
   filter(wmo_synop_id %in% c("46303", "46304")) %>%
   mutate(time = with_tz(ymd_hms(time),
                         "Etc/GMT+8"),
-           #as.POSIXct(time,
-           #                 format="%Y-%m-%dT%H:%M:%SZ",
-           #                 tz = "America/Los_Angeles"),
          longitude = as.numeric(longitude),
          latitude = as.numeric(latitude),
          stn_id = as.factor(wmo_synop_id),
          sst = as.numeric(avg_sea_sfc_temp_pst10mts)) %>%
   select(time,
          stn_id,
-         # latitude,         # Don't need, since match buoys_metadata - see below
-         # longitude,
          sst) %>%
   filter(!is.na(time),
          !is.na(sst))
 
-opp_data_posix    # saved using posix
-filter(opp_data_raw, wmo_synop_id == "46303")[1, "time"]  # First record of both
+
+#opp_data_posix    # was saved using posix
+#filter(opp_data_raw, wmo_synop_id == "46303")[1, "time"]  # First record of both
                                                           # is midnight
                                                           # 2019-10-01, but
                                                           # posix assumes it's PST/PDT.
-opp_data # A tibble: 346,628 × 3                          # First record is now correctly
+opp_data # A tibble: 346,659 × 3                          # First record is now correctly
                                                           #  2019-09-30 16:00:00, GMT-8
 summary(opp_data)
 
+opp_data_full_range <- opp_data %>%
+   group_by(stn_id) %>%
+   summarise(start_date = min(time),
+             end_date = max(time))
+sort(opp_data_full_range$end_date)
+# "2023-06-14 15:00:00 -08" "2023-06-14 15:10:00 -08"
+# So latest measurements are just over an hour before I downloaded them!
+
+# For all buoys (in above, commenting out: # filter(wmo_synop_id %in% c("46303",
+#"46304")) %>%), though these now include all Canadian probably. Can look into
+#further if needed, but a bit time consuming; these are the end dates:
+##  [1] "2021-10-19 08:05:00 -08" "2021-11-06 00:05:00 -08"
+##  [3] "2021-11-08 11:34:00 -08" "2022-06-21 13:50:00 -08"
+##  [5] "2022-09-08 13:10:00 -08" "2022-09-20 12:05:00 -08"
+##  [7] "2022-09-27 13:05:00 -08" "2022-11-30 21:05:00 -08"
+##  [9] "2022-12-14 18:05:00 -08" "2022-12-19 17:05:00 -08"
+## [11] "2023-05-13 20:15:00 -08" "2023-06-11 16:20:00 -08"
+## [13] "2023-06-12 15:15:00 -08" "2023-06-14 14:05:00 -08"
+## [15] "2023-06-14 14:15:00 -08" "2023-06-14 14:15:00 -08"
+## [17] "2023-06-14 14:20:00 -08" "2023-06-14 14:20:00 -08"
+## [19] "2023-06-14 14:25:00 -08" "2023-06-14 14:25:00 -08"
+## [21] "2023-06-14 14:25:00 -08" "2023-06-14 14:25:00 -08"
+## [23] "2023-06-14 15:00:00 -08" "2023-06-14 15:05:00 -08"
+## [25] "2023-06-14 15:05:00 -08" "2023-06-14 15:05:00 -08"
+## [27] "2023-06-14 15:05:00 -08" "2023-06-14 15:05:00 -08"
+## [29] "2023-06-14 15:05:00 -08" "2023-06-14 15:05:00 -08"
+## [31] "2023-06-14 15:05:00 -08" "2023-06-14 15:05:00 -08"
+## [33] "2023-06-14 15:05:00 -08" "2023-06-14 15:05:00 -08"
+## [35] "2023-06-14 15:05:00 -08" "2023-06-14 15:05:00 -08"
+## [37] "2023-06-14 15:05:00 -08" "2023-06-14 15:05:00 -08"
+## [39] "2023-06-14 15:05:00 -08" "2023-06-14 15:05:00 -08"
+## [41] "2023-06-14 15:05:00 -08" "2023-06-14 15:10:00 -08"
+## [43] "2023-06-14 15:10:00 -08" "2023-06-14 15:10:00 -08"
+## >
+
+# Checked the lats and lons, which are exact so haven't included now
 # range(filter(opp_data, stn_id == "46303")$longitude)  # -123.43 -123.43
 # range(filter(opp_data, stn_id == "46304")$longitude)  # -123.357 -123.357
 
 # range(filter(opp_data, stn_id == "46303")$latitude)  # 49.025 49.025
 # range(filter(opp_data, stn_id == "46304")$latitude)  # 49.30167 49.30167
 
-# So don't need to keep those values, delete them earlier. They match the values
-#  in buoys_metadata.
-
 # attr(opp_data$time,"tzone") <- "UTC" # AH: KEEPING PST FOR NOW FOR BETTER DAY AVGS
-
-# opp_data$time_hr = round_date(opp_data$time, unit = "hour")
-
-# opp_data$time_day = as.Date(opp_data$time)
+#  AE: there is a -08 coded in the times (it doesn't always show up in tibble
+#  view), so not adding.
 
 opp_daily_mean = opp_data %>%
   mutate(time_day = as.Date(time)) %>%
-  group_by(# year = year(time),      # AH had year, don't think needed
-           date = time_day,
+  group_by(date = time_day,
            stn_id) %>%
   summarise(sst = mean(sst)) %>%     # TODO Should check the data are
                                      # representative through the day. And for
@@ -368,6 +393,8 @@ summary(opp_daily_mean)
 
 # Now all in buoys_metadata
 # source(paste0(here::here(), "/../../../Pacific_SST_Monitoring/scripts/POI_latlon.R"))
+
+HERE
 
 buoys  <- buoys_metadata    # TODO put the below line in the buoys_metadata when
                             # I change it to buoy_metadata
