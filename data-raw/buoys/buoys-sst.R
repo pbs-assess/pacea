@@ -171,18 +171,21 @@ sst_daily_mean <- sst_data %>%
   # mutate_at(vars(name_key), funs(factor(., levels=unique(.)))) %>%
   group_by(stn_id,
            date = as.Date(time)) %>%
-  summarise(sstp_mean_day = mean(sstp)) %>%
-  ungroup()
+  summarise(sst = mean(sstp)) %>%
+  ungroup() %>%
+  select(date,
+         stn_id,
+         sst)                # to reorder
 
 # This has gone away now. Keeping for now, but can delete when have plotting
 # functions. TODO.
 # Just looking at first buoy, looks like an outlier early on (pre-1991). Should
 #  analyse these once have plotting functions nicely done.
 buoy_1 <- filter(sst_daily_mean, stn_id == "C46207")
-plot(buoy_1$date, buoy_1$sstp_mean_day, pch="l")
-which(buoy_1$sstp_mean_day > 20)   # 254
+plot(buoy_1$date, buoy_1$sst, pch="l")
+which(buoy_1$sst > 20)   # 254
 buoy_1[250:260, ]
-buoy_1_lm <- lm(buoy_1$sstp_mean_day ~ buoy_1$date)
+buoy_1_lm <- lm(buoy_1$sst ~ buoy_1$date)
 abline(buoy_1_lm)    # But need to have complete years (i.e. not start in spring and
                      # finish in fall)
 
@@ -372,44 +375,37 @@ HERE - need to combine them together. Then go back and simplify further.
 # Now all in buoys_metadata
 # source(paste0(here::here(), "/../../../Pacific_SST_Monitoring/scripts/POI_latlon.R"))
 
-buoys  <- buoys_metadata
+buoys  <- buoys_metadata    # TODO put the belol line in the buoys_metadata when
+                            # I change it to buoy_metadata
 buoys$stn_id <- paste0("C", buoys_metadata$wmo_id) # Buoy latlon from saved metadata
 
-colnames(sst_daily_mean)
-# names(sst_daily_mean)[names(sst_daily_mean) == "SSTP_mean_day"] <- "SSTP"
-colnames(opp_agg)
+expect_equal(colnames(sst_daily_mean),
+             colnames(opp_agg))
 
-names(opp_agg)[names(opp_agg) == "sst"] <- "sst_mean_day"
-names(opp_agg)[names(opp_agg) == "time"] <- "date"
-opp_agg$stn_id = paste0("C", opp_agg$wmo_synop_id)
-opp_agg <- opp_agg %>%
-  select(date,
-         stn_id,
-         sst)
+# names(sst_daily_mean)[names(sst_daily_mean) == "sst"] <- "SSTP"
+
+opp_agg$stn_id = paste0("C", opp_agg$stn_id)
 
 data_buoy_full = full_join(sst_daily_mean,
                            opp_agg)
 
-Don't think I need to bother joining with metadata, keep that as it's own object
-(already saved). Might not need much of the following.
 
-# Joining to buoy metadata
-data_buoy_full2 <- full_join(data_buoy_full,
-                             buoys,
-                             by = "stn_id")
-
-buoys$name_key <- paste(buoys$stn_id, buoys$buoy_name)    # Redo these as
+# May need something for the extra one, though prob add to buoys_metadata
+# buoys$name_key <- paste(buoys$stn_id, buoys$buoy_name)    # Redo these as
                                         # needed, once figure them out
+# data_buoy_full2$name_key <- paste(data_buoy_full2$stn_id, data_buoy_full2$buoy_name)
 
-data_buoy_full2$name_key <- paste(data_buoy_full2$stn_id, data_buoy_full2$buoy_name)
+
+# Remove erroneous buoys - shouldn't need as only using two extra ones from OPP
+#data_buoy_full3 <- data_buoy_full %>%
+#  group_by(name_key) %>%
+#  mutate(numobs = n()) %>%
+#  filter(numobs > 1) %>%
+#  ungroup()
 
 
-# Remove erroneous buoys
-data_buoy_full3 <- data_buoy_full2 %>%
-  group_by(name_key) %>%
-  mutate(numobs = n()) %>%
-  filter(numobs > 1) %>%
-  ungroup()
+stop("onwards is just plotting, to go into function")
+# This onwards is plotting.
 
 
 # For climatology, which I don't really need.
