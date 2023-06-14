@@ -238,7 +238,8 @@ if(redownload_data)) {
   saveRDS(opp_info, "opp_info.Rds")
 
   opp_data_raw <- tabledap(x = opp_info,
-                           fields = c("avg_sea_sfc_temp_pst10mts", # checked out the field with '1' after, no data
+                           fields = c("avg_sea_sfc_temp_pst10mts",
+                                       # checked out the field with '1' after, no data
                                       "avg_sea_sfc_temp_pst10mts_data_flag",
                                       "avg_sea_sfc_temp_pst10mts_qa_summary",
                                       "date_tm",
@@ -247,7 +248,9 @@ if(redownload_data)) {
                                       "avg_sea_sfc_temp_pst10mts_1_data_flag",
                                       "avg_sea_sfc_temp_pst10mts_1_qa_summary",
                                       # "result_time",
-                                      "stn_nam","time","wmo_synop_id"))
+                                      "stn_nam",
+                                      "time",
+                                      "wmo_synop_id"))
   saveRDS(opp_data_raw, "opp_data_raw.Rds")
 } else {
   opp_data_raw <- readRDS("opp_data_raw.Rds")
@@ -255,34 +258,36 @@ if(redownload_data)) {
 
 opp_data_raw   #  A tibble: 1,277,438 × 11. File size (of temp download file I think) is 119 Mb
 
-# AH's, check these work first, then do in one go like above for DFO data
+# Andrea doesn't use the flags in these data, so not using here
+opp_data <- as_tibble(opp_data_raw) %>%
+  filter(wmo_synop_id %in% c("46303", "46304")) %>%
+  mutate(time = as.POSIXct(time,
+                            format="%Y-%m-%dT%H:%M:%SZ",
+                            tz = "America/Los_Angeles"),   # TODO check how this
+                                        # changes values, be consistent
+         longitude = as.numeric(longitude),
+         latitude = as.numeric(latitude),
+         stn_id = as.factor(wmo_synop_id),
+         sst = as.numeric(avg_sea_sfc_temp_pst10mts)) %>%
+  select(time,
+         stn_id,
+         # latitude,         # Don't need, since match buoys_metadata - see below
+         # longitude,
+         sst) %>%
+  filter(!is.na(time),
+         !is.na(sst))
 
-opp_data$longitude = as.numeric(opp_data$longitude)
-opp_data$latitude = as.numeric(opp_data$latitude)
-opp_data = opp_data %>% filter(longitude <= -120)
-opp_data$avg_sea_sfc_temp_pst10mts = as.numeric(opp_data$avg_sea_sfc_temp_pst10mts)
+opp_data # A tibble: 346,320 × 3
+summary(opp_data)
 
-opp_data$avg_sea_sfc_temp_pst10mts[opp_data$avg_sea_sfc_temp_pst10mts <= -1.89] <- NA
-# opp_data <- opp_data %>% filter(wmo_synop_id %in% c("46303","46304"))
+# range(filter(opp_data, stn_id == "46303")$longitude)  # -123.43 -123.43
+# range(filter(opp_data, stn_id == "46304")$longitude)  # -123.357 -123.357
 
-opp_data$time <- as.POSIXct(opp_data$time, format="%Y-%m-%dT%H:%M:%SZ", tz = "America/Los_Angeles")
+# range(filter(opp_data, stn_id == "46303")$latitude)  # 49.025 49.025
+# range(filter(opp_data, stn_id == "46304")$latitude)  # 49.30167 49.30167
 
-opp_data # A tibble: 544,407 × 11
-
-
-# Don't think I need
-## metaopp = opp_data %>% group_by(stn_nam) %>%
-##   summarise(start_date = min(time, na.rm=T),
-##             end_date = max(time, na.rm=T),
-##             life_span = end_date - start_date,
-##             lon = mean(longitude, na.rm=T),
-##             lat = mean(latitude, na.rm=T))
-## units(metaopp$life_span) <- "days"
-## metaopp$life_span_yrs <- metaopp$life_span/365 # need to fix suffix...
-## metaopp$life_span_yrs = as.numeric(metaopp$life_span_yrs)
-## metaopp$start_date = as.Date(metaopp$start_date)
-## metaopp$end_date = as.Date(metaopp$end_date)
-## metaopp$life_span <- NULL
+# So don't need to keep those values, delete them earlier. They match the values
+#  in buoys_metadata.
 
 # attr(opp_data$time,"tzone") <- "UTC" # AH: KEEPING PST FOR NOW FOR BETTER DAY AVGS
 
