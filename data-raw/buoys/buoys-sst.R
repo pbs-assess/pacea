@@ -293,25 +293,32 @@ summary(opp_data)
 
 # opp_data$time_hr = round_date(opp_data$time, unit = "hour")
 
-opp_data$time_day = as.Date(opp_data$time)
+# opp_data$time_day = as.Date(opp_data$time)
+
 opp_agg = opp_data %>%
-  group_by(year = year(time),
-           time=time_day,
-           wmo_synop_id) %>%
-  summarise(sst = mean(avg_sea_sfc_temp_pst10mts,
-                       na.rm=T)) %>%
+  mutate(time_day = as.Date(time)) %>%
+  group_by(# year = year(time),      # AH had year, don't think needed
+           time = time_day,
+           stn_id) %>%
+  summarise(sst = mean(sst)) %>%
   ungroup()
 
-opp_agg # A tibble: 11,271 × 4
+opp_agg # A tibble: 2,521 × 3
+summary(opp_agg)
 
-# Okay, it's only 2019 to 2023.
+
+# Okay, it's only 2019 to 2023. TODO change time zone as it's giving me data
+# tomorrow (2023-06-14)
+
+# Keep these as comments, prob don't need them and data filtering has since
+# changed, and makes sense now.
 
 # Just manually saying which are unique (*), not duplicated in other data
 unique(sst_daily_mean$stn_id)
 # C46004 C46036 C46131 C46132 C46134* C46145 C46146 C46147 C46181 C46182*
 # C46183 C46184 C46185 C46204 C46205 C46206 C46207 C46208
 
-sort(unique(opp_agg$wmo_synop_id))
+# sort(unique(opp_agg$wmo_synop_id))
 # 46004 46036 46131 46132 46145 46146 46147 46181 46183 46184 46185 46204
 # 46205 46206 46207 46208 46303* 46304*
 
@@ -324,10 +331,11 @@ range(filter(sst_daily_mean, stn_id == "C46182")$date)
 #  "1989-09-08" "1991-11-22"
 # Hence ignore that one in the first data set. TODO
 
-summary(filter(opp_agg, wmo_synop_id %in% c(46303, 46304)))
-# Still two NA's in dates should get rid of earlier
 
-# AVERAGE AND COMBINE DATA SOURCES
+HERE - need to combine them together. Then go back and simplify further.
+
+# AVERAGE AND COMBINE DATA SOURCES   [averaging already done, just need to
+# combine them, and use C*** for names.]
 
 # Now all in buoys_metadata
 # source(paste0(here::here(), "/../../../Pacific_SST_Monitoring/scripts/POI_latlon.R"))
@@ -350,6 +358,8 @@ opp_agg <- opp_agg %>%
 data_buoy_full = full_join(sst_daily_mean,
                            opp_agg)
 
+Don't think I need to bother joining with metadata, keep that as it's own object
+(already saved). Might not need much of the following.
 
 # Joining to buoy metadata
 data_buoy_full2 <- full_join(data_buoy_full,
