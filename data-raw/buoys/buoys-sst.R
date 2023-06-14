@@ -248,11 +248,11 @@ filter(sst_daily_mean, stn_id %in% buoy_list)    # 5477 out of 172,236. Come
 unique(filter(sst_daily_mean, stn_id %in% buoy_list)$stn_id)
 # C46134 C46182
 
-
 # OPP Buoys ####  OPP? Presumably Oceans Protection Plan. TODO AH asking.
 #  Starts in 2019, so could well be.
+# On 2023-06-14 redownloaded data and the latest value was only an hour beforehand!
 
-if(redownload_data)) {
+if(redownload_data)){
   opp_info <- info("ECCC_MSC_BUOYS",
                    url = "https://data.cioospacific.ca/erddap/")
   saveRDS(opp_info, "opp_info.Rds")
@@ -276,15 +276,19 @@ if(redownload_data)) {
   opp_data_raw <- readRDS("opp_data_raw.Rds")
 }
 
-opp_data_raw   #  A tibble: 1,277,438 × 11. File size (of temp download file I think) is 119 Mb
+opp_data_raw   #  A tibble: 1,278,562 × 11. File size (of temp download file I
+               #  think) is 119 Mb. First rows have NaN's.
 
-# Andrea doesn't use the flags in these data, so not using here
+# Andrea doesn't use the flags in these data, so not using here. Keeping only
+# the two buoys not in DFO data above (but for other buoys the opp_data_raw may
+# be slightly more up to date).
 opp_data <- as_tibble(opp_data_raw) %>%
   filter(wmo_synop_id %in% c("46303", "46304")) %>%
-  mutate(time = as.POSIXct(time,
-                            format="%Y-%m-%dT%H:%M:%SZ",
-                            tz = "America/Los_Angeles"),   # TODO check how this
-                                        # changes values, be consistent
+  mutate(time = with_tz(ymd_hms(time),
+                        "Etc/GMT+8"),
+           #as.POSIXct(time,
+           #                 format="%Y-%m-%dT%H:%M:%SZ",
+           #                 tz = "America/Los_Angeles"),
          longitude = as.numeric(longitude),
          latitude = as.numeric(latitude),
          stn_id = as.factor(wmo_synop_id),
@@ -297,7 +301,13 @@ opp_data <- as_tibble(opp_data_raw) %>%
   filter(!is.na(time),
          !is.na(sst))
 
-opp_data # A tibble: 346,320 × 3
+opp_data_posix    # saved using posix
+filter(opp_data_raw, wmo_synop_id == "46303")[1, "time"]  # First record of both
+                                                          # is midnight
+                                                          # 2019-10-01, but
+                                                          # posix assumes it's PST/PDT.
+opp_data # A tibble: 346,628 × 3                          # First record is now correctly
+                                                          #  2019-09-30 16:00:00, GMT-8
 summary(opp_data)
 
 # range(filter(opp_data, stn_id == "46303")$longitude)  # -123.43 -123.43
@@ -318,29 +328,28 @@ summary(opp_data)
 opp_agg = opp_data %>%
   mutate(time_day = as.Date(time)) %>%
   group_by(# year = year(time),      # AH had year, don't think needed
-           time = time_day,
+           date = time_day,
            stn_id) %>%
-  summarise(sst = mean(sst)) %>%
+  summarise(sst = mean(sst)) %>%     # TODO Should check the data are
+                                     # representative through the day. And for
+                                     # DFO data.
   ungroup()
 
-opp_agg # A tibble: 2,521 × 3
+opp_agg # A tibble: 2,530 × 3
 summary(opp_agg)
 
-
-# Okay, it's only 2019 to 2023. TODO change time zone as it's giving me data
-# tomorrow (2023-06-14)
-
 # Keep these as comments, prob don't need them and data filtering has since
-# changed, and makes sense now.
+# changed, and all makes sense now.
 
 # Just manually saying which are unique (*), not duplicated in other data
-unique(sst_daily_mean$stn_id)
+# unique(sst_daily_mean$stn_id)
 # C46004 C46036 C46131 C46132 C46134* C46145 C46146 C46147 C46181 C46182*
 # C46183 C46184 C46185 C46204 C46205 C46206 C46207 C46208
 
 # sort(unique(opp_agg$wmo_synop_id))
 # 46004 46036 46131 46132 46145 46146 46147 46181 46183 46184 46185 46204
 # 46205 46206 46207 46208 46303* 46304*
+# Those two * are the only ones we use in opp now.
 
 range(filter(sst_daily_mean, stn_id == "C46134")$date)
 # "2001-02-20" "2016-12-09"
@@ -355,9 +364,7 @@ range(filter(sst_daily_mean, stn_id == "C46182")$date)
 # TODO - redownload both and check latest times of data. AH thinks ECCC is
 # updated a bit quicker than DFO ones.
 
-HERE - need to combine them together. Then go back and simplify further. TODO
-check the time zone stuff, as it had data for next day. Want to average the days
-in correct time zone, so change the time zone early on.
+HERE - need to combine them together. Then go back and simplify further.
 
 # TODO AVERAGE AND COMBINE DATA SOURCES   [averaging already done, just need to
 # combine them, and use C*** for names.]
