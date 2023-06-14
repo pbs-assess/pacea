@@ -68,10 +68,26 @@ if(redownload_data){
 
 sst_data_raw      # 9.7 million rows
 
+# Figuring out time zone conversions
+#orig_time <- sst_data_raw$time[6000000:6000007]
+orig_time <- sst_data_raw$time[6000252:6000260]     # Around 7am
+orig_time                 # no time zone, but just characters (data are UTC)
+ymd_hms(orig_time)        # default assumes UTC: 7am in data becomes 7am UTC
+as.POSIXct(orig_time, format="%Y-%m-%dT%H:%M:%SZ")  # default assumes 7am in
+                                        # data is 7am PDT - wrong
+force_tz(ymd_hms(orig_time), "Canada/Pacific")      # 7am becomes 7am PDT wrong
+with_tz(ymd_hms(orig_time), "Canada/Pacific")      # 7am becomes 12am (or 11pm)
+                                        # depending on time of year, 12am in
+                                        # this example as DST
+with_tz(ymd_hms(orig_time), "Etc/GMT+8") # 7am becomes 11am day before
+                                         # it presumably should not then mess
+                                         # around with DST)
+
 # Filtering, using the flags, wrangling, etc. Quality control has already
 #  occurred (see above reference, and the flags will get used)
 #  Losing the extra metadata of tabledap class (by using as_tibble()) as mutate
-#  etc. didn't seem to work properly
+#  etc. didn't seem to work properly. Filtering first would be quicker (since
+#  losing 6 million rows), but have to do as.numeric first.
 
 sst_data <- as_tibble(sst_data_raw) %>%
   mutate(time = as.POSIXct(time,
@@ -94,10 +110,11 @@ sst_data <- as_tibble(sst_data_raw) %>%
 sst_data       # 3.666 million rows when removing pre-1991 . Every few minutes,
                # but is for all stations
                # 3.767 million rows when not removing pre-1991. So 100,000 more rows.
-               # Now removing 414 is.na(time) but not resaving these
+               # Now removing 414 is.na(time)
 
-summary(sst_data)   # Earliest is 1987, so not adding tons (and not really worth
-                    # excluding 1987-1991 for our purposes).
+summary(sst_data)   # Earliest is 1987, so not adding tons of data, yet not really worth
+                    # excluding 1987-1991 for our purposes (Andrea did since
+                    # looking at climatology)..
 
 # Commenting these to not overwrite. But were not filtering by flags at all,
 # which is okay.
@@ -118,9 +135,8 @@ summary(sst_data)   # Earliest is 1987, so not adding tons (and not really worth
 # So the pre-1991 data adds another 100,000 rows (still multiple per day), but
 #  no new stations. Worth keeping in for our purposes.
 
-
-
-# Don't think I need the max date calculations really
+# TODO - use this just to get max date maybe.
+#  Don't think I need the max date calculations really
 ## # AH:
 ## sst_data <- sst_data %>%
 ##   group_by(STN_ID) %>%
@@ -128,10 +144,7 @@ summary(sst_data)   # Earliest is 1987, so not adding tons (and not really worth
 ##   ungroup()
 
 
-## yearfilt = plot_yrs[2]    # more for plotting
-## yearfilt = 2022
-## # sst_data <- sst_data %>% filter(year(max_date) >= yearfilt)
-## sst_data$max_date <- NULL
+## TODO Check this isn't needed now due to fixing time zone earlier.
 ## # FILTER OUT DATA PAST CURRENT DATE
 ## time_curr <- Sys.time()
 ## attr(time_curr, "tzone") <- "UTC"
@@ -147,8 +160,6 @@ summary(sst_data)   # Earliest is 1987, so not adding tons (and not really worth
 ## units(metadata$life_span) <- "days"
 ## metadata$life_span_yrs <- metadata$life_span/365 # need to fix suffix...
 ## metadata$life_span_yrs = as.numeric(metadata$life_span_yrs)
-
-
 
 # Daily mean values
 # TODO: switch to PDT, wait to see what AH says
@@ -332,9 +343,14 @@ range(filter(sst_daily_mean, stn_id == "C46182")$date)
 # Hence ignore that one in the first data set. TODO
 
 
-HERE - need to combine them together. Then go back and simplify further.
+# TODO - redownload both and check latest times of data. AH thinks ECCC is
+# updated a bit quicker than DFO ones.
 
-# AVERAGE AND COMBINE DATA SOURCES   [averaging already done, just need to
+HERE - need to combine them together. Then go back and simplify further. TODO
+check the time zone stuff, as it had data for next day. Want to average the days
+in correct time zone, so change the time zone early on.
+
+# TODO AVERAGE AND COMBINE DATA SOURCES   [averaging already done, just need to
 # combine them, and use C*** for names.]
 
 # Now all in buoys_metadata
