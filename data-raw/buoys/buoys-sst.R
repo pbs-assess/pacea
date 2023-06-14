@@ -6,12 +6,13 @@
 #  original code (I'll just delete those parts from here).
 
 # TODO - buoys-metadata -> buoy-metadata
+# TODO buoys-sst.R -> buoy-sst.R
 
 load_all()
 
 library(rerddap)
 library(dplyr)
-library(ggplot2)
+# library(ggplot2)
 library(lubridate)
 # library(tibble)
 
@@ -30,12 +31,11 @@ library(lubridate)
 # Andrea took out pre-1991 data to look at 1991-2020 climatology and compare
 # with recent years. We should keep it all, which seems fine.
 
-# TODO She used Pacific Time (not sure about time changes) to do daily averages, then
+# TODO Explain in help: She used Pacific Time (not sure about time changes) to do daily averages, then
 # maybe converted back to UTC. Maybe it makes sense to just work in PDT, tell R
 # not to deal with time changes.
 
-
-redownload_data = FALSE       # FALSE while developing, TRUE to update.
+redownload_data = TRUE       # FALSE while developing, TRUE to update.
 
 # CIOOS flags for the DFO MEDS record, flags to include:
 
@@ -44,53 +44,50 @@ use_flags = c(4, 9, 11, 12, 13, 14, 15, 16)
 # Kellog et al. quality control description, which gives the flags: https://drive.google.com/file/d/1J6I8PFuDN0Ca-8wdjfmAWRmeylPGn_s4/view
 # 16 is 'good'
 
-# CIOOS buoy source
-
-# TODO rename with dfo in title
+# CIOOS buoy source, DFO had historical data so called DFO (still being updated though)
 
 if(redownload_data){
-  sst_info <- rerddap::info("DFO_MEDS_BUOYS",
+  dfo_info <- rerddap::info("DFO_MEDS_BUOYS",
                             url = "https://data.cioospacific.ca/erddap/")
-  saveRDS(sst_info, "sst_info.Rds")
+  saveRDS(dfo_info, "dfo_info.Rds")
 
-  sst_data_raw <- tabledap(x = sst_info,
+  dfo_data_raw <- tabledap(x = dfo_info,
                            fields = c("time",
                                       "longitude",
                                       "latitude",
                                       "STN_ID",
                                       "SSTP",
                                       "SSTP_flags"))
-  saveRDS(sst_data_raw, "sst_data_raw.Rds")
+  saveRDS(dfo_data_raw, "dfo_data_raw.Rds")
 } else {
-    # sst_info <- readRDS("sst_info.Rds")    # Don't actually need again
-    sst_data_raw <- readRDS("sst_data_raw.Rds")     # A tabledap which is a tibble
+    dfo_data_raw <- readRDS("dfo_data_raw.Rds")     # A tabledap which is a tibble
 }
 
-sst_data_raw      # 9.7 million rows
+dfo_data_raw      # 9.7 million rows
 
-# Figuring out time zone conversions
-#orig_time <- sst_data_raw$time[6000000:6000007]
-orig_time <- sst_data_raw$time[6000252]        # 7:20 am UTC
-orig_time                 # no time zone, but just characters (data are UTC)
-ymd_hms(orig_time)        # default assumes UTC: 7am in data becomes 7am UTC
-as.POSIXct(orig_time, format="%Y-%m-%dT%H:%M:%SZ")  # default assumes 7am in
-                                        # data is 7am PDT - wrong
-force_tz(ymd_hms(orig_time), "Canada/Pacific")     # 7am becomes 7am PDT wrong
-with_tz(ymd_hms(orig_time), "Canada/Pacific")      # 7am becomes 12am (or 11pm)
-                                        # depending on time of year, 12am in
-                                        # this example as DST
-with_tz(ymd_hms(orig_time), "Etc/GMT+8") # 7am becomes 11am day before
-                                         # it presumably should not then mess
-                                         # around with DST). Going with this.
+# Figuring out time zone conversions. Commenting out, but keeping for reference.
+# orig_time <- dfo_data_raw$time[6000252]        # 7:20 am UTC
+# orig_time                 # no time zone, but just characters (data are UTC)
+# ymd_hms(orig_time)        # default assumes UTC: 7am in data becomes 7am UTC
+# as.POSIXct(orig_time, format="%Y-%m-%dT%H:%M:%SZ")  # default assumes 7am in
+#                                         # data is 7am PDT - wrong
+# force_tz(ymd_hms(orig_time), "Canada/Pacific")     # 7am becomes 7am PDT wrong
+# with_tz(ymd_hms(orig_time), "Canada/Pacific")      # 7am becomes 12am (or 11pm)
+#                                         # depending on time of year, 12am in
+#                                         # this example as DST
+# with_tz(ymd_hms(orig_time), "Etc/GMT+8") # 7am becomes 11am day before
+#                                          # it presumably should not then mess
+#                                          # around with DST). Going with this.
+
 
 # Filtering, using the flags, wrangling, etc. Quality control has already
-#  occurred (see above reference, and the flags will get used)
+#  occurred (see above reference, and the flags will get used here).
 #  Losing the extra metadata of tabledap class (by using as_tibble()) as mutate
 #  etc. didn't seem to work properly. Filtering first would be quicker (since
 #  losing 6 million rows), but have to do as.numeric first. Converting UTC to
-#  GMT -8 time zone (which is coded at GMT+8). Seems to retatin 414
+#  GMT -8 time zone (which is helpfully called GMT+8).
 
-sst_data <- as_tibble(sst_data_raw) %>%
+dfo_data <- as_tibble(dfo_data_raw) %>%
   mutate(time = with_tz(ymd_hms(time),
                         "Etc/GMT+8"),
          longitude = as.numeric(longitude),
@@ -102,35 +99,57 @@ sst_data <- as_tibble(sst_data_raw) %>%
          sstp = SSTP,
          sstp_flags = SSTP_flags) %>%
   filter(!is.na(time),
-         # time >= as.POSIXct("1991-01-01T00:00:00"),
          sstp > -10,                # Too cold
          longitude < -100,
          latitude < 60,
          sstp_flags %in% use_flags | is.na(sstp_flags))
 
-sst_data       # 3.666 million rows when removing pre-1991 . Every few minutes,
-               # but is for all stations
-               # 3.767 million rows when not removing pre-1991. So 100,000 more rows.
+dfo_data       # 3.666 million rows when removing pre-1991 . Every few minutes has,
+               #  a value, but that's for all stations
+               # 3.768 million rows when not removing pre-1991. So 100,000 more rows.
                # Now removing 414 is.na(time). Strange - with_tz kept 414 in,
                # that I think were removed when using posixct. Dates seem fine
                # so keeping with with_tz.
 
-summary(sst_data)   # Earliest is 1987, so not adding tons of data, yet not really worth
+summary(dfo_data)   # Earliest is 1987, so not adding tons of data, yet not really worth
                     # excluding 1987-1991 for our purposes (Andrea did since
                     # looking at climatology)..
+               # Latest is 2023-06-11 having just downloaded on 2023-06-14. OPP
+               #  data below seems to be more recent. TODO If really wanted more recent
+               #  could switch to using OPP for some buoys, bit of work though.
 
-# Commenting these to not overwrite. But were not filtering by flags at all,
-# which is okay.
-# unique_id_after_1991 <- unique(sst_data$stn_id)
-# saveRDS(unique_id_after_1991, "unique_id_after_1991.Rds")
-# > unique(sst_data$stn_id)
+dfo_data_latest <- dfo_data %>% group_by(stn_id) %>%
+  summarise(end_date = max(time))
+dfo_data_latest
+# On 2023-06-14 having downloaded data at 15:51, we have:
+dfo_data_latest
+# A tibble: 18 × 2
+##    stn_id end_date
+##    <fct>  <dttm>
+##  1 C46004 2023-06-11 14:40:00
+##  2 C46036 2023-06-11 14:28:00
+##  3 C46131 2020-07-04 15:32:00
+##  4 C46132 2022-05-15 06:38:00
+##  5 C46134 2016-12-09 07:39:00
+##  6 C46145 2023-06-11 11:28:00
+##  7 C46146 2023-05-13 19:28:00
+##  8 C46147 2023-06-11 14:28:00
+##  9 C46181 2023-06-11 14:20:00
+## 10 C46182 1991-11-21 13:44:00
+## 11 C46183 2023-06-11 14:39:00
+## 12 C46184 2023-06-11 14:39:00
+## 13 C46185 2023-06-11 14:34:00
+## 14 C46204 2023-06-11 14:33:00
+## 15 C46205 2023-06-11 14:38:00
+## 16 C46206 2022-04-17 15:38:00
+## 17 C46207 2022-09-08 10:26:00
+## 18 C46208 2023-06-11 14:37:00
+
+
+# > unique(dfo_data$stn_id)
 # [1] C46206 C46004 C46184 C46036 C46208 C46205 C46207 C46181 C46204 C46145
 #[11] C46183 C46182 C46185 C46146 C46131 C46147 C46132 C46134
 # 83 Levels: C44131 C44137 C44138 C44139 C44140 C44141 C44142 C44143 ... WEL451
-
-# unique_id_all_years <- unique(sst_data$stn_id)
-# saveRDS(unique_id_all_years, "unique_id_all_years.Rds")
-# unique_id_all_years
 
 # Same length:
 # expect_equal(length(unique_id_all_years), length(unique_id_after_1991))
@@ -138,37 +157,10 @@ summary(sst_data)   # Earliest is 1987, so not adding tons of data, yet not real
 # So the pre-1991 data adds another 100,000 rows (still multiple per day), but
 #  no new stations. Worth keeping in for our purposes.
 
-# TODO - use this just to get max date maybe.
-#  Don't think I need the max date calculations really
-## # AH:
-## sst_data <- sst_data %>%
-##   group_by(STN_ID) %>%
-##   mutate(max_date = as.Date(max(time, na.rm=T))) %>%
-##   ungroup()
-
-
-## TODO Check this isn't needed now due to fixing time zone earlier.
-## # FILTER OUT DATA PAST CURRENT DATE
-## time_curr <- Sys.time()
-## attr(time_curr, "tzone") <- "UTC"
-## sst_data <- sst_data %>% filter(time <= time_curr)
-
-
-## metadata <- sst_data %>% group_by(STN_ID) %>%
-##   summarise(start_date = min(time, na.rm=T),
-##             end_date = max(time, na.rm=T),
-##             life_span = end_date - start_date,
-##             lon = mean(longitude, na.rm=T),
-##             lat = mean(latitude, na.rm=T))
-## units(metadata$life_span) <- "days"
-## metadata$life_span_yrs <- metadata$life_span/365 # need to fix suffix...
-## metadata$life_span_yrs = as.numeric(metadata$life_span_yrs)
-
 # Daily mean values
-sst_daily_mean <- sst_data %>%
+dfo_daily_mean <- dfo_data %>%
   arrange(desc(latitude),
           longitude) %>%
-  # mutate_at(vars(name_key), funs(factor(., levels=unique(.)))) %>%
   group_by(stn_id,
            date = as.Date(time)) %>%
   summarise(sst = mean(sstp)) %>%
@@ -177,24 +169,24 @@ sst_daily_mean <- sst_data %>%
          stn_id,
          sst)                # to reorder
 
-# This has gone away now. Keeping for now, but can delete when have plotting
-# functions. TODO.
+# This outlier has gone away now (strangely, since I fixed time zones). Keeping
+# for now, but can delete when have plotting functions. TODO
 # Just looking at first buoy, looks like an outlier early on (pre-1991). Should
 #  analyse these once have plotting functions nicely done.
-buoy_1 <- filter(sst_daily_mean, stn_id == "C46207")
-plot(buoy_1$date, buoy_1$sst, pch="l")
-which(buoy_1$sst > 20)   # 254
+buoy_1 <- filter(dfo_daily_mean, stn_id == "C46207")
+plot(buoy_1$date, buoy_1$sst, type = "o")
+which(buoy_1$sst > 20)   # 254  # This did give a value one time
 buoy_1[250:260, ]
 buoy_1_lm <- lm(buoy_1$sst ~ buoy_1$date)
 abline(buoy_1_lm)    # But need to have complete years (i.e. not start in spring and
-                     # finish in fall)
+                     # finish in fall), so can't be this simplistic.
 
-# So have sst_daily_mean which has all buoys.
+# So have dfo_daily_mean which has all buoys.
+
 
 
 # From Andrea, to keep all buoys that were older and went to 'relatively
 #  present'. TODO
-#
 # List of ones that she would get rid of, could be old naming convention, some
 #  might only be a year. See metadata fields. Some might be useful for me (she's
 #  interested more in 1991-2020 climatology and ongoing data), so I could maybe
@@ -242,20 +234,32 @@ buoy_list <- c("MEDS107",
                "MEDS350",
                "C46134")
 
-
 # AH had
 # sstdata = sstdata %>% filter(!(STN_ID %in% c("MEDS107",....[the above list]
 
-filter(sst_daily_mean, stn_id %in% buoy_list)    # 5477 out of 172,236. Come
-                                        # back to at end after doing ECCC data. TODO
-unique(filter(sst_daily_mean, stn_id %in% buoy_list)$stn_id)
+filter(dfo_daily_mean, stn_id %in% buoy_list)    # 5477 out of 172,236. Come
+                                        # back to at end after doing ECCC data.
+unique(filter(dfo_daily_mean, stn_id %in% buoy_list)$stn_id)
 # C46134 C46182
 
-# OPP Buoys ####  OPP? Presumably Oceans Protection Plan. TODO AH asking.
-#  Starts in 2019, so could well be.
+range(filter(dfo_daily_mean, stn_id == "C46134")$date)
+# "2001-02-20" "2016-12-09"
+# So keep that one in (Andrea probably excluded as didn't give full climatology)
+# Though filter(buoys_metadata, wmo_id == 46134) says start date of 1999-01-01.
+
+range(filter(dfo_daily_mean, stn_id == "C46182")$date)
+#  "1989-09-08" "1991-11-22"
+# Less than 2 years of data, 30 years ago, so removing as likely not useful for
+# anyone.
+
+dfo_daily_mean %>% filter(stn_id != "C46182")
+
+
+
+# OPP Buoys. Presumably Oceans Protection Plan. Makes sense, as starts in 2019.
 # On 2023-06-14 redownloaded data and the latest value was only an hour beforehand!
 
-if(redownload_data)){
+if(redownload_data){
   opp_info <- info("ECCC_MSC_BUOYS",
                    url = "https://data.cioospacific.ca/erddap/")
   saveRDS(opp_info, "opp_info.Rds")
@@ -328,7 +332,7 @@ summary(opp_data)
 
 # opp_data$time_day = as.Date(opp_data$time)
 
-opp_agg = opp_data %>%
+opp_daily_mean = opp_data %>%
   mutate(time_day = as.Date(time)) %>%
   group_by(# year = year(time),      # AH had year, don't think needed
            date = time_day,
@@ -338,57 +342,49 @@ opp_agg = opp_data %>%
                                      # DFO data.
   ungroup()
 
-opp_agg # A tibble: 2,530 × 3
-summary(opp_agg)
+opp_daily_mean # A tibble: 2,530 × 3
+summary(opp_daily_mean)
 
 # Keep these as comments, prob don't need them and data filtering has since
 # changed, and all makes sense now.
 
 # Just manually saying which are unique (*), not duplicated in other data
-# unique(sst_daily_mean$stn_id)
+#  though now removing C46182 above because it was only for 2 years, 30 years ago.
+# unique(dfo_daily_mean$stn_id)
 # C46004 C46036 C46131 C46132 C46134* C46145 C46146 C46147 C46181 C46182*
 # C46183 C46184 C46185 C46204 C46205 C46206 C46207 C46208
 
-# sort(unique(opp_agg$wmo_synop_id))
+# sort(unique(opp_daily_mean$wmo_synop_id))
 # 46004 46036 46131 46132 46145 46146 46147 46181 46183 46184 46185 46204
 # 46205 46206 46207 46208 46303* 46304*
 # Those two * are the only ones we use in opp now.
 
-range(filter(sst_daily_mean, stn_id == "C46134")$date)
-# "2001-02-20" "2016-12-09"
-# So keep that one in (Andrea probably excluded)
-# Though filter(buoys_metadata, wmo_id == 46134) says start date of 1999-01-01.
 
-range(filter(sst_daily_mean, stn_id == "C46182")$date)
-#  "1989-09-08" "1991-11-22"
-# Hence ignore that one in the first data set. TODO
+
 
 
 # TODO - redownload both and check latest times of data. AH thinks ECCC is
 # updated a bit quicker than DFO ones.
 
-HERE - need to combine them together. Then go back and simplify further.
-
-# TODO AVERAGE AND COMBINE DATA SOURCES   [averaging already done, just need to
-# combine them, and use C*** for names.]
-
 # Now all in buoys_metadata
 # source(paste0(here::here(), "/../../../Pacific_SST_Monitoring/scripts/POI_latlon.R"))
 
-buoys  <- buoys_metadata    # TODO put the belol line in the buoys_metadata when
+buoys  <- buoys_metadata    # TODO put the below line in the buoys_metadata when
                             # I change it to buoy_metadata
 buoys$stn_id <- paste0("C", buoys_metadata$wmo_id) # Buoy latlon from saved metadata
 
-expect_equal(colnames(sst_daily_mean),
-             colnames(opp_agg))
+expect_equal(colnames(dfo_daily_mean),
+             colnames(opp_daily_mean))
 
-# names(sst_daily_mean)[names(sst_daily_mean) == "sst"] <- "SSTP"
+# names(dfo_daily_mean)[names(dfo_daily_mean) == "sst"] <- "SSTP"
 
-opp_agg$stn_id = paste0("C", opp_agg$stn_id)
+opp_daily_mean$stn_id = paste0("C", opp_daily_mean$stn_id)
 
-data_buoy_full = full_join(sst_daily_mean,
-                           opp_agg)
+buoy_sst = full_join(dfo_daily_mean,
+                     opp_daily_mean)
 
+usethis::use_data(buoy_sst,
+                  overwrite = TRUE)
 
 # May need something for the extra one, though prob add to buoys_metadata
 # buoys$name_key <- paste(buoys$stn_id, buoys$buoy_name)    # Redo these as
@@ -444,9 +440,9 @@ g <- ggplot() +
                            aes(x = lon, y = lat, label = name_key),
                            size = 2.5) + #, nudge_x = 1, nudge_y = -0.1
   theme(legend.position = "none") +
-  labs(caption = paste0("DFO_MEDS_BUOYS data last updated: ", max(sst_daily_mean$date,na.rm=T),
+  labs(caption = paste0("DFO_MEDS_BUOYS data last updated: ", max(dfo_daily_mean$date,na.rm=T),
                         "\nECCC_MSC_BUOYS data last updated: ",
-                        if_else(max(opp_agg$date,na.rm=T) <= Sys.Date(), max(opp_agg$date,na.rm=T), Sys.Date()),
+                        if_else(max(opp_daily_mean$date,na.rm=T) <= Sys.Date(), max(opp_daily_mean$date,na.rm=T), Sys.Date()),
                        "\nPlot last updated:", Sys.Date()))
 # ggsave("Buoy_quickmap_colours.png", units = "in", width = 4, height = 4, scale = 1.9)
 
