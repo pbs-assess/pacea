@@ -325,8 +325,9 @@ summary(filter(opp_agg, wmo_synop_id %in% c(46303, 46304)))
 # AVERAGE AND COMBINE DATA SOURCES
 
 # Now all in buoys_metadata
-# source(paste0(here::here(), "/../../Pacific_SST_Monitoring/scripts/POI_latlon.R"))
+# source(paste0(here::here(), "/../../../Pacific_SST_Monitoring/scripts/POI_latlon.R"))
 
+buoys  <- buoys_metadata
 buoys$stn_id <- paste0("C", buoys_metadata$wmo_id) # Buoy latlon from saved metadata
 
 colnames(sst_daily_mean)
@@ -341,23 +342,35 @@ opp_agg <- opp_agg %>%
          stn_id,
          sst)
 
-databuoyfull = full_join(sst_daily_mean, opp_agg)
+data_buoy_full = full_join(sst_daily_mean,
+                           opp_agg)
 
-HERE
 
 # Joining to buoy metadata
-databuoyfull2 <- full_join(databuoyfull, buoys, by = "STN_ID")
-buoys$name_key <- paste(buoys$STN_ID, buoys$buoy_name)
-databuoyfull2$name_key <- paste(databuoyfull2$STN_ID, databuoyfull2$buoy_name)
+data_buoy_full2 <- full_join(data_buoy_full,
+                             buoys,
+                             by = "stn_id")
+
+buoys$name_key <- paste(buoys$stn_id, buoys$buoy_name)    # Redo these as
+                                        # needed, once figure them out
+
+data_buoy_full2$name_key <- paste(data_buoy_full2$stn_id, data_buoy_full2$buoy_name)
+
 
 # Remove erroneous buoys
-databuoyfull3 <- databuoyfull2 %>% group_by(name_key) %>%
-  mutate(numobs = n()) %>% filter(numobs > 1) %>% ungroup()
+data_buoy_full3 <- data_buoy_full2 %>%
+  group_by(name_key) %>%
+  mutate(numobs = n()) %>%
+  filter(numobs > 1) %>%
+  ungroup()
 
-sstclim <- databuoyfull3 %>%
+
+# For climatology, which I don't really need.
+sstclim <- data_buoy_full3 %>%
   filter(year(date) <= 2020, # Period 1991-2020 for climatology
-         !(STN_ID %in% c("C46303", "C46304","C46182","C46134"))) %>%
-  group_by(name_key, jday = yday(date)) %>%
+         !(stn_id %in% c("C46303", "C46304","C46182","C46134"))) %>%
+  group_by(name_key,
+           jday = yday(date)) %>%
   summarise(SSTP_10perc_day = quantile(SSTP, probs = 0.1, na.rm=T),
          SSTP_90perc_day = quantile(SSTP, probs = 0.9, na.rm=T),
          SSTP_clim_mean_day = mean(SSTP, na.rm=T),
@@ -370,7 +383,7 @@ sstclim$fakedate = as.Date(paste(plot_yrs[1], sstclim$jday), format = "%Y %j")
 
 # Buoy map ####
 world <- ne_countries(scale = 10, returnclass = "sf")#, country = c("Canada")
-buoyplot <- databuoyfull3 %>% filter(year(date) >= plot_yrs[1]) %>%
+buoyplot <- data_buoy_full3 %>% filter(year(date) >= plot_yrs[1]) %>%
   dplyr::select(name_key, lon, lat, col_key) %>% distinct()
 buoyplot$test <- str_extract(string=buoyplot$name_key,
                              pattern = "C[0-9]{5}")
@@ -395,10 +408,10 @@ g <- ggplot() +
 # ggsave("Buoy_quickmap_colours.png", units = "in", width = 4, height = 4, scale = 1.9)
 
 # Get the current year and last year's data
-databuoyfull3$fakedate = as.Date(paste(plot_yrs[1], yday(databuoyfull3$date)), format = "%Y %j")
+data_buoy_full3$fakedate = as.Date(paste(plot_yrs[1], yday(data_buoy_full3$date)), format = "%Y %j")
 
-prevyr = databuoyfull3 %>% filter(year(date) == plot_yrs[1])
-currentyr = databuoyfull3 %>% filter(year(date) == plot_yrs[2])
+prevyr = data_buoy_full3 %>% filter(year(date) == plot_yrs[1])
+currentyr = data_buoy_full3 %>% filter(year(date) == plot_yrs[2])
 
 dayseq = seq.Date(as.Date(paste0(plot_yrs[1], "-01-01")),
                   as.Date(paste0(plot_yrs[1], "-12-31")), by = "day")
