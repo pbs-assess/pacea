@@ -70,28 +70,29 @@ sst_data_raw      # 9.7 million rows
 
 # Figuring out time zone conversions
 #orig_time <- sst_data_raw$time[6000000:6000007]
-orig_time <- sst_data_raw$time[6000252:6000260]     # Around 7am
+orig_time <- sst_data_raw$time[6000252]        # 7:20 am UTC
 orig_time                 # no time zone, but just characters (data are UTC)
 ymd_hms(orig_time)        # default assumes UTC: 7am in data becomes 7am UTC
 as.POSIXct(orig_time, format="%Y-%m-%dT%H:%M:%SZ")  # default assumes 7am in
                                         # data is 7am PDT - wrong
-force_tz(ymd_hms(orig_time), "Canada/Pacific")      # 7am becomes 7am PDT wrong
+force_tz(ymd_hms(orig_time), "Canada/Pacific")     # 7am becomes 7am PDT wrong
 with_tz(ymd_hms(orig_time), "Canada/Pacific")      # 7am becomes 12am (or 11pm)
                                         # depending on time of year, 12am in
                                         # this example as DST
 with_tz(ymd_hms(orig_time), "Etc/GMT+8") # 7am becomes 11am day before
                                          # it presumably should not then mess
-                                         # around with DST)
+                                         # around with DST). Going with this.
 
 # Filtering, using the flags, wrangling, etc. Quality control has already
 #  occurred (see above reference, and the flags will get used)
 #  Losing the extra metadata of tabledap class (by using as_tibble()) as mutate
 #  etc. didn't seem to work properly. Filtering first would be quicker (since
-#  losing 6 million rows), but have to do as.numeric first.
+#  losing 6 million rows), but have to do as.numeric first. Converting UTC to
+#  GMT -8 time zone (which is coded at GMT+8). Seems to retatin 414
 
 sst_data <- as_tibble(sst_data_raw) %>%
-  mutate(time = as.POSIXct(time,
-                           format="%Y-%m-%dT%H:%M:%SZ"),
+  mutate(time = with_tz(ymd_hms(time),
+                        "Etc/GMT+8"),
          longitude = as.numeric(longitude),
          latitude = as.numeric(latitude),
          SSTP = as.numeric(SSTP),
@@ -110,7 +111,9 @@ sst_data <- as_tibble(sst_data_raw) %>%
 sst_data       # 3.666 million rows when removing pre-1991 . Every few minutes,
                # but is for all stations
                # 3.767 million rows when not removing pre-1991. So 100,000 more rows.
-               # Now removing 414 is.na(time)
+               # Now removing 414 is.na(time). Strange - with_tz kept 414 in,
+               # that I think were removed when using posixct. Dates seem fine
+               # so keeping with with_tz.
 
 summary(sst_data)   # Earliest is 1987, so not adding tons of data, yet not really worth
                     # excluding 1987-1991 for our purposes (Andrea did since
@@ -162,23 +165,29 @@ summary(sst_data)   # Earliest is 1987, so not adding tons of data, yet not real
 ## metadata$life_span_yrs = as.numeric(metadata$life_span_yrs)
 
 # Daily mean values
-# TODO: switch to PDT, wait to see what AH says
 sst_daily_mean <- sst_data %>%
-  arrange(desc(latitude), longitude) %>%
+  arrange(desc(latitude),
+          longitude) %>%
   # mutate_at(vars(name_key), funs(factor(., levels=unique(.)))) %>%
   group_by(stn_id,
            date = as.Date(time)) %>%
   summarise(sstp_mean_day = mean(sstp)) %>%
   ungroup()
 
+# This has gone away now. Keeping for now, but can delete when have plotting
+# functions. TODO.
 # Just looking at first buoy, looks like an outlier early on (pre-1991). Should
 #  analyse these once have plotting functions nicely done.
 buoy_1 <- filter(sst_daily_mean, stn_id == "C46207")
-plot(buoy_1$date, buoy_1$sstp_mean_day)
+plot(buoy_1$date, buoy_1$sstp_mean_day, pch="l")
 which(buoy_1$sstp_mean_day > 20)   # 254
 buoy_1[250:260, ]
+buoy_1_lm <- lm(buoy_1$sstp_mean_day ~ buoy_1$date)
+abline(buoy_1_lm)    # But need to have complete years (i.e. not start in spring and
+                     # finish in fall)
 
 # So have sst_daily_mean which has all buoys.
+
 
 # From Andrea, to keep all buoys that were older and went to 'relatively
 #  present'. TODO
@@ -189,46 +198,46 @@ buoy_1[250:260, ]
 #  look at. I want to not just look at 1991 onwards, so may need to do my own filtering.
 
 buoy_list <- c("MEDS107",
-                                   "MEDS097",
-                                   "MEDS106",
-                                   "MEDS102",
-                                   "MEDS104",
-                                   "MEDS095",
-                                   "MEDS114",
-                                   "MEDS111",
-                                   "MEDS112",
-                                   "MEDS115",
-                                   "MEDS004",
-                                   "MEDS113",
-                                   "MEDS116",
-                                   "MEDS118",
-                                   "MEDS117",
-                                   "MEDS121",
-                                   "MEDS122",
-                                   "MEDS123",
-                                   "MEDS124",
-                                   "MEDS001",
-                                   "MEDS100",
-                                   "MEDS108",
-                                   "MEDS126",
-                                   "MEDS226",
-                                   "MEDS259",
-                                   "MEDS257",
-                                   "MEDS273",
-                                   "MEDS503W",
-                                   "MEDS211",
-                                   "MEDS213",
-                                   "MEDS502W",
-                                   "MEDS285",
-                                   "C46182",
-                                   "MEDS317",
-                                   "MEDS336",
-                                   "MEDS103",
-                                   "MEDS303",
-                                   "C46138",
-                                   "C46139",
-                                   "MEDS350",
-                "C46134")
+               "MEDS097",
+               "MEDS106",
+               "MEDS102",
+               "MEDS104",
+               "MEDS095",
+               "MEDS114",
+               "MEDS111",
+               "MEDS112",
+               "MEDS115",
+               "MEDS004",
+               "MEDS113",
+               "MEDS116",
+               "MEDS118",
+               "MEDS117",
+               "MEDS121",
+               "MEDS122",
+               "MEDS123",
+               "MEDS124",
+               "MEDS001",
+               "MEDS100",
+               "MEDS108",
+               "MEDS126",
+               "MEDS226",
+               "MEDS259",
+               "MEDS257",
+               "MEDS273",
+               "MEDS503W",
+               "MEDS211",
+               "MEDS213",
+               "MEDS502W",
+               "MEDS285",
+               "C46182",
+               "MEDS317",
+               "MEDS336",
+               "MEDS103",
+               "MEDS303",
+               "C46138",
+               "C46139",
+               "MEDS350",
+               "C46134")
 
 
 # AH had
@@ -236,8 +245,8 @@ buoy_list <- c("MEDS107",
 
 filter(sst_daily_mean, stn_id %in% buoy_list)    # 5477 out of 172,236. Come
                                         # back to at end after doing ECCC data. TODO
-
-
+unique(filter(sst_daily_mean, stn_id %in% buoy_list)$stn_id)
+# C46134 C46182
 
 
 # OPP Buoys ####  OPP? Presumably Oceans Protection Plan. TODO AH asking.
