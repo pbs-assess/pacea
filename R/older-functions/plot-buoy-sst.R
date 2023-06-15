@@ -1,5 +1,15 @@
 # From Andrea, this is plotting code, currently ignoring in R build.
+
+# May need some of these
+# library(rnaturalearthdata)
+# library(rnaturalearthhires)
+# library(rnaturalearth)
+# library(stringr)
+#theme_set(theme_bw())
+
 # For climatology, which I don't really need.
+
+
 sstclim <- data_buoy_full3 %>%
   filter(year(date) <= 2020, # Period 1991-2020 for climatology
          !(stn_id %in% c("C46303", "C46304","C46182","C46134"))) %>%

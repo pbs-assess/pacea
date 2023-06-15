@@ -5,23 +5,14 @@
 # Run line-by-line while developing. To make plotting functions go back to
 #  original code (I'll just delete those parts from here).
 
-# TODO - buoys-metadata -> buoy-metadata
-# TODO buoys-sst.R -> buoy-sst.R
-
 load_all()
 
 library(rerddap)
 library(dplyr)
-# library(ggplot2)
 library(lubridate)
+
 # library(tibble)
-
-# library(rnaturalearthdata)
-# library(rnaturalearthhires)
-# library(rnaturalearth)
-# library(stringr)
-
-#theme_set(theme_bw())
+# library(ggplot2)
 
 # Andrea: all buoys are EC buoys. DFO has historical data (but it seems to
 # be getting updated with a lag of only a few days), EC is recent data and do
@@ -385,20 +376,8 @@ summary(opp_daily_mean)
 # Those two * are the only ones we use in opp now.
 
 
-
-
-
 # TODO - redownload both and check latest times of data. AH thinks ECCC is
 # updated a bit quicker than DFO ones.
-
-# Now all in buoys_metadata
-# source(paste0(here::here(), "/../../../Pacific_SST_Monitoring/scripts/POI_latlon.R"))
-
-HERE - check this works
-
-buoys  <- buoys_metadata    # TODO put the below line in the buoys_metadata when
-                            # I change it to buoy_metadata
-buoys$stn_id <- paste0("C", buoys_metadata$wmo_id) # Buoy latlon from saved metadata
 
 expect_equal(colnames(dfo_daily_mean),
              colnames(opp_daily_mean))
