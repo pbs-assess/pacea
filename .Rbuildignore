@@ -4,6 +4,7 @@ data-raw/lighthouses/*
 ideas/*
 
 R/older-functions/*
+R/plot-buoy-sst.R
 data/older-data/*
 
 ^.*\.Rproj$
