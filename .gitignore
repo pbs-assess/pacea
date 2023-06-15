@@ -36,5 +36,10 @@ lib/
 /data-raw/buoys/andrea-code/Daily_mean_buoy_overview_2023-orig.png
 /data-raw/buoys/andrea-code/andrea-emails.txt
 /data-raw/buoys/andrea-code/*
+data-raw/buoys/dfo_data_raw.Rds
+data-raw/buoys/dfo_info.Rds
+data-raw/buoys/opp_data_raw.Rds
+data-raw/buoys/opp_info.Rds
+
 /data-raw/groundfish/hake-recruitment-over-2010.csv
 /data-raw/groundfish/hake-recruitment.csv
