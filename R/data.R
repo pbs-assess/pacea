@@ -447,7 +447,6 @@
 ##'   `data-raw/groundfish/hake.R`.
 "hake_biomass"
 
-
 ##' Pacific Hake annual age-0 recruitments divided by recruitments in 2010, as estimated by the 2023 stock assessment.
 ##'
 ##' This is calculated to improve understanding when comparing recruitments
@@ -586,3 +585,31 @@
 
 #' @rdname romseez_poly
 "offshore_poly"
+
+##' Metadata regarding buoys for sea surface temperature.
+##'
+##' Details regarding the buoys that are used for the data in
+##' `buoy_sst`. Adapted from Andrea Hilborn's code at
+##' https://github.com/IOS-OSD-DPG/Pacific_SST_Monitoring/blob/main/scripts/POI_latlon.R
+##'
+##' @format A tibble with columns:
+##' \describe{
+##'   \item{wmo_id:}{World Meteorological Organisation weather station id}
+##'   \item{name:}{name describing the location}
+##'   \item{type:}{type of buoy}
+##'   \item{latitude:}{latitude}
+##'   \item{longitude:}{longitude}
+##'   \item{water_depth_m:}{depth of water (m) in which the buoy resides}
+##'   \item{col_key:}{a colour key for plotting each buoy location or data}
+##'   \item{stn_id:}{station id, as `C` followed by `wmo_id`, which is how
+##'   Environment and Climate Change Canada refers to them, and to be consistent
+##'   with Andrea's existing plots}
+##'   \item{name_key:}{`station_id` followed by `name` for labelling plots if desired}
+##'  }
+##' @examples
+##' \dontrun{
+##' buoy_metadata       # and will get used in plotting code
+##' }
+##' @author Andrew Edwards and Andrea Hilborn
+##' @source Adapted from Andrea's code at https://github.com/IOS-OSD-DPG/Pacific_SST_Monitoring/blob/main/scripts/POI_latlon.R
+"buoy_metadata"

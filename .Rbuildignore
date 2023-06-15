@@ -4,7 +4,6 @@ data-raw/lighthouses/*
 ideas/*
 
 R/older-functions/*
-R/plot-buoy-sst.R
 data/older-data/*
 
 ^.*\.Rproj$
@@ -12,3 +11,7 @@ data/older-data/*
 
 data-raw/pacific_marine_habitat_classes/*
 data-raw/*
+
+R/plot-buoy-sst.R
+^R/plot-buoy-sst\.R$
+R/plot-buoy-sst*.R
