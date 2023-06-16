@@ -14,18 +14,6 @@ library(lubridate)
 # library(tibble)
 # library(ggplot2)
 
-# Andrea: all buoys are EC buoys. DFO has historical data (but it seems to
-# be getting updated with a lag of only a few days), EC is recent data and do
-# not have flags (she didn't filter by flags as the flags looked wrong). Some
-# data will overlap and should be identical. TODO add to help.
-
-# Andrea took out pre-1991 data to look at 1991-2020 climatology and compare
-# with recent years. We should keep it all, which seems fine.
-
-# TODO Explain in help: She used Pacific Time (not sure about time changes) to do daily averages, then
-# maybe converted back to UTC. Maybe it makes sense to just work in PDT, tell R
-# not to deal with time changes.
-
 redownload_data = TRUE       # FALSE while developing, TRUE to update.
 
 # CIOOS flags for the DFO MEDS record, flags to include:

@@ -21,7 +21,7 @@ A tibble with columns:
  }
 }
 \source{
-Adapted from Andrea's code at https://github.com/IOS-OSD-DPG/Pacific_SST_Monitoring/blob/main/scripts/POI_latlon.R
+Generated from running `data-raw/buoys/buoy-metadata.R`.
 }
 \usage{
 buoy_metadata
