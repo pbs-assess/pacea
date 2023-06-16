@@ -22,7 +22,7 @@ Data object requested
 Large spatiotemporal pacea data files can be downloaded individually from pacea-data.
 }
 \details{
-Some large pacea data sets are stored in a GitHub repository, pacea-data, and get_pacea_data allows users to choose which data to download locally. Refer to paceadata_list(?EDIT?) to view the data files available for download. Code adapted from 'bcmaps'
+Some large pacea data sets are stored in a GitHub repository, pacea-data, and get_pacea_data allows users to choose which data to download locally. Refer to `pacea_data` to view the data files available for download. Code adapted from 'bcmaps'
 }
 \examples{
 \dontrun{

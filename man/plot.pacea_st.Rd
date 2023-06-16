@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot-pacea-st.R
 \name{plot.pacea_st}
 \alias{plot.pacea_st}
-\title{Title}
+\title{Plot a pacea spatiotemporal data layer}
 \usage{
 \method{plot}{pacea_st}(
   obj,
@@ -30,13 +30,11 @@
 plot of the spatial data to the current device (returns nothing)
 }
 \description{
-Title
+Base plot for sf objects using `plot.sf()`. Quick visualization of data, specifying month(s) and year(s). For more options and configurable plots use `ggplot2`.
 }
 \examples{
 \dontrun{
 dat <- roms_surface_temperature()
-
 plot(dat)
-
 }
 }
