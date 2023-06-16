@@ -14,8 +14,10 @@
 #' \code{roms_surface_temperature()} Surface temperature in oC
 #' 
 #' @format A simple features dataframe.
-#'
+#' 
+#' @param update Logical. Would you like to check for a newer version of the layer? 
 #' @param ask Logical. Should the user be asked before downloading the data to local cache? Defaults to the value of interactive().
+#' @param force Logical. Should download of data be forced? Overrides `ask` argument if TRUE. 
 #'
 #' @return `sf` data object requested.
 #' @export
