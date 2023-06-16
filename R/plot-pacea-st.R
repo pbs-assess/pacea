@@ -1,6 +1,8 @@
 # plot pacea_st function
 
-#' Title
+#' Plot a pacea spatiotemporal data layer
+#' 
+#' Base plot for sf objects using `plot.sf()`. Quick visualization of data, specifying month(s) and year(s). For more options and configurable plots use `ggplot2`. 
 #'
 #' @param obj a `pacea_st` object, which is an `sf` object
 #' @param months character or numeric vector to indicate which months to include (e.g. `c(1, 2)`, `c("April", "may")`, `c(1, "April")`)
@@ -68,9 +70,6 @@ plot.pacea_st <- function(obj,
     mtext(text = obj_unit, side = 4, line = -4)
   }
 }
-
-
-
 
 
 #' function to index months in plot argument
