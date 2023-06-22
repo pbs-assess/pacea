@@ -25,7 +25,11 @@ roms_surface_salinity(update = FALSE, ask = interactive(), force = FALSE)
 roms_surface_temperature(update = FALSE, ask = interactive(), force = FALSE)
 }
 \arguments{
+\item{update}{Logical. Would you like to check for a newer version of the layer?}
+
 \item{ask}{Logical. Should the user be asked before downloading the data to local cache? Defaults to the value of interactive().}
+
+\item{force}{Logical. Should download of data be forced? Overrides `ask` argument if TRUE.}
 }
 \value{
 `sf` data object requested.
