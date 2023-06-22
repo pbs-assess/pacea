@@ -30,31 +30,33 @@ plot.pacea_st <- function(obj,
   stopifnot("obj must be of class `sf`" =
               "sf" %in% class(obj))
   
-  
-  month_table <- data.frame(month.name = month.name,
-                            month.abb = month.abb,
-                            month.num = 1:12)
-  
-  # indexing time for selection of plots to show
-  obj_names <- matrix(as.numeric(unlist(strsplit(names(obj %>% st_drop_geometry()), split = "_"))), ncol = 2, byrow = TRUE)
-  
   stopifnot("Must enter valid numerals for 'years'" = !any(is.na(suppressWarnings(as.numeric(years)))))
   
   # object units attribute
   obj_unit <- attributes(obj)$units
   
+  # subset year_month columns
+  tobj <- subset_pacea_ym(data = obj, months = months, years = years)
   
-  # indexing month and year
-  tind <- obj_names[obj_names[,1] %in% as.numeric(years) &
-                      obj_names[,2] %in% month_index(months), , drop = FALSE] %>% as.data.frame()
-  tind <- merge(tind, month_table, by.x = "V2", by.y = "month.num", sort = FALSE)[,c("V1", "V2", "month.name", "month.abb")] %>%
-    arrange(V1, V2)
-
-  tind1 <- do.call(paste, c(tind[c("V1", "V2")], sep = "_"))
-  tind2 <- do.call(paste, c(tind[c("V1", "month.abb")], sep = "_"))
+  if(ncol(tobj)==1){
+    tobj <- obj
+  } 
   
-  tobj <- obj[, tind1]
-  names(tobj) <- c(tind2, "geometry")
+  # create new names for plot
+  month_table <- data.frame(month.name = month.name,
+                            month.abb = month.abb,
+                            month.num = 1:12)
+  
+  tobj_names <- as.data.frame(matrix(as.numeric(unlist(strsplit(names(st_drop_geometry(tobj)), split = "_"))), 
+                                     ncol = 2, byrow = TRUE)) 
+  tobj_names <- merge(tobj_names, month_table, by.x = "V2", by.y = "month.num", sort = FALSE)[,c("V1", "V2", "month.name", "month.abb")] %>%
+    arrange(V1,V2)
+  
+  tnew_names <- do.call(paste, c(tobj_names[c("V1", "month.abb")], sep = "_"))
+  
+  
+  names(tobj) <- c(tnew_names, "geometry")
+  class(tobj) <- c("sf", "pacea_st", "data.frame")
   
   plot(tobj, border = NA, key.pos = 4, reset = FALSE, ...)
   
@@ -72,9 +74,13 @@ plot.pacea_st <- function(obj,
 }
 
 
-#' function to index months in plot argument
+#' function to index months and years from geospatial ROMS data
 #' @noRd
-month_index <- function(month = month) {
+subset_pacea_ym <- function(data, years = years, months = months) {
+  
+  # indexing time for selection of plots to show
+  dat_names <- as.data.frame(matrix(as.numeric(unlist(strsplit(names(st_drop_geometry(data)), split = "_"))), ncol = 2, byrow = TRUE))
+  
   
   month_table <- data.frame(month.name = month.name,
                             month.abb = month.abb,
@@ -82,7 +88,7 @@ month_index <- function(month = month) {
   
   m_ind <- vector()
   
-  for(imonth in month) {
+  for(imonth in months) {
     if(is.na(suppressWarnings(as.numeric(imonth)))){
       tind <- as.vector(unlist(apply(month_table, 2, function(x) {
         grep(pattern = imonth, x = x, ignore.case = TRUE)
@@ -99,7 +105,22 @@ month_index <- function(month = month) {
     }
   }
   
-  return(m_ind)
+  # indexing month and year
+  tind <- dat_names[dat_names[,1] %in% as.numeric(years) &
+                      dat_names[,2] %in% m_ind, , drop = FALSE]
+  tind <- merge(tind, month_table, by.x = "V2", by.y = "month.num", sort = FALSE)[,c("V1", "V2")] %>%
+    arrange(V1, V2)
+  
+  tind1 <- do.call(paste, c(tind[c("V1", "V2")], sep = "_"))
+  
+  tdat <- data %>% dplyr::select(all_of(tind1))
+  
+  names(tdat) <- c(tind1, "geometry")
+  class(tdat) <- c("pacea_st", "sf", "data.frame")
+  attr(tdat, "units") <- attributes(data)$units
+  
+  return(tdat)
 }
+
 
 
