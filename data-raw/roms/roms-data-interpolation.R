@@ -58,19 +58,34 @@ rm(nc_dat, nc_lon, nc_lat, nc_var, nc_varmat, dat)
 #####
 # PARAMETERS
 
-# loop variables
-idepth <- c("bot", "sur")
-jvars <- c("temp", "salt", "Oxygen")
 
-#idepth <- c("sur")
-#jvars <- c("salt", "Oxygen")
+# OPTION 1 FOR LOOPING THROUGH VARIABLES FOR EACH DEPTH
+# loop variables
+ifiles <- list.files("./data-raw/roms/", pattern = "TSOpH.nc")
+jvars <- c("temp", "salt", "Oxygen", "pH")
 
 # index table
-vars_fullname <- c("temperature", "salinity", "oxygen")
+vars_fullname <- c("temperature", "salinity", "oxygen", "pH")
 vars_units <- c("Temperature (\u00B0C)",
                 "Salinity (ppt)",
-                "Dissolved oxygen content (mmol-oxygen m^-3)")
+                "Dissolved oxygen content (mmol-oxygen m^-3)",
+                "pH")
 jvars_table <- cbind(jvars, vars_fullname, vars_units)
+
+
+
+# OPTION 2 FOR LOOPING THROUGH ONLY SURFACE VARIABLES (PRIMARY PRODUCTION)
+# loop variables
+ifiles <- list.files("./data-raw/roms/", pattern = "zInt_PT.nc")
+jvars <- c("phytoplankton", "PTproduction")
+
+# index table
+vars_fullname <- c("phytoplankton", "primaryproduction")
+vars_units <- c("Phytoplankton (mmol-nitrogen m^-2)",
+                "Total primary production (gC m^-2 d^-1)")
+jvars_table <- cbind(jvars, vars_fullname, vars_units)
+
+
 
 # function argument
 llnames <- c("x", "y")
@@ -89,13 +104,24 @@ proctimes <- vector()
 #####
 
 
-for(i in idepth) {
-  nc_dat <- nc_open(paste0("data-raw/roms/bcc42_era5glo12r4_mon1993to2019_",i,"TSO.nc"))
+
+
+for(i in ifiles) {
+  nc_dat <- nc_open(paste0("data-raw/roms/",i))
   
   # load lon-lat and mask layers from netcdf
   nc_lon <- as.vector(ncvar_get(nc_dat, "lon_rho"))
   nc_lat <- as.vector(ncvar_get(nc_dat, "lat_rho"))
 
+  # depth from file name
+  if(substr(i, 33, 35) %in% c("bot", "sur")){
+    ti <- substr(i, 33, 35)
+    if(ti == "bot") {ti <- "bottom"} else {ti <- "surface"}
+  } else {
+    ti <- strsplit(substr(i, 33, nchar(i)), "_")[[1]][1]
+  }
+  
+  
   for(j in jvars) {
     
     start <- Sys.time()
@@ -162,9 +188,12 @@ for(i in idepth) {
     attr(t2_sf26, "units") <- jvars_table[which(jvars_table[, 1] == j), 3]
     
     # name file and write data
-    if(i == "bot") {ti <- "bottom"} else {ti <- "surface"}
     tj <- jvars_table[which(jvars_table[, 1] == j), 2]
-    objname <- paste("roms", ti, tj, sep = "_")
+    if(ti == "zInt"){
+      objname <- paste("roms", tj, sep = "_")
+    } else {
+      objname <- paste("roms", ti, tj, sep = "_")
+    }
     filename <- paste0("../pacea-data/data/",objname, "_", version, ".rds")
     #filename <- paste0("../pacea-data/data/",objname, ".rds")
     assign(objname, t2_sf26)
@@ -174,7 +203,7 @@ for(i in idepth) {
     end <- Sys.time()
     jtime <- end-start
     print(jtime)
-    names(jtime) <- paste(i, j, sep="_")
+    names(jtime) <- paste(ti, tj, sep="_")
     proctimes <- c(proctimes, jtime)
   }
 }
