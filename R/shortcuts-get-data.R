@@ -6,12 +6,26 @@
 #' ROMS data interpolated to a 2km x 2km inshore grid and a 6km x 6km offshore grid. 
 #' Data are monthly averages from 1993-2019. Each column represents a distinct 'year_month' combination (e.g. 2010_4).
 #' 
-#' \code{roms_bottom_oxygen()} Bottom oxygen measured as UNITS [02]\cr
-#' \code{roms_bottom_salinity()} Bottom salinity in UNITS!\cr
-#' \code{roms_bottom_temperature()} Bottom temperature in oC\cr
-#' \code{roms_surface_oxygen()} Surface oxygen measured as UNITS [02]\cr
-#' \code{roms_surface_salinity()} Surface salinity in UNITS!\cr
-#' \code{roms_surface_temperature()} Surface temperature in oC
+#' @details
+#' \describe{
+#'   \code{roms_*depth*_oxygen()} Dissolved oxygen measured as mmol-oxygen m^-3\cr
+#'   \code{roms_*depth*_salinity()} Salinity in ppt\cr
+#'   \code{roms_*depth*_temperature()} Temperature in oC\cr
+#'   \code{roms_*depth*_ph()} pH\cr
+#'   \code{roms_phytoplankton()} Total phytoplankton biomass in mmol-nitrogen m^-2\cr
+#'   \code{roms_primaryproduction()} Total primary production in gC m^-2 d^-1
+#' }
+#' 
+#' NOTE:\cr
+#' \code{*depth*} must be replaced by one of the following depth categories:
+#' 
+#' \describe{
+#'   \code{bottom}{sea bottom}\cr
+#'   \code{0to40}{average between 0m and 40m depth}\cr
+#'   \code{40to100}{average between 40m and 100m depth}\cr
+#'   \code{100tobot} {:  average between 100m depth and sea bottom}\cr
+#'   \code{surface}{sea surface}
+#' }
 #' 
 #' @format A simple features dataframe.
 #' 
@@ -31,6 +45,11 @@ roms_bottom_oxygen <- function(update = FALSE, ask = interactive(), force = FALS
 }
 
 #' @rdname roms_bottom_oxygen
+roms_bottom_ph <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("roms_bottom_pH", update = update, ask = ask, force = force)
+}
+
+#' @rdname roms_bottom_oxygen
 roms_bottom_salinity <- function(update = FALSE, ask = interactive(), force = FALSE) {
   get_pacea_data("roms_bottom_salinity", update = update, ask = ask, force = force)
 }
@@ -46,6 +65,11 @@ roms_surface_oxygen <- function(update = FALSE, ask = interactive(), force = FAL
 }
 
 #' @rdname roms_bottom_oxygen
+roms_surface_ph <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("roms_surface_pH", update = update, ask = ask, force = force)
+}
+
+#' @rdname roms_bottom_oxygen
 roms_surface_salinity <- function(update = FALSE, ask = interactive(), force = FALSE) {
   get_pacea_data("roms_surface_salinity", update = update, ask = ask, force = force)
 }
@@ -53,5 +77,65 @@ roms_surface_salinity <- function(update = FALSE, ask = interactive(), force = F
 #' @rdname roms_bottom_oxygen
 roms_surface_temperature <- function(update = FALSE, ask = interactive(), force = FALSE) {
   get_pacea_data("roms_surface_temperature", update = update, ask = ask, force = force)
+}
+
+#' @rdname roms_bottom_oxygen
+roms_avg0to40m_oxygen <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("roms_avg0to40m_oxygen", update = update, ask = ask, force = force)
+}
+
+#' @rdname roms_bottom_oxygen
+roms_avg0to40m_ph <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("roms_avg0to40m_ph", update = update, ask = ask, force = force)
+}
+
+#' @rdname roms_bottom_oxygen
+roms_avg0to40m_salinity <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("roms_avg0to40m_salinity", update = update, ask = ask, force = force)
+}
+
+#' @rdname roms_bottom_oxygen
+roms_avg0to40m_temperature <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("roms_avg0to40m_temperature", update = update, ask = ask, force = force)
+}
+
+#' @rdname roms_bottom_oxygen
+roms_avg40to100m_oxygen <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("roms_avg40to100m_oxygen", update = update, ask = ask, force = force)
+}
+
+#' @rdname roms_bottom_oxygen
+roms_avg40to100m_ph <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("roms_avg40to100m_ph", update = update, ask = ask, force = force)
+}
+
+#' @rdname roms_bottom_oxygen
+roms_avg40to100m_salinity <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("roms_avg40to100m_salinity", update = update, ask = ask, force = force)
+}
+
+#' @rdname roms_bottom_oxygen
+roms_avg40to100m_temperature <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("roms_avg40to100m_temperature", update = update, ask = ask, force = force)
+}
+
+#' @rdname roms_bottom_oxygen
+roms_avg100mtoBot_oxygen <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("roms_avg100mtoBot_oxygen", update = update, ask = ask, force = force)
+}
+
+#' @rdname roms_bottom_oxygen
+roms_avg100mtoBot_ph <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("roms_avg100mtoBot_ph", update = update, ask = ask, force = force)
+}
+
+#' @rdname roms_bottom_oxygen
+roms_avg100mtoBot_salinity <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("roms_avg100mtoBot_salinity", update = update, ask = ask, force = force)
+}
+
+#' @rdname roms_bottom_oxygen
+roms_avg100mtoBot_temperature <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("roms_avg100mtoBot_temperature", update = update, ask = ask, force = force)
 }
 
