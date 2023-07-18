@@ -1,0 +1,40 @@
+﻿data_name,description,object_class,data_type,source
+roms_bottom_oxygen,,function,modelled,"Pena et al., 2019."
+roms_bottom_ph,,function,modelled,"Pena et al., 2019."
+roms_bottom_salinity,,function,modelled,"Pena et al., 2019."
+roms_bottom_temperature,,function,modelled,"Pena et al., 2019."
+roms_surface_oxygen,,function,modelled,"Pena et al., 2019."
+roms_surface_ph,,function,modelled,"Pena et al., 2019."
+roms_surface_salinity,,function,modelled,"Pena et al., 2019."
+roms_surface_temperature,,function,modelled,"Pena et al., 2019."
+roms_avg0to40m_oxygen,,function,modelled,"Pena et al., 2019."
+roms_avg0to40m_ph,,function,modelled,"Pena et al., 2019."
+roms_avg0to40m_salinity,,function,modelled,"Pena et al., 2019."
+roms_avg0to40m_temperature,,function,modelled,"Pena et al., 2019."
+roms_avg40to100m_oxygen,,function,modelled,"Pena et al., 2019."
+roms_avg40to100m_ph,,function,modelled,"Pena et al., 2019."
+roms_avg40to100m_salinity,,function,modelled,"Pena et al., 2019."
+roms_avg40to100m_temperature,,function,modelled,"Pena et al., 2019."
+roms_avg100toBot_oxygen,,function,modelled,"Pena et al., 2019."
+roms_avg100toBot_ph,,function,modelled,"Pena et al., 2019."
+roms_avg100toBot_salinity,,function,modelled,"Pena et al., 2019."
+roms_avg100toBot_temperature,,function,modelled,"Pena et al., 2019."
+bc_coast,,data object,,
+bc_eez,,data object,,
+buoy_metadata,,data object,,
+buoy_sst,,data object,,
+enso_mei,,data object,,
+grid26,,data object,,
+hake_biomass,,data object,,
+hake_recruitment,,data object,,
+hake_recruitment_over_2010,,data object,,
+hake_recruitment_over_R0,,data object,,
+inshore_poly,,data object,,
+npgo,,data object,,
+npi_annual,,data object,,
+npi_monthly,,data object,,
+offshore_poly,,data object,,
+oni,,data object,,
+pdo,,data object,,
+romseez_poly,,data object,,
+soi,,data object,,
