@@ -2,11 +2,25 @@
 % Please edit documentation in R/shortcuts-get-data.R
 \name{roms_bottom_oxygen}
 \alias{roms_bottom_oxygen}
+\alias{roms_bottom_ph}
 \alias{roms_bottom_salinity}
 \alias{roms_bottom_temperature}
 \alias{roms_surface_oxygen}
+\alias{roms_surface_ph}
 \alias{roms_surface_salinity}
 \alias{roms_surface_temperature}
+\alias{roms_0to40_oxygen}
+\alias{roms_0to40_ph}
+\alias{roms_0to40_salinity}
+\alias{roms_0to40_temperature}
+\alias{roms_40to100_oxygen}
+\alias{roms_40to100_ph}
+\alias{roms_40to100_salinity}
+\alias{roms_40to100_temperature}
+\alias{roms_100tobot_oxygen}
+\alias{roms_100tobot_ph}
+\alias{roms_100tobot_salinity}
+\alias{roms_100tobot_temperature}
 \title{ROMS environmental variable data}
 \format{
 A simple features dataframe.
@@ -14,15 +28,43 @@ A simple features dataframe.
 \usage{
 roms_bottom_oxygen(update = FALSE, ask = interactive(), force = FALSE)
 
+roms_bottom_ph(update = FALSE, ask = interactive(), force = FALSE)
+
 roms_bottom_salinity(update = FALSE, ask = interactive(), force = FALSE)
 
 roms_bottom_temperature(update = FALSE, ask = interactive(), force = FALSE)
 
 roms_surface_oxygen(update = FALSE, ask = interactive(), force = FALSE)
 
+roms_surface_ph(update = FALSE, ask = interactive(), force = FALSE)
+
 roms_surface_salinity(update = FALSE, ask = interactive(), force = FALSE)
 
 roms_surface_temperature(update = FALSE, ask = interactive(), force = FALSE)
+
+roms_0to40_oxygen(update = FALSE, ask = interactive(), force = FALSE)
+
+roms_0to40_ph(update = FALSE, ask = interactive(), force = FALSE)
+
+roms_0to40_salinity(update = FALSE, ask = interactive(), force = FALSE)
+
+roms_0to40_temperature(update = FALSE, ask = interactive(), force = FALSE)
+
+roms_40to100_oxygen(update = FALSE, ask = interactive(), force = FALSE)
+
+roms_40to100_ph(update = FALSE, ask = interactive(), force = FALSE)
+
+roms_40to100_salinity(update = FALSE, ask = interactive(), force = FALSE)
+
+roms_40to100_temperature(update = FALSE, ask = interactive(), force = FALSE)
+
+roms_100tobot_oxygen(update = FALSE, ask = interactive(), force = FALSE)
+
+roms_100tobot_ph(update = FALSE, ask = interactive(), force = FALSE)
+
+roms_100tobot_salinity(update = FALSE, ask = interactive(), force = FALSE)
+
+roms_100tobot_temperature(update = FALSE, ask = interactive(), force = FALSE)
 }
 \arguments{
 \item{update}{Logical. Would you like to check for a newer version of the layer?}
@@ -39,13 +81,27 @@ Regional Ocean Modelling System (ROMS) data for the BC Pacific region.
 
 ROMS data interpolated to a 2km x 2km inshore grid and a 6km x 6km offshore grid. 
 Data are monthly averages from 1993-2019. Each column represents a distinct 'year_month' combination (e.g. 2010_4).
+}
+\details{
+\describe{
+  \code{roms_*depth*_oxygen()} Dissolved oxygen measured as mmol-oxygen m^-3\cr
+  \code{roms_*depth*_salinity()} Salinity in ppt\cr
+  \code{roms_*depth*_temperature()} Temperature in oC\cr
+  \code{roms_*depth*_ph()} pH\cr
+  \code{roms_phytoplankton()} Total phytoplankton biomass in mmol-nitrogen m^-2\cr
+  \code{roms_primaryproduction()} Total primary production in gC m^-2 d^-1
+}
 
-\code{roms_bottom_oxygen()} Bottom oxygen measured as UNITS [02]\cr
-\code{roms_bottom_salinity()} Bottom salinity in UNITS!\cr
-\code{roms_bottom_temperature()} Bottom temperature in oC\cr
-\code{roms_surface_oxygen()} Surface oxygen measured as UNITS [02]\cr
-\code{roms_surface_salinity()} Surface salinity in UNITS!\cr
-\code{roms_surface_temperature()} Surface temperature in oC
+NOTE:\cr
+\code{*depth*} must be replaced by one of the following depth categories:
+
+\describe{
+  \code{bottom}{sea bottom}\cr
+  \code{0to40}{average between 0m and 40m depth}\cr
+  \code{40to100}{average between 40m and 100m depth}\cr
+  \code{100tobot} {:  average between 100m depth and sea bottom}\cr
+  \code{surface}{sea surface}
+}
 }
 \examples{
 \dontrun{
