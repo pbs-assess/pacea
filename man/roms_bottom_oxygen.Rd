@@ -9,18 +9,20 @@
 \alias{roms_surface_ph}
 \alias{roms_surface_salinity}
 \alias{roms_surface_temperature}
-\alias{roms_0to40_oxygen}
-\alias{roms_0to40_ph}
-\alias{roms_0to40_salinity}
-\alias{roms_0to40_temperature}
-\alias{roms_40to100_oxygen}
-\alias{roms_40to100_ph}
-\alias{roms_40to100_salinity}
-\alias{roms_40to100_temperature}
-\alias{roms_100tobot_oxygen}
-\alias{roms_100tobot_ph}
-\alias{roms_100tobot_salinity}
-\alias{roms_100tobot_temperature}
+\alias{roms_avg0to40m_oxygen}
+\alias{roms_avg0to40m_ph}
+\alias{roms_avg0to40m_salinity}
+\alias{roms_avg0to40m_temperature}
+\alias{roms_avg40to100m_oxygen}
+\alias{roms_avg40to100m_ph}
+\alias{roms_avg40to100m_salinity}
+\alias{roms_avg40to100m_temperature}
+\alias{roms_avg100mtoBot_oxygen}
+\alias{roms_avg100mtoBot_ph}
+\alias{roms_avg100mtoBot_salinity}
+\alias{roms_avg100mtoBot_temperature}
+\alias{roms_phytoplankton}
+\alias{roms_primaryproduction}
 \title{ROMS environmental variable data}
 \format{
 A simple features dataframe.
@@ -42,29 +44,41 @@ roms_surface_salinity(update = FALSE, ask = interactive(), force = FALSE)
 
 roms_surface_temperature(update = FALSE, ask = interactive(), force = FALSE)
 
-roms_0to40_oxygen(update = FALSE, ask = interactive(), force = FALSE)
+roms_avg0to40m_oxygen(update = FALSE, ask = interactive(), force = FALSE)
 
-roms_0to40_ph(update = FALSE, ask = interactive(), force = FALSE)
+roms_avg0to40m_ph(update = FALSE, ask = interactive(), force = FALSE)
 
-roms_0to40_salinity(update = FALSE, ask = interactive(), force = FALSE)
+roms_avg0to40m_salinity(update = FALSE, ask = interactive(), force = FALSE)
 
-roms_0to40_temperature(update = FALSE, ask = interactive(), force = FALSE)
+roms_avg0to40m_temperature(update = FALSE, ask = interactive(), force = FALSE)
 
-roms_40to100_oxygen(update = FALSE, ask = interactive(), force = FALSE)
+roms_avg40to100m_oxygen(update = FALSE, ask = interactive(), force = FALSE)
 
-roms_40to100_ph(update = FALSE, ask = interactive(), force = FALSE)
+roms_avg40to100m_ph(update = FALSE, ask = interactive(), force = FALSE)
 
-roms_40to100_salinity(update = FALSE, ask = interactive(), force = FALSE)
+roms_avg40to100m_salinity(update = FALSE, ask = interactive(), force = FALSE)
 
-roms_40to100_temperature(update = FALSE, ask = interactive(), force = FALSE)
+roms_avg40to100m_temperature(
+  update = FALSE,
+  ask = interactive(),
+  force = FALSE
+)
 
-roms_100tobot_oxygen(update = FALSE, ask = interactive(), force = FALSE)
+roms_avg100mtoBot_oxygen(update = FALSE, ask = interactive(), force = FALSE)
 
-roms_100tobot_ph(update = FALSE, ask = interactive(), force = FALSE)
+roms_avg100mtoBot_ph(update = FALSE, ask = interactive(), force = FALSE)
 
-roms_100tobot_salinity(update = FALSE, ask = interactive(), force = FALSE)
+roms_avg100mtoBot_salinity(update = FALSE, ask = interactive(), force = FALSE)
 
-roms_100tobot_temperature(update = FALSE, ask = interactive(), force = FALSE)
+roms_avg100mtoBot_temperature(
+  update = FALSE,
+  ask = interactive(),
+  force = FALSE
+)
+
+roms_phytoplankton(update = FALSE, ask = interactive(), force = FALSE)
+
+roms_primaryproduction(update = FALSE, ask = interactive(), force = FALSE)
 }
 \arguments{
 \item{update}{Logical. Would you like to check for a newer version of the layer?}
