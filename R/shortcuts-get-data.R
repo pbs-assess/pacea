@@ -139,3 +139,13 @@ roms_avg100mtoBot_temperature <- function(update = FALSE, ask = interactive(), f
   get_pacea_data("roms_avg100mtoBot_temperature", update = update, ask = ask, force = force)
 }
 
+#' @rdname roms_bottom_oxygen
+roms_phytoplankton <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("roms_phytoplankton", update = update, ask = ask, force = force)
+}
+
+#' @rdname roms_bottom_oxygen
+roms_primaryproduction <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("roms_primaryproduction", update = update, ask = ask, force = force)
+}
+

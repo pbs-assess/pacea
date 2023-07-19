@@ -15,10 +15,12 @@ roms_avg40to100m_oxygen,,function,modelled,"Pena et al., 2019."
 roms_avg40to100m_ph,,function,modelled,"Pena et al., 2019."
 roms_avg40to100m_salinity,,function,modelled,"Pena et al., 2019."
 roms_avg40to100m_temperature,,function,modelled,"Pena et al., 2019."
-roms_avg100toBot_oxygen,,function,modelled,"Pena et al., 2019."
-roms_avg100toBot_ph,,function,modelled,"Pena et al., 2019."
-roms_avg100toBot_salinity,,function,modelled,"Pena et al., 2019."
-roms_avg100toBot_temperature,,function,modelled,"Pena et al., 2019."
+roms_avg100mtoBot_oxygen,,function,modelled,"Pena et al., 2019."
+roms_avg100mtoBot_ph,,function,modelled,"Pena et al., 2019."
+roms_avg100mtoBot_salinity,,function,modelled,"Pena et al., 2019."
+roms_avg100mtoBot_temperature,,function,modelled,"Pena et al., 2019."
+roms_phytoplankton,,,,
+roms_primaryproduction,,,,
 bc_coast,,data object,,
 bc_eez,,data object,,
 buoy_metadata,,data object,,

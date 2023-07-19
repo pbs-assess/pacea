@@ -29,10 +29,12 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
          Use the function ?...? to get a list of data objects available", call. = FALSE)
   }
   
+  # testing data
+  test_names <- c("test_data", "test_data_01", "test_data_02")
+  
   ## find data in row - CHANGE datalist name if necessary
   data_list <- pacea_data
-  data_row <- data_list[data_list[["data_name"]]==layer, , drop = F]
-  test_names <- c("test_data", "test_data_01", "test_data_02")
+  data_row <- data_list[grep(layer, data_list[["data_name"]], ignore.case = TRUE), , drop = FALSE]  
   if (nrow(data_row) != 1L && !(layer %in% test_names)) {
     stop(layer, " is not an available data object")
   }
@@ -40,12 +42,12 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
   # look for data in pacea cache folder, return dataset
   cache_dir <- pacea_cache()
   file_list <- list.files(cache_dir)
-  grep_list <- file_list[grep(layer, file_list)]
+  grep_list <- file_list[grep(layer, file_list, ignore.case = TRUE)]
   
   # if file already exists
   if (length(grep_list) > 0) {
     
-    local_filename <- grep_list[order(grep_list, decreasing = T)][1]
+    local_filename <- grep_list[order(grep_list, decreasing = TRUE)][1]
     
     local_file_dir <- paste0(cache_dir, "/", local_filename)
     
@@ -66,9 +68,9 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
       req <- httr::GET(listurl)
       httr::stop_for_status(req)
       
-      git_file_list <- unlist(lapply(content(req)$tree, "[", "path"), use.names=F)
-      git_file_dir <- git_file_list[grep(paste0("data/", layer), git_file_list)]
-      git_file_dir <- git_file_dir[order(git_file_dir, decreasing = T)][1]
+      git_file_list <- unlist(lapply(content(req)$tree, "[", "path"), use.names = FALSE)
+      git_file_dir <- git_file_list[grep(paste0("data/", layer), git_file_list, ignore.case = TRUE)]
+      git_file_dir <- git_file_dir[order(git_file_dir, decreasing = TRUE)][1]
       git_filename <- strsplit(git_file_dir, "/")[[1]][2]
       
       # compare versions
@@ -169,9 +171,9 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
     req <- httr::GET(listurl)
     httr::stop_for_status(req)
     
-    git_file_list <- unlist(lapply(content(req)$tree, "[", "path"), use.names=F)
-    git_file_dir <- git_file_list[grep(paste0("data/", layer), git_file_list)]
-    git_file_dir <- git_file_dir[order(git_file_dir, decreasing = T)][1]
+    git_file_list <- unlist(lapply(content(req)$tree, "[", "path"), use.names = FALSE)
+    git_file_dir <- git_file_list[grep(paste0("data/", layer), git_file_list, ignore.case = TRUE)]
+    git_file_dir <- git_file_dir[order(git_file_dir, decreasing = TRUE)][1]
     git_filename <- strsplit(git_file_dir, "/")[[1]][2]
     
     # download data
@@ -223,7 +225,7 @@ ask <- function(...) {
 #' @noRd
 checkInternetConnection <- function() {
   url <- "http://www.google.com"
-  response <- try(httr::GET(url), silent=TRUE)
-  status_code <- try(status_code(response), silent=TRUE)
+  response <- try(httr::GET(url), silent = TRUE)
+  status_code <- try(status_code(response), silent = TRUE)
   return(status_code == 200)
 }
