@@ -35,7 +35,7 @@
 #'
 #' @return `sf` data object requested.
 #' @export
-#'
+#' 
 #' @examples
 #' \dontrun{
 #' my_data <- roms_bottom_oxygen()
@@ -44,107 +44,136 @@ roms_bottom_oxygen <- function(update = FALSE, ask = interactive(), force = FALS
   get_pacea_data("roms_bottom_oxygen", update = update, ask = ask, force = force)
 }
 
+
+#' Title
+#'
+#' @param update 
+#' @param ask 
+#' @param force 
+#'
+#' @return
+#' @export
 #' @rdname roms_bottom_oxygen
 roms_bottom_ph <- function(update = FALSE, ask = interactive(), force = FALSE) {
   get_pacea_data("roms_bottom_pH", update = update, ask = ask, force = force)
 }
 
 #' @rdname roms_bottom_oxygen
+#' @export
 roms_bottom_salinity <- function(update = FALSE, ask = interactive(), force = FALSE) {
   get_pacea_data("roms_bottom_salinity", update = update, ask = ask, force = force)
 }
 
 #' @rdname roms_bottom_oxygen
+#' @export
 roms_bottom_temperature <- function(update = FALSE, ask = interactive(), force = FALSE) {
   get_pacea_data("roms_bottom_temperature", update = update, ask = ask, force = force)
 }
 
 #' @rdname roms_bottom_oxygen
+#' @export
 roms_surface_oxygen <- function(update = FALSE, ask = interactive(), force = FALSE) {
   get_pacea_data("roms_surface_oxygen", update = update, ask = ask, force = force)
 }
 
 #' @rdname roms_bottom_oxygen
+#' @export
 roms_surface_ph <- function(update = FALSE, ask = interactive(), force = FALSE) {
   get_pacea_data("roms_surface_pH", update = update, ask = ask, force = force)
 }
 
 #' @rdname roms_bottom_oxygen
+#' @export
 roms_surface_salinity <- function(update = FALSE, ask = interactive(), force = FALSE) {
   get_pacea_data("roms_surface_salinity", update = update, ask = ask, force = force)
 }
 
 #' @rdname roms_bottom_oxygen
+#' @export
 roms_surface_temperature <- function(update = FALSE, ask = interactive(), force = FALSE) {
   get_pacea_data("roms_surface_temperature", update = update, ask = ask, force = force)
 }
 
 #' @rdname roms_bottom_oxygen
+#' @export
 roms_avg0to40m_oxygen <- function(update = FALSE, ask = interactive(), force = FALSE) {
   get_pacea_data("roms_avg0to40m_oxygen", update = update, ask = ask, force = force)
 }
 
 #' @rdname roms_bottom_oxygen
+#' @export
 roms_avg0to40m_ph <- function(update = FALSE, ask = interactive(), force = FALSE) {
   get_pacea_data("roms_avg0to40m_ph", update = update, ask = ask, force = force)
 }
 
 #' @rdname roms_bottom_oxygen
+#' @export
 roms_avg0to40m_salinity <- function(update = FALSE, ask = interactive(), force = FALSE) {
   get_pacea_data("roms_avg0to40m_salinity", update = update, ask = ask, force = force)
 }
 
 #' @rdname roms_bottom_oxygen
+#' @export
 roms_avg0to40m_temperature <- function(update = FALSE, ask = interactive(), force = FALSE) {
   get_pacea_data("roms_avg0to40m_temperature", update = update, ask = ask, force = force)
 }
 
 #' @rdname roms_bottom_oxygen
+#' @export
 roms_avg40to100m_oxygen <- function(update = FALSE, ask = interactive(), force = FALSE) {
   get_pacea_data("roms_avg40to100m_oxygen", update = update, ask = ask, force = force)
 }
 
 #' @rdname roms_bottom_oxygen
+#' @export
 roms_avg40to100m_ph <- function(update = FALSE, ask = interactive(), force = FALSE) {
   get_pacea_data("roms_avg40to100m_ph", update = update, ask = ask, force = force)
 }
 
 #' @rdname roms_bottom_oxygen
+#' @export
 roms_avg40to100m_salinity <- function(update = FALSE, ask = interactive(), force = FALSE) {
   get_pacea_data("roms_avg40to100m_salinity", update = update, ask = ask, force = force)
 }
 
 #' @rdname roms_bottom_oxygen
+#' @export
 roms_avg40to100m_temperature <- function(update = FALSE, ask = interactive(), force = FALSE) {
   get_pacea_data("roms_avg40to100m_temperature", update = update, ask = ask, force = force)
 }
 
 #' @rdname roms_bottom_oxygen
+#' @export
 roms_avg100mtoBot_oxygen <- function(update = FALSE, ask = interactive(), force = FALSE) {
   get_pacea_data("roms_avg100mtoBot_oxygen", update = update, ask = ask, force = force)
 }
 
 #' @rdname roms_bottom_oxygen
+#' @export
 roms_avg100mtoBot_ph <- function(update = FALSE, ask = interactive(), force = FALSE) {
   get_pacea_data("roms_avg100mtoBot_ph", update = update, ask = ask, force = force)
 }
 
 #' @rdname roms_bottom_oxygen
+#' @export
 roms_avg100mtoBot_salinity <- function(update = FALSE, ask = interactive(), force = FALSE) {
   get_pacea_data("roms_avg100mtoBot_salinity", update = update, ask = ask, force = force)
 }
 
 #' @rdname roms_bottom_oxygen
+#' @export
 roms_avg100mtoBot_temperature <- function(update = FALSE, ask = interactive(), force = FALSE) {
   get_pacea_data("roms_avg100mtoBot_temperature", update = update, ask = ask, force = force)
 }
 
 #' @rdname roms_bottom_oxygen
+#' @export
 roms_phytoplankton <- function(update = FALSE, ask = interactive(), force = FALSE) {
   get_pacea_data("roms_phytoplankton", update = update, ask = ask, force = force)
 }
 
 #' @rdname roms_bottom_oxygen
+#' @export
 roms_primaryproduction <- function(update = FALSE, ask = interactive(), force = FALSE) {
   get_pacea_data("roms_primaryproduction", update = update, ask = ask, force = force)
 }
