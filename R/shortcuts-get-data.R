@@ -44,16 +44,8 @@ roms_bottom_oxygen <- function(update = FALSE, ask = interactive(), force = FALS
   get_pacea_data("roms_bottom_oxygen", update = update, ask = ask, force = force)
 }
 
-
-#' Title
-#'
-#' @param update 
-#' @param ask 
-#' @param force 
-#'
-#' @return
-#' @export
 #' @rdname roms_bottom_oxygen
+#' @export
 roms_bottom_ph <- function(update = FALSE, ask = interactive(), force = FALSE) {
   get_pacea_data("roms_bottom_pH", update = update, ask = ask, force = force)
 }
