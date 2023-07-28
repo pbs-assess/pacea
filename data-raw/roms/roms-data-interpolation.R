@@ -173,8 +173,8 @@ for(i in ifiles) {
     #  disjoint - do not share space
     # dis2 <- t2_sf26[st_disjoint(st_union(tbc), t2_sf26, sparse=FALSE, prepared=TRUE),]
     # 
-    # #  convert bc coast to sf linestring and finding coastline intserections separately - increased processing speed
-    # #  using st_intersects is much faster than other predicate functionss
+    # #  convert bc coast to sf linestring and finding coastline intersections separately - increased processing speed
+    # #  using st_intersects is much faster than other predicate functions
     # sub.t2 <- t2_sf26[st_intersects(st_union(tbc), t2_sf26, sparse=FALSE, prepared=TRUE),]
     # inter.line <- sub.t2[st_intersects(tbc.line, sub.t2, sparse=FALSE, prepared=TRUE),]
     # t2_sf26 <- rbind(dis2, inter.line)
@@ -187,6 +187,11 @@ for(i in ifiles) {
     t2_sf26 <- t2_sf26[roms_buff,]
     
     
+    # round to 6 decimal places to reduce filesize
+    t2_sf26 <- t2_sf26 %>% 
+      st_drop_geometry() %>%
+      round(digits = dig) %>%
+      st_as_sf(geometry = st_geometry(t2_sf26))
     
     # assign column names as year_month
     names(t2_sf26)[1:(ncol(t2_sf26) - 1)] <- cnames 
