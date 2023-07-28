@@ -25,34 +25,34 @@ tbc <- bc_coast
 # convert to multilinestring
 tbc.line <- st_cast(tbc, "MULTILINESTRING")
 
-#####
-# create polygons for cropping to roms data
-nc_dat <- nc_open(paste0("data-raw/roms/bcc42_era5glo12r4_mon1993to2019_botTSO.nc"))
-
-# load lon-lat and mask layers from netcdf
-nc_lon <- as.vector(ncvar_get(nc_dat, "lon_rho"))
-nc_lat <- as.vector(ncvar_get(nc_dat, "lat_rho"))
-
-nc_var <- ncvar_get(nc_dat, "temp")
-nc_varmat <- apply(nc_var, 3, c)
-
-# put sst into dataframe and sf object
-dat <- data.frame(x = nc_lon, y = nc_lat) %>% cbind(nc_varmat) %>%
-  st_as_sf(coords = c("x", "y"), crs = "EPSG:4326") %>%
-  st_transform(crs = "EPSG: 3005")
-
-# create polygon for cropping ROMS data
-roms_cave <- dat %>% 
-  na.omit() %>%
-  concaveman::concaveman()
-roms_buff <- dat %>% 
-  na.omit() %>%
-  st_geometry() %>% 
-  st_buffer(dist = 5000) %>%
-  st_union()
-
-rm(nc_dat, nc_lon, nc_lat, nc_var, nc_varmat, dat)
-#####
+# #####
+# # create polygons for cropping to roms data
+# nc_dat <- nc_open(paste0("data-raw/roms/bcc42_era5glo12r4_mon1993to2019_botTSO.nc"))
+# 
+# # load lon-lat and mask layers from netcdf
+# nc_lon <- as.vector(ncvar_get(nc_dat, "lon_rho"))
+# nc_lat <- as.vector(ncvar_get(nc_dat, "lat_rho"))
+# 
+# nc_var <- ncvar_get(nc_dat, "temp")
+# nc_varmat <- apply(nc_var, 3, c)
+# 
+# # put sst into dataframe and sf object
+# dat <- data.frame(x = nc_lon, y = nc_lat) %>% cbind(nc_varmat) %>%
+#   st_as_sf(coords = c("x", "y"), crs = "EPSG:4326") %>%
+#   st_transform(crs = "EPSG: 3005")
+# 
+# # create polygon for cropping ROMS data
+# roms_cave <- dat %>% 
+#   na.omit() %>%
+#   concaveman::concaveman()
+# roms_buff <- dat %>% 
+#   na.omit() %>%
+#   st_geometry() %>% 
+#   st_buffer(dist = 5000) %>%
+#   st_union()
+# 
+# rm(nc_dat, nc_lon, nc_lat, nc_var, nc_varmat, dat)
+# #####
 
 
 #####
@@ -133,6 +133,16 @@ for(i in ifiles) {
     dat <- data.frame(x = nc_lon, y = nc_lat) %>% cbind(nc_varmat)
     dat_sf <- st_as_sf(dat, coords = c("x", "y"), crs = "EPSG:4326")
     tdat_sf <- st_transform(dat_sf, crs = "EPSG: 3005")
+    
+    # create polygon for cropping ROMS data
+    roms_cave <- tdat_sf %>% 
+      na.omit() %>%
+      concaveman::concaveman()
+    roms_buff <- tdat_sf %>% 
+      na.omit() %>%
+      st_geometry() %>% 
+      st_buffer(dist = 5000) %>%
+      st_union()
     
     # interpolate data
     # 2 km res
