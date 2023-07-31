@@ -190,7 +190,7 @@ for(i in ifiles) {
     # round to 6 decimal places to reduce filesize
     t2_sf26 <- t2_sf26 %>% 
       st_drop_geometry() %>%
-      round(digits = dig) %>%
+      round(digits = 6) %>%
       st_as_sf(geometry = st_geometry(t2_sf26))
     
     # assign column names as year_month
