@@ -1,5 +1,6 @@
 # Obtaining the oceanographic basin indices and compile them into pacea. Code is
-#  best run line-by-line to check plots etc.
+#  best run line-by-line to check plots etc. Creating a consistent format, of
+#  class pacea_index.
 #
 #  Converted from original code supplied by Chris Rooper. Moving updated calls
 #  to the top, to save each data set as our new format.
@@ -28,10 +29,8 @@
 # AO
 # ALPI
 
-
-# Column names
-#year_months <- c("Year", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-#                  "11", "12")
+# For a new index, check the saved .txt files to see which one (if any!) most closely
+# matches the new one and use the code here as a template.
 
 load_all()
 library(dplyr)
@@ -61,6 +60,8 @@ class(oni_new) <- c("pacea_index",
                     class(oni_new))
 
 attr(oni_new, "axis_name") <- "Oceanic Niño Index"
+
+TODO put year as first column like the others (check that's true)
 
 if(check_index_changed(oni, oni_new)){
   oni <- oni_new
@@ -342,30 +343,65 @@ if(check_index_changed(enso_mei,
   plot(enso_mei)  # TODO maybe update when plotting functions finalised
 }
 
-HERE
+# Arctic Oscillation
+#  https://www.cpc.ncep.noaa.gov/products/precip/CWlink/daily_ao_index/ao.shtml
+# https://www.climate.gov/news-features/understanding-climate/climate-variability-arctic-oscillation
+# https://en.wikipedia.org/wiki/Arctic_oscillation
+# For help:
+#  The daily AO index is constructed by projecting the daily (00Z) 1000mb height anomalies poleward of 20°N onto the loading pattern of the AO. Please note that year-round monthly mean anomaly data have been used to obtain the loading pattern of the AO (Methodology).  Since the AO has the largest variability during the cold season, the loading pattern primarily captures characteristics of the cold season AO pattern.
+# The daily AO index and its forecasts using GFS and Ensemble mean forecast data are shown for the previous 120 days as indicated. Each daily value has been standardized by the standard deviation of the monthly AO index from 1979-2000.
 
-# AO
 download.file("https://www.cpc.ncep.noaa.gov/products/precip/CWlink/daily_ao_index/monthly.ao.index.b50.current.ascii.table",
-              destfile="AO.dat",
+              destfile="ao.txt",
               mode="wb",
               quiet = FALSE)
 
-AO <- read.table("AO.dat",
-                 skip=1,
-                 as.is=TRUE,
-                 header=F,
-                 fill=T)
+# Adapt above code for pdo_new as it's similar format, but also need to add column
+#  name for first column. But need read.table to deal with empty final line (no
+#  fill option in read_table).
+# Though having done all this just noticed that they also have it in the format
+#  similear to what we using:
+#  https://www.cpc.ncep.noaa.gov/products/precip/CWlink/daily_ao_index/monthly.ao.index.b50.current.ascii
 
-colnames(AO) <- year_months
+ao_new <-read.table("ao.txt",
+                 header = TRUE,
+                 fill = TRUE)
 
-AO <- reshape::melt(AO,
-                  id="Year")
+# Years are row names, so make them the first column:
+ao_new_years <- row.names(ao_new) %>%
+  as.numeric()
 
-colnames(AO) <- c('Year',
-                  'Month',
-                  'AO_Index')
+ao_new <- cbind("year" = ao_new_years,
+                ao_new) %>%
+  as_tibble()
 
-AO$Month <- as.numeric(AO$Month)
+row.names(ao_new) <- NULL
+
+stopifnot(ao_new[1,1] == 1950) # Check still starts in 1950
+
+ao_new <- tidyr::pivot_longer(ao_new,
+                              cols = "Jan":"Dec",
+                              names_to = "month",
+                              values_to = "anomaly") %>%
+  mutate(month = as.numeric(match(month, month.abb)))
+
+ao_new <- filter(ao_new,
+                  !is.na(anomaly))
+
+class(ao_new) <- c("pacea_index",
+                    class(ao_new))
+
+attr(ao_new, "axis_name") <- "Arctic Oscillation"
+
+if(check_index_changed(ao, ao_new)){
+  ao <- ao_new
+  usethis::use_data(ao,
+                    overwrite = TRUE)
+  plot(ao)
+}
+
+
+HERE
 
 #ALPI - CURRENT DATA NOT AVAILABLE - LAST UPDATE 2015
 download.file("http://www.pac.dfo-mpo.gc.ca/od-ds/science/alpi-idda/ALPI_1900_2015_EN.csv",

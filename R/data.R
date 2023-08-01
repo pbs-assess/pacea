@@ -352,6 +352,70 @@
 ##' @source Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
 "enso_mei"
 
+##' AO - Arctic Oscillation
+##'
+##' The Arctic Oscillation (AO) is a back-and-forth shifting of atmospheric
+##' pressure between the Arctic and the mid-latitudes of the North Pacific and
+##' North Atlantic.
+##'
+##' The most obvious reflection of the phase of the AO is the
+##' north-to-south location of the storm-steering, mid-latitude jet
+##' stream. Thus, the AO can have a strong influence on weather and climate in
+##' major population centers in North America, Europe, and Asia, especially
+##' during winter.
+
+##' A strongly positive AO is characterized by lower-than-average air pressure
+##' over the Arctic paired with higher-than-average pressure over the northern
+##' Pacific and Atlantic Oceans. The jet stream is farther north than average
+##' under these conditions, and storms can be shifted northward of their usual
+##' paths. Thus, the mid-latitudes of North America, Europe, Siberia, and East
+##' Asia generally see fewer cold air outbreaks than usual during the positive
+##' phase of the AO.
+##'
+##' Conversely, AO's negative phase has higher-than-average air pressure over
+##' the Arctic region and lower-than-average pressure over the northern Pacific
+##' and Atlantic Oceans. The jet stream shifts toward the equator under these
+##' conditions, so the globe-encircling river of air is south of its average
+##' position. Consequently, locations in the mid-latitudes are more likely to
+##' experience outbreaks of frigid, polar air during winters when the AO is
+##' negative. In New England, for example, higher frequencies of coastal storms
+##' known as "Nor'easters" are linked to AO's negative phase.
+##'
+##' Above adapted from
+##' https://www.climate.gov/news-features/understanding-climate/climate-variability-arctic-oscillation
+##'
+##' Also see
+##' https://www.cpc.ncep.noaa.gov/products/precip/CWlink/daily_ao_index/ao.shtml
+##' https://www.cpc.ncep.noaa.gov/products/precip/CWlink/daily_ao_index/history/method.shtml
+##' https://en.wikipedia.org/wiki/Arctic_oscillation
+##'
+##' For reference see
+##' Thompson, D.W.J., and J.M. Wallace, 2001: Regional Climate Impacts of the
+##' Northern Hemisphere Annular Mode. Science, 293, 85-89.
+##' and other references on the above websites.
+##'
+##' Associated code adapted from code generously shared by Chris Rooper.
+##'
+##' @format A tibble also of class `pacea_index` with columns:
+##' \describe{
+##'   \item{year:}{year of value}
+##'   \item{month:}{month (1 to 12) of value}
+##'   \item{anomaly:}{The AO index is defined using the daily or monthly 1000 hPa
+##'   geopotential height anomalies from latitudes 20 deg N to 90 deg N. The anomalies
+##'   are projected onto the AO loading pattern, which is
+##'   defined as the first empirical orthogonal function of monthly mean
+##'   1000 hPa geopotential height during the 1979-2000 period. The time series
+##'   is then normalized with the monthly mean index's standard deviation.}
+##' }
+##' @examples
+##' \dontrun{
+##' ao
+##' plot(ao)
+##' plot(ao, smooth_over_year=TRUE)
+##' }
+##' @author Andrew Edwards
+##' @source Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
+"ao"
 
 ##' Pacific Hake annual age-0 recruitments as estimated by the 2023 stock
 ##' assessment.
