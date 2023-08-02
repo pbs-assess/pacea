@@ -135,12 +135,12 @@ reg.dat2 <- st_drop_geometry(reg.dat2)
 # summarise the data across the entire Area 126 with a weighted mean by gridded cell area
 sum.dat <- reg.dat2 %>%
   group_by(year, month) %>%
-  summarise(value = weighted.mean(value, area, na.rm = T)) 
+  summarise(value = weighted.mean(value, area, na.rm = TRUE)) 
 
 # find the monthly mean across the time series
 mean.dat <- sum.dat %>%
   group_by(month) %>%
-  summarise(mean_value = mean(value, na.rm = T))
+  summarise(mean_value = mean(value, na.rm = TRUE))
 
 ```
 
