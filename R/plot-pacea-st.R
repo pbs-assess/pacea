@@ -62,11 +62,11 @@ plot.pacea_st <- function(obj,
   
   if(ncol(tobj) == 2){
     mtext(text = obj_unit, side = 4, line = 0)
-    if(bc == TRUE){
-      plot(bc_coast, border = "grey50", col = "grey80", add = TRUE,)
-    }
     if(eez == TRUE){
       plot(bc_eez, border = "black", col = NA, lty = 2, add = TRUE)
+    }
+    if(bc == TRUE){
+      plot(bc_coast, border = "grey50", col = "grey80", add = TRUE,)
     }
   } else {
     mtext(text = obj_unit, side = 4, line = -4)
