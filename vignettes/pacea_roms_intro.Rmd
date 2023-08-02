@@ -1,5 +1,5 @@
 ---
-title: "ROMS Data"
+title: "ROMS Data - Intro"
 author: "Travis Tai"
 output: html_document
 date: "2023-06-19"
@@ -27,117 +27,26 @@ library(dplyr)
 library(sf)
 
 # list available pacea data
-pacea_data
+head(pacea_data)
 
-# download data to cache folder and name object
-pdata <- roms_surface_temperature(force = T)
+# list available pacea ROMS data
+head(pacea_data[grep("roms", pacea_data$data_name), ])
+
+# download data to cache folder and name object; `force = T` to skip user prompt
+pdata <- roms_surface_temperature(force = TRUE)
 
 ```
 
-## Plotting ROMS data
+## Updating ROMS data
 
-### Base `plot()`
+When you download ROMS data, the most recent version of the data will be downloaded to your cache folder. Check the directory using `pacea_cache()`.
 
-ROMS data can be plotted using the `plot()` function for a quick view of the data. The default settings are to plot the April every five years for the time series available.
+Occassionally, there will be updates to the ROMS data (e.g. adding data from more recent years). If you want to check for an update for a data file you have already downloaded to the pacea cache directory:
 
 ```{r}
-plot(pdata)
+pdata <- roms_surface_temperature(update = TRUE)
 ```
 
-Other months and years can be selected.
-
-```{r}
-plot(pdata, months = c("June", "September"), years = c(1995, 2010, 2019))
-```
-
-And BC coastline and Exclusive Economic Zone (EEZ) can be plotted if there is only one layer selected
-
-```{r}
-plot(pdata, months = c("September"), years = c(2019), bc = T, eez = T)
-```
-
-### Using ggplot
-
-For plotting with more customization, use ggplot.
-
-```{r}
-library(ggplot2)
-
-# months and years of interest
-yrs <- c(1999, 2009, 2019)
-mths <- c(8) # august
-ym <- paste(yrs, mths, sep = "_")
-
-# subset data based on year_month column name
-tdat <- pdata %>%
-  dplyr::select(all_of(ym))
-
-# wrangle data to long format and add columns for year and month
-sub.dat <- tdat %>%
-  tidyr::pivot_longer(cols = !last_col(), cols_vary = "slowest", names_to = "date", values_to = "value")  %>%
-  mutate(year = substr(date, 1, 4),
-         month = substr(date, 6, 7))%>%
-  relocate(geometry, .after = last_col()) 
-
-p1 <- ggplot(data = sub.dat) +
-  geom_sf(aes(fill = value), col = NA) +
-  facet_grid(month~year) +
-  scale_fill_continuous(name = attributes(pdata)$units)
-
-p1
-```
-
-Adding BC coast layer and BC EEZ layer
-
-```{r}
-p2 <- p1 + 
-  geom_sf(data = bc_eez, fill = NA, lty = 2) + 
-  geom_sf(data = bc_coast)
-p2
-```
-
-We can mask the data with another `sf` shapefile of a specific region of interest using simple indexing syntax.
-
-```{r}
-# coordinates for polygon (i.e. fishing area 126)
-crds <- list(matrix(c(-127.1506, -128.2331, -129.3492, -127.9167, -127.1847, -126.8200, -127.1506,
-                      49.85766, 49.00000, 48.99991, 50.11915, 50.40183, 50.24466, 49.85766), ncol = 2))
-
-# create polygon object and convert to sf object with bc albers projection
-a126 <- st_sfc(st_polygon(crds), crs = 4326) %>% 
-  st_as_sf() %>%
-  st_transform(crs = 3005)
-
-# mask data by indexing sf object with area 126 shapefile 
-reg.dat <- sub.dat[a126, ]
-
-# plot panel of data
-reg.p1 <- ggplot(data = reg.dat) +
-  geom_sf(aes(fill = value), col = NA) +
-  facet_grid(month~year) +
-  scale_fill_continuous(name = attributes(pdata)$units)
-
-reg.p1
-```
-
-```{r}
-# add bc_coast layer and polygon boundary
-reg.p2 <- reg.p1 + 
-  geom_sf(data = a126, fill = NA, col= "red") +
-  geom_sf(data = bc_coast)
-
-reg.p2
-```
-
-We can zoom to the area of interest, in this case our polygon that represents Area 126.
-
-```{r}
-# identify extent of polygon with a 50 km buffer
-tbbox <- st_bbox(st_buffer(a126, dist = 50000))
-
-reg.p2 + 
-  coord_sf(xlim = c(tbbox[c(1,3)]), 
-           ylim = c(tbbox[c(2,4)]))
-```
+If there is an update available, you will be prompted for whether to download the data and replace the older version you have in the pacea cache directory.
 
 
