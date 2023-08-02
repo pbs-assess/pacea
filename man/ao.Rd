@@ -70,6 +70,7 @@ Associated code adapted from code generously shared by Chris Rooper.
 \dontrun{
 ao
 plot(ao)
+plot(ao, smooth_over_year=TRUE)
 }
 }
 \author{

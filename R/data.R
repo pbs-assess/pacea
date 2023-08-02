@@ -417,6 +417,80 @@
 ##' @source Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
 "ao"
 
+##' ALPI - Aleutian Low Pressure Index
+##'
+##' The Aleutian Low Pressure Index (ALPI) has been used to describe
+##' decadal-scale changes in North Pacific climate-ocean conditions and is linked
+##' to patterns in marine productivity.
+##'
+##' The Aleutian Low atmospheric pressure system is a semi-permanent feature of
+##' the North Pacific, generally centered over the Aleutian Islands. The Aleutian
+##' Low strengthens in winter, and weakens the following spring; however the relative intensity of low pressures can vary
+##' greatly from year to year. The Aleutian Low affects the intensity of winter
+##' storms and the direction of atmospheric circulation off the west coast of
+##' North America, since the size and position of the Aleutian Low determines
+##' the relative waviness of the westerlies.
+##'
+##' A relatively weak and northward
+##' positioned Aleutian Low results in a direct westerly flow in the atmosphere
+##' over the North Pacific (i.e. westerly winds).
+##'
+##' The ALPI was developed at the Pacific Biological Station (Fisheries and
+##' Oceans Canada) in 1993, and updated with documented code by Surry and King (2015). It requires the
+##' computation of the mean area (in \eqn{10^6 \mbox{km}^2}) in the North Pacific that has a sea level pressure
+##' lower than 100.5 kPa in winter months (December to March). The ALPI is computed as the
+##' anomaly from a long-term mean area (1950-1997) from a gridded sea surface pressure data
+##' obtained from the National Center of Atmospheric Research (Surry and King 2015).
+##' Positive ALPI values indicate an intense Aleutian Low relative to the long-term mean.
+##'
+##' Note that ALPI is currently only available up to 2015, as calculated by
+##' Surry and King (2015). If desired the documented R code provided by Surry and King
+##' (2015) could be updated (and incorporated into pacea) to enable annual
+##' updating of ALPI. Some of the spatial R packages used have since been
+##' replaced by newer ones, so updating the code would likely be doable but a bit of work.
+##'
+##' Much of the above is adapted from:
+##'
+##' Surry, A.M., and King, J.R (2015). A new method for calculating ALPI: The
+##' Aleutian Low Pressure Index. Canadian Technical Report of Fisheries and Aquatic Sciences. 3135: v + 31 p.
+##' https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/359380.pdf
+##'
+##' and ALPI's use in
+##'
+##' Haigh, R., P.J. Starr, A.M. Edwards, J.R. King and J. Lecomte (2019). Stock
+##' assessment for Pacific Ocean Perch (Sebastes alutus) in Queen Charlotte
+##' Sound, British Columbia in 2017. DFO Canadian Science Advisory Secretariat
+##' Research Document 2018/038. v + 227 p.
+##' http://www.dfo-mpo.gc.ca/csas-sccs/Publications/ResDocs-DocRech/2018/2018_038-eng.pdf
+##'
+##' Also see references within Surry and King (2015), plus
+##' https://open.canada.ca/data/en/dataset/4bb821ce-bef7-46d3-95d2-064065f1bda4
+##' that houses the original values.
+##'
+##' @format A tibble also of class `pacea_index` with columns:
+##' \describe{
+##'   \item{year:}{year of value}
+##'   \item{anomaly:}{the area of the Aleutian Low is calculated as the mean area of the North Pacific with sea level
+##' pressure less than or equal to 100.5 kPa, where the mean is over the four
+##' monthly values from December to March (the value for 2015 corresponds to
+##' December 2014 to March 2015). The `anomaly` given here is the resulting ALPI
+##' calculated as the anomaly of the area of the Aleutian Low from the long-term
+##' (1950-1997) mean of \eqn{5.524183 \times 10^6 \mbox{km}^2}. Values are
+##'   those in Table 4 of King and Surry (2015), and units of APLI
+##' are \eqn{10^6 \mbox{km}^2}.}
+##' }
+##'
+##' @examples
+##' \dontrun{
+##' alpi
+##' plot(alpi)
+##' }
+##' @author Andrew Edwards
+##' @source Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
+"alpi"
+
+
+
 ##' Pacific Hake annual age-0 recruitments as estimated by the 2023 stock
 ##' assessment.
 ##'

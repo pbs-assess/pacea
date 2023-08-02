@@ -400,21 +400,31 @@ if(check_index_changed(ao, ao_new)){
   plot(ao)
 }
 
-
-HERE
-
-#ALPI - CURRENT DATA NOT AVAILABLE - LAST UPDATE 2015
-download.file("http://www.pac.dfo-mpo.gc.ca/od-ds/science/alpi-idda/ALPI_1900_2015_EN.csv",
-              destfile="ALPI.csv",
+# ALPI - not updated since 2015, see ?alpi
+download.file("https://api-proxy.edh.azure.cloud.dfo-mpo.gc.ca/catalogue/records/4bb821ce-bef7-46d3-95d2-064065f1bda4/attachments/alpi_1900_2015_en.csv",
+              destfile = "alpi.txt",
               mode="wb",
               quiet = FALSE)
 
-ALPI<-read.csv("ALPI.csv",
-               skip=0,
-               as.is=TRUE,
-               header=TRUE)
+# Can't use read_table as , separated without spaces
+alpi_new <- read.csv("alpi.txt") %>%
+  as_tibble() %>%
+  dplyr::rename("year" = "YEAR",
+                "anomaly" = "ALEUTIAN.LOW.PRESSURE.INDEX..ALPI.")
 
-colnames(ALPI)<-c("Year",
-                  "ALPI")
+stopifnot(alpi_new[1, 1:2] == c(1900, 1.3)) # Check still starts in 1950
 
-plot(ALPI)
+class(alpi_new) <- c("pacea_index",
+                    class(alpi_new))
+
+attr(alpi_new, "axis_name") <- expression(paste(plain(Aleutian) * " " * plain(Low) * " " * plain(Pressure) * " " * plain(Index) * ", " * 10^6 * km^2))
+# Must be an easier way of doing that, but it works
+
+# if(check_index_changed(alpi, alpi_new)){  # this needs updating as it errors with
+#  the complex axis name, but that's only needed if ALPI is going to be updated
+#  (and so this section should be uncommented).
+# alpi <- alpi_new
+# usethis::use_data(alpi,
+#                  overwrite = TRUE)
+# plot(alpi)
+# }
