@@ -79,6 +79,7 @@
 ##'
 ##' `npi_monthly` contains monthly absolute values. Annual average winter values
 ##' and anomalies are in `npi_annual`.
+##'
 ##' Ross and Robert (2022; see `?oni` for reference): The NPI is a useful
 ##' indicator of the intensity and real extent of the Aleutian Low Pressure
 ##' system. The NPI was generally positive from 1950 to 1976, and generally
@@ -101,7 +102,11 @@
 ##' @examples
 ##' \dontrun{
 ##' npi_monthly
-##' plot(npi_monthly)  # TODO doesn't work, updated defaults
+##' plot(npi_annual)
+##' plot(npi_monthly,
+##'   value = "value",    # plot the absolute value as no anomaly defined
+##'   style = "plain",    # plot a plain line, not the red-blue style
+##'   ylab = "North Pacific Index (absolute, hPa)") # Refine label
 ##' }
 ##'
 ##' @author Andrew Edwards
