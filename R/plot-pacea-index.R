@@ -150,6 +150,7 @@ plot.pacea_index <- function(obj,
                 start_decade_ticks = start_decade_ticks)
 
   if(!is.null(event_lub)){              # Plot the event dates and equivalent y-value
+    event_lub <- sort(event_lub)        # Else plotting is wrong
 
     if(identical(filter(obj_lub,
                            date %in% event_lub)$date,
