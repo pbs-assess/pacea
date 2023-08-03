@@ -220,3 +220,20 @@ plot(mei,
      smooth_over_year = TRUE,
      lwd = lwd_val)
 ```
+
+## Analyses
+
+We have not incorporated any specific analytical tools into pacea yet. For looking at
+relationships of such indices with fish recruitment (as estimated by stock assessments), we do
+intend to update and functionalise the methods developed in Appendix F of
+
+Haigh, R., P.J. Starr, A.M. Edwards, J.R. King and J. Lecomte (2019). Stock
+assessment for Pacific Ocean Perch (Sebastes alutus) in Queen Charlotte
+Sound, British Columbia in 2017. DFO Canadian Science Advisory Secretariat
+Research Document 2018/038. v + 227 p.
+http://www.dfo-mpo.gc.ca/csas-sccs/Publications/ResDocs-DocRech/2018/2018_038-eng.pdf
+
+In that we utilised some of the indices now contained in pacea. By functionalising
+the methods we would hope to make such methods and analyses more operational
+(rather than stand-alone one-off projects). Let us know if this is of interest
+for your own analyses.
