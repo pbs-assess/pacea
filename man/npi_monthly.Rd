@@ -31,9 +31,16 @@ atmospheric changes lead changes in sea surface temperatures (SST) by one to two
 months. However, strong ties exist with events in the tropical Pacific, with
 changes in tropical Pacific SSTs leading SSTs in the north Pacific by three
 months. Taken from
-https://climatedataguide.ucar.edu/climate-data/north-pacific-np-index-trenberth-and-hurrell-monthly-and-winter
+##' https://climatedataguide.ucar.edu/climate-data/north-pacific-np-index-trenberth-and-hurrell-monthly-and-winter
+
 Key reference is Trenberth and Hurrell (1994): Decadal atmosphere-ocean
-variations in the Pacific, Climate Dynamics 9:303-319.
+variations in the Pacific, Climate Dynamics 9:303-319. Above website suggest
+to reference the data as:
+North Pacifi Index Data provided by the Climate Analysis Section, NCAR,
+Boulder, USA, Trenberth and Hurrell (1994). Updated Regularly. Accessed DD
+Month YYYY (you can check the date that
+`npi_annual.rda` or `npi_monthly.rda` was last saved in pacea at
+ https://github.com/pbs-assess/pacea/tree/main/data).
 
 `npi_monthly` contains monthly absolute values. Annual average winter values
 and anomalies are in `npi_annual`.

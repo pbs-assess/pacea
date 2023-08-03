@@ -1,16 +1,18 @@
-# Obtaining the oceanographic basin indices and compile them into pacea. Code is
-#  best run line-by-line to check plots etc. Creating a consistent format, of
-#  class pacea_index.
+# Obtaining the oceanographic basin indices and compile them into pacea.
+# Creating a consistent format, of class pacea_index.
 
-# To updated - run through line-by-line. Some of the checks to do with checking
-# older values of an index with the newly-downloaded older values may fail,
-# because recent values may sometimes be tweaked. But test failing will force a
-# manual check - if historical values have changed greatly, this should be
-# mentioned in the NEWS.
+# To update - run through line-by-line. Some of the checks to do with checking
+#  older values of an index with the newly-downloaded older values may fail,
+#  because recent values may sometimes be tweaked. But test failing will force a
+#  manual check - if historical values have changed greatly, this should be
+#  mentioned in the NEWS.
 
-# To add a new index: check the saved .txt files below to see which one (if any!) most closely
-# matches the new one and use the code here as a template. Then be sure to add it to the
-#  pacea_index object at the end of this file.
+# To add a new index - check the saved .txt files below to see which one
+#  most closely matches the new one and use the code here as a
+#  template (copy to near the end of this file).
+#  If none match then congratulations, you have discovered yet another
+#  format!
+#  Add the new index to the  pacea_index object at the end of this file.
 
 # Can prob delete: TODO
 #
@@ -39,7 +41,6 @@
 # ENSO MEI
 # AO
 # ALPI
-
 
 load_all()
 library(dplyr)
@@ -73,34 +74,71 @@ class(oni_new) <- c("pacea_index",
 
 attr(oni_new, "axis_name") <- "Oceanic Niño Index"
 
-TODO HERE - next does fail, may need to be a few rows less for this one. Add something to vignette also. Check if other ones get updated.
-
 if(check_index_changed(oni, oni_new)){
-  expect_equal(oni,
-               oni_new[1:nrow(oni), ]) # see note at top if this fails
+  # Check previous values haven't changed, but for oni we expect the last two
+  #  months of anomaly to get updated (and maybe one month of value)
+  expect_equal(oni[1:(nrow(oni) - 2), ],
+               oni_new[1:(nrow(oni) - 2), ]) # See note at top if this fails
 
   oni <- oni_new
   usethis::use_data(oni,
                     overwrite = TRUE)
-  plot(oni)    # to check it looks okay; if no figure then hasn't changed
+  plot(oni)    # To check it looks okay; if no figure then hasn't changed
 }
 
 
 # NPI monthly
 # The website has 2023-01 in it for date-year, so check later ones for updated
-# values. There is no 2023-02 to 2023-04, presumably just need to check that
-# last one then later ones. Could write code to automate this.
+# values. There is no 2023-02 to 2023-04 (as of 2023-04) , presumably just need
+# to check that last one then later ones. Tried writing code to automate this
+# but proved fiddly, and once we update every month shouldn't have to check too many.
 
-download.file("https://climatedataguide.ucar.edu/sites/default/files/2023-01/npindex_monthly.txt",
-              destfile="npi_monthly.txt",
-              mode="wb",
-              quiet = FALSE)
+stop("You need to manually update i in the next bit.")
+
+last_npi_monthly <- "2023-04"   # WILL GET UPDATED MANUALLY SOMETIMES - error
+                                #  message later will tell you when.
+
+# Create potential new months (note that the filenames do not seem to get
+#  updated every month)
+last <- lubridate::ym(last_npi_monthly)
+today <- lubridate::today()
+to_check_dates <- seq(last, today, "1 month")
+to_check_stamps <- rev(substring(as.character(to_check_dates), 1, 7))   # Latest first
+
+# Going to see if each file exists, and then take the latest one. Could not
+#  figure out a simple way to check if a website exists, so need to do this
+#  manually, though will be fairly simple once we are checking this every month.
+#  So first check if latest month exists. Gave up trying to automate as
+#   RCurl::url.exists(sitename)  returnsed FALSE even with a sitename that exists.
+
+i <- 1      # MAY NEED TO CHANGE THIS MANUALLY - error message below will tell
+            # you when.
+
+sitename <- paste0("https://climatedataguide.ucar.edu/sites/default/files/",
+                   to_check_stamps[i],
+                   "/npindex_monthly.txt")
+
+download.file(sitename,
+              destfile = "npi_monthly.txt",
+              mode = "wb",
+              quiet = FALSE)   # If errors see instructions:
+
+# See next error message for instructions (no need to keep running it once you
+#  understand it)
+
+stop(paste("If download.file just gave an error then increase i <- 1 to 2, then 3 etc. if happens again, up to",
+           length(to_check_stamps),
+           "which should be same as the latest one saved; repeat above code from i.",
+           "For the first i for which download.file does NOT error then, to set up for the next future update, replace last_npi_monthly above with",
+            to_check_stamps[i],
+           "and set i <- 1 again in code. Then keep calm and carry on through this file.",
+           sep = "\n"))
 
 npi_monthly_new <- readr::read_table("npi_monthly.txt",
                                      col_names = c("yearmonth", "value"),
                                      skip = 1,
                                      na = "-999.00")    # December 1944, need to
-                                        # keep in
+                                                        #  keep in
 
 stopifnot(npi_monthly_new[1,1] == 189901)    # Check still starts in 1899.
 
@@ -119,9 +157,7 @@ attr(npi_monthly_new, "axis_name") <- "North Pacific Index"
 
 if(check_index_changed(npi_monthly, npi_monthly_new)){
   expect_equal(npi_monthly,
-               npi_monthly_new[1:nrow(npi_monthly), ]) # check old values have
-                                        # not changed. Some recent ones will for
-                                        # some indices, but good to manually check.
+               npi_monthly_new[1:nrow(npi_monthly), ]) # See note at top if fails.
 
   npi_monthly <- npi_monthly_new
   usethis::use_data(npi_monthly,
@@ -129,7 +165,7 @@ if(check_index_changed(npi_monthly, npi_monthly_new)){
   plot(npi_monthly,
        value = "value",
        style = "plain")  # plain not a thing yet, just
-                         # not red-blue TODO add in average
+                         # not red-blue. Could add in average
                          # value so can show colours
 }
 
