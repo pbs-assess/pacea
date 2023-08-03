@@ -494,7 +494,7 @@
 ##' December 2014 to March 2015). The `anomaly` given here is the resulting ALPI
 ##' calculated as the anomaly of the area of the Aleutian Low from the long-term
 ##' (1950-1997) mean of \eqn{5.524183 \times 10^6 \mbox{km}^2}. Values are
-##'   those in Table 4 of King and Surry (2015), and units of APLI
+##'   those in Table 4 of King and Surry (2015), and units of ALPI
 ##' are \eqn{10^6 \mbox{km}^2}.}
 ##' }
 ##'
