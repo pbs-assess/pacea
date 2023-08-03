@@ -304,26 +304,26 @@ if(check_index_changed(npgo, npgo_new)){
 # https://www.psl.noaa.gov/enso/mei
 # Row values are 2 month seasons (YEAR DJ JF FM MA AM MJ JJ JA AS SO ON ND)
 download.file("https://psl.noaa.gov/enso/mei/data/meiv2.data",
-              destfile = "enso_mei.txt",
+              destfile = "mei.txt",
               mode = "wb",
               quiet = FALSE)
 
-enso_mei_new <- read.table("enso_mei.txt",
+mei_new <- read.table("mei.txt",
                            skip = 1,
                            as.is = TRUE,
                            fill = TRUE) %>%
   as_tibble()
 
-names(enso_mei_new) <- c("year", 1:12)  # Note in help that months are two-month combinations
+names(mei_new) <- c("year", 1:12)  # Note in help that months are two-month combinations
 
-enso_mei_new$year <- as.numeric(enso_mei_new$year)  # gives warning; puts NA's
+mei_new$year <- as.numeric(mei_new$year)  # gives warning; puts NA's
                                         # at end, the strange -999 after the
                                         # last year of values stays, so remove it and
                                         # later rows next:
-enso_mei_new <-  enso_mei_new[-(seq(which(enso_mei_new$year == -999),
-                                     nrow(enso_mei_new))), ]
+mei_new <-  mei_new[-(seq(which(mei_new$year == -999),
+                                     nrow(mei_new))), ]
 
-enso_mei_new <- tidyr::pivot_longer(enso_mei_new,
+mei_new <- tidyr::pivot_longer(mei_new,
                                cols = "1":"12",
                                names_to = "month",
                                values_to = "anomaly") %>%
@@ -331,19 +331,19 @@ enso_mei_new <- tidyr::pivot_longer(enso_mei_new,
          anomaly = as.numeric(anomaly)) %>%
   filter(anomaly != -999)
 
-summary(enso_mei_new)     # check no NA's
+summary(mei_new)     # check no NA's
 
-class(enso_mei_new) <- c("pacea_index",
-                    class(enso_mei_new))
+class(mei_new) <- c("pacea_index",
+                    class(mei_new))
 
-attr(enso_mei_new, "axis_name") <- "Multivariate ENSO Index"
+attr(mei_new, "axis_name") <- "Multivariate ENSO Index"
 
-if(check_index_changed(enso_mei,
-                       enso_mei_new)){
-  enso_mei <- enso_mei_new
-  usethis::use_data(enso_mei,
+if(check_index_changed(mei,
+                       mei_new)){
+  mei <- mei_new
+  usethis::use_data(mei,
                     overwrite = TRUE)
-  plot(enso_mei)  # TODO maybe update when plotting functions finalised
+  plot(mei)  # TODO maybe update when plotting functions finalised
 }
 
 # Arctic Oscillation
@@ -448,7 +448,7 @@ pacea_indices <-
            "npgo", "North Pacific Gyre Oscillation", "monthly", min(npgo$year), max(npgo$year),
            "ao", "Arctic Oscillation", "monthly", min(ao$year), max(ao$year),
            "soi", "Southern Oscillation Index", "monthly", min(soi$year), max(soi$year),
-           "enso_mei", "Multivariate El Niño Southern Oscillation Index", "monthly", min(enso_mei$year), max(enso_mei$year)) %>%
+           "mei", "Multivariate El Niño Southern Oscillation Index", "monthly", min(mei$year), max(mei$year)) %>%
   arrange(`Start year`)
 
 # if(pacea_indices_new != pacea_indices){   # couldn't figure out, or using expect_equal

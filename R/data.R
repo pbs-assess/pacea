@@ -345,12 +345,12 @@
 ##'  }
 ##' @examples
 ##' \dontrun{
-##' enso_mei
-##' plot(enso_mei)
+##' mei
+##' plot(mei)
 ##' }
 ##' @author Andrew Edwards
 ##' @source Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
-"enso_mei"
+"mei"
 
 ##' AO - Arctic Oscillation
 ##'
