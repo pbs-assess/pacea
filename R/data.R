@@ -48,9 +48,11 @@
 ##'   \item{year:}{year of value}
 ##'   \item{month:}{month (1 to 12) of value}
 ##'   \item{val:}{absolute values of three-month averages (preceding, current, and
-##'    next month), deg C}
+##'    next month), deg C; note that recent values may change in subsequent
+##'   updates -- see details}
 ##'   \item{anom:}{anomalies based on 30-year base periods that are updated every
-##'   5 years, deg C}
+##'   5 years, deg C; note that recent values may change in subsequent
+##'   updates -- see details}
 ##'  }
 ##' @examples
 ##' \dontrun{

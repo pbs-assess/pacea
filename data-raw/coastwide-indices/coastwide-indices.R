@@ -2,6 +2,12 @@
 #  best run line-by-line to check plots etc. Creating a consistent format, of
 #  class pacea_index.
 
+# To updated - run through line-by-line. Some of the checks to do with checking
+# older values of an index with the newly-downloaded older values may fail,
+# because recent values may sometimes be tweaked. But test failing will force a
+# manual check - if historical values have changed greatly, this should be
+# mentioned in the NEWS.
+
 # To add a new index: check the saved .txt files below to see which one (if any!) most closely
 # matches the new one and use the code here as a template. Then be sure to add it to the
 #  pacea_index object at the end of this file.
@@ -56,6 +62,9 @@ colnames(oni_new)<-c("month",
                      "value",
                      "anomaly")
 
+oni_new <- dplyr::relocate(oni_new,
+                           year)
+
 oni_new$month <- as.numeric(factor(oni_new$month,
                                    levels=unique(oni_new$month),
                                    ordered=TRUE))
@@ -64,9 +73,12 @@ class(oni_new) <- c("pacea_index",
 
 attr(oni_new, "axis_name") <- "Oceanic Niño Index"
 
-TODO put year as first column like the others (check that's true)
+TODO HERE - next does fail, may need to be a few rows less for this one. Add something to vignette also. Check if other ones get updated.
 
 if(check_index_changed(oni, oni_new)){
+  expect_equal(oni,
+               oni_new[1:nrow(oni), ]) # see note at top if this fails
+
   oni <- oni_new
   usethis::use_data(oni,
                     overwrite = TRUE)
@@ -106,6 +118,11 @@ class(npi_monthly_new) <- c("pacea_index",
 attr(npi_monthly_new, "axis_name") <- "North Pacific Index"
 
 if(check_index_changed(npi_monthly, npi_monthly_new)){
+  expect_equal(npi_monthly,
+               npi_monthly_new[1:nrow(npi_monthly), ]) # check old values have
+                                        # not changed. Some recent ones will for
+                                        # some indices, but good to manually check.
+
   npi_monthly <- npi_monthly_new
   usethis::use_data(npi_monthly,
                     overwrite = TRUE)
