@@ -12,7 +12,9 @@ A tibble also of class `pacea_index` with columns:
   \item{anom:}{anomaly calculated as the leading empirical orthogonal
   function of monthly sea surface temperature anomalies over the North
   Pacific (poleward of 20 deg N) after the global average sea surface
-  temperature has been removed.}
+  temperature has been removed. Note that the final value seems amenable to
+  being recomputed when the time series is extended with further values
+  (i.e. when we update pacea).}
 }
 }
 \source{
@@ -33,6 +35,7 @@ similar spatial climate fingerprints, they have very different behavior in
 time. Fisheries scientist Steven Hare coined the term PDO
 in 1996 while researching connections between Alaska
 salmon production cycles and Pacific climate.
+
 Two main characteristics distinguish PDO from El
 Niño/Southern Oscillation (ENSO): first, 20th century PDO "events" persisted
 for 20-to-30 years, while typical ENSO events persisted for 6 to 18 months;

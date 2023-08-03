@@ -14,7 +14,8 @@ A tibble also of class `pacea_index` with columns:
   are projected onto the AO loading pattern, which is
   defined as the first empirical orthogonal function of monthly mean
   1000 hPa geopotential height during the 1979-2000 period. The time series
-  is then normalized with the monthly mean index's standard deviation.}
+  is then normalized with the monthly mean index's standard
+  deviation. Such normalised monthly anomalies are given here.}
 }
 }
 \source{
