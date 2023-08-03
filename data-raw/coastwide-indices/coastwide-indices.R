@@ -171,12 +171,51 @@ if(check_index_changed(npi_monthly, npi_monthly_new)){
 
 # NPI annual
 # This website has 2022-10 in it but includes value for 2022 (which by definition
-#  includes data from 2023), so not sure about their naming convention.
+#  includes data from 2023), so not sure about their naming convention. Doing a
+# similar manual checking to that above for npi_monthly.
 
-download.file("https://climatedataguide.ucar.edu/sites/default/files/2022-10/npindex_ndjfm.txt",
-              destfile="npi_annual_val.txt",
-              mode="wb",
+stop("You need to manually update j in the next bit.")
+
+last_npi_annual <- "2023-04"   # WILL GET UPDATED MANUALLY SOMETIMES - error
+                                #  message later will tell you when.
+
+# Create potential new months (note that the filenames do not seem to get
+#  updated every month); note these replace the ones used above
+last <- lubridate::ym(last_npi_annual)
+today <- lubridate::today()
+to_check_dates <- seq(last, today, "1 month")
+to_check_stamps <- rev(substring(as.character(to_check_dates), 1, 7))   # Latest first
+
+# Going to check if the file with latest month exists, and work backwards to ensure
+#  getting the latest. Could not
+#  figure out a simple way to check if a website exists, so need to do this
+#  manually, though will be fairly simple once we are checking this every month.
+#  So first check if latest month exists. Gave up trying to automate as
+#   RCurl::url.exists(sitename)  returnsed FALSE even with a sitename that exists.
+
+j <- 1      # MAY NEED TO CHANGE THIS MANUALLY - error message below will tell
+            # you when.
+
+sitename <- paste0("https://climatedataguide.ucar.edu/sites/default/files/",
+                   to_check_stamps[j],
+                   "/npindex_ndjfm.txt")
+
+sitename_anomaly <- paste0("https://climatedataguide.ucar.edu/sites/default/files/",
+                   to_check_stamps[j],
+                   "/npindex_anom_ndjfm.txt")
+
+download.file(sitename,
+              destfile = "npi_annual_val.txt",
+              mode = "wb",
               quiet = FALSE)
+
+stop(paste("If download.file just gave an error then increase j <- 1 to 2, then 3 etc. if happens again, up to",
+           length(to_check_stamps),
+           "which should be same as the latest one saved; repeat above code from j.",
+           "For the first j for which download.file does NOT error then, to set up for the next future update, replace last_npi_annual above with",
+            to_check_stamps[j],
+           "and set j <- 1 again in code. Then keep calm and carry on through this file.",
+           sep = "\n"))
 
 npi_annual_val_new <- readr::read_table("npi_annual_val.txt",
                                         col_names = c("year", "value"),
@@ -185,10 +224,12 @@ npi_annual_val_new <- readr::read_table("npi_annual_val.txt",
 
 stopifnot(npi_annual_val_new[1,1] == 1899)    # Check still starts in 1899.
 
+# Presumably the anomaly file will also exist, if this fails then do some
+# detective work.
 
-download.file("https://climatedataguide.ucar.edu/sites/default/files/2023-01/npindex_anom_ndjfm.txt",
-              destfile="npi_annual_anom.txt",
-              mode="wb",
+download.file(sitename_anomaly,
+              destfile = "npi_annual_anom.txt",
+              mode = "wb",
               quiet = FALSE)
 
 npi_annual_anom_new <- readr::read_table("npi_annual_anom.txt",
@@ -208,12 +249,13 @@ class(npi_annual_new) <- c("pacea_index",
 attr(npi_annual_new, "axis_name") <- "North Pacific Index"
 
 if(check_index_changed(npi_annual, npi_annual_new)){
+  expect_equal(npi_annual,
+               npi_annual_new[1:nrow(npi_annual), ]) # See note at top if fails.
+
   npi_annual <- npi_annual_new
   usethis::use_data(npi_annual,
                     overwrite = TRUE)
-  plot(npi_annual, value = "value", style = "plain")  # plain not a thing yet, just
-                                             # not red-blue TODO add in average
-                                             # value so can show colours
+  plot(npi_annual)
 }
 
 # PDO
