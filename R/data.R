@@ -165,6 +165,7 @@
 ##' time. Fisheries scientist Steven Hare coined the term PDO
 ##' in 1996 while researching connections between Alaska
 ##' salmon production cycles and Pacific climate.
+##'
 ##' Two main characteristics distinguish PDO from El
 ##' Niño/Southern Oscillation (ENSO): first, 20th century PDO "events" persisted
 ##' for 20-to-30 years, while typical ENSO events persisted for 6 to 18 months;
@@ -242,7 +243,9 @@
 ##'   \item{anom:}{anomaly calculated as the leading empirical orthogonal
 ##'   function of monthly sea surface temperature anomalies over the North
 ##'   Pacific (poleward of 20 deg N) after the global average sea surface
-##'   temperature has been removed.}
+##'   temperature has been removed. Note that the final value seems amenable to
+##'   being recomputed when the time series is extended with further values
+##'   (i.e. when we update pacea).}
 ##' }
 ##' @examples
 ##' \dontrun{
@@ -419,7 +422,8 @@
 ##'   are projected onto the AO loading pattern, which is
 ##'   defined as the first empirical orthogonal function of monthly mean
 ##'   1000 hPa geopotential height during the 1979-2000 period. The time series
-##'   is then normalized with the monthly mean index's standard deviation.}
+##'   is then normalized with the monthly mean index's standard
+##'   deviation. Such normalised monthly anomalies are given here.}
 ##' }
 ##' @examples
 ##' \dontrun{

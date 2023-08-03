@@ -288,6 +288,10 @@ class(pdo_new) <- c("pacea_index",
 attr(pdo_new, "axis_name") <- "Pacific Decadal Oscillation"
 
 if(check_index_changed(pdo, pdo_new)){
+  expect_equal(pdo[1:(nrow(pdo) - 1), ],
+               pdo_new[1:nrow(pdo) - 1, ]) # See note at top if fails. Final
+                                        # value seems to get updated (the final March
+                                        # 2023 value did when updating in August 2023).
   pdo <- pdo_new
   usethis::use_data(pdo,
                     overwrite = TRUE)
@@ -350,6 +354,8 @@ class(soi_new) <- c("pacea_index",
 attr(soi_new, "axis_name") <- "Southern Oscillation Index"
 
 if(check_index_changed(soi, soi_new)){
+  expect_equal(soi,
+               soi_new[1:nrow(soi), ])  # See note at top if this fails
   soi <- soi_new
   usethis::use_data(soi,
                     overwrite = TRUE)
@@ -435,20 +441,15 @@ attr(mei_new, "axis_name") <- "Multivariate ENSO Index"
 
 if(check_index_changed(mei,
                        mei_new)){
+  expect_equal(mei,
+               mei_new[1:nrow(mei), ])  # See note at top if this fails
   mei <- mei_new
   usethis::use_data(mei,
                     overwrite = TRUE)
-  plot(mei)  # TODO maybe update when plotting functions finalised
+  plot(mei)
 }
 
-# Arctic Oscillation
-#  https://www.cpc.ncep.noaa.gov/products/precip/CWlink/daily_ao_index/ao.shtml
-# https://www.climate.gov/news-features/understanding-climate/climate-variability-arctic-oscillation
-# https://en.wikipedia.org/wiki/Arctic_oscillation
-# For help:
-#  The daily AO index is constructed by projecting the daily (00Z) 1000mb height anomalies poleward of 20°N onto the loading pattern of the AO. Please note that year-round monthly mean anomaly data have been used to obtain the loading pattern of the AO (Methodology).  Since the AO has the largest variability during the cold season, the loading pattern primarily captures characteristics of the cold season AO pattern.
-# The daily AO index and its forecasts using GFS and Ensemble mean forecast data are shown for the previous 120 days as indicated. Each daily value has been standardized by the standard deviation of the monthly AO index from 1979-2000.
-
+# AO - Arctic Oscillation
 download.file("https://www.cpc.ncep.noaa.gov/products/precip/CWlink/daily_ao_index/monthly.ao.index.b50.current.ascii.table",
               destfile="ao.txt",
               mode="wb",
@@ -492,41 +493,48 @@ class(ao_new) <- c("pacea_index",
 attr(ao_new, "axis_name") <- "Arctic Oscillation"
 
 if(check_index_changed(ao, ao_new)){
+  expect_equal(ao,
+               ao_new[1:nrow(ao_new), ]) # See note at top if fails. Not tested
+                                        # this one yet so it may fail if final
+                                        # value gets revised; if so tweak here.
   ao <- ao_new
   usethis::use_data(ao,
                     overwrite = TRUE)
   plot(ao)
 }
 
-# ALPI - not updated since 2015, see ?alpi
-download.file("https://api-proxy.edh.azure.cloud.dfo-mpo.gc.ca/catalogue/records/4bb821ce-bef7-46d3-95d2-064065f1bda4/attachments/alpi_1900_2015_en.csv",
-              destfile = "alpi.txt",
-              mode="wb",
-              quiet = FALSE)
+# ALPI - not updated since 2015, see ?alpi. So no need to keep running this each
+#  month.
+if(FALSE){      # Change to TRUE if we want to update, though it'd probably be
+                #  done some other way anyway
+  download.file("https://api-proxy.edh.azure.cloud.dfo-mpo.gc.ca/catalogue/records/4bb821ce-bef7-46d3-95d2-064065f1bda4/attachments/alpi_1900_2015_en.csv",
+                destfile = "alpi.txt",
+                mode="wb",
+                quiet = FALSE)
 
-# Can't use read_table as , separated without spaces
-alpi_new <- read.csv("alpi.txt") %>%
-  as_tibble() %>%
-  dplyr::rename("year" = "YEAR",
-                "anomaly" = "ALEUTIAN.LOW.PRESSURE.INDEX..ALPI.")
+  # Can't use read_table as , separated without spaces
+  alpi_new <- read.csv("alpi.txt") %>%
+    as_tibble() %>%
+    dplyr::rename("year" = "YEAR",
+                  "anomaly" = "ALEUTIAN.LOW.PRESSURE.INDEX..ALPI.")
 
-stopifnot(alpi_new[1, 1:2] == c(1900, 1.3)) # Check still starts in 1950
+  stopifnot(alpi_new[1, 1:2] == c(1900, 1.3)) # Check still starts in 1950
 
-class(alpi_new) <- c("pacea_index",
-                    class(alpi_new))
+  class(alpi_new) <- c("pacea_index",
+                       class(alpi_new))
 
-attr(alpi_new, "axis_name") <- expression(paste(plain(Aleutian) * " " * plain(Low) * " " * plain(Pressure) * " " * plain(Index) * ", " * 10^6 * km^2))
-# Must be an easier way of doing that, but it works
+  attr(alpi_new, "axis_name") <- expression(paste(plain(Aleutian) * " " * plain(Low) * " " * plain(Pressure) * " " * plain(Index) * ", " * 10^6 * km^2))
+  # Must be an easier way of doing that, but it works
 
-# if(check_index_changed(alpi, alpi_new)){  # this needs updating as it errors with
-#  the complex axis name, but that's only needed if ALPI is going to be updated
-#  (and so this section should be uncommented).
-# alpi <- alpi_new
-# usethis::use_data(alpi,
-#                  overwrite = TRUE)
-# plot(alpi)
-# }
-
+  # if(check_index_changed(alpi, alpi_new)){  # this needs updating as it errors with
+  #  the complex axis name, but that's only needed if ALPI is going to be updated
+  #  (and so this section should be uncommented).
+  # alpi <- alpi_new
+  # usethis::use_data(alpi,
+  #                  overwrite = TRUE)
+  # plot(alpi)
+  # }
+}
 
 # pacea_indices - saving data frame of all indices and ranges to easily see, and
 #  automatically include in vignette. Ordering by start year (did with arrange

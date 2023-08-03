@@ -91,7 +91,7 @@ tail(oni_fix)       # Should always end with February 2023
 ```
 Of course, you may always want an analysis to be as up-to-date as possible, but be
 aware of this for reproducibility, and to avoid you being confused if your results
-slightly change.
+slightly change. Similar, for `pdo` the previous last value can seem to get updated.
 
 ## Further climatic and oceanographic indices
 
