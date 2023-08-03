@@ -101,7 +101,7 @@
 ##' @examples
 ##' \dontrun{
 ##' npi_monthly
-##' plot(npi_monthly)
+##' plot(npi_monthly)  # TODO doesn't work, updated defaults
 ##' }
 ##'
 ##' @author Andrew Edwards
@@ -489,6 +489,29 @@
 ##' @source Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
 "alpi"
 
+##' Summary of climatic and oceanographic indices in pacea
+##'
+##' The Aleutian Low Pressure Index (ALPI) has been used to describe
+##' decadal-scale changes in North Pacific climate-ocean conditions and is linked
+##' to patterns in marine productivity.
+##'
+##' @format A tibble with columns:
+##' \describe{
+##'   \item{Object:}{name in pacea (use ?<object> for help file}
+##'   \item{Description:}{Long name}
+##'   \item{Resolution:}{Monthly or annual resolution}
+##'   \item{Start year:}{Start year of time series}
+##'   \item{End year:}{End year of time series}
+##' }
+##'
+##' @examples
+##' \dontrun{
+##' pacea_indices
+##' knitr::kable(pacea_indices)   # in vignette and README
+##' }
+##' @author Andrew Edwards
+##' @source Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
+"pacea_indices"
 
 
 ##' Pacific Hake annual age-0 recruitments as estimated by the 2023 stock

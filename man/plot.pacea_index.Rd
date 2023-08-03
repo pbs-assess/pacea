@@ -15,7 +15,7 @@
   y_tick_by = 0.25,
   y_tick_start = NULL,
   y_tick_end = NULL,
-  x_tick_extra_years = 20,
+  x_tick_extra_years = 200,
   start_decade_ticks = lubridate::ymd("1800-01-01", truncated = 2),
   event_years = NULL,
   event_lub = NULL,
@@ -43,8 +43,8 @@ corresponding `date` is for 1st January of each year.}
 
 \item{style}{what style of plot:
 \describe{
-  \item{"red_blue_bar" (TODO default):}{for red bars above 0 and
-  blue bars below 0, but need to manually adjust the thickness `lwd` for
+  \item{"red_blue_bar":}{for red bars above 0 and
+  blue bars below 0, but may need to manually adjust the thickness `lwd` for
   width of bars to look good for your specific plot}
   \item{"red_blue":}{for a line with filled in colouring for red above 0 and
   blue below 0}
@@ -61,7 +61,9 @@ specified (may need to occasionally specify)}
 \item{y_tick_end}{where to end y-axis tickmars, as for `y_tick_start`}
 
 \item{x_tick_extra_years}{number of extra years to expand around the range
-of data for which to add annual tick marks (does not expand the axis)}
+of data for which to add annual tick marks (does not expand the axis); in
+hindsight could have simplified this in `add_tickmarks()`, but just made
+the default big here.}
 
 \item{start_decade_ticks}{where to start tickmarks for decades (defaults to
 1800 as hard to automate)}
@@ -84,48 +86,45 @@ For more control instead use `event_lub`.}
 \item{event_col}{`col` for events}
 
 \item{...}{optional arguments passed onto `plot()`. Note that the x-axis is
- constructed using a lubridate `date` object, so `xlim` needs to be a
- `date` object (see example).
-@return plot of the time series to the current device (returns nothing)}
+constructed using a lubridate `date` object, so `xlim` needs to be a
+`date` object (see example).}
+}
+\value{
+plot of the time series to the current device (returns nothing)
 }
 \description{
 Temporal plot for a pacea index (`pacea_index`) object, with options for
 display style, and adding in times of other events (to ask questions such as
-'does this rare event coincide with El Niño?'). See examples and vignette TODO.
+'does this rare event coincide with El Niño?'). See examples and vignette.
 }
 \examples{
 \dontrun{
-plot(oni)  # TODO add all examples, and wrapper for plotting multiple
+plot(oni)
 plot(oni,
      xlim = c(lubridate::dmy(01011950),
      lubridate::dmy(01012040))) # to expand x-axis
 plot(npi_monthly,
      value = "value")
 
-TODO Move this to vignette, keeping final one for the example
-The overlaying of events idea was inspired from a lunchtime conversation regarding a
-rare sighting of a Bluntnose Sixgill Shark by divers in Port Alberni, that garnered
-[media attention](https://www.timescolonist.com/local-news/divers-encounter-deep-water-shark-in-alberni-inlet-7102038).
-A lunchtime conversation with Maxime Veilleux led to the question of whether catches
-of these sharks in BC waters are related to El Niño. Specifically, as the data from
-the International Pacific Halibut Commission annual longline survey are readily available in the [gfiphc](https://github.com/pbs-assess/gfiphc) package, we looked at years which caught a Bluntnose Sixgill Shark (at a standard station, outside of the Strait of Georgia).
-library(gfiphc)     # Check runs okay
-sp_set_counts <- iphc_get_calc_plot_full("bluntnose sixgill shark")
+# The overlaying of events idea was inspired from a lunchtime conversation regarding a
+# rare sighting of a Bluntnose Sixgill Shark by divers in Port Alberni, that garnered
+# [media attention](https://www.timescolonist.com/local-news/divers-encounter-deep-water-shark-in-alberni-inlet-7102038).
+# A lunchtime conversation with Maxime Veilleux led to the question of whether catches
+# f these sharks in BC waters are related to El Niño. Specifically, as the data from
+# the International Pacific Halibut Commission annual longline survey are
+# readily available in the [gfiphc](https://github.com/pbs-assess/gfiphc)
+# package, we looked at years which caught a Bluntnose Sixgill Shark (at a
+# standard station, outside of the Strait of Georgia).
+
+library(gfiphc)
+sp_set_counts <- iphc_get_calc_plot_full("bluntnose sixgill shark")   # Need
+  access to DFO Groundfish database
 bluntnose_caught_years <- unique(filter(sp_set_counts$set_counts, N_it > 0, standard == "Y")$year)
 plot(oni,
      event_years = bluntnose_caught_years,
      xlim = c(lubridate::dmy(01011995), lubridate::dmy(01012024)),
      lwd = 2)
-This is not meant to be a definitive analysis, but a demonstration of the plotting options in pacea.
-
-TODO keep this one for example,
-plot(oni,
-     event_years = c(1996, 2003, 2004, 2006, 2007, 2008, 2009, 2010, 2014, 2016, 2017, 2019),
-     xlim = c(lubridate::dmy(01011995), lubridate::dmy(01012024)),
-     lwd = 2)
-# event_years here relate to years that the IPHC survey caught
-Bluntnose Sixgill Sharks in BC waters (outside of Strait of Georgia). See vignette
-for more details and motivation.
+# This is not meant to be a definitive analysis, but a demonstration of the plotting options in pacea.
 }
 }
 \author{

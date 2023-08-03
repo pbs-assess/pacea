@@ -25,7 +25,9 @@ specified (may need to occasionally specify)}
 \item{y_tick_end}{where to end y-axis tickmars, as for `y_tick_start`}
 
 \item{x_tick_extra_years}{number of extra years to expand around the range
-of data for which to add annual tick marks (does not expand the axis)}
+of data for which to add annual tick marks (does not expand the axis); in
+hindsight could have simplified this in `add_tickmarks()`, but just made
+the default big here.}
 
 \item{start_decade_ticks}{where to start tickmarks for decades (defaults to
 1800 as hard to automate)}

@@ -1,9 +1,14 @@
 # Obtaining the oceanographic basin indices and compile them into pacea. Code is
 #  best run line-by-line to check plots etc. Creating a consistent format, of
 #  class pacea_index.
+
+# To add a new index: check the saved .txt files below to see which one (if any!) most closely
+# matches the new one and use the code here as a template. Then be sure to add it to the
+#  pacea_index object at the end of this file.
+
+# Can prob delete: TODO
 #
-#  Converted from original code supplied by Chris Rooper. Moving updated calls
-#  to the top, to save each data set as our new format.
+#  Adapted from original code supplied by Chris Rooper.
 #
 # Checking with Tetjana's from SOPO 2022. She has (they all say 'full year'):
 # Index    Used below by Chris?    Source file agrees with Chris's?
@@ -29,8 +34,6 @@
 # AO
 # ALPI
 
-# For a new index, check the saved .txt files to see which one (if any!) most closely
-# matches the new one and use the code here as a template.
 
 load_all()
 library(dplyr)
@@ -428,3 +431,28 @@ attr(alpi_new, "axis_name") <- expression(paste(plain(Aleutian) * " " * plain(Lo
 #                  overwrite = TRUE)
 # plot(alpi)
 # }
+
+
+# pacea_indices - saving data frame of all indices and ranges to easily see, and
+#  automatically include in vignette. Ordering by start year (did with arrange
+#  then redoing myself for ease of adding things in).
+
+pacea_indices <-
+  dplyr::tribble(
+           ~Object, ~Description, ~Resolution, ~`Start year`, ~`End year`,
+           "pdo", "Pacific Decadal Oscillation", "monthly", min(pdo$year), max(pdo$year),
+           "npi_monthly", "North Pacific Index (monthly)", "monthly", min(npi_monthly$year), max(npi_monthly$year),
+           "npi_annual", "North Pacific Index (annual)", "annual", min(npi_annual$year), max(npi_annual$year),
+           "alpi", "Aleutian Low Pressure Index", "annual", min(alpi$year), max(alpi$year),
+           "oni", "Oceanic Niño Index", "monthly", min(oni$year), max(oni$year),
+           "npgo", "North Pacific Gyre Oscillation", "monthly", min(npgo$year), max(npgo$year),
+           "ao", "Arctic Oscillation", "monthly", min(ao$year), max(ao$year),
+           "soi", "Southern Oscillation Index", "monthly", min(soi$year), max(soi$year),
+           "enso_mei", "Multivariate El Niño Southern Oscillation Index", "monthly", min(enso_mei$year), max(enso_mei$year)) %>%
+  arrange(`Start year`)
+
+# if(pacea_indices_new != pacea_indices){   # couldn't figure out, or using expect_equal
+#  pacea_indices <- pacea_indices_new
+usethis::use_data(pacea_indices,
+                   overwrite = TRUE)
+pacea_indices

@@ -51,7 +51,7 @@ Associated code adapted from code generously shared by Chris Rooper.
 \examples{
 \dontrun{
 npi_monthly
-plot(npi_monthly)
+plot(npi_monthly)  # TODO doesn't work, updated defaults
 }
 
 }

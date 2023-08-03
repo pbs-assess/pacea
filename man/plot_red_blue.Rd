@@ -21,9 +21,8 @@ object.}
 \item{type}{usual argument for `plot()`}
 
 \item{...}{optional arguments passed onto `plot()`. Note that the x-axis is
- constructed using a lubridate `date` object, so `xlim` needs to be a
- `date` object (see example).
-@return plot of the time series to the current device (returns nothing)}
+constructed using a lubridate `date` object, so `xlim` needs to be a
+`date` object (see example).}
 }
 \value{
 plot of time series

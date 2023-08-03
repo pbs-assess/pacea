@@ -1,0 +1,168 @@
+---
+title: "Climatic and Oceanographic Indices"
+author: "Andrew Edwards"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Climatic and Oceanographic Indices}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 5.7,
+  fig.height = 5
+)
+```
+
+## Oceanic Niño Index
+
+```{r setup}
+library(pacea)
+library(tibble)  # Else prints all of a tibble
+```
+
+Various climate and oceanographic indices are included in pacea. For example, to
+see a plot of the Oceanic Niño Index (ONI) anomaly, simply type
+
+```{r oniplot}
+plot(oni)
+```
+
+The values are readily available:
+```{r oni}
+oni
+```
+so you can use them to conduct your own analyses.
+
+Each climatic and oceanographic index is saved as a data
+object, and properly documented, described, and referenced in its help file,
+accessed by, for example:
+```{r onihelp, eval = FALSE}
+?oni      # output not shown in vignette
+```
+
+The object `oni` has the class `pacea_index`, which ensures that the `plot(oni)`
+command above
+automatically uses our specialised function `plot.pacea_index(oni)` that gives
+the red and blue colouring, tickmarks, and axis labelling.
+See `?plot.pacea_index`
+for many options to further customise the figure and change it from the default
+shown above; any arguments not listed will get passed onto the standard `plot(...)`
+function. A few examples are shown below, including `xlim` which is a little more
+tricky as it has to be specified as a date object (as noted in `?plot.pacea_index`):
+```{r onioptions}
+plot(oni,
+     xlim = c(lubridate::dmy(01011950),   # day-month-year
+              lubridate::dmy(01012048)),
+     xaxs = "i",
+     main = "My customised title",
+     lwd = 2)
+```
+
+You can easily see if some occasional event seems to correspond with El Niño, by
+specifying the `event_years` argument (we also truncate the time axis here):
+```{r onievent}
+plot(oni,
+     event_years = c(1996, 2003, 2004, 2006, 2007, 2008, 2009, 2010, 2014, 2016, 2017, 2019),
+     xlim = c(lubridate::dmy(01011995),
+              lubridate::dmy(01012024)),
+     lwd = 2)
+```
+
+For this example (inspired by a conversation about a rare sighting of a Bluntnose
+Sixgill Shark near Port Alberni, see `?plot.pacea_index` for full details),
+the grey dots show the years of the event (shark sighting) and the `oni` value; there looks to be no clear relationship between the shark sightings and
+El Niño. This gives a quick way to test an idea, and decide whether to pursue
+a more detailed analysis.
+
+## Further climatic and oceanographic indices
+
+The indices currently imported into pacea, ordered by start year, are:
+```{r indicestable}
+knitr::kable(pacea_indices)
+```
+
+For further details and references for each one see its help file,
+e.g. `?pdo`. See the main README file for our plan on updating these (and other)
+objects in pacea.
+
+## Further examples of plotting options
+
+Some indices contain absolute values as well as anomalies, for which the `value`
+and `style` options should be set:
+```{r npiplot}
+plot(npi_annual,
+     value = "value",    # plot the absolute value, not the anomaly
+     style = "plain",    # plot a plain line, not the red-blue style
+     ylab = "North Pacific Index (absolute, hPa)") # Refine label
+```
+
+To smooth monthly values over a year:
+```{r smooth}
+plot(oni,
+     smooth_over_year = TRUE,
+     lwd = 6)     # You may have to tweak the line thickness to suit your figure
+```
+
+The corresponding date plotted is (centred around) 1st January for each year.
+
+For a line with filled-in colouring for red above 0 and blue below (as opposed
+the bars shown so far):
+```{r redblue}
+plot(oni,
+     style = "red_blue")
+```
+
+## All available indices
+
+Here are the plots of all the indices listed above, plotted with the same range
+of dates, and smoothed over the year for the monthly values (further tweaking is
+possible):
+```{r plotall, fig.height = 32}
+par(mfrow = c(nrow(pacea_indices) - 1, 1))         # Won't need npi_monthly as using npi_annual
+full_years <- c(min(pacea_indices$`Start year`),
+                max(pacea_indices$`End year` + 1))
+x_lim <- c(lubridate::dmy(paste0("0101", full_years[1])),
+           lubridate::dmy(paste0("0101", full_years[2])))
+lwd_val = 2
+plot(pdo,
+     xlim = x_lim,
+     smooth_over_year = TRUE,
+     lwd = lwd_val)
+
+plot(npi_annual,
+     xlim = x_lim,
+     lwd = lwd_val)
+
+plot(alpi,
+     xlim = x_lim,
+     lwd = lwd_val)
+
+plot(oni,
+     xlim = x_lim,
+     smooth_over_year = TRUE,
+     lwd = lwd_val)
+
+plot(npgo,
+     xlim = x_lim,
+     smooth_over_year = TRUE,
+     lwd = lwd_val)
+
+plot(ao,
+     xlim = x_lim,
+     smooth_over_year = TRUE,
+     lwd = lwd_val)
+
+plot(soi,
+     xlim = x_lim,
+     smooth_over_year = TRUE,
+     lwd = lwd_val)
+
+plot(enso_mei,
+     xlim = x_lim,
+     smooth_over_year = TRUE,
+     lwd = lwd_val)
+```
