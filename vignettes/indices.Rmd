@@ -31,9 +31,12 @@ see a plot of the Oceanic Niño Index (ONI) anomaly, simply type
 plot(oni)
 ```
 
+This shows the onset of El Niño (positive index) conditions in April 2023.
+
 The values are readily available:
 ```{r oni}
 oni
+tail(oni)
 ```
 so you can use them to conduct your own analyses.
 
@@ -133,8 +136,44 @@ plot(oni,
 
 ## All available indices
 
-Here are the plots of all the indices listed above, plotted with the same range
-of dates, and smoothed over the year for the monthly values (further tweaking is
+Here are the plots of all the indices listed above, over their default
+ranges without any smoothing over the year (for the monthly indices). The `lwd`
+arguments should be tweaked for specific applications and publications so that red and blue do
+not overlap -- this depends on size of the final figure, so is best done
+manually be the user. In particular the plot for the (over 2000) monthly values
+for `pdo` would need some tweaking. Note that
+`npi_monthly` is saved as an absolute value, so the arguments have to be
+specified, as per the example in `?npi_monthly`.
+```{r plotalldefault, fig.height = 36}
+par(mfrow = c(nrow(pacea_indices), 1))
+lwd_val = 3
+
+plot(pdo)
+
+plot(npi_monthly,
+     value = "value",    # plot the absolute value as no anomaly defined
+     style = "plain",    # plot a plain line, not the red-blue style
+     ylab = "North Pacific Index (absolute, hPa)") # Refine label
+
+plot(npi_annual,
+     lwd = lwd_val)
+
+plot(alpi,
+     lwd = lwd_val)
+
+plot(oni)
+
+plot(npgo)
+
+plot(ao)
+
+plot(soi)
+
+plot(mei)
+```
+
+Here is a similar plot but showing each index over the same range
+of dates (to get an easy visualisation of availability of each index), and smoothed over the year for the monthly values (further tweaking is
 possible):
 ```{r plotall, fig.height = 32}
 par(mfrow = c(nrow(pacea_indices) - 1, 1))         # Won't need npi_monthly as using npi_annual
