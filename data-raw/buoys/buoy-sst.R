@@ -101,7 +101,7 @@ dfo_data_latest <- dfo_data %>% group_by(stn_id) %>%
 dfo_data_latest
 # On 2023-06-14 having downloaded data at 15:51, we have:
 dfo_data_latest
-# A tibble: 18 × 2
+# A tibble: 18 × 2      # similar results on 2023-08-04, i.e. values from 3 days ago
 ##    stn_id end_date
 ##    <fct>  <dttm>
 ##  1 C46004 2023-06-11 14:40:00
