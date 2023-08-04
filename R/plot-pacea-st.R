@@ -27,30 +27,43 @@ plot.pacea_st <- function(obj,
                           eez = FALSE,
                           ...) {
   
-  stopifnot("obj must be of class `sf`" =
-              "sf" %in% class(obj))
-  
-  stopifnot("Must enter valid numerals for 'years'" = !any(is.na(suppressWarnings(as.numeric(years)))))
-  
-  # object units attribute
-  obj_unit <- attributes(obj)$units
-  
-  # subset year_month columns
-  tobj <- subset_pacea_ym(data = obj, months = months, years = years)
-  
-  if(ncol(tobj)==1){
-    tobj <- obj
-  } 
-  
   # create new names for plot
   month_table <- data.frame(month.name = month.name,
                             month.abb = month.abb,
                             month.num = 1:12)
   
+  stopifnot("obj must be of class `sf`" =
+              "sf" %in% class(obj))
+  
+  stopifnot("Must enter valid numerals for 'years'" = !any(is.na(suppressWarnings(as.numeric(years)))))
+  
+  stopifnot("'months' are invalid - must be full names, abbreviations, or numeric" = 
+              as.character(months) %in% c(month.name, month.abb, 1:12))
+  
+  # check if years are available in data
+  obj_names <- obj %>% st_drop_geometry() %>%
+    colnames() %>% strsplit(split = "_") %>%
+    unlist() %>% as.numeric() %>%
+    matrix(ncol = 2, byrow = TRUE) %>% as.data.frame()
+  stopifnot("Invalid 'years' specified" = suppressWarnings(as.numeric(years)) %in% unique(obj_names$V1))
+  rm(obj_names)
+  
+  # object units attribute
+  obj_unit <- attributes(obj)$units
+  
+  # subset year_month columns
+  tobj <- subset_pacea_ym(data = obj, months = months, years = years)  ####MOVE THIS DOWN
+  
+  if(ncol(tobj)==1){
+    tobj <- obj
+  } 
+  
+  # year-month combinations
   tobj_names <- as.data.frame(matrix(as.numeric(unlist(strsplit(names(st_drop_geometry(tobj)), split = "_"))), 
                                      ncol = 2, byrow = TRUE)) 
   tobj_names <- merge(tobj_names, month_table, by.x = "V2", by.y = "month.num", sort = FALSE)[,c("V1", "V2", "month.name", "month.abb")] %>%
     arrange(V1,V2)
+  
   
   tnew_names <- do.call(paste, c(tobj_names[c("V1", "month.abb")], sep = "_"))
   
