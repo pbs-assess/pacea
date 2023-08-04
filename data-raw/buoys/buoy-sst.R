@@ -3,7 +3,8 @@
 #  Adding NAs for missing dates gives 199,000 rows (still 170,000 sst's).
 # Adapting from Andrea Hilborn's code in andrea-code/
 
-# Run line-by-line while developing.
+# Run line-by-line while developing. Can source to update data, check that
+#  redownload_data = TRUE.
 
 load_all()
 
@@ -14,7 +15,7 @@ library(lubridate)
 # library(tibble)
 # library(ggplot2)
 
-redownload_data = TRUE       # FALSE while developing, TRUE to update.
+redownload_data = TRUE         # FALSE while developing, TRUE to update.
 
 # CIOOS flags for the DFO MEDS record, flags to include:
 
@@ -379,6 +380,7 @@ buoy_sst = full_join(dfo_daily_mean,
                                   to = max(date),
                                   by = "day")) %>%
   relocate(date) %>%
+  droplevels() %>%
   ungroup()
                         # for complete, fill = list(sst = NA)) not needed since
                         # NA is default; grouping fills in the stn_ids. Did

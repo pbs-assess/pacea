@@ -15,7 +15,8 @@
 plot.pacea_buoy <- function(obj,
                             stn_id = "C46146",    # plot one station if
                                         # specified  # NOT IMPLEMENTED YET, and
-                                        # make stn_id
+                                        # make stn_id. Might need tweaking
+                                        # regarding factors etc.
                             years = NULL,    # plot a given vector of years (can
                                         # be just one year), els
                                         # all available if NULL TODO check range works

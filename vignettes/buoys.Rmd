@@ -98,8 +98,6 @@ for(i in 1:nrow(buoy_metadata)){
 }
 ```
 
-TODO buoy metadata stn_id as factor
-
 HERE
 
 Might needs some of this for multipanel plot
