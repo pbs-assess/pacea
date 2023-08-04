@@ -45,8 +45,9 @@ plot.pacea_buoy <- function(obj,
 ##'
 ##' <desc>
 ##'
-##' @param obj
+##' @param obj TODO
 ##' @param year_highlight
+##' @param title TODO
 ##' @return
 ##' @export
 ##' @author Andrew Edwards
@@ -111,16 +112,17 @@ plot_buoy_sst_single <- function(obj,
 ##' Andrea's code, probably have to combine that with single station code (not
 ##' just loop round single station).
 ##'
-##' @param obj
-##' @param years
-##' @param ...
+##' @param obj TODO
+##' @param stn_id TODO
+##' @param years TODO
+##' @param year_highlight TODO
 ##' @return
 ##' @export
 ##' @author Andrew Edwards
 ##' @examples
-##' @ontrun{
-##' @
-##' @}
+##' \dontrun{
+##'
+##' }
 plot_buoy_sst_multiple <- function(obj,
                                    stn_id,
                                    years,
