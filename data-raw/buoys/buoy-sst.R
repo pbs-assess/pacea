@@ -1,5 +1,6 @@
 # Code to download and save buoy temperature into pacea. Resulting file of over
 #  170,000 sst's is only 371 kb, so fine to not move into pacea-data.
+#  Adding NAs for missing dates gives 199,000 rows (still 170,000 sst's).
 # Adapting from Andrea Hilborn's code in andrea-code/
 
 # Run line-by-line while developing.
@@ -371,62 +372,21 @@ expect_equal(colnames(dfo_daily_mean),
 
 opp_daily_mean$stn_id = as.factor(paste0("C", opp_daily_mean$stn_id))
 
+# Join together, then fill in missing-sst dates with NAs, so plotting gives gaps
 buoy_sst = full_join(dfo_daily_mean,
-                     opp_daily_mean)
+                     opp_daily_mean) %>%
+  group_by(stn_id) %>%
+  tidyr::complete(date = seq.Date(from = min(date),
+                                  to = max(date),
+                                  by = "day")) %>%
+  ungroup()
+                        # for complete, fill = list(sst = NA)) not needed since
+                        # NA is default; grouping fills in the stn_ids
 
 class(buoy_sst) <- c("pacea_buoy",
                      class(buoy_sst))    # TODO maybe change to pacea_buoy_sst?
 
-HERE - this is developing, then refine:
-
-two <- dplyr::filter(buoy_sst, stn_id %in% c("C46004", "C46036"))   # Just two
-# to test adding NA's   TODO then delete
-plot(two, station = "C46004")    # Has straight lines before dealing with NAs
-
-# This works for one stn_id, think may have to use group for two:  TODO then delete
-one <- dplyr::filter(buoy_sst,
-                     stn_id == "C46304")
-this_stn_id <- unique(one$stn_id)
-one_with_NAs <- tidyr::complete(one,
-                                date = seq.Date(from = min(date),
-                                                to = max(date),
-                                                by = "day"),
-                                fill = list(sst = NA,
-                                            stn_id = this_stn_id))
-
-
-two_with_NAs <- group_by(two, stn_id) %>%
-  tidyr::complete(date = seq.Date(from = min(date),
-                                  to = max(date),
-                                  by = "day")) %>%
-                  # fill = list(sst = NA)) not needed, NA is default and
-                  # grouping fills in the stn_ids
-  ungroup()
-class(two_with_NAs) <- class(two)
-plot(two_with_NAs)    # but plotting not set up yet to do just one station, so
-                      # plot has too much
-
-two_with_NAs_again <- group_by(two, stn_id) %>%
-  tidyr::complete(date = seq.Date(from = min(date),
-                                  to = max(date),
-                                  by = "day"))
-expect_equal(two_with_NAs, two_with_NAs_again)
-
-class(two_with_NAs) <- class(two)
-# windows()
-
-# Plots were confusing me since were plotting both stations at once, and mixing
-# up years, and originally filling in NAs when needed. All good. So NA fix seems
-# to have worked.
-plot(two, station = "C46004")
-windows()
-plot(two_with_NAs, station = "C46004")
-windows()
-plot(two_with_NAs, station = "C46036")  # same plot, as station not implemented
-                                        # yet in plotting
-
-plot(dplyr::filter(two_with_NAs, stn_id == "C46004"))
-plot(dplyr::filter(two_with_NAs, stn_id == "C46036"))
+buoy_sst
 
 usethis::use_data(buoy_sst,
                   overwrite = TRUE)
