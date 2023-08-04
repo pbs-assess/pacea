@@ -21,6 +21,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(pacea)
+library(dplyr)
 library(tibble)  # Else prints all of a tibble
 ```
 

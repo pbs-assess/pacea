@@ -3,7 +3,7 @@
 ##' Plot buoy SST data for either one station or multiple stations, with various options.
 ##'
 ##' @param obj buoy SST data, of class `pacea_buoy_sst`
-##' @param station single station to plot, or multiple station ids (as given by
+##' @param stn_id single station to plot, or multiple station ids (as given by
 ##'   `stn_id` column in `buoy_metadata`). Or "all" to plot all stations. TODO
 ##'
 ##' @return
@@ -13,47 +13,53 @@
 ##' \dontrun{
 ##' }
 plot.pacea_buoy <- function(obj,
-                            station = "C46146",    # plot one station if
+                            stn_id = "C46146",    # plot one station if
                                         # specified  # NOT IMPLEMENTED YET, and
                                         # make stn_id
-                            years = NULL,    # plot a given year, or range, else all
+                            years = NULL,    # plot a given vector of years (can
+                                        # be just one year), els
+                                        # all available if NULL TODO check range works
                             year_highlight = lubridate::year(lubridate::today())
                             ){
-  if(length(station == 1)){
-    plot_buoy_sst_single(obj,
-                         station = station,
-                         years = years,
-                         year_highlight = year_highlight
-                         )
+  station <- stn_id       # Can't use stn_id == stn_id in upcoming filter
+  if(length(station) == 1){
+    obj_one_stn <- dplyr::filter(obj,
+                                 stn_id == station)
+    if(!is.null(years)){
+      obj_one_stn <- dplyr::filter(obj_one_stn,
+                                   lubridate::year(date) %in% years)
+    }
+    plot_buoy_sst_single(obj_one_stn,
+                         year_highlight = year_highlight)
+
   } else {
-    plot_buoy_sst_multiple(obj,
-                           station = station,
+    plot_buoy_sst_multiple(obj,   # TODO
+                           stn_id = station,
                            years = years,
                            year_highlight = year_highlight
                            )
   }
 }
 
-
-
-##' Plot buoy SST data for a single station; called by `plot.pacea_buoy_sst()`
-##'  <desc>
+##' Plot buoy SST data for a single station; called by `plot.pacea_buoy()`
+##'
+##' <desc>
 ##'
 ##' @param obj
-##' @param years
-##' @param ...
+##' @param year_highlight
 ##' @return
 ##' @export
 ##' @author Andrew Edwards
 ##' @examples
-##' @ontrun{
-##' @
-##' @}
+##' \dontrun{
+##'
+##' }
 plot_buoy_sst_single <- function(obj,
-                                 station,    # TODO doesn't do anything yet
-                                 years,
                                  year_highlight
                                  ){
+  stopifnot("obj input for plot_buoy_sst_single() must just be for one stn_id" =
+              length(unique(obj$stn_id)) == 1)
+
   g <- ggplot(obj,
               aes(lubridate::yday(date),
                   sst,
@@ -99,7 +105,7 @@ plot_buoy_sst_single <- function(obj,
 ##' @
 ##' @}
 plot_buoy_sst_multiple <- function(obj,
-                                   station,
+                                   stn_id,
                                    years,
                                    year_highlight
                                    ){
