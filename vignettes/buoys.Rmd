@@ -92,7 +92,7 @@ plot(buoy_sst)
 Crude way of doing each one in turn (easier to see details on big plots, but
 will adapt Andrea's multi-panel plots also TODO):
 ```{r multiloop}
-for(i in 1:18){    # nrow(buoy_metadata)){ TODO
+for(i in 1:nrow(buoy_metadata)){
   plot(buoy_sst,
        stn_id = buoy_metadata[i, ]$stn_id) %>% print()
 }

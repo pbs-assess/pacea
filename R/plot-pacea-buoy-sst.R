@@ -73,7 +73,7 @@ plot_buoy_sst_single <- function(obj,
                   group = factor(lubridate::year(date)),
                   colour = lubridate::year(date)))
 
-  h <- g + geom_line() +
+  h <- g + geom_line(na.rm = TRUE) +
     theme_bw() +
     theme(plot.title = element_text(hjust = 0.5),
           strip.background = element_rect(colour = "grey70",

@@ -378,12 +378,14 @@ buoy_sst = full_join(dfo_daily_mean,
   tidyr::complete(date = seq.Date(from = min(date),
                                   to = max(date),
                                   by = "day")) %>%
+  relocate(date) %>%
   ungroup()
                         # for complete, fill = list(sst = NA)) not needed since
-                        # NA is default; grouping fills in the stn_ids
+                        # NA is default; grouping fills in the stn_ids. Did
+                        # change the column order though, hence need relocate.
 
 class(buoy_sst) <- c("pacea_buoy",
-                     class(buoy_sst))    # TODO maybe change to pacea_buoy_sst?
+                     class(buoy_sst))
 
 buoy_sst
 
