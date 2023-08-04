@@ -1,6 +1,7 @@
 # Top is from hake-assessment (v2.2) and bottom is existing
 # plot.pacea_recruitment(). Adapt the second using the first to give biomass
-# plot with shaded intervals.
+# plot with shaded intervals. TODO careful as have this second copy of
+# plot.pacea_recruitment - make sure to delete it.
 
 make.biomass.plot <- function(model,    ## model is an mcmc run and is the output of the r4ss package's function SSgetMCMC
                               equil.yr, ## Year in which unfished equilibium is assumed
