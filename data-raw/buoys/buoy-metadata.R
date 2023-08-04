@@ -61,7 +61,7 @@ buoy_metadata <- tibble::tibble(wmo_id = c("46004", "46036", "46131", "46132",
                                                   22, 60, 3200, 228,
                                                   222, 2675, 73, 2215, 2950,
                                                   NA,  NA),
-#                                Can work out from data if needed, plus didn't all agree:
+#                                Can work out from data if needed (see vignette), plus didn't all agree:
 #                                start_date = c("1989-05-01", "1988-04-01", "1992-10-13",
 #                                                "1993-10-05", "1999-01-01", "1991-04-11",
 #                                                "1992-03-16", "1992-05-11", "1990-05-22",
@@ -76,7 +76,9 @@ buoy_metadata <- tibble::tibble(wmo_id = c("46004", "46036", "46131", "46132",
                                             "#C8FF00", "#886C00")) %>%
   mutate(stn_id = paste0("C", wmo_id),
          name_key = paste(stn_id,
-                          name))
+                          name)) %>%
+  mutate_if(is.character, as.factor)
+
 # Buoy comments:
 # ECOBUOY_1: This buoy has been specially modified to serve as a platform for
 # additional sensors, including solar radiation, salinity, temperature and
