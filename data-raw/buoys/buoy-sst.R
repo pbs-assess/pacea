@@ -281,7 +281,6 @@ opp_data <- as_tibble(opp_data_raw) %>%
   filter(!is.na(time),
          !is.na(sst))
 
-
 #opp_data_posix    # was saved using posix
 #filter(opp_data_raw, wmo_synop_id == "46303")[1, "time"]  # First record of both
                                                           # is midnight

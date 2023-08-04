@@ -55,10 +55,17 @@ plot.pacea_buoy <- function(obj,
 ##'
 ##' }
 plot_buoy_sst_single <- function(obj,
-                                 year_highlight
+                                 year_highlight,
+                                 title = NULL
                                  ){
   stopifnot("obj input for plot_buoy_sst_single() must just be for one stn_id" =
               length(unique(obj$stn_id)) == 1)
+
+  if(is.null(title)){
+     title <- paste(obj[1, ]$stn_id,
+                    dplyr::filter(buoy_metadata,
+                                  stn_id == obj[1, ]$stn_id)$name)
+  }
 
   g <- ggplot(obj,
               aes(lubridate::yday(date),
@@ -67,10 +74,20 @@ plot_buoy_sst_single <- function(obj,
                   colour = lubridate::year(date)))
 
   h <- g + geom_line() +
-    labs(x = "Julian Day",    # TODO make month, currently Julian day
-         colour = "Year") +
+    theme_bw() +
+    theme(plot.title = element_text(hjust = 0.5),
+          strip.background = element_rect(colour = "grey70",
+                                          fill = "grey95")) +
+    labs(x = "Julian Day",    # TODO make month, currently Julian day, see attempts:
+         colour = "Year",
+         title = title) +
+    # Also see https://www.r-bloggers.com/2020/04/lubridate-ggplot-date-helpers/
+    #    scale_x_date(date_labels = "%b") +   # TODO label by month
+    # scale_x_date(labels = date_format("%b")) +
+#    scale_x_date(date_breaks="months",
+#                 date_labels="%b") +
     scale_colour_viridis_c() +
-    theme_classic() +
+#     theme_classic() +
     ylab(expression("Mean daily SST " ( degree*C)))
 
   # Highlight year_highlight:

@@ -11,14 +11,14 @@ LazyData: true
 LazyDataCompression: xz
 Depends:
     R (>= 3.5.0),
-    stats (>= 4.0.2)
+    stats (>= 4.0.2),
+    ggplot2 (>= 3.3.5)
 Imports:
     dplyr (>= 1.0.2),
     httr,
     lubridate (>= 1.8.0),
     rappdirs,
-    sf (>= 1.0.10),
-    ggplot2 (>= 3.3.5)
+    sf (>= 1.0.10)
 RoxygenNote: 7.2.3
 Remotes: github::pbs-assess/gfiphc
 Suggests:
