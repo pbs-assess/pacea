@@ -80,8 +80,6 @@ buoy_ranges
 
 TODO plots
 
-dummy to test pushing
-
 ```{r plot}
 # TODO Move into data-raw and re-update data
 class(buoy_sst) <- c("pacea_buoy",
@@ -96,33 +94,26 @@ one <- dplyr::filter(buoy_sst,
                      stn_id == "C46146")
 
 class(one)
-plot(one)   # not working, had this before
+plot(one)
 
+HERE HERE - need this in data-raw; then have
+NA's for missing dates (rather than not having the dates at all) and ggplot leave gaps in the time series (does not join them up)
+
+this_stn_id <- unique(one$stn_id)
 one_with_NAs <- tidyr::complete(one,
-                                sst_every_day = seq.Date(
-                                  from = min(date),
-                                  to = max(date),
-                                  by = "day"),
-                                fill = list(sst_every_day = NA))   # HERE HERE -
-                                        # need sst somewhere
+                                date = seq.Date(from = min(date),
+                                                to = max(date),
+                                                by = "day"),
+                                fill = list(sst = NA,
+                                            stn_id = this_stn_id))
 
+plot.pacea_buoy(dplyr::filter(one_with_NAs, lubridate::year(date) == 1992))    # leaves gaps, as desired.
 
-
-    tidyr::complete(                  # ensure all weeks are present, even those with no cases reported
-    weekly_cases = seq.Date(          # re-define the "weekly_cases" column as a complete sequence,
-      from = min(weekly_cases),       # from the minimum date
-      to = max(weekly_cases),         # to the maxiumum date
-      by = "week"),                   # by weeks
-    fill = list(n = 0))             # fill-in NAs in the n counts column with 0
 
 HERE - keep working on plot.pacea_buoy()
-Need to use tidyr::complete() maybe with lubridate to fill in
-NA's for missing dates, and then get ggplot not to join those up.
-
 
 
 TODO add
-NA's into buoys_sst to specify missing data (check - may be in there and ggplot just joins up lines in between - nope: filter(one, is.na(sst)))
 
 Andrea's:
 ggplot(rbind(dat1,dat2), aes(month(date, label=TRUE, abbr=TRUE),

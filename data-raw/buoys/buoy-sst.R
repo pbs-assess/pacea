@@ -1,9 +1,8 @@
-# Code to download and save buoy temperature into pacea. If too big then will
-#  save into pacea-data repo. Adapting from Andrea Hilborn's
-#  code in andrea-code/
+# Code to download and save buoy temperature into pacea. Resulting file of over
+#  170,000 sst's is only 371 kb, so fine to not move into pacea-data.
+# Adapting from Andrea Hilborn's code in andrea-code/
 
-# Run line-by-line while developing. To make plotting functions go back to
-#  original code (I'll just delete those parts from here).
+# Run line-by-line while developing.
 
 load_all()
 
