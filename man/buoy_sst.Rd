@@ -4,7 +4,8 @@
 \name{buoy_sst}
 \alias{buoy_sst}
 \title{Daily average sea surface temperatures for 19 buoys (yielding over 170,000
-values) calculated with data from Environment and Climate Change Canada and DFO.}
+values) calculated with data from Environment and Climate Change Canada
+(ECCC) and DFO.}
 \format{
 A tibble with columns:
 \describe{
@@ -48,7 +49,7 @@ contact Andrew Edwards and he can update the package. Or do the following if
 you understand it: clone the `pacea` repo from GitHub, `load_all()`, run
 `data-raw/buoys/buoy-sst.R`, and you'll have your own up-to-date version of
 pacea. Some of the DFO-based data are in the ECCC-based data, and so there is overlap.
-We stuck with the download the DFO data for pacea, though if you really want ECCC data to be used (as
+We stuck with the download of the DFO data for pacea, though if you really want ECCC data to be used (as
 it's slightly more up-to-date) we can look at checking the values are the
 same and switching the workflow to used ECCC.
 

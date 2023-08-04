@@ -82,45 +82,9 @@ TODO plots
 
 ```{r plot}
 # TODO Move into data-raw and re-update data
-class(buoy_sst) <- c("pacea_buoy_sst",
-                    class(buoy_sst))
-##'
-##'  <desc>
-##'
-##' @param obj
-##' @param station
-##' @param #-if"all"or>1thencallthis
-##' @return
-##' @export
-##' @author Andrew Edwards
-##' @examples
-##' @ontrun{
-##' @
-##' @}
-plot.pacea_buoy_sst <- function(obj,
-                                station = "C46146",    # plot one station if specified
-                                # - if "all" or >1 then call this
-                                # function repeatedly to make a grid plot
-                                years = NULL      # plot a given year, or range, else do all
-                                ){
-  if(length(station == 1)){
-    plot_buoy_sst_single(obj,
-                         station = station,
-                         years = years,
-                         ...)    # maybe year_highlight, default is current
-  } else {
-    plot_buoy_sst_multiple(obj,
-                           station = station,
-                           years = years,
-                           ...)    # maybe year_highlight, default is current
-  }
-}
-
-
-
-# Andrea's time series plot:
-library(ggplot2) # TODO add to all these functions probably
-
+class(buoy_sst) <- c("pacea_buoy",
+                    class(buoy_sst))    # TODO change to pacea_buoy_sst and
+                                        # rename plotting function
 
 # Play with one to get the hang of ggplot2, adding in Andrea's options maybe.
 # also see https://www.r-bloggers.com/2020/04/lubridate-ggplot-date-helpers/
@@ -129,29 +93,30 @@ library(ggplot2) # TODO add to all these functions probably
 one <- dplyr::filter(buoy_sst,
                      stn_id == "C46146")
 
-g <- ggplot(one,
-            aes(lubridate::yday(date),
-                sst,
-                group = factor(lubridate::year(date)),
-                colour = lubridate::year(date)))
+class(one)
+plot(one)   # not working, had this before
 
-h <- g + geom_line() +
-  labs(x = "Month",    # TODO make month, currently Julian day
-       colour = "Year") +
-    scale_colour_viridis_c() +
-  theme_classic()
+one_with_NAs <- tidyr::complete(one,
+                                sst_every_day = seq.Date(
+                                  from = min(date),
+                                  to = max(date),
+                                  by = "day"),
+                                fill = list(sst_every_day = NA))   # HERE HERE -
+                                        # need sst somewhere
 
-hh <- h +
-  geom_line(data = filter(one,
-                          lubridate::year(date) ==
-  lubridate::year(lubridate::today())),    # TODO add option for specifying year
-                                        # (so not always current year, esp in January)
-            aes(x = lubridate::yday(date),
-                sst),
-            colour = "red",
-            linewidth = 2)
-hh
-# looks good, needs tome tidying up but good so far
+
+
+    tidyr::complete(                  # ensure all weeks are present, even those with no cases reported
+    weekly_cases = seq.Date(          # re-define the "weekly_cases" column as a complete sequence,
+      from = min(weekly_cases),       # from the minimum date
+      to = max(weekly_cases),         # to the maxiumum date
+      by = "week"),                   # by weeks
+    fill = list(n = 0))             # fill-in NAs in the n counts column with 0
+
+HERE - keep working on plot.pacea_buoy()
+Need to use tidyr::complete() maybe with lubridate to fill in
+NA's for missing dates, and then get ggplot not to join those up.
+
 
 
 TODO add
@@ -183,7 +148,6 @@ p <- buoy_sst %>%      # then filter as necessary given function options. Try
   ## geom_path(data = currentyr %>% filter(year(date) == plot_yrs[2] | is.na(SSTP)), aes(x = fakedate, y = SSTP), colour = "white", size = 0.5, lineend = "round") +
   ## scale_colour_manual(values = (glasbey_mod[1:(nrow(buoyplot))])) +
   ## scale_colour_identity(breaks = buoyplot$col_key) +
-  ## ylab(expression("Mean Daily SST " ( degree*C))) +
   ## xlab(NULL) +
   ## scale_x_date(labels = scales::date_format("%b"), breaks = "2 months") +
   ## theme(legend.position = "none",

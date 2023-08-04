@@ -17,7 +17,8 @@ Imports:
     httr,
     lubridate (>= 1.8.0),
     rappdirs,
-    sf (>= 1.0.10)
+    sf (>= 1.0.10),
+    ggplot2 (>= 3.3.5)
 RoxygenNote: 7.2.3
 Remotes: github::pbs-assess/gfiphc
 Suggests:
@@ -29,7 +30,6 @@ Suggests:
     plyr (>= 1.8.6),
     rgeos (>= 0.5.5),
     spdep (>= 1.1.5),
-    ggplot2 (>= 3.3.5),
     ggpolypath (>= 0.1.0),
     mgcv (>= 1.8.31),
     GGally (>= 2.1.0),
