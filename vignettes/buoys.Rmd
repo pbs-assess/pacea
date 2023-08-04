@@ -91,7 +91,7 @@ class(buoy_sst) <- c("pacea_buoy",
 #  for making extra columns early on.
 
 one <- dplyr::filter(buoy_sst,
-                     stn_id == "C46146")
+                     stn_id == "C46304")
 
 class(one)
 plot(one)

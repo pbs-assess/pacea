@@ -13,7 +13,9 @@
 ##' \dontrun{
 ##' }
 plot.pacea_buoy <- function(obj,
-                            station = "C46146",    # plot one station if specified
+                            station = "C46146",    # plot one station if
+                                        # specified  # NOT IMPLEMENTED YET, and
+                                        # make stn_id
                             years = NULL,    # plot a given year, or range, else all
                             year_highlight = lubridate::year(lubridate::today())
                             ){
@@ -48,7 +50,7 @@ plot.pacea_buoy <- function(obj,
 ##' @
 ##' @}
 plot_buoy_sst_single <- function(obj,
-                                 station,
+                                 station,    # TODO doesn't do anything yet
                                  years,
                                  year_highlight
                                  ){
@@ -67,7 +69,7 @@ plot_buoy_sst_single <- function(obj,
 
   # Highlight year_highlight:
   hh <- h +
-    geom_line(data = filter(one,
+    geom_line(data = filter(obj,
                             lubridate::year(date) ==
                             year_highlight),    # TODO add option for specifying year
               # (so not always current year, esp in January)
