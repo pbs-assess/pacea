@@ -43,9 +43,13 @@ data(eez.bc)
 bc_eez <- maptools::PolySet2SpatialPolygons(eez.bc)
 bc_eez <- sf::st_as_sf(bc_eez)
 
-# reproject to bcalbers
-bc_coast <- st_transform(bc_coast, crs = "EPSG:3005")
-bc_eez <- st_transform(bc_eez, crs = "EPSG:3005")
+# reproject to wgs84
+bc_coast <- st_transform(bc_coast, crs = "EPSG:4326")
+bc_eez <- st_transform(bc_eez, crs = "EPSG:4326")
+
+# OR reproject to bcalbers
+# bc_coast <- st_transform(bc_coast, crs = "EPSG:3005")
+# bc_eez <- st_transform(bc_eez, crs = "EPSG:3005")
 
 # test plot
 ggplot() +
