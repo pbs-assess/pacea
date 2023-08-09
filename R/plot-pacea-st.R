@@ -76,10 +76,12 @@ plot.pacea_st <- function(obj,
   if(ncol(tobj) == 2){
     mtext(text = obj_unit, side = 4, line = 0)
     if(eez == TRUE){
-      plot(bc_eez, border = "black", col = NA, lty = 2, add = TRUE)
+      tbc_eez <- st_transform(bc_eez, crs = "EPSG: 3005")
+      plot(tbc_eez, border = "black", col = NA, lty = 2, add = TRUE)
     }
     if(bc == TRUE){
-      plot(bc_coast, border = "grey50", col = "grey80", add = TRUE,)
+      tbc_coast <- st_transform(bc_coast, crs = "EPSG: 3005")
+      plot(tbc_coast, border = "grey50", col = "grey80", add = TRUE,)
     }
   } else {
     mtext(text = obj_unit, side = 4, line = -4)
