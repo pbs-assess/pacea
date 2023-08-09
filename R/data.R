@@ -872,3 +872,16 @@
 ##' @author Andrew Edwards and Andrea Hilborn
 ##' @source Generated from running `data-raw/buoys/buoy-sst.R`.
 "buoy_sst"
+
+#' ROMS data layers
+#'
+#' List of available ROMS data layers for download.
+#'
+#' @format table
+#' @examples
+#' \dontrun{
+#' pacea_data
+#' }
+#'
+#' @source Pena et al., 2019.
+"pacea_data"
