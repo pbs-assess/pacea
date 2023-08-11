@@ -58,7 +58,7 @@ protocols to remove certain flagged data, dealing with timezones and pesky
 daylight savings time changes, and averaging over a day (the original raw data are even
 higher resolution).
 
-The sst value are saved in a tibble:   TODO prob give it it's own class also
+The sst value are saved in a tibble, which also has class `pacea_buoy`
 ```{r buoysst}
 buoy_sst
 tail(buoy_sst)
@@ -67,7 +67,6 @@ with `stn_id` specifying each buoy as described above in `buoy_metadata`, and
 `date` based on UTC -8 hours (i.e. Pacific Standard Time, not changing due to
 daylight savings), and `sst` is the mean SST (deg C) for that day at that
 station; see `?buoy_sst` for full details.
-
 
 To see the ranges of dates for each buoy, use `dplyr` functions in the usual
 way:
@@ -79,8 +78,6 @@ buoy_ranges <- buoy_sst %>%
 buoy_ranges
 ```
 
-TODO plots
-
 Plot data from a single buoy for all years, the default is for buoy C46146:
 ```{r plot}
 # Play with one to get the hang of ggplot2, adding in Andrea's options maybe.
@@ -88,6 +85,8 @@ Plot data from a single buoy for all years, the default is for buoy C46146:
 #  for making extra columns early on.
 plot(buoy_sst)
 ```
+(Since `buoy_sst` has class `pacea_buoy`, `plot(buoy_sst)` function calls our tailored
+`plot.pacea_buoy()` function.
 
 To see data from each buoy in turn:
 ```{r multiloop}
