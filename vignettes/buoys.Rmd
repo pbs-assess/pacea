@@ -89,8 +89,7 @@ Plot data from a single buoy for all years, the default is for buoy C46146:
 plot(buoy_sst)
 ```
 
-Crude way of doing each one in turn (easier to see details on big plots, but
-will adapt Andrea's multi-panel plots also TODO):
+To see data from each buoy in turn:
 ```{r multiloop}
 for(i in 1:nrow(buoy_metadata)){
   plot(buoy_sst,
@@ -98,16 +97,17 @@ for(i in 1:nrow(buoy_metadata)){
 }
 ```
 
-HERE
+We will probably adapt Andrea Hilborn's code (saved below in the .Rmd) to produce a panel plot of all buoys at
+once, to give a figure resembling that at
+https://github.com/IOS-OSD-DPG/Pacific_SST_Monitoring/blob/main/figures/current/Daily_mean_buoy_overview_2023.png. But
+for pacea users the individual buoys are probably sufficient.
 
-Might needs some of this for multipanel plot
-```{r eval=FALSE}
-# Andrea's:
+```{r echo=FALSE, eval=FALSE}
+# Andrea's, and see below:
 ggplot(rbind(dat1,dat2), aes(month(date, label=TRUE, abbr=TRUE),
                 value, group=factor(year(date)), colour=factor(year(date)))) +
 
-
-
+# First stab, to work on if desired.
 p <- buoy_sst %>%      # then filter as necessary given function options. Try
                        # and just do all for now.
   arrange(stn_id) %>%      # TODO maybe not needed, or do up front in data-raw
@@ -117,7 +117,9 @@ p <- buoy_sst %>%      # then filter as necessary given function options. Try
               aes(x = date,
                   y = sst,
                   ymin = 0,
-                  ymax = 20                  ))
+                  ymax = 20))
+p
+
                   )) # ymin = SSTP_10perc_day, ymax = SSTP_90perc_day), fill = "grey70", colour = NA, alpha = 0.5) +
   ## geom_path(data = sstclim, aes(x = fakedate, y = SSTP_clim_mean_day), colour = "grey30", linewidth = 0.8) +
   ## # Heat dome - for 2021-2022 plots
