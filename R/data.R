@@ -581,9 +581,11 @@
 ##' @format A tibble also of class `pacea_recruitment` with columns:
 ##' \describe{
 ##'   \item{year:}{year of the recruitment estimate}
-##'   \item{low:}{low end (2.5th percentile) of the 95\% credible interval for recruitment}
-##'   \item{median:}{median estimate of recruitment}
-##'   \item{low:}{high end (97.5th percentile) of the 95\% credible interval for recruitment}
+##'   \item{low:}{low end (2.5th percentile) of the 95\% credible interval for
+##'   recruitment, billions of age-0 fish}
+##'   \item{median:}{median estimate of recruitment, billions of age-0 fish}
+##'   \item{low:}{high end (97.5th percentile) of the 95\% credible interval for
+##'   recruitment, billions of age-0 fish}
 ##'  }
 ##'
 ##' @examples
@@ -597,7 +599,7 @@
 ##'   `data-raw/groundfish/hake.R`.
 "hake_recruitment"
 
-##' Pacific Hake annual age-0 spawning stock biomass as estimated by the 2023 stock
+##' Pacific Hake annual spawning stock biomass (females only) as estimated by the 2023 stock
 ##' assessment.
 ##'
 ##' The Pacific Hake stock is managed and assessed through an Agreement between
@@ -609,10 +611,14 @@
 ##'
 ##' @format A tibble also of class `pacea_biomass` with columns:
 ##' \describe{
-##'   \item{year:}{year of the estimate of spawning stock biomass (mature females)}
-##'   \item{low:}{low end (2.5th percentile) of the 95\% credible interval for biomass}
-##'   \item{median:}{median estimate of biomass}
-##'   \item{low:}{high end (97.5th percentile) of the 95\% credible interval for biomss}
+##'   \item{year:}{year of the estimate of spawning stock biomass (mature
+##'   females), where the estimate is for the start of the year}
+##'   \item{low:}{low end (2.5th percentile) of the 95\% credible interval for
+##'   biomass, units as for `median`}
+##'   \item{median:}{median estimate of biomass, in millions of tonnes of female
+##'   spawning biomass at the start of the year}
+##'   \item{low:}{high end (97.5th percentile) of the 95\% credible interval for
+##'   biomass, units as for `median`}
 ##'  }
 ##'
 ##' @examples
@@ -648,10 +654,10 @@
 ##' \describe{
 ##'   \item{year:}{year of the estimate of scaled recruitment}
 ##'   \item{low:}{low end (2.5th percentile) of the 95\% credible interval for
-##'   the scaled recruitment}
-##'   \item{median:}{median estimate of scaled recruitment}
+##'   the scaled recruitment, unitless}
+##'   \item{median:}{median estimate of scaled recruitment, unitless}
 ##'   \item{low:}{high end (97.5th percentile) of the 95\% credible interval for
-##'   the scaled recruitment}
+##'   the scaled recruitment, unitless}
 ##'  }
 ##'
 ##' @examples
@@ -679,10 +685,10 @@
 ##' \describe{
 ##'   \item{year:}{year of the estimate of scaled recruitment}
 ##'   \item{low:}{low end (2.5th percentile) of the 95\% credible interval for
-##'   the scaled recruitment}
-##'   \item{median:}{median estimate of scaled recruitment}
+##'   the scaled recruitment, unitless}
+##'   \item{median:}{median estimate of scaled recruitment, unitless}
 ##'   \item{low:}{high end (97.5th percentile) of the 95\% credible interval for
-##'   the scaled recruitment}
+##'   the scaled recruitment, unitless}
 ##'  }
 ##'
 ##' @examples
