@@ -9,9 +9,11 @@ assessment.}
 A tibble also of class `pacea_recruitment` with columns:
 \describe{
   \item{year:}{year of the recruitment estimate}
-  \item{low:}{low end (2.5th percentile) of the 95\% credible interval for recruitment}
-  \item{median:}{median estimate of recruitment}
-  \item{low:}{high end (97.5th percentile) of the 95\% credible interval for recruitment}
+  \item{low:}{low end (2.5th percentile) of the 95\% credible interval for
+  recruitment, billions of age-0 fish}
+  \item{median:}{median estimate of recruitment, billions of age-0 fish}
+  \item{low:}{high end (97.5th percentile) of the 95\% credible interval for
+  recruitment, billions of age-0 fish}
  }
 }
 \source{

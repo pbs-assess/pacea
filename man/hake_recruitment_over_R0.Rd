@@ -10,10 +10,10 @@ A tibble also of class `pacea_recruitment` with columns:
 \describe{
   \item{year:}{year of the estimate of scaled recruitment}
   \item{low:}{low end (2.5th percentile) of the 95\% credible interval for
-  the scaled recruitment}
-  \item{median:}{median estimate of scaled recruitment}
+  the scaled recruitment, unitless}
+  \item{median:}{median estimate of scaled recruitment, unitless}
   \item{low:}{high end (97.5th percentile) of the 95\% credible interval for
-  the scaled recruitment}
+  the scaled recruitment, unitless}
  }
 }
 \source{
