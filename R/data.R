@@ -896,16 +896,23 @@
 #' 
 #' Simple features objects of NOAA's Optimal Interpolation SST
 #'
+#' @details 
 #' From NOAA:
 #' "The NOAA 1/4° Daily Optimum Interpolation Sea Surface Temperature (OISST) is a long term Climate Data Record that incorporates observations from different platforms (satellites, ships, buoys and Argo floats) into a regular global grid. The dataset is interpolated to fill gaps on the grid and create a spatially complete map of sea surface temperature. Satellite and ship observations are referenced to buoys to compensate for platform differences and sensor biases."
 #'
-#' @format A simple features dataframe.
+#' The data starts from 1981-09-01 and ends in the previous month from the current month. These data will be updated monthly. 
+#' 
 #' \describe{
 #'   \item{oisst_7day}{7-day mean sea surface temperature (degrees Celsius)}
 #'   \item{oisst_7dayclim}{7-day mean climatology (1991-2020) for sea surface temperature (degrees Celsius)}
 #'   \item{oisst_month}{Monthly mean sea surface temperature in degrees Celsius}
 #'   \item{oisst_monthclim}{Monthly climatology (1991-2020) for sea surface temperature (degrees Celsius)}
 #' }
+#' 
+#' @format `oisst_7day`
+#' A object of class sf with 2051650 rows and 8 columns.
+#' 
+#' @usage head(oisst_7day)
 #' @examples
 #' \dontrun{
 #' head(oisst_7day)
@@ -917,10 +924,16 @@
 "oisst_7day"
 
 #' @rdname oisst_7day
+#' @format `oisst_7dayclim`
+#' An object of class sf with 49025 rows and 6 columns.
 "oisst_7dayclim"
 
 #' @rdname oisst_7day
+#' @format `oisst_month`
+#' An object of class sf with 464350 rows and 8 columns.
 "oisst_month"
 
 #' @rdname oisst_7day
+#' @format `oisst_monthclim`
+#' An object of class sf with 11100 rows and 6 columns.
 "oisst_monthclim"
