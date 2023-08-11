@@ -117,7 +117,7 @@ for(i in 1981:(lubridate::year(Sys.Date()))){
     group_by(latitude, longitude, year, month) %>% 
     summarise(sst_month = mean(sst, na.rm = TRUE),
               sst_monthsd = sd(sst, na.rm = TRUE),
-              sst_montn = sum(!is.na(sst)),
+              sst_monthn = sum(!is.na(sst)),
               start_date = min(as.Date(time)),
               end_date = max(as.Date(time))) %>%
     ungroup()
@@ -138,103 +138,37 @@ oisst_month <- out.dat
 use_data(oisst_month, compress = "xz")
 
 
+# 30-year climatology 1991-2020 - use data already downloaded and processed
 
+# 7day
+tdat <- oisst_7day
+oisst_7dayclim <- tdat %>% 
+  filter(year %in% 1991:2020) %>% 
+  group_by(week, geometry) %>% 
+  summarise(sst_7day_clim = mean(sst_7day, na.rm = TRUE),
+            sst_7day_climsd = sd(sst_7day, na.rm = TRUE),
+            sst_7day_climn = sum(sst_7dayn),
+            sst_7day_90p = quantile(sst_7day, probs = 0.9)) %>% 
+  ungroup() %>%
+  relocate(geometry, .after = last_col()) 
 
-#####  HERHERERE
-# 30-year climatology 1991-2020 - CAN USE data already downloaded and processed
-out.dat <- data.frame()
+str(oisst_7dayclim)
+use_data(oisst_7dayclim, compress = "xz")
+ 
+# month
+tdat <- oisst_month
+oisst_monthclim <- tdat %>% 
+  filter(year %in% 1991:2020) %>% 
+  group_by(month, geometry) %>% 
+  summarise(sst_month_clim = mean(sst_month, na.rm = TRUE),
+            sst_month_climsd = sd(sst_month, na.rm = TRUE),
+            sst_month_climn = sum(sst_monthn),
+            sst_month_90 = quantile(sst_month, probs = 0.9)) %>% 
+  ungroup() %>%
+  relocate(geometry, .after = last_col()) 
 
-for(i in 1991:2020){
-  start_date <- paste0(i, "-", date_init, timechar)
-  end_date <- paste0(i, "-", date_fin, timechar)
-  timelim <- c(start_date, end_date)
-  
-  sstdata <- griddap(sstInfo, latitude = latlim, longitude = lonlim, 
-                     time = timelim)
-  sstdata_month <- sstdata$data %>% 
-    filter(!is.na(sst)) %>%
-    mutate(date = as.Date(time),
-           year = lubridate::year(date),
-           month = lubridate::month(date)) %>%
-    group_by(latitude, longitude, year, month) %>% 
-    summarise(sst_month = mean(sst, na.rm = TRUE),
-              sst_monthsd = sd(sst, na.rm = TRUE),
-              sst_montn = sum(!is.na(sst)),
-              start_date = min(as.Date(time)),
-              end_date = max(as.Date(time))) %>%
-    ungroup()
-  
-  sstdata_month_sf <- st_as_sf(sstdata_month, coords = c("longitude", "latitude")) %>%
-    st_set_crs("EPSG: 4326")
-  
-  # mask with eez boundary
-  tdat <- sstdata_7day_sf[bc_eez,]
-  
-  # write to output file.
-  out.dat <- out.dat %>% rbind(tdat)
-  
-}
-if (OIPROCESS == TRUE) {
-  # OI Data - Current and 30 year climatology (1990-2020) ####
-  # Datasets: 
-  # ncdcOisst21NrtAgg_LonPM180 (2020-present, 4-day lag)
-  # ncdcOisst21Agg_LonPM180 (1981-present, 17-day lag)
-  
-  # OI Rolling 7-day average ####
-  sstInfo <- info("ncdcOisst21Agg_LonPM180", url = "https://coastwatch.pfeg.noaa.gov/erddap/")
-  sstdata <- griddap(sstInfo, latitude = latlim, longitude = lonlim, 
-                     time = timelim)
-  print(paste(length(unique(sstdata$data$time)),"DAYS FOUND"))
-  
-  sstdata_7day <- sstdata$data %>% 
-    filter(!is.na(sst)) %>%
-    group_by(latitude, longitude) %>% 
-    summarise(sst_7day = mean(sst, na.rm=T),
-              sst_7daysd = sd(sst, na.rm=T),
-              sst_7dayn = sum(!is.na(sst))) %>%
-    ungroup() %>% 
-    mutate(start_date = start_date,
-           end_date = end_date)
-  saveRDS(sstdata_7day, "data/OI_SST7day_rollingavgbackup_current.rds")
-  
-  # OI 7-day climatology ####
-  sstvar = info("ncdcOisst21Agg_LonPM180", url = "https://coastwatch.pfeg.noaa.gov/erddap/")
-  yr7days <- list()
-  ct=1
-  for (i in 1991:2020) {
-    start = as.Date(paste0(i, yday(start_date)), format = "%Y%j")
-    end = as.Date(paste0(i, yday(end_date)), format = "%Y%j")
-    timesub = c(start, end)
-    print(timesub)
-    sstyr <- griddap(sstvar, latitude = latlim, longitude = lonlim, 
-                     time = timesub)
-    print(paste(length(unique(sstyr$data$time)), "days"))
-    roll7 = sstyr$data %>%
-      filter(!is.na(sst)) %>%
-      group_by(lat, lon) %>%
-      summarise(sst_7day = mean(sst, na.rm=T),
-                sst_7dayn = sum(!is.na(sst))) %>%
-      ungroup()
-    yr7days[[ct]] <- roll7
-    ct=ct+1
-  }
-  yr7days <- do.call(rbind, yr7days)
-  
-  yr7days <- yr7days %>% 
-    filter(!is.na(sst_7day)) %>% 
-    group_by(lat, lon) %>% 
-    summarise(sst_7day_clim = mean(sst_7day, na.rm=T),
-              sst_7day_climsd = sd(sst_7day, na.rm=T),
-              sst_7day_climn = sum(sst_7dayn),
-              sst_7day_90 = quantile(sst_7day, probs = 0.9)) %>% 
-    ungroup()
-  saveRDS(object = yr7days, file = "data/OI_SST7day_rollingavgbackup_climatology.rds")
-  rm(roll7,sstyr)
-  
-}
-gc()
-
-
+str(oisst_monthclim)
+use_data(oisst_monthclim, compress = "xz")
 
 
 
