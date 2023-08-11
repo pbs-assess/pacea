@@ -885,3 +885,37 @@
 #'
 #' @source Pena et al., 2019.
 "pacea_data"
+
+#' Optimal interpolation SST
+#' 
+#' Simple features objects of NOAA's Optimal Interpolation SST
+#'
+#' From NOAA:
+#' "The NOAA 1/4° Daily Optimum Interpolation Sea Surface Temperature (OISST) is a long term Climate Data Record that incorporates observations from different platforms (satellites, ships, buoys and Argo floats) into a regular global grid. The dataset is interpolated to fill gaps on the grid and create a spatially complete map of sea surface temperature. Satellite and ship observations are referenced to buoys to compensate for platform differences and sensor biases."
+#'
+#' @format A simple features dataframe.
+#' \describe{
+#'   \item{oisst_7day}{7-day mean sea surface temperature (degrees Celsius)}
+#'   \item{oisst_7dayclim}{7-day mean climatology (1991-2020) for sea surface temperature (degrees Celsius)}
+#'   \item{oisst_month}{Monthly mean sea surface temperature in degrees Celsius}
+#'   \item{oisst_monthclim}{Monthly climatology (1991-2020) for sea surface temperature (degrees Celsius)}
+#' }
+#' @examples
+#' \dontrun{
+#' head(oisst_7day)
+#' head(oisst_7dayclim)
+#' }
+#'
+#' @source https://www.ncei.noaa.gov/products/optimum-interpolation-sst
+#' Generated from running `data-raw/erddap/OISST.R`.
+"oisst_7day"
+
+#' @rdname oisst_7day
+"oisst_7dayclim"
+
+#' @rdname oisst_7day
+"oisst_month"
+
+#' @rdname oisst_7day
+"oisst_monthclim"
+
