@@ -49,7 +49,6 @@ test_that("index plotting works with various options", {
 })
 
 # Adapting some of above for hake_recruitment
-
 test_that("recruitment plotting: the stopifnot commands are working", {
   expect_error(plot(hake_recruitment,
                     value = "foo"))
@@ -66,4 +65,21 @@ test_that("recruitment plotting works with various options", {
                         y_max = 100))
   expect_invisible(plot(hake_recruitment_over_2010))
   expect_invisible(plot(hake_recruitment_over_R0))
+})
+
+# Adapting some of that for hake_biomass
+test_that("biomass plotting: the stopifnot commands are working", {
+  expect_error(plot(hake_biomass,
+                    value = "foo"))
+  expect_error(plot.hake_biomass(npi_monthly))
+})
+
+test_that("biomass plotting works with various options", {
+  expect_invisible(plot(hake_biomass))
+  expect_invisible(plot(hake_biomass,
+                        style = "foo"))
+  expect_invisible(plot(dplyr::select(hake_biomass,
+                                      -c("low"))))
+  expect_invisible(plot(hake_biomass,
+                        y_max = 100))
 })
