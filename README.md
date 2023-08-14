@@ -32,7 +32,7 @@ then the connection may be timing out. Try
 ```
 options(timeout = 1200)
 ```
-and then try and install again. If you get a different error then contact Andy or Travis for help. 
+and then try and install again. If you get a different error then contact Andy and Travis for help. (Once we officially release pacea then we will ensure the installation always works, it may currently occasionally break while we are developing it). 
 
 
 TODO - rewrite all the following, giving some simple examples and referring to vignettes or Issues. 
