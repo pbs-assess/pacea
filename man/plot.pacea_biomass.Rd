@@ -30,10 +30,7 @@
 will run on other objects (not give an error) but is not tested on those.}
 
 \item{value}{the column to plot if no uncertainties, or what to plot as dots
-  if showing uncertainties (likely always `median`)
-##' @param style `no_uncertainty` for plain time series without uncertainty,
-  gets overridden to have uncertainty bars if `low` and `high` are columns
-  of `obj`}
+if showing uncertainties (likely always `median`)}
 
 \item{xlab}{x-axis label}
 
@@ -50,17 +47,9 @@ the default big here.}
 \item{start_decade_ticks}{where to start tickmarks for decades (defaults to
 1800 as hard to automate)}
 
-\item{style}{what style of plot:
-\describe{
-  \item{"red_blue_bar":}{for red bars above 0 and
-  blue bars below 0, but may need to manually adjust the thickness `lwd` for
-  width of bars to look good for your specific plot}
-  \item{"red_blue":}{for a line with filled in colouring for red above 0 and
-  blue below 0}
-  \item{"goa":}{TODO (not implemented yet) for Gulf of Alaska Ecosystem
-  Report style plots}
-  \item{"plain":}{just a plain line}
-}}
+\item{style}{`no_uncertainty` for plain time series without uncertainty,
+gets overridden to have uncertainty bars if `low` and `high` are columns
+of `obj`}
 
 \item{y_max}{maximum y value for certain types of plot (use this if you get
 an error when specifying `ylim`)}

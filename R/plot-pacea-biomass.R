@@ -9,7 +9,7 @@
 ##'   will run on other objects (not give an error) but is not tested on those.
 ##' @param value the column to plot if no uncertainties, or what to plot as dots
 ##'   if showing uncertainties (likely always `median`)
-##' ##' @param style `no_uncertainty` for plain time series without uncertainty,
+##' @param style `no_uncertainty` for plain time series without uncertainty,
 ##'   gets overridden to have uncertainty bars if `low` and `high` are columns
 ##'   of `obj`
 ##' @param y_max maximum y value for certain types of plot (use this if you get
