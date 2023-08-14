@@ -1,62 +1,3 @@
-# Top is from hake-assessment (v2.2) and bottom is existing
-# plot.pacea_recruitment(). Adapt the second using the first to give biomass
-# plot with shaded intervals. TODO careful as have this second copy of
-# plot.pacea_recruitment - make sure to delete it.
-
-make.biomass.plot <- function(model,    ## model is an mcmc run and is the output of the r4ss package's function SSgetMCMC
-                              equil.yr, ## Year in which unfished equilibium is assumed
-                              start.yr, ## Year the timeseries starts (i.e. first year in model)
-                              end.yr,   ## Year the timeseries ends (i.e. last year in model)
-                              color = "blue"
-                              ){
-  oldpar <- par()
-
-  slower <- model$mcmccalcs$slower
-  smed <- model$mcmccalcs$smed
-  supper <- model$mcmccalcs$supper
-
-  unfished.eq.s <- model$mcmccalcs$sinit
-
-  yrs <- equil.yr:end.yr
-  par(mfrow=c(1,1),las=1,mar=c(3.5,3.5,1,1))
-
-  start.equil.diff <- start.yr - equil.yr
-  non.equil.yrs <- yrs[-(1:start.equil.diff)]
-  non.equil.smed <- smed[names(smed) %in% non.equil.yrs]
-
-  plot(non.equil.yrs,
-       non.equil.smed,
-       type = "o",
-       lwd = 2,
-       ylim = c(0, max(supper) + 0.1),
-       xlab = "Year",
-       ylab = "Female Spawning Biomass (million t)",
-       xlim = range(yrs),
-       cex.axis =0.9,
-       cex.lab = 1,
-       mgp = c(2.3,1,0),
-       xaxt = "n",
-       yaxs = "i")
-
-  axis(1, at = big.ticks)
-  axis(1,
-       at = little.ticks,
-       lab = rep("",length(little.ticks)), tcl = -0.3)
-  axis(1,
-       at = yrs[1],
-       lab = paste0("Unfished\nequilibrium"),
-       cex.axis = 0.9,
-       mgp = c(3,2.5,0))
-  box()
-  points(equil.yr, unfished.eq.s[2], pch=16)
-  arrows(equil.yr, unfished.eq.s[1], equil.yr, unfished.eq.s[3],
-         angle = 90, code = 3, length = 0.06, col = color)
-  addpoly(non.equil.yrs, slower[names(slower) %in% non.equil.yrs],
-          supper[names(supper) %in% non.equil.yrs], color)
-  par <- oldpar
-}
-
-
 ##' TODO Plot a pacea recruitment time series object (currently assumes annual values)
 ##'
 ##' Temporal plot for a pacea recruitment time series (of class
@@ -149,6 +90,17 @@ plot.pacea_biomass <- function(obj,
                                      median_line_lty = median_line_lty,
                                      median_line_lwd = median_line_lwd,
                                      ...)
+    # To add B0, adapt something like this from hake:
+    #   points(equil.yr, unfished.eq.s[2], pch=16)
+    #  arrows(equil.yr, unfished.eq.s[1], equil.yr, unfished.eq.s[3],
+    #      angle = 90, code = 3, length = 0.06, col = color)
+    #   axis(1,
+    #       at = yrs[1],
+    #   lab = paste0("Unfished\nequilibrium"),
+    #   cex.axis = 0.9,
+    #   mgp = c(3,2.5,0))
+
+
   } else {
     plot.default(obj_lub$date,
                  obj_lub[[value]], # [[]] returns a vector not a tibble
