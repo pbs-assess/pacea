@@ -912,7 +912,7 @@
 #' @format `oisst_7day`
 #' A object of class sf with 2051650 rows and 8 columns.
 #' 
-#' @usage head(oisst_7day)
+#' @usage oisst_7day
 #' @examples
 #' \dontrun{
 #' head(oisst_7day)
@@ -926,14 +926,17 @@
 #' @rdname oisst_7day
 #' @format `oisst_7dayclim`
 #' An object of class sf with 49025 rows and 6 columns.
+#' @usage oisst_7dayclim
 "oisst_7dayclim"
 
 #' @rdname oisst_7day
 #' @format `oisst_month`
 #' An object of class sf with 464350 rows and 8 columns.
+#' @usage oisst_month
 "oisst_month"
 
 #' @rdname oisst_7day
 #' @format `oisst_monthclim`
 #' An object of class sf with 11100 rows and 6 columns.
+#' @usage oisst_monthclim
 "oisst_monthclim"
