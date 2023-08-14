@@ -58,7 +58,5 @@ plot_with_uncertainty <- function(obj_lub,
            lty = add_line_at_1_lty)
   }
 
-
-  # TODO add tick marks, need to create function for that
   invisible()
 }
