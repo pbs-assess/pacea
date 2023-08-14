@@ -1,29 +1,28 @@
-##' TODO Plot a pacea recruitment time series object (currently assumes annual values)
+##' Plot a pacea biomass time series object (currently assumes annual values)
 ##'
-##' Temporal plot for a pacea recruitment time series (of class
-##' `pacea_recruitment`) object. The `style` option here (unlike for
+##' Temporal plot for a pacea biomass time series (of class
+##' `pacea_biomass`) object. The `style` option here (unlike for
 ##' `plot.pacea_index()` defaults to `no_uncertainty` and gets changed to
 ##' `uncertainty` if `low` and `high` are columns of `obj`.
 ##'
-##' @param obj a `pacea_recruitment` object, which is a time series. Function
+##' @param obj a `pacea_biomass` object, which is a time series. Function
 ##'   will run on other objects (not give an error) but is not tested on those.
 ##' @param value the column to plot if no uncertainties, or what to plot as dots
 ##'   if showing uncertainties (likely always `median`)
-##' @param xlab label for x-axis
-##' @param ylab label for y-axis (default is automatic from attribute of `obj`)
-##' @param style `no_uncertainty` for plain time series without uncertainty,
+##' ##' @param style `no_uncertainty` for plain time series without uncertainty,
 ##'   gets overridden to have uncertainty bars if `low` and `high` are columns
 ##'   of `obj`
-##' @param uncertainty_bar_col colour for uncertainty bars for certain types of
-##'   plot (e.g. estimated fish recruitment)
 ##' @param y_max maximum y value for certain types of plot (use this if you get
 ##'   an error when specifying `ylim`)
-##' @param add_line_at_1 whether to add a horizontal line at 1 (only sensible for scaled recruitments)
-##' @param add_line_at_1_col colour for line at 1
-##' @param add_line_at_1_lty line type of line at 1
+##' @param uncertainty_shade_col colour of shading for uncertainty
+##' @param uncertainty_line_col colour of line for uncertainty
+##' @param uncertainty_line_lty lty of line for uncertainty
+##' @param median_type `type` of plot ("o", "p", etc.) for medians
+##' @param median_pch pch for median
+##' @param median_line_col col for median
+##' @param median_line_lty lty for median
+##' @param median_line_lwd lwd for median
 ##' @param ... further options passed onto `plot.default()`
-##' @param x_tick_extra_years number of extra years to expand around the range
-##'   of data for which to add annual tick marks
 ##' @inherit plot.pacea_index
 ##' @return plot of the time series as median with bars showing uncertainty (if
 ##'   `low` and `high` are columns of `obj) to the current device; returns nothing.
@@ -31,12 +30,10 @@
 ##' @author Andrew Edwards
 ##' @examples
 ##' \dontrun{
-##' plot(hake_recruitment)
-##' plot(hake_recruitment,
+##' plot(hake_biomass)
+##' plot(hake_biomass,
 ##'      xlim = c(lubridate::dmy(01011950),
 ##'               lubridate::dmy(01012040))) # to expand x-axis
-##' plot(hake_recruitment_over_2010)  # automatically changes style of plot
-##'                                   #  if 'over' is in the object name
 ##' }
 plot.pacea_biomass <- function(obj,
                                value = "median",
@@ -78,8 +75,6 @@ plot.pacea_biomass <- function(obj,
                                      value = value,
                                      xlab = xlab,
                                      ylab = ylab,
-                                     y_tick_by = y_tick_by,
-                                     x_tick_extra_years = x_tick_extra_years,
                                      uncertainty_shade_col = uncertainty_shade_col,
                                      uncertainty_line_col = uncertainty_line_col,
                                      uncertainty_line_lty = uncertainty_line_lty,

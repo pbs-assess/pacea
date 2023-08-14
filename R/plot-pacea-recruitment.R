@@ -9,8 +9,6 @@
 ##'   will run on other objects (not give an error) but is not tested on those.
 ##' @param value the column to plot if no uncertainties, or what to plot as dots
 ##'   if showing uncertainties (likely always `median`)
-##' @param xlab label for x-axis
-##' @param ylab label for y-axis (default is automatic from attribute of `obj`)
 ##' @param style `no_uncertainty` for plain time series without uncertainty,
 ##'   gets overridden to have uncertainty bars if `low` and `high` are columns
 ##'   of `obj`
@@ -22,8 +20,6 @@
 ##' @param add_line_at_1_col colour for line at 1
 ##' @param add_line_at_1_lty line type of line at 1
 ##' @param ... further options passed onto `plot.default()`
-##' @param x_tick_extra_years number of extra years to expand around the range
-##'   of data for which to add annual tick marks
 ##' @inherit plot.pacea_index
 ##' @return plot of the time series as median with bars showing uncertainty (if
 ##'   `low` and `high` are columns of `obj) to the current device; returns nothing.
@@ -42,7 +38,6 @@ plot.pacea_recruitment <- function(obj,
                                    value = "median",
                                    xlab = "Year",
                                    ylab = attr(obj, "axis_name"),
-                                   # smooth_over_year = FALSE,
                                    y_tick_by = 1,
                                    x_tick_extra_years = 20,
                                    start_decade_ticks = lubridate::ymd("1800-01-01",

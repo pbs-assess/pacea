@@ -28,14 +28,17 @@ will run on other objects (not give an error) but is not tested on those.}
 \item{value}{the column to plot if no uncertainties, or what to plot as dots
 if showing uncertainties (likely always `median`)}
 
-\item{xlab}{label for x-axis}
+\item{xlab}{x-axis label}
 
-\item{ylab}{label for y-axis (default is automatic from attribute of `obj`)}
+\item{ylab}{y-axis label, the default is an attribute of the `pacea_index`
+object.}
 
 \item{y_tick_by}{increment for y-axis ticks}
 
 \item{x_tick_extra_years}{number of extra years to expand around the range
-of data for which to add annual tick marks}
+of data for which to add annual tick marks (does not expand the axis); in
+hindsight could have simplified this in `add_tickmarks()`, but just made
+the default big here.}
 
 \item{start_decade_ticks}{where to start tickmarks for decades (defaults to
 1800 as hard to automate)}
