@@ -83,3 +83,8 @@ test_that("biomass plotting works with various options", {
   expect_invisible(plot(hake_biomass,
                         y_max = 100))
 })
+
+# plot.pacea_buoy()
+test_that("buoy SST plotting  works with various options", {
+  expect_visible(plot(buoy_sst))
+})
