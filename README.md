@@ -15,16 +15,31 @@ pacea is intended to be a data platform containing somewhat disparate data sets 
 
 # Installation
 
-We are still developing pacea, and so it is not meant to be fully operational yet. However, to install a version that we know builds:
+We are still developing pacea, and so it is not meant to be fully operational yet. To install the latest version:
 
 ```
 install.packages("remotes")    # If you do not already have the "remotes" package
-remotes::install_github("pbs-assess/pacea@51b47d3")
+
+remotes::install_github("pbs-assess/pacea")
 ```
 
-Currently, this version includes some climate indices and Pacific Hake stock assessment results, plus other code we are working on, including to use output from a British Columbia ROMS (Regional Ocean Modeling System) model. We do have context-specific plotting functions that relate to each type of data set.
+If you get an error like
+```
+Error in utils::download.file(....)
+```
+then the connection may be timing out. Try
 
-Here's a very brief list of some useful commands for what's currently available (that we will turn into more detailed vignettes):
+```
+options(timeout = 1200)
+```
+and then try and install again. If you get a different error then contact Andy or Travis for help. 
+
+
+TODO - rewrite all the following, giving some simple examples and referring to vignettes or Issues. 
+
+Currently, briefly (we will expand on this TODO) pacea includes output from a British Columbia ROMS (Regional Ocean Modeling System) model, climatic and oceanographic indices such as Pacific Decadal Oscillation, Pacific Hake stock assessment results, sea surface temperature from buoys, .... We do have context-specific plotting functions that relate to each type of data set.
+
+TODO - give simple examples here, we're focussing on vignettes first.... 
 
 ## Pacific Hake stock assessment results
 
@@ -129,4 +144,4 @@ Add examples in functions, and vignettes (once we've finalised some aspects).
 
 ## Funding
 
-This work is funded by a Competitive Science Research Fund grant.
+This work is funded by a Competitive Science Research Fund grant from Fisheries and Oceans Canada.
