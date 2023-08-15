@@ -17,18 +17,18 @@
 ##' \dontrun{
 ##' # see plot.pacea_recruitment()
 ##' }
-plot_with_uncertainty_discreate <- function(obj_lub,
-                                            value,
-                                            xlab,
-                                            ylab,
-                                            y_tick,
-                                            x_tick_extra_years,
-                                            uncertainty_bar_col,
-                                            y_max,
-                                            add_line_at_1,
-                                            add_line_at_1_col,
-                                            add_line_at_1_lty,
-                                            ...){
+plot_with_uncertainty_discrete <- function(obj_lub,
+                                           value,
+                                           xlab,
+                                           ylab,
+                                           y_tick,
+                                           x_tick_extra_years,
+                                           uncertainty_bar_col,
+                                           y_max,
+                                           add_line_at_1,
+                                           add_line_at_1_col,
+                                           add_line_at_1_lty,
+                                           ...){
 
   if(is.null(y_max)){
     y_max = max(obj_lub$high)

@@ -48,7 +48,7 @@ plot.pacea_buoy <- function(obj,
 ##' Plot buoy SST data for a single station; called by `plot.pacea_buoy()`
 ##'
 ##' @param obj buoy SST data, of class `pacea_buoy_sst` for just a single station, called from `plot.pacea_buoy()`
-##' @param year_highlight
+##' @param year_highlight numeric of the year to highlight
 ##' @param title text string for title of plot; defaults to `stn_id` followed by
 ##'   the buoy's name (e.g. C46146 Halibut Bank), like Andrea Hilborn has.
 ##' @return ggplot object of the plot
