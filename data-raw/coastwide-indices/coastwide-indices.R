@@ -74,6 +74,7 @@ class(oni_new) <- c("pacea_index",
 
 attr(oni_new, "axis_name") <- "Oceanic Niño Index"
 
+check_index_changed(oni, oni_new)
 if(check_index_changed(oni, oni_new)){
   # Check previous values haven't changed, but for oni we expect the last two
   #  months of anomaly to get updated (and maybe one month of value)
@@ -129,8 +130,8 @@ download.file(sitename,
 stop(paste("If download.file just gave an error then increase i <- 1 to 2, then 3 etc. if happens again, up to",
            length(to_check_stamps),
            "which should be same as the latest one saved; repeat above code from i.",
-           "For the first i for which download.file does NOT error then, to set up for the next future update, replace last_npi_monthly above with",
-            to_check_stamps[i],
+           "For the first i for which download.file does NOT error then, to set up for the next future update, replace last_npi_monthly above with
+            to_check_stamps[i] which if you have i correct is", to_check_stamps[i],
            "and set i <- 1 again in code. Then keep calm and carry on through this file.",
            sep = "\n"))
 
@@ -154,6 +155,8 @@ class(npi_monthly_new) <- c("pacea_index",
                     class(npi_monthly_new))
 
 attr(npi_monthly_new, "axis_name") <- "North Pacific Index"
+
+check_index_changed(npi_monthly, npi_monthly_new)
 
 if(check_index_changed(npi_monthly, npi_monthly_new)){
   expect_equal(npi_monthly,
@@ -212,8 +215,8 @@ download.file(sitename,
 stop(paste("If download.file just gave an error then increase j <- 1 to 2, then 3 etc. if happens again, up to",
            length(to_check_stamps),
            "which should be same as the latest one saved; repeat above code from j.",
-           "For the first j for which download.file does NOT error then, to set up for the next future update, replace last_npi_annual above with",
-            to_check_stamps[j],
+           "For the first j for which download.file does NOT error then, to set up for the next future update, replace last_npi_annual above with
+            to_check_stamps[j] which if you have j correct is", to_check_stamps[j],
            "and set j <- 1 again in code. Then keep calm and carry on through this file.",
            sep = "\n"))
 
@@ -247,6 +250,8 @@ class(npi_annual_new) <- c("pacea_index",
                            class(npi_annual_new))
 
 attr(npi_annual_new, "axis_name") <- "North Pacific Index"
+
+check_index_changed(npi_annual, npi_annual_new)
 
 if(check_index_changed(npi_annual, npi_annual_new)){
   expect_equal(npi_annual,
@@ -286,6 +291,8 @@ class(pdo_new) <- c("pacea_index",
                     class(pdo_new))
 
 attr(pdo_new, "axis_name") <- "Pacific Decadal Oscillation"
+
+check_index_changed(pdo, pdo_new)
 
 if(check_index_changed(pdo, pdo_new)){
   expect_equal(pdo[1:(nrow(pdo) - 1), ],
@@ -353,6 +360,8 @@ class(soi_new) <- c("pacea_index",
 
 attr(soi_new, "axis_name") <- "Southern Oscillation Index"
 
+check_index_changed(soi, soi_new)
+
 if(check_index_changed(soi, soi_new)){
   expect_equal(soi,
                soi_new[1:nrow(soi), ])  # See note at top if this fails
@@ -391,6 +400,8 @@ class(npgo_new) <- c("pacea_index",
                     class(npgo_new))
 
 attr(npgo_new, "axis_name") <- "North Pacific Gyre Oscillation"
+
+check_index_changed(npgo, npgo_new)
 
 if(check_index_changed(npgo, npgo_new)){
   npgo <- npgo_new
@@ -438,6 +449,8 @@ class(mei_new) <- c("pacea_index",
                     class(mei_new))
 
 attr(mei_new, "axis_name") <- "Multivariate ENSO Index"
+
+check_index_changed(mei, mei_new)
 
 if(check_index_changed(mei,
                        mei_new)){
@@ -492,9 +505,10 @@ class(ao_new) <- c("pacea_index",
 
 attr(ao_new, "axis_name") <- "Arctic Oscillation"
 
+check_index_changed(ao, ao_new)
 if(check_index_changed(ao, ao_new)){
   expect_equal(ao,
-               ao_new[1:nrow(ao_new), ]) # See note at top if fails. Not tested
+               ao_new[1:nrow(ao), ]) # See note at top if fails. Not tested
                                         # this one yet so it may fail if final
                                         # value gets revised; if so tweak here.
   ao <- ao_new
