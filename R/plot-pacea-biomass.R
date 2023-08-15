@@ -68,9 +68,6 @@ plot.pacea_biomass <- function(obj,
   }
 
   if(style == "uncertainty"){
-    if(is.null(y_max)){
-      y_max = max(obj_lub$high)
-    }
     plot_with_uncertainty_continuous(obj_lub,
                                      value = value,
                                      xlab = xlab,

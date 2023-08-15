@@ -89,4 +89,5 @@ test_that("buoy SST plotting  works with various options", {
   expect_visible(plot(buoy_sst))
   expect_visible(plot(buoy_sst,
                       years = 2010:2020))
+  expect_error(plot(buoy_sst, stn_id = c("C46004", "C46036")))
 })
