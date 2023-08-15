@@ -11,9 +11,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # ROMS data from `pacea`
 
-Regional Ocean Modelling System (ROMS) data are available to download separately from the `pacea` package. These modelled output data were provided by ?TODO? and wrangled to simplify data format and structure. 
+Regional Ocean Modelling System (ROMS) data are available to download separately
+from the `pacea` package. These modelled output data were provided by ?TODO? and
+wrangled to simplify data format and structure.
 
-Data have been processed to an inshore 2km x 2km grid, and an offshore 6km x 6km grid. View data function help files for more information (e.g. `?roms_bottom_oxygen`)
+Data have been processed to an inshore 2km x 2km grid, and an offshore 6km x 6km
+grid. View data function help files for more information
+(e.g. `?roms_bottom_oxygen`)
 
 ## Downloading ROMS data
 
@@ -39,14 +43,16 @@ pdata <- roms_surface_temperature(force = TRUE)
 
 ## Updating ROMS data
 
-When you download ROMS data, the most recent version of the data will be downloaded to your cache folder. Check the directory using `pacea_cache()`.
+When you download ROMS data, the most recent version of the data will be
+downloaded to your cache folder. Check the directory using `pacea_cache()`.
 
-Occassionally, there will be updates to the ROMS data (e.g. adding data from more recent years). If you want to check for an update for a data file you have already downloaded to the pacea cache directory:
+Occassionally, there will be updates to the ROMS data (e.g. adding data from
+more recent years). If you want to check for an update for a data file you have
+already downloaded to the pacea cache directory:
 
 ```{r}
 pdata <- roms_surface_temperature(update = TRUE)
 ```
 
-If there is an update available, you will be prompted for whether to download the data and replace the older version you have in the pacea cache directory.
-
-
+If there is an update available, you will be prompted for whether to download
+the data and replace the older version you have in the pacea cache directory.
