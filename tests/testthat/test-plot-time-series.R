@@ -88,5 +88,5 @@ test_that("biomass plotting works with various options", {
 test_that("buoy SST plotting  works with various options", {
   expect_visible(plot(buoy_sst))
   expect_visible(plot(buoy_sst,
-                      years = 2010:2020)))
+                      years = 2010:2020))
 })
