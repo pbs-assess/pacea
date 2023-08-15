@@ -8,6 +8,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+<!-- To build either run
+   rmarkdown::render("buoys.Rmd")
+ or click the knit button in RStudio -->
+
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -42,12 +47,10 @@ are
 buoy_metadata$name
 ```
 
-The buoys are located at
+The locations of the buoys are shown at
+https://github.com/IOS-OSD-DPG/Pacific_SST_Monitoring#eccc-buoy-data .
 
-TODO plot of buoy locations, once have written it.
-
-Some of the data are shown at
-https://github.com/IOS-OSD-DPG/Pacific_SST_Monitoring/ by Andrea Hilborn,
+Some of the data are also plotted there, by Andrea Hilborn,
 Charles Hannah and Lu Guan, which is automatically updated roughly every
 week (so look there for a quick glance at recent conditions). For pacea we have,
 with Andrea, adapted some of that code to include the data and create plotting
@@ -80,13 +83,13 @@ buoy_ranges
 
 Plot data from a single buoy for all years, the default is for buoy C46146:
 ```{r plot}
-# Play with one to get the hang of ggplot2, adding in Andrea's options maybe.
-# also see https://www.r-bloggers.com/2020/04/lubridate-ggplot-date-helpers/
-#  for making extra columns early on.
 plot(buoy_sst)
 ```
-(Since `buoy_sst` has class `pacea_buoy`, `plot(buoy_sst)` function calls our tailored
-`plot.pacea_buoy()` function.
+
+The red lines gives the current year. Since `buoy_sst` has class `pacea_buoy`,
+`plot(buoy_sst)` function calls our tailored `plot.pacea_buoy()` function. This
+buoy seems to have stopped relaying data in May 2023 -- if it has since
+continued you will see the red line continuing (if you're building it in 2023) in the above plot.
 
 To see data from each buoy in turn:
 ```{r multiloop}
