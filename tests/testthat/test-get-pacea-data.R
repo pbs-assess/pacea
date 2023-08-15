@@ -74,12 +74,12 @@ test_that("Download and update of test data (from version 1 to 2) successful", {
       unlink(paste0(cache_dir, "/", file_list[i]))
     }
   }
-  data1_dir <- paste0(pacea_cache(), "/", "test_data_01.rds")
+  data1_dir <- paste0(cache_dir, "/", "test_data_01.rds")
   
   data1 <- get_pacea_data("test_data_01", force = T)
   expect_equal(file.exists(data1_dir), TRUE)
   
-  data2_dir <- paste0(pacea_cache(), "/", "test_data_02.rds")
+  data2_dir <- paste0(cache_dir, "/", "test_data_02.rds")
   data2 <- get_pacea_data("test_data", update = T, force = T)
   data2.1 <- get_pacea_data("test_data")
   

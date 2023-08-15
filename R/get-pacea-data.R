@@ -44,6 +44,11 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
   file_list <- list.files(cache_dir)
   grep_list <- file_list[grep(layer, file_list, ignore.case = TRUE)]
   
+  # testthat data functions; end function here
+  if (force == "testDataFunctions"){
+    stop("testing data functions successful")
+  }
+  
   # if file already exists -- ## CHECK HERE FOR ERROR ON HALF DOWNLOADED FILE
   if (length(grep_list) > 0) {
     
@@ -157,14 +162,7 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
       if (!ans) stop("Exiting...", call. = FALSE)
     }
     
-    # testthat function called, change layer to test_data
-    tb <- .traceback(x = 0)
-    if(!any(unlist(lapply(tb, function(x) any(grepl("test_env", x))))) && interactive()){
-      layer <- "test_data"
-    }
-    
     # check if directory exists
-    
     if (!dir.exists(cache_dir)) {
       message("Creating directory to hold pacea data at \n", cache_dir)
       dir.create(cache_dir, recursive = TRUE)
