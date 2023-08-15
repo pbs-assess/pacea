@@ -18,14 +18,14 @@
 ##' @examples
 ##' \dontrun{
 ##' roms_sst <- roms_surface_temperature()
-##' avg <- roms_average(roms_sst)
+##' avg <- spatial_average(roms_sst)
 ##' plot.pacea_index(avg, value = "value", ylab = "Average ROMS SST over area", style = "plain")
 ##' }
-roms_average <- function(pacea_st_obj,
-                         area = list(matrix(c(-127.1506, -128.2331, -129.3492, -127.9167, -127.1847, -126.8200, -127.1506,
-                                              49.85766, 49.00000, 48.99991, 50.11915, 50.40183, 50.24466, 49.85766),
-                                            ncol = 2))
-                         ){
+spatial_average <- function(pacea_st_obj,
+                            area = list(matrix(c(-127.1506, -128.2331, -129.3492, -127.9167, -127.1847, -126.8200, -127.1506,
+                                                 49.85766, 49.00000, 48.99991, 50.11915, 50.40183, 50.24466, 49.85766),
+                                               ncol = 2))
+                            ){
   stopifnot("pacea_st_obj must be of class pacea_st" =
               ("pacea_st" %in% class(pacea_st_obj)))
 
