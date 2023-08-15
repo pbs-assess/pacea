@@ -36,9 +36,8 @@ head(pacea_data)
 # list available pacea ROMS data
 head(pacea_data[grep("roms", pacea_data$data_name), ])
 
-# download data to cache folder and name object; `force = T` to skip user prompt
+# download data to cache folder and name object; `force = TRUE` to skip user prompt
 pdata <- roms_surface_temperature(force = TRUE)
-
 ```
 
 ## Updating ROMS data
