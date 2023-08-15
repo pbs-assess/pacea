@@ -44,7 +44,7 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
   file_list <- list.files(cache_dir)
   grep_list <- file_list[grep(layer, file_list, ignore.case = TRUE)]
   
-  # if file already exists
+  # if file already exists -- ## CHECK HERE FOR ERROR ON HALF DOWNLOADED FILE
   if (length(grep_list) > 0) {
     
     local_filename <- grep_list[order(grep_list, decreasing = TRUE)][1]
@@ -157,6 +157,12 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
       if (!ans) stop("Exiting...", call. = FALSE)
     }
     
+    # testthat function called, change layer to test_data
+    tb <- .traceback(x = 0)
+    if(!any(unlist(lapply(tb, function(x) any(grepl("test_env", x))))) && interactive()){
+      layer <- "test_data"
+    }
+    
     # check if directory exists
     
     if (!dir.exists(cache_dir)) {
@@ -218,7 +224,15 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
 ask <- function(...) {
   choices <- c("Yes", "No")
   cat(paste0(..., collapse = ""))
-  utils::menu(choices) == which(choices == "Yes")
+  
+  # calling scope - testthat detection
+  tb <- .traceback(x = 0)
+  
+  if(!any(unlist(lapply(tb, function(x) any(grepl("test_env", x))))) && interactive()){
+    utils::menu(choices) == which(choices == "Yes")
+  } else{
+    return(TRUE)
+  }
 }
 
 #' Check internet connection
