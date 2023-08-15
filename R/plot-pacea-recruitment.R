@@ -89,16 +89,16 @@ plot.pacea_recruitment <- function(obj,
   }
 
   if(style == "uncertainty"){
-    plot_with_uncertainty(obj_lub,
-                          value = value,
-                          xlab = xlab,
-                          ylab = ylab,
-                          uncertainty_bar_col = uncertainty_bar_col,
-                          y_max = y_max,
-                          add_line_at_1 = add_line_at_1,
-                          add_line_at_1_col = add_line_at_1_col,
-                          add_line_at_1_lty = add_line_at_1_lty,
-                          ...)
+    plot_with_uncertainty_discrete(obj_lub,
+                                   value = value,
+                                   xlab = xlab,
+                                   ylab = ylab,
+                                   uncertainty_bar_col = uncertainty_bar_col,
+                                   y_max = y_max,
+                                   add_line_at_1 = add_line_at_1,
+                                   add_line_at_1_col = add_line_at_1_col,
+                                   add_line_at_1_lty = add_line_at_1_lty,
+                                   ...)
   } else {
     plot.default(obj_lub$date,
                  obj_lub[[value]], # [[]] returns a vector not a tibble
