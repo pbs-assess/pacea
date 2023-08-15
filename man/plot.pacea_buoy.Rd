@@ -14,8 +14,17 @@
 \arguments{
 \item{obj}{buoy SST data, of class `pacea_buoy_sst`}
 
-\item{stn_id}{single station to plot, or multiple station ids (as given by
-`stn_id` column in `buoy_metadata`). Or "all" to plot all stations. TODO}
+\item{stn_id}{single station to plot, as given by
+`stn_id` column in `buoy_metadata`. Default is station C46146 (Halibut
+Bank in the Strait of Georgia).}
+
+\item{years}{vector of given years to plot. If left as NULL then plots all
+available years.}
+
+\item{year_highlight}{numeric of the year to highlight; defaults to current year.}
+}
+\value{
+a ggplot object of the plot
 }
 \description{
 Plot buoy SST data for either one station or multiple stations, with various options.

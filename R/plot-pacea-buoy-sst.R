@@ -1,25 +1,27 @@
 ##' Plot buoy SST data for one or multiple stations
 ##'
-##' Plot buoy SST data for either one station or multiple stations, with various options.
+##' Plot buoy SST data for either one station or multiple stations, with various
+##' options, with a certain year (defaults to the current year), highlighted in
+##' red.
 ##'
 ##' @param obj buoy SST data, of class `pacea_buoy_sst`
-##' @param stn_id single station to plot, or multiple station ids (as given by
-##'   `stn_id` column in `buoy_metadata`). Or "all" to plot all stations. TODO
-##'
-##' @return
+##' @param stn_id single station to plot, as given by
+##'   `stn_id` column in `buoy_metadata`. Default is station C46146 (Halibut
+##'   Bank in the Strait of Georgia).
+##' @param years vector of given years to plot. If left as NULL then plots all
+##'   available years.
+##' @param year_highlight numeric of the year to highlight; defaults to current year.
+##' @return a ggplot object of the plot
 ##' @export
 ##' @author Andrew Edwards
 ##' @examples
 ##' \dontrun{
+##' plot(buoy_sst)
+##' plot(buoy_sst, stn_id = "C46185")
 ##' }
 plot.pacea_buoy <- function(obj,
-                            stn_id = "C46146",    # plot one station if
-                                        # specified  # NOT IMPLEMENTED YET, and
-                                        # make stn_id. Might need tweaking
-                                        # regarding factors etc.
-                            years = NULL,    # plot a given vector of years (can
-                                        # be just one year), els
-                                        # all available if NULL TODO check range works
+                            stn_id = "C46146",
+                            years = NULL,
                             year_highlight = lubridate::year(lubridate::today())
                             ){
   station <- stn_id       # Can't use stn_id == stn_id in upcoming filter
@@ -34,27 +36,27 @@ plot.pacea_buoy <- function(obj,
                          year_highlight = year_highlight)
 
   } else {
-    plot_buoy_sst_multiple(obj,   # TODO
-                           stn_id = station,
-                           years = years,
-                           year_highlight = year_highlight
-                           )
+    stop("`stn_id` has to be a single station; if doing multiple in a panel plot would be useful then contact us and we can implement it")
+    #plot_buoy_sst_multiple(obj,
+    #                       stn_id = station,
+    #                       years = years,
+    #                       year_highlight = year_highlight
+    #                       )
   }
 }
 
 ##' Plot buoy SST data for a single station; called by `plot.pacea_buoy()`
 ##'
-##' <desc>
-##'
-##' @param obj TODO
+##' @param obj buoy SST data, of class `pacea_buoy_sst` for just a single station, called from `plot.pacea_buoy()`
 ##' @param year_highlight
-##' @param title TODO
-##' @return
+##' @param title text string for title of plot; defaults to `stn_id` followed by
+##'   the buoy's name (e.g. C46146 Halibut Bank), like Andrea Hilborn has.
+##' @return ggplot object of the plot
 ##' @export
 ##' @author Andrew Edwards
 ##' @examples
 ##' \dontrun{
-##'
+##' # Used when called from plot.pacea_buoy()
 ##' }
 plot_buoy_sst_single <- function(obj,
                                  year_highlight,
@@ -80,10 +82,11 @@ plot_buoy_sst_single <- function(obj,
     theme(plot.title = element_text(hjust = 0.5),
           strip.background = element_rect(colour = "grey70",
                                           fill = "grey95")) +
-    labs(x = "Julian Day",    # TODO make month, currently Julian day, see attempts:
+    labs(x = "Julian Day",
          colour = "Year",
          title = title) +
-    # Also see https://www.r-bloggers.com/2020/04/lubridate-ggplot-date-helpers/
+  # TODO make month, currently Julian day, see attempts:
+  # Also see https://www.r-bloggers.com/2020/04/lubridate-ggplot-date-helpers/
     #    scale_x_date(date_labels = "%b") +   # TODO label by month
     # scale_x_date(labels = date_format("%b")) +
 #    scale_x_date(date_breaks="months",
@@ -96,14 +99,12 @@ plot_buoy_sst_single <- function(obj,
   hh <- h +
     geom_line(data = filter(obj,
                             lubridate::year(date) ==
-                            year_highlight),    # TODO add option for specifying year
-              # (so not always current year, esp in January)
+                            year_highlight),
               aes(x = lubridate::yday(date),
                   sst),
               colour = "red",
               linewidth = 2)
   hh
-# looks good, needs tome tidying up but good so far
 }
 
 
@@ -124,9 +125,9 @@ plot_buoy_sst_single <- function(obj,
 ##' \dontrun{
 ##'
 ##' }
-plot_buoy_sst_multiple <- function(obj,
-                                   stn_id,
-                                   years,
-                                   year_highlight
-                                   ){
-}
+#plot_buoy_sst_multiple <- function(obj,
+#                                   stn_id,
+#                                   years,
+#                                   year_highlight
+#                                   ){
+#}
