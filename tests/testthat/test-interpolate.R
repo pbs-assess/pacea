@@ -91,6 +91,21 @@ test_that("Output from Spatial object successful", {
 })
 
 
+test_that("Including extent of SpatObj works", {
+  dat <- data.frame(x = runif(5, 0, 10), y = runif(5, 0, 10), var = rnorm(5)) %>% 
+    st_as_sf(coords = c("x", "y"))
+  
+  outer <- matrix(c(0,0,10,0,10,10,0,10,0,0), ncol=2, byrow=TRUE)
+  
+  sf_poly <- st_polygon(x = list(outer)) %>% 
+    st_sfc() %>% st_as_sf() %>%
+    st_set_crs("EPSG: 4326")
+  
+  output.rast <- point2rast(dat, sf_poly, cellsize = 0.5, nnmax = 2, as = "SpatRast")
+  
+  expect_equal(class(output.rast)[1], "SpatRaster")
+  expect_equal(nrow(output.rast), 20)
+})
 
 
 

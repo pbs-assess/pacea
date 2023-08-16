@@ -65,7 +65,7 @@ point2rast <- function(data, spatobj, loc = c("x", "y"), cellsize, nnmax = 4,
   tbb <- terra::ext(spatobj)
   if(!any(coords$x >= tbb$xmin & coords$x <= tbb$xmax & 
           coords$y >= tbb$ymin & coords$y <= tbb$ymax)) {
-    warning("loc coordinates within spatobj extent = 0; check crs or extent of spatobj")
+    warning("'loc' coordinates within spatobj extent = 0; check crs or extent of spatobj")
   }
   
   terror <- try(terra::crs(spatobj), silent = TRUE)
