@@ -90,9 +90,16 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
         
         ans <- TRUE
         
+        # interactive or forced download
         if(ask && !force){
           ans <- ask(paste("Newer version of data available and previous version will be deleted from local cache folder:",
                            cache_dir, "Is that okay?", sep = "\n"))
+          
+          # testthat testing 'ans = FALSE' for to keep older version of data
+          tb <- .traceback(x = 0)
+          if(any(unlist(lapply(tb, function(x) any(grepl("test_env", x))))) && interactive()){
+            ans <- FALSE
+          }
         }
         
         if (!ans) {
@@ -159,6 +166,13 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
     if (ask && !force) {
       ans <- ask(paste("pacea would like to download and store these data in the directory:",
                        cache_dir, "Is that okay?", sep = "\n"))
+      
+      # testthat testing 'ans = FALSE' to deny downloading to cache
+      tb <- .traceback(x = 0)
+      if(any(unlist(lapply(tb, function(x) any(grepl("test_env", x))))) && interactive()){
+        ans <- FALSE
+      }
+      
       if (!ans) stop("Exiting...", call. = FALSE)
     }
     
@@ -226,11 +240,12 @@ ask <- function(...) {
   # calling scope - testthat detection
   tb <- .traceback(x = 0)
   
+  ret <- TRUE
   if(!any(unlist(lapply(tb, function(x) any(grepl("test_env", x))))) && interactive()){
-    utils::menu(choices) == which(choices == "Yes")
-  } else{
-    return(TRUE)
-  }
+    ret <- utils::menu(choices) == which(choices == "Yes")
+  } 
+  
+  return(ret)
 }
 
 #' Check internet connection
