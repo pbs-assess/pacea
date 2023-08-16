@@ -30,7 +30,7 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
   }
   
   # testing data
-  test_names <- c("test_data", "test_data_01", "test_data_02")
+  test_names <- c("test_data", "test_data_01", "test_data_02", "test_corruptdata")
   
   ## find data in row - CHANGE datalist name if necessary
   data_list <- pacea_data
@@ -55,6 +55,16 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
     local_filename <- grep_list[order(grep_list, decreasing = TRUE)][1]
     
     local_file_dir <- paste0(cache_dir, "/", local_filename)
+    
+    # read local data and check if corrupted
+    suppressWarnings({dat <- try(readRDS(local_file_dir), silent = TRUE)})
+    if("try-error" %in% class(dat)){
+      warning("Local version of data is corrupt/incomplete, likely due to an interruption during download. Deleting corrupt file")
+      
+      # delete previous version in local folder
+      unlink(local_file_dir)
+    }
+    
     
     if (update) {
       
@@ -110,37 +120,17 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
           return(dat)
           
         } else {
-
-          fileurl <- paste0("https://github.com/pbs-assess/pacea-data/blob/main/data/", git_filename, "?raw=true") 
           
-          # Send GET request to retrieve the file
-          response <- httr::GET(fileurl)
-          httr::stop_for_status(response)
-          
-          # Read the content of the response as raw data
-          content_raw <- httr::content(response, "raw")
-          
-          # Create a temporary file path
-          temp_file <- tempfile()
-          
-          # Write the raw data to the temporary file
-          writeBin(content_raw, temp_file)
-          
-          # Read the .rds file into R and get name of file (can be different than path name)
-          dat_name <- load(temp_file)
-          
-          # name data to generic object name
-          dat <- get(dat_name)
-          
-          # Remove the temporary file
-          file.remove(temp_file) 
+          # download data
+          turl <- paste0("https://github.com/pbs-assess/pacea-data/blob/main/data/", git_filename, "?raw=true") 
+          dat <- dl_data(turl)
           
           # create file name with version number
           filename <- paste0(git_filename)
           file_dir <- paste0(cache_dir, "/", filename)
           
           saveRDS(dat, file = file_dir, compress = "xz")
-          
+
           # delete previous version in local folder
           unlink(local_file_dir)
           
@@ -195,29 +185,8 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
     git_filename <- strsplit(git_file_dir, "/")[[1]][2]
     
     # download data
-    fileurl <- paste0("https://github.com/pbs-assess/pacea-data/blob/main/data/", git_filename, "?raw=true") 
-    
-    # Send GET request to retrieve the file
-    response <- httr::GET(fileurl)
-    httr::stop_for_status(response)
-    
-    # Read the content of the response as raw data
-    content_raw <- httr::content(response, "raw")
-    
-    # Create a temporary file path
-    temp_file <- tempfile()
-    
-    # Write the raw data to the temporary file
-    writeBin(content_raw, temp_file)
-    
-    # Read the .rds file into R and get name of file (can be different than path name)
-    dat_name <- load(temp_file)
-    
-    # name data to generic object name
-    dat <- get(dat_name)
-    
-    # Remove the temporary file
-    file.remove(temp_file) 
+    turl <- paste0("https://github.com/pbs-assess/pacea-data/blob/main/data/", git_filename, "?raw=true") 
+    dat <- dl_data(turl)
     
     # create file name with version number
     filename <- paste0(git_filename)
@@ -230,6 +199,34 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
   }
 }
 
+#' Download compressed data and save to cache
+#' @noRd
+dl_data <- function(fileurl) {
+  
+  # Send GET request to retrieve the file
+  response <- httr::GET(fileurl)
+  httr::stop_for_status(response)
+  
+  # Read the content of the response as raw data
+  content_raw <- httr::content(response, "raw")
+  
+  # Create a temporary file path
+  temp_file <- tempfile()
+  
+  # Write the raw data to the temporary file
+  writeBin(content_raw, temp_file)
+  
+  # Read the .rds file into R and get name of file (can be different than path name)
+  dat_name <- load(temp_file)
+  
+  # name data to generic object name
+  datout <- get(dat_name)
+  
+  # Remove the temporary file
+  file.remove(temp_file) 
+   
+  return(datout)
+}
 
 #' Interactive function for Yes/No question - from bcmaps package
 #' @noRd

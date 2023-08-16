@@ -115,7 +115,7 @@ test_that("Download and update of test data (from version 1 to 2) declined (ie. 
   
   # data1 deleted with data2 downloaded
   expect_equal(file.exists(data1_dir), TRUE)
-  expect_equal(file.exists(data2_dir), FALSE)
+  expect_equal(file.exists(data2f_dir), FALSE)
   
   unlink(paste0(cache_dir, "/test_data_01.rds"))
   expect_length(data1, 100)
@@ -171,3 +171,11 @@ test_that("'ask' function works and returns correct value", {
   expect_equal(ask("Return value = TRUE when skipping interactive with testthat"), TRUE)
 })
 
+
+# test_that("Test that function deletes corrupt data", {
+#   cache_dir <- pacea_cache()
+# 
+#   tdat <- get_pacea_data("test_corruptdata", force = TRUE)
+# 
+#   ## Need to figure out how to directly save corrupted file into cache, then the function can attempt to read the corrupted file and fail
+# })
