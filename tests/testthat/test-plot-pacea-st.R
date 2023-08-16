@@ -37,4 +37,7 @@ test_that("geospatial plotting: test that stopifnot commands are working", {
   
   expect_error(plot.pacea_st(pdata, years = c(1990)))
   
+  # test subroutine function
+  expect_error(subset_pacea_ym(pdata, years = 1991, months = c("Jam")))
+  
 })

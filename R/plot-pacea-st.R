@@ -54,10 +54,6 @@ plot.pacea_st <- function(obj,
   # subset year_month columns
   tobj <- subset_pacea_ym(data = obj, months = months, years = years)  ####MOVE THIS DOWN
   
-  if(ncol(tobj)==1){
-    tobj <- obj
-  } 
-  
   # year-month combinations
   tobj_names <- as.data.frame(matrix(as.numeric(unlist(strsplit(names(st_drop_geometry(tobj)), split = "_"))), 
                                      ncol = 2, byrow = TRUE)) 
