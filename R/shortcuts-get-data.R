@@ -36,6 +36,8 @@
 #' @return `sf` data object requested.
 #' @export
 #' 
+#' @source Pena et al., 2019
+#' 
 #' @examples
 #' \dontrun{
 #' my_data <- roms_bottom_oxygen()

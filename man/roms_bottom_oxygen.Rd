@@ -27,6 +27,9 @@
 \format{
 A simple features dataframe.
 }
+\source{
+Pena et al., 2019
+}
 \usage{
 roms_bottom_oxygen(update = FALSE, ask = interactive(), force = FALSE)
 

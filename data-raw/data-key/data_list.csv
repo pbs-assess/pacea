@@ -1,42 +1,23 @@
-﻿data_name,description,object_class,data_type,source
-bc_coast,BC coast shapefile,data object,geospatial,
-bc_eez,Canada's Pacific (BC) EEZ boundary,data object,geospatial,
-buoy_metadata,,data object,,
-buoy_sst,,data object,,
-enso_mei,,data object,,
-grid26,"Grid for interpolated ROMS data, 2x2km inshore and 6x6km offshore",data object,geospatial,
-hake_biomass,,data object,,
-hake_recruitment,,data object,,
-hake_recruitment_over_2010,,data object,,
-hake_recruitment_over_R0,,data object,,
-inshore_poly,Inshore EEZ boundary of ROMS data,data object,geospatial,
-npgo,,data object,,
-npi_annual,,data object,,
-npi_monthly,,data object,,
-offshore_poly,Offshore EEZ boundary of ROMS data,data object,geospatial,
-oni,,data object,,
-pdo,,data object,,
-roms_avg0to40m_oxygen,ROMS average oxygen between 0 to 40m depth,function,modelled,"Pena et al., 2019."
-roms_avg0to40m_ph,ROMS average pH between 0 to 40m depth,function,modelled,"Pena et al., 2019."
-roms_avg0to40m_salinity,ROMS average salinity between 0 to 40m depth,function,modelled,"Pena et al., 2019."
-roms_avg0to40m_temperature,ROMS average temperature between 0 to 40m depth,function,modelled,"Pena et al., 2019."
-roms_avg100mtoBot_oxygen,ROMS average oxygen between 100m depth and bottom,function,modelled,"Pena et al., 2019."
-roms_avg100mtoBot_ph,ROMS average pH between 100m depth and bottom,function,modelled,"Pena et al., 2019."
-roms_avg100mtoBot_salinity,ROMS average salinity between 100m depth and bottom,function,modelled,"Pena et al., 2019."
-roms_avg100mtoBot_temperature,ROMS average temperature between 100m depth and bottom,function,modelled,"Pena et al., 2019."
-roms_avg40to100m_oxygen,ROMS average oxygen between 40 to 100m depth,function,modelled,"Pena et al., 2019."
-roms_avg40to100m_ph,ROMS average pH between 40 to 100m depth,function,modelled,"Pena et al., 2019."
-roms_avg40to100m_salinity,ROMS average salinity between 40 to 100m depth,function,modelled,"Pena et al., 2019."
-roms_avg40to100m_temperature,ROMS average temperature between 40 to 100m depth,function,modelled,"Pena et al., 2019."
-roms_bottom_oxygen,ROMS bottom oxygen,function,modelled,"Pena et al., 2019."
-roms_bottom_ph,ROMS bottom pH,function,modelled,"Pena et al., 2019."
-roms_bottom_salinity,ROMS bottom salinity,function,modelled,"Pena et al., 2019."
-roms_bottom_temperature,ROMS bottom temperature,function,modelled,"Pena et al., 2019."
-roms_phytoplankton,ROMS phytophytoplankton,function,modelled,"Pena et al., 2019."
-roms_primaryproduction,ROMS primary production,function,modelled,"Pena et al., 2019."
-roms_surface_oxygen,ROMS surface oxygen,function,modelled,"Pena et al., 2019."
-roms_surface_ph,ROMS surface pH,function,modelled,"Pena et al., 2019."
-roms_surface_salinity,ROMS surface salinity,function,modelled,"Pena et al., 2019."
-roms_surface_temperature,ROMS surface temperature,function,modelled,"Pena et al., 2019."
-romseez_poly,Boundary of ROMS data and EEZ,data object,geospatial,
-soi,,data object,,
+﻿data_name
+roms_avg0to40m_oxygen
+roms_avg0to40m_ph
+roms_avg0to40m_salinity
+roms_avg0to40m_temperature
+roms_avg100mtoBot_oxygen
+roms_avg100mtoBot_ph
+roms_avg100mtoBot_salinity
+roms_avg100mtoBot_temperature
+roms_avg40to100m_oxygen
+roms_avg40to100m_ph
+roms_avg40to100m_salinity
+roms_avg40to100m_temperature
+roms_bottom_oxygen
+roms_bottom_ph
+roms_bottom_salinity
+roms_bottom_temperature
+roms_phytoplankton
+roms_primaryproduction
+roms_surface_oxygen
+roms_surface_ph
+roms_surface_salinity
+roms_surface_temperature
