@@ -47,15 +47,18 @@ test_that("Denying of downloading test data: successful", {
     }
   }
   
+  skip_on_ci()
   data1_dir <- paste0(pacea_cache(), "/", "test_data_01.rds")
-  expect_error(data1 <- get_pacea_data("test_data_01", force = FALSE), "Exiting...")
+  data2_dir <- paste0(pacea_cache(), "/", "test_data_02.rds")
+  expect_error(data1 <- get_pacea_data("test_data", force = FALSE), "Exiting...")
   
-  # data1 deleted with data2 downloaded
+  # data does not exist
   expect_equal(file.exists(data1_dir), FALSE)
+  expect_equal(file.exists(data2_dir), FALSE)
 })
 
 
-test_that("Download of test data 1, and loading of cached test data 1: successful", {
+test_that("Download of test_data (version 2), and loading of cached test data 1: successful", {
   
   ## write list of interactive functions and responses here
   layer <- "test_data"
@@ -73,17 +76,21 @@ test_that("Download of test data 1, and loading of cached test data 1: successfu
   
   data1_dir <- paste0(pacea_cache(), "/", "test_data_01.rds")
   data1 <- get_pacea_data("test_data_01", force = TRUE)
-  data1.1 <- get_pacea_data("test_data", force = TRUE)
+  
+  # data already exists
+  data1.1 <- get_pacea_data("test_data", force = TRUE) # no version number
+  data1.2 <- get_pacea_data("test_data_01", force = TRUE) # no version number
   
   expect_equal(file.exists(data1_dir), TRUE)
   
   unlink(paste0(cache_dir, "/test_data_01.rds"))
   expect_length(data1, 100)
   expect_length(data1.1, 100)
+  expect_length(data1.2, 100)
 })
 
 
-test_that("Download and update of test data (from version 1 to 2) declined (ie. keep old data); force = FALSE", {
+test_that("Download and update of test data (from version 1 to 2) declined (ie. keep old data)", {
   
   ## write list of interactive functions and responses here
   layer <- "test_data"
@@ -100,24 +107,28 @@ test_that("Download and update of test data (from version 1 to 2) declined (ie. 
   }
   data1_dir <- paste0(cache_dir, "/", "test_data_01.rds")
   
+  skip_on_ci()
   # download test_data_01
   data1 <- get_pacea_data("test_data_01", force = TRUE)
   expect_equal(file.exists(data1_dir), TRUE)
   
   # check for test_data update and update using default 'ask = true' when interactive message detected
-  expect_warning(data2f <- get_pacea_data("test_data", update = TRUE, force = FALSE), "Returned local version of data.")
+  expect_warning(data2f <- get_pacea_data("test_data", update = TRUE, force = FALSE), 
+                 "Returned local version of data.")
   
   # data_2 directory
   data2f_dir <- paste0(cache_dir, "/", "test_data_02.rds")
   
-  # call test_data to ensure old version is loaded
+  # call test_data to ensure old version is in cached and loaded
   data1.1 <- get_pacea_data("test_data")
   
-  # data1 deleted with data2 downloaded
+  # data1 stil exists and data2 not loaded
   expect_equal(file.exists(data1_dir), TRUE)
   expect_equal(file.exists(data2f_dir), FALSE)
   
   unlink(paste0(cache_dir, "/test_data_01.rds"))
+  
+  # all loaded files are data1 (length == 100)
   expect_length(data1, 100)
   expect_length(data2f, 100)
   expect_length(data1.1, 100)
@@ -125,7 +136,7 @@ test_that("Download and update of test data (from version 1 to 2) declined (ie. 
 
 
 
-test_that("Download and update of test data (from version 1 to 2) successful - force = TRUE", {
+test_that("Download and update of test data (from version 1 to 2) successful", {
   
   ## write list of interactive functions and responses here
   layer <- "test_data"
@@ -147,20 +158,25 @@ test_that("Download and update of test data (from version 1 to 2) successful - f
   expect_equal(file.exists(data1_dir), TRUE)
   
   # Update test_data using 'force = TRUE'
-  data2 <- get_pacea_data("test_data", update = TRUE, force = TRUE)
+  expect_message(data2 <- get_pacea_data("test_data", update = TRUE, force = TRUE), 
+                 "Data successfully updated and downloaded to local cache folder!")
   
   # data_2 directory
   data2_dir <- paste0(cache_dir, "/", "test_data_02.rds")
   
-  # call test_data to ensure most recent version is loaded
+  # call test_data to ensure most recent version is in cache
   data2.1 <- get_pacea_data("test_data")
   
-  expect_warning(get_pacea_data("test_data", update = T, force = T), "Most recent version of data already downloaded in cache folder!")
+  expect_warning(get_pacea_data("test_data", update = TRUE, force = TRUE), 
+                 "Most recent version of data already downloaded in cache folder!")
   
+  # data1 deleted with data2 downloaded
   expect_equal(file.exists(data1_dir), FALSE)
   expect_equal(file.exists(data2_dir), TRUE)
   
   unlink(paste0(cache_dir, "/test_data_02.rds"))
+  
+  # data1 is the initial file (length==100), and subsequent files loaded are data2 (length==200)
   expect_length(data1, 100)
   expect_length(data2, 200)
   expect_length(data2.1, 200)
@@ -172,6 +188,8 @@ test_that("'ask' function works and returns correct value", {
 })
 
 
+
+# How to test...Don't know how to download corrupt data (already on github pacea-data)
 # test_that("Test that function deletes corrupt data", {
 #   cache_dir <- pacea_cache()
 # 

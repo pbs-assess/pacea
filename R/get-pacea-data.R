@@ -49,7 +49,7 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
     stop("testing data functions successful")
   }
   
-  # if file already exists -- ## CHECK HERE FOR ERROR ON HALF DOWNLOADED FILE
+  # if file already exists 
   if (length(grep_list) > 0) {
     
     local_filename <- grep_list[order(grep_list, decreasing = TRUE)][1]
@@ -64,7 +64,6 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
       # delete previous version in local folder
       unlink(local_file_dir)
     }
-    
     
     if (update) {
       
@@ -98,6 +97,7 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
         
       } else {
         
+        # default ans = TRUE
         ans <- TRUE
         
         # interactive or forced download
@@ -105,11 +105,11 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
           ans <- ask(paste("Newer version of data available and previous version will be deleted from local cache folder:",
                            cache_dir, "Is that okay?", sep = "\n"))
           
-          # testthat testing 'ans = FALSE' for to keep older version of data
-          tb <- .traceback(x = 0)
-          if(any(unlist(lapply(tb, function(x) any(grepl("test_env", x))))) && interactive()){
+          # testthat testing 'ans = FALSE' to deny updating data to cache
+          if(layer == "test_data"){
             ans <- FALSE
           }
+          
         }
         
         if (!ans) {
@@ -158,8 +158,7 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
                        cache_dir, "Is that okay?", sep = "\n"))
       
       # testthat testing 'ans = FALSE' to deny downloading to cache
-      tb <- .traceback(x = 0)
-      if(any(unlist(lapply(tb, function(x) any(grepl("test_env", x))))) && interactive()){
+      if(layer == "test_data"){
         ans <- FALSE
       }
       
