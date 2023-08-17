@@ -59,10 +59,12 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
     # read local data and check if corrupted
     suppressWarnings({dat <- try(readRDS(local_file_dir), silent = TRUE)})
     if("try-error" %in% class(dat)){
-      warning("Local version of data is corrupt/incomplete, likely due to an interruption during download. Deleting corrupt file")
       
       # delete previous version in local folder
       unlink(local_file_dir)
+      
+      stop("Local version of data is corrupt/incomplete, likely due to an interruption during download. Deleting corrupt file...")
+      
     }
     
     if (update) {

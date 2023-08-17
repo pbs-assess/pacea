@@ -188,12 +188,25 @@ test_that("'ask' function works and returns correct value", {
 })
 
 
+test_that("Test that function deletes corrupt data", {
+  
+  # run bash command to download corrupt data from github pacea-data
+  scrpt <- "curl https://github.com/pbs-assess/pacea-data/raw/main/data/test_corruptdata.rds -o "
+  
+  # directory
+  cache_dir <- pacea_cache()
+  out_file <- "test_corruptdata.rds"
+  out_dir <- paste0(cache_dir, "/", out_file)
+  
+  # command
+  fullcmd <- paste0(scrpt, out_dir)
+  
+  # run command - download data to cache
+  system(fullcmd)
+  
+  expect_error(datacorrupt <- get_pacea_data("test_corruptdata"))
+  
+  # local directory
+  unlink(paste0(cache_dir, out_file))
 
-# How to test...Don't know how to download corrupt data (already on github pacea-data)
-# test_that("Test that function deletes corrupt data", {
-#   cache_dir <- pacea_cache()
-# 
-#   tdat <- get_pacea_data("test_corruptdata", force = TRUE)
-# 
-#   ## Need to figure out how to directly save corrupted file into cache, then the function can attempt to read the corrupted file and fail
-# })
+})
