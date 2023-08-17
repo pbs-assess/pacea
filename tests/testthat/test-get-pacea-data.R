@@ -190,6 +190,7 @@ test_that("'ask' function works and returns correct value", {
 
 test_that("Test that function deletes corrupt data", {
   
+  skip_on_ci()
   # run bash command to download corrupt data from github pacea-data
   scrpt <- "curl https://github.com/pbs-assess/pacea-data/raw/main/data/test_corruptdata.rds -o "
   
