@@ -32,7 +32,7 @@ then the connection may be timing out (happens to us on the DFO network). Try
 ```
 options(timeout = 1200)
 ```
-and then try and install again. If you get a different error then contact Andy and Travis for help. (Once we officially release pacea then we will ensure the installation always works, it may currently occasionally break while we are developing it). You can try the option `build_vignettes = TRUE` if you like and look at the vignettes the usual way. Once we finalise the vignettes we will provide the `html` version on GitHub to be easily viewed. 
+and then try and install again. If you get a different error then contact Andy and Travis for help. If the R-CMD-check badge above does not say 'passing' in green, then just try again later as we've broken something and are probably trying to fix it. (Once we officially release pacea then we will ensure the installation always works - we'll work on another GitHub branch). You can try the option `build_vignettes = TRUE` if you like and look at the vignettes the usual way. Once we finalise the vignettes we will provide the `html` version on GitHub to be easily viewed. 
 
 ------
 
