@@ -27,15 +27,18 @@ If you get an error like
 ```
 Error in utils::download.file(....)
 ```
-then the connection may be timing out. Try
+then the connection may be timing out (happens to us on the DFO network). Try
 
 ```
 options(timeout = 1200)
 ```
-and then try and install again. If you get a different error then contact Andy and Travis for help. (Once we officially release pacea then we will ensure the installation always works, it may currently occasionally break while we are developing it). 
+and then try and install again. If you get a different error then contact Andy and Travis for help. (Once we officially release pacea then we will ensure the installation always works, it may currently occasionally break while we are developing it). You can try the option `build_vignettes = TRUE` if you like and look at the vignettes the usual way. Once we finalise the vignettes we will provide the `html` version on GitHub to be easily viewed. 
 
+------
 
-TODO - rewrite all the following, giving some simple examples and referring to vignettes or Issues. 
+STOP reading here - rest needs updating. 
+
+TODO - rewrite all the following, giving some simple examples and referring to vignettes once we've finished those or Issues. 
 
 Currently, briefly (we will expand on this TODO) pacea includes output from a British Columbia ROMS (Regional Ocean Modeling System) model, climatic and oceanographic indices such as Pacific Decadal Oscillation, Pacific Hake stock assessment results, sea surface temperature from buoys, .... We do have context-specific plotting functions that relate to each type of data set.
 
