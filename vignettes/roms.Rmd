@@ -1,0 +1,398 @@
+---
+title: "ROMS Data"
+author: "Travis Tai"
+output: html_document
+date: "2023-06-19"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# ROMS data from `pacea`
+
+```{r packages}
+# run this if pacea has not been installed
+#remotes::install_github("pbs-assess/pacea")
+
+library(pacea)
+library(dplyr)
+library(sf)
+```
+
+Regional Ocean Modelling System (ROMS) data are available to download separately from the `pacea` package. These modelled output data were provided by Pena et al. (2019) and wrangled to simplify data format and structure.
+
+Data have been processed to an inshore 2km x 2km grid, and an offshore 6km x 6km grid. The area for these region are accessible as data objects `romseez_poly`, `inshore_poly` and `offshore_poly`. They use the 'NAD83/BC Albers' projection. The polygons are `sf` (simple feature) objects.
+
+```{r Polygons}
+romseez_poly
+
+# plotting the polygons
+plot(romseez_poly, border = "black")
+plot(inshore_poly, col = "green", add = TRUE)
+plot(offshore_poly, col = "blue", add = TRUE)
+```
+
+To see where these are in relation to the BC coastline and Exclusive Economic Zone (EEZ), we have to reproject the `bc_coast` and `bc_eez` objects as they use the 'WGS 84' projection
+
+```{r}
+# transform to NAD 83/BC Albers
+tbc_coast <- bc_coast %>% st_transform(crs = "EPSG: 3005") 
+tbc_eez <- bc_eez %>% st_transform(crs = "EPSG: 3005") 
+
+# plot
+plot(romseez_poly, border = "black")
+plot(inshore_poly, col = "green", add = TRUE)
+plot(offshore_poly, col = "blue", add = TRUE)
+plot(tbc_eez, lty = 2, add = TRUE)
+plot(tbc_coast, col = "grey", add = TRUE)
+```
+
+The mixed grid (2km x 2km and 6km x 6km) can also be viewed.
+
+```{r}
+# grid cells may not be visible if resolution of plot is too low
+plot(grid26)
+```
+
+
+## Downloading ROMS data
+
+ROMS data are large as they are spatially and temporally resolved. Thus, to reduce the size of the `pacea` package, the data are stored in a GitHub repository. Users can download specific datasets to their local computer. An internet connection is required.
+
+The list of ROMS data available can be viewed from the list `roms_data`. ROMS data can be accessed using placeholder functions, named as in `roms_data`, that download the data to a local cache folder - this directory can be identified using `pacea_cache`.
+
+View data function help files for more information on ROMS data (e.g. `?roms_bottom_oxygen`)
+
+```{r ROMS}
+# list available ROMS data
+#head(roms_data)
+
+# local cache folder
+pacea_cache()
+
+# download data to cache folder and name object; `force = TRUE` to skip user prompt
+pdata <- roms_surface_temperature(force = TRUE)
+```
+
+If `force = FALSE`, the user will be prompted on whether to download the data to the cache folder. 
+
+Once the data has been downloaded into the cache folder, the placeholder function will simply load the data into the current workspace.
+
+```{r}
+dim(pdata)
+
+# the data have 325 columns so we'll just preview the first 5 columns
+head(pdata[, 1:5])
+```
+NOTE: 
+The geometry column is still included when selecting columns from an `sf` object. 
+
+The data are in wide format, with each column representing a unique year-month combination. The data also have various attributes, such as the units for the data values.
+
+```{r}
+# names of the various attributes
+names(attributes(pdata))
+
+# units
+attributes(pdata)$units
+```
+
+
+## Updating ROMS data
+
+When you download ROMS data, the most recent version of the data will be downloaded to your cache folder. 
+
+Occasionally, there will be updates to the ROMS data (e.g. adding data from more recent years). If you want to check for an update for a data file you have already downloaded to the pacea_cache directory:
+
+```{r}
+pdata <- roms_surface_temperature(update = TRUE)
+```
+
+If there is an update available, you will be prompted on whether to download the data and replace the older version you have in the pacea cache directory. If declined, the current version of the data will be loaded to the workspace.
+
+## ROMS visualization
+
+Here, we plot the ROMS data using some built in package functions, as well as `ggplot2`. We introduce some of the available polygon simple feature layers that can be plotted with the ROMS data.
+
+### Base `plot()`
+
+ROMS data can be plotted using the `plot()` function for a quick view of the data. The default settings are to plot the April every five years for the time series available.
+
+```{r}
+# data should already be downloaded to cache folder
+pdata <- roms_surface_temperature()
+
+plot(pdata)
+```
+
+Other months and years can be selected.
+
+```{r}
+plot(pdata, months = c("June", "September"), years = c(1995, 2010, 2019))
+```
+
+The BC coastline and Exclusive Economic Zone (EEZ) can be plotted if there is only one layer selected.
+
+```{r}
+plot(pdata, months = c("September"), years = c(2019), bc = T, eez = T)
+```
+
+### Using ggplot
+
+Using `ggplot2` is recommended if you would like to customize the plots, especially for multipanel plots. 
+
+Since the data are in wide format, it needs to be wrangled into long format for `ggplot()`.
+
+```{r}
+library(ggplot2)
+
+# months and years of interest
+yrs <- c(1999, 2009, 2019)
+mths <- c(8) # august
+ym <- paste(yrs, mths, sep = "_")
+
+# subset data based on year_month column name
+tdat <- pdata %>%
+  dplyr::select(all_of(ym))
+
+# wrangle data to long format and add columns for year and month
+sub.dat <- tdat %>%
+  tidyr::pivot_longer(cols = !last_col(), cols_vary = "slowest", names_to = "date", values_to = "value")  %>%
+  mutate(year = substr(date, 1, 4),
+         month = substr(date, 6, 7)) %>%
+  relocate(geometry, .after = last_col()) 
+
+# plot selected years and month
+p1 <- ggplot(data = sub.dat) +
+  geom_sf(aes(fill = value), col = NA) +
+  facet_grid(month~year) +
+  scale_fill_continuous(name = attributes(pdata)$units)
+
+p1
+```
+
+
+Adding BC coast layer and BC EEZ layer
+
+```{r}
+p2 <- p1 + 
+  geom_sf(data = bc_eez, fill = NA, lty = 2) + 
+  geom_sf(data = bc_coast)
+
+p2
+```
+
+NOTE: 
+`ggplot()` recognizes that the projection of the ROMS data and the bc_coast and bc_eez shapefile are different, and will transform the layers to match the first layer. It also provides the axes units in degrees, regardless of projection.
+
+As with regular `ggplot()`, you can customize the plot using typical ggplot syntax (see `?ggplot` for more information)
+
+```{r}
+p2 + 
+  theme_classic() + 
+  theme(strip.background = element_blank()) +
+  ggtitle("Sea surface temperature") 
+```
+
+### Masking data with shapefile
+
+We can select an area of interest by masking the data with another `sf` shapefile, such as for a fishing region using indexing syntax. Below is an example using coordinates from DFO fish area 126.
+
+```{r create sf polygon}
+# coordinates for polygon (i.e. fishing area 126)
+crds <- list(matrix(c(-127.1506, -128.2331, -129.3492, -127.9167, -127.1847, -126.8200, -127.1506,
+                      49.85766, 49.00000, 48.99991, 50.11915, 50.40183, 50.24466, 49.85766), ncol = 2))
+
+# create polygon object and convert to sf object with bc albers projection
+a126 <- st_sfc(st_polygon(crds), crs = 4326) %>% 
+  st_as_sf() %>%
+  st_transform(crs = 3005)
+
+# mask data by indexing sf object with area 126 shapefile 
+reg.dat <- sub.dat[a126, ]
+
+dim(sub.dat)
+dim(reg.dat)
+```
+
+The data went from 123,864 rows to 4,821 rows, which is a much smaller region.
+
+
+```{r}
+# plot panel of data
+reg.p1 <- ggplot(data = reg.dat) +
+  geom_sf(aes(fill = value), col = NA) +
+  facet_grid(month~year) +
+  scale_fill_continuous(name = attributes(pdata)$units)
+
+reg.p1
+```
+
+Now to plot it with the `bc_coast` shapefile to see where this region is in relation to the coastline.
+
+```{r}
+# add bc_coast layer and polygon boundary in red
+reg.p2 <- reg.p1 + 
+  geom_sf(data = a126, fill = NA, col= "red") +
+  geom_sf(data = bc_coast)
+
+reg.p2
+```
+
+Let's zoom to the area of interest, in this case our polygon that represents Area 126.
+
+```{r}
+# identify extent of polygon with a 50 km buffer
+tbbox <- st_bbox(st_buffer(a126, dist = 50000))
+tbbox
+
+# use the bounding box to set the plotting limits
+reg.p2 + 
+  coord_sf(xlim = c(tbbox[c(1,3)]), 
+           ylim = c(tbbox[c(2,4)]))
+```
+
+## Wrangling ROMS data
+
+Here are some examples of how to easy wrangle ROMS data that may be of interest in your analyses. We will continue to use `pdata` which was the `roms_surface_temperature()` data we loaded to the workspace.
+
+### Obtain centroids of each cell
+
+Currently, the ROMS data are simple feature (sf) objects of polygons (gridded square cells). The polygon boundaries are identified by coordinates for the perimeter of the cell. We can also obtain the centroids of each cell.
+
+```{r}
+# this will replace convert the geometry column from a polygon to a point, with the centroid of the gridded cell
+centroid.dat <- pdata %>% st_centroid()
+
+head(centroid.dat[, 1:5])
+```
+
+Notice that the geometry column are now `POINT`, instead of `POLYGON`. This is now the centre of each polygon grid cell.
+
+### Extract specific time periods
+
+Wrangle data to select months of interest and convert into long format for easy wrangling.
+
+```{r}
+
+# months and years of interest
+yrs <- c(1999, 2009, 2019)
+mths <- c(8) # august
+ym <- paste(yrs, mths, sep = "_")
+
+# subset data based on year_month column name
+tdat <- pdata %>%
+  dplyr::select(all_of(ym))
+
+# Find mean value for each time period of interest - mean of columns
+tdat %>% 
+  st_drop_geometry() %>% # drop geometry column
+  colMeans()
+```
+
+### Mean values across a spatial area of interest
+
+If we're interested in a specific area and want to view the temporal mean trends over time, we can mask the data using a `sf` polygon. We will use DFO fishing area 126 again.
+
+```{r}
+# mask data with area of interest (Area 126) and convert to long format 
+reg.dat <- pdata[a126, ] %>% 
+  tidyr::pivot_longer(cols = !last_col(), cols_vary = "slowest", names_to = "date", values_to = "value")  %>%
+  mutate(year = as.numeric(substr(date, 1, 4)),
+         month = as.numeric(substr(date, 6, 7))) %>%
+  relocate(geometry, .after = last_col()) 
+
+# we need to get the area of each cell so we can weight the mean
+reg.dat <- reg.dat %>%
+  mutate(area = as.vector(st_area(reg.dat))) %>%
+  st_drop_geometry() # drop the geometry as we don't need that for this analysis (and it slows down processing)
+
+# summarise the data across the entire Area 126 with a weighted mean by gridded cell area
+sum.dat <- reg.dat %>%
+  group_by(year, month) %>%
+  summarise(value = weighted.mean(value, area, na.rm = TRUE))
+  
+
+# find the monthly mean across the time series
+mean.dat <- sum.dat %>%
+  group_by(month) %>%
+  summarise(mean_value = mean(value, na.rm = TRUE))
+
+```
+
+We can plot the time series to look at seasonal trends.
+
+```{r}
+sum.dat %>%
+  mutate(year = as.factor(year)) %>%  # set year to a factor so each line is plotted separately
+  ggplot() + 
+  geom_line(aes(x = month, y = value, col = year)) +
+  scale_y_continuous(name = attributes(pdata)$units)
+```
+
+Any trends are difficult to see, so let's revise the colour scheme
+
+```{r}
+sum.dat %>%
+  mutate(year = as.factor(year)) %>%
+  ggplot() +
+  geom_line(aes(x = month, y = value, col = as.factor(year))) + 
+  scale_color_manual(values = colorRampPalette(c("blue", "green", "yellow"))(27), name = "year") +
+  scale_y_continuous(name = attributes(pdata)$units)
+```
+
+
+Still no clear visual pattern. Let's look at the past 10 years compared to the time series mean.
+
+```{r}
+sum.dat %>%
+  filter(year >= 2010) %>%
+  mutate(year = as.factor(year)) %>%
+  ggplot() +
+  geom_line(aes(x = month, y = value, col = as.factor(year))) + 
+  geom_line(data = mean.dat, aes(x = month, y = mean_value), col = "black", linewidth = 2) +
+  scale_color_manual(values = colorRampPalette(c("blue", "green", "yellow"))(10), name = "year") +
+  scale_y_continuous(name = attributes(pdata)$units)
+```
+
+The dark black line is the time series mean and while there isn't an clear trend, the more recent years in the past decade appear to have higher temperatures (particularly in the summer) than the earlier part of the decade. 
+
+
+### Extract data using coordinates
+
+We can extract the spatial data using coordinates of interest. We can use the same indexing to extract gridded cells where the coordinate data fall into. This could be used to compare the modelled ROMS data with field observations.
+
+We'll use the location of data buoys. There is a list of buoys and locations in this pacakge, named as object: `buoy_metadata`.
+
+```{r}
+buoy_metadata
+
+# Let's use the La Perouse Bank location 
+lat <- buoy_metadata$latitude[which(buoy_metadata$name == "La Perouse Bank")]
+lon <- buoy_metadata$longitude[which(buoy_metadata$name == "La Perouse Bank")]
+
+# create a dataframe and convert to sf object
+coords_LP <- data.frame(x = lon, y = lat)
+sf_LP <- st_as_sf(coords_LP, coords = c("x", "y"), crs = "EPSG: 4326")
+sf_LP
+
+# transform to correct projection
+sf_LP <- sf_LP %>% st_transform(crs = "EPSG: 3005")
+
+# extract cells for which coordinates fall into and wrangle to long format for plotting
+point.dat <- pdata[sf_LP,] %>%
+  tidyr::pivot_longer(cols = !last_col(), cols_vary = "slowest", names_to = "date", values_to = "value")  %>%
+  mutate(year = as.numeric(substr(date, 1, 4)),
+         month = as.numeric(substr(date, 6, 7))) %>%
+  relocate(geometry, .after = last_col()) 
+
+# plot to view seasonal trends across years
+point.dat %>%
+  mutate(year = as.factor(year)) %>%
+  ggplot() +
+  geom_line(aes(x = month, y = value, col = as.factor(year))) + 
+  scale_color_manual(values = colorRampPalette(c("blue", "green", "yellow"))(27), name = "year") +
+  scale_y_continuous(name = attributes(pdata)$units)
+```
+
