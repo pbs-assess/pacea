@@ -886,11 +886,11 @@
 #' @format table
 #' @examples
 #' \dontrun{
-#' pacea_data
+#' roms_data
 #' }
 #'
 #' @source Pena et al., 2019.
-"pacea_data"
+"roms_data"
 
 #' Optimal interpolation SST
 #' 
