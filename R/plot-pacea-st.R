@@ -1,4 +1,3 @@
-# plot pacea_st function
 
 #' Plot a pacea spatiotemporal data layer
 #' 
@@ -41,12 +40,9 @@ plot.pacea_st <- function(obj,
               as.character(months) %in% c(month.name, month.abb, 1:12))
   
   # check if years are available in data
-  obj_names <- obj %>% st_drop_geometry() %>%
-    colnames() %>% strsplit(split = "_") %>%
-    unlist() %>% as.numeric() %>%
-    matrix(ncol = 2, byrow = TRUE) %>% as.data.frame()
-  stopifnot("Invalid 'years' specified" = suppressWarnings(as.numeric(years)) %in% unique(obj_names$V1))
-  rm(obj_names)
+  obj_years <- unique(obj$year)
+  stopifnot("Invalid 'years' specified" = suppressWarnings(as.numeric(years)) %in% obj_years)
+  rm(obj_years)
   
   # object units attribute
   obj_unit <- attributes(obj)$units
@@ -54,18 +50,17 @@ plot.pacea_st <- function(obj,
   # subset year_month columns
   tobj <- subset_pacea_ym(data = obj, months = months, years = years)  ####MOVE THIS DOWN
   
-  # year-month combinations
-  tobj_names <- as.data.frame(matrix(as.numeric(unlist(strsplit(names(st_drop_geometry(tobj)), split = "_"))), 
-                                     ncol = 2, byrow = TRUE)) 
-  tobj_names <- merge(tobj_names, month_table, by.x = "V2", by.y = "month.num", sort = FALSE)[,c("V1", "V2", "month.name", "month.abb")] %>%
-    arrange(V1,V2)
+  # year-month combinations new names
+  tobj <- tobj %>%
+    merge(month_table, by.x = "month", by.y = "month.num", sort = FALSE) %>%
+    mutate(newnames = paste(year, month.abb, sep = "_"))
   
+  # wide format for base plot
+  tobj <- tobj %>%
+    tidyr::pivot_wider(id_cols = "geometry", names_from = "newnames", values_from = "value") %>%
+    dplyr::relocate(geometry, .after = last_col()) 
   
-  tnew_names <- do.call(paste, c(tobj_names[c("V1", "month.abb")], sep = "_"))
-  
-  
-  names(tobj) <- c(tnew_names, "geometry")
-  class(tobj) <- c("sf", "pacea_st", "data.frame")
+  class(tobj) <- c("sf", "pacea_st", "data.frame", "tbl_df", "tbl")
   
   plot(tobj, border = NA, key.pos = 4, reset = FALSE, ...)
   
@@ -88,10 +83,6 @@ plot.pacea_st <- function(obj,
 #' function to index months and years from geospatial ROMS data
 #' @noRd
 subset_pacea_ym <- function(data, years = years, months = months) {
-  
-  # indexing time for selection of plots to show
-  dat_names <- as.data.frame(matrix(as.numeric(unlist(strsplit(names(st_drop_geometry(data)), split = "_"))), ncol = 2, byrow = TRUE))
-  
   
   month_table <- data.frame(month.name = month.name,
                             month.abb = month.abb,
@@ -117,17 +108,10 @@ subset_pacea_ym <- function(data, years = years, months = months) {
   }
   
   # indexing month and year
-  tind <- dat_names[dat_names[,1] %in% as.numeric(years) &
-                      dat_names[,2] %in% m_ind, , drop = FALSE]
-  tind <- merge(tind, month_table, by.x = "V2", by.y = "month.num", sort = FALSE)[,c("V1", "V2")] %>%
-    arrange(V1, V2)
+  tdat <- data[data$year %in% as.numeric(years) & 
+                 data$month %in% m_ind, , drop = FALSE]
   
-  tind1 <- do.call(paste, c(tind[c("V1", "V2")], sep = "_"))
-  
-  tdat <- data %>% dplyr::select(all_of(tind1))
-  
-  names(tdat) <- c(tind1, "geometry")
-  class(tdat) <- c("pacea_st", "sf", "data.frame")
+  class(tdat) <- c("pacea_st", "sf", "data.frame", "tbl_df", "tbl")
   attr(tdat, "units") <- attributes(data)$units
   
   return(tdat)
