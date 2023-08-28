@@ -100,8 +100,31 @@ version <- "01"
 # processing times output
 proctimes <- vector()
 
+# surface mask layer
+snc_dat <- nc_open("data-raw/roms/bcc42_era5glo12r4_mon1993to2019_surTSOpH.nc")
+snc_lon <- as.vector(ncvar_get(snc_dat, "lon_rho"))
+snc_lat <- as.vector(ncvar_get(snc_dat, "lat_rho"))
+svar <- as.vector(ncvar_get(snc_dat, "temp", count = c(-1, -1, 1)))
+
+sdat <- data.frame(x = snc_lon, y = snc_lat, value = svar) %>%
+  st_as_sf(coords = c("x", "y"), crs = "EPSG:4326") %>%
+  st_transform(crs = "EPSG:3005")
+
+sroms_cave <- sdat %>% 
+  na.omit() %>%
+  concaveman::concaveman()
+sroms_buff <- sdat %>% 
+  na.omit() %>%
+  st_geometry() %>% 
+  st_buffer(dist = 2000) %>%
+  st_union() %>%
+  st_as_sf()
+
+rm(snc_dat, snc_lon, snc_lat, svar, sdat)
 # END parameters
 #####
+
+
 
 
 
@@ -120,7 +143,6 @@ for(i in ifiles) {
   } else {
     ti <- strsplit(substr(i, 33, nchar(i)), "_")[[1]][1]
   }
-  
   
   for(j in jvars) {
     
@@ -141,8 +163,9 @@ for(i in ifiles) {
     roms_buff <- tdat_sf %>% 
       na.omit() %>%
       st_geometry() %>% 
-      st_buffer(dist = 5000) %>%
-      st_union()
+      st_buffer(dist = 2000) %>%
+      st_union() %>%
+      st_as_sf()
     
     # interpolate data
     # 2 km res
@@ -163,9 +186,9 @@ for(i in ifiles) {
       st_as_sf()
     
     # mask 2k grid with 6k grid, then combine grids
-    t2_sf2 <- t2_sf2[!st_intersects(st_union(t2_sf6), t2_sf2, sparse=FALSE, prepared=TRUE),] %>%
-      rbind(t2_sf2[st_intersects(st_union(t2_sf6), t2_sf2, sparse=FALSE, prepared=TRUE),])
-    t2_sf26 <- t2_sf2 %>% rbind(t2_sf6)
+    t2_sf26a <- t2_sf2[!st_intersects(st_union(t2_sf6), t2_sf2, sparse=FALSE, prepared=TRUE),] %>%
+      rbind(t2_sf2[st_intersects(st_union(t2_sf6), t2_sf2, sparse=FALSE, prepared=TRUE),]) %>% 
+      rbind(t2_sf6)
     
     
     ##### BC MASK OPTION 1 - Using bc shapefile
@@ -180,27 +203,46 @@ for(i in ifiles) {
     # t2_sf26 <- rbind(dis2, inter.line)
     
     ##### BC MASK OPTION 2 - Using roms outline 
-    # use roms_cave
-    t2_sf26 <- t2_sf26[roms_cave,]
+    # 1. use roms_cave
+    t2_sf26b <- t2_sf26a[roms_cave,]
     
-    # use roms_buff to get haida gwaii outline
-    t2_sf26 <- t2_sf26[roms_buff,]
+    # 2. use roms_buff to get haida gwaii outline and shore
+    t2_sf26b <- t2_sf26b[roms_buff,]
     
+    # 3. use default surface roms_cave
+    t2_sf26b <- t2_sf26b[sroms_cave,]
     
-    # round to 6 decimal places to reduce filesize
-    t2_sf26 <- t2_sf26 %>% 
-      st_drop_geometry() %>%
-      round(digits = 6) %>%
-      st_as_sf(geometry = st_geometry(t2_sf26))
+    # 4. use default surface roms_buff
+    t2_sf26 <- t2_sf26b[sroms_buff,]
+    
+    # data should have 41,288 grid cells
+    # if(nrow(t2_sf26) != 41288){
+    #   out.msg <- paste0(as.symbol(t2_sf26), " nrows = ", nrow(get(objname)), 
+    #                     ". nrows not equal to 13,377,312...wrangle to long format (or somethinig else) failed.")
+    #   stop(out.msg)
+    # }
     
     # assign column names as year_month
     names(t2_sf26)[1:(ncol(t2_sf26) - 1)] <- cnames 
     
+    # covert to long format data
+    t3_sf26 <- t2_sf26 %>%
+      tidyr::pivot_longer(cols = !last_col(), cols_vary = "slowest", names_to = "date", values_to = "value")  %>%
+      mutate(year = substr(date, 1, 4),
+             month = substr(date, 6, 7)) %>%
+      dplyr::select(-date) %>%
+      relocate(value, .after = last_col()) %>%
+      relocate(geometry, .after = last_col()) 
+    
+    # round to 6 decimal places to reduce file size 
+    t3_sf26[, "value"] <- t3_sf26$value %>% 
+      round(digits = 6)
+    
     # assign pacea class 
-    class(t2_sf26) <- c("pacea_st", class(t2_sf26))
+    class(t3_sf26) <- c("pacea_st", class(t3_sf26))
     
     # assign units attribute
-    attr(t2_sf26, "units") <- jvars_table[which(jvars_table[, 1] == j), 3]
+    attr(t3_sf26, "units") <- jvars_table[which(jvars_table[, 1] == j), 3]
     
     # name file and write data
     tj <- jvars_table[which(jvars_table[, 1] == j), 2]
@@ -211,7 +253,7 @@ for(i in ifiles) {
     }
     filename <- paste0("../pacea-data/data/",objname, "_", version, ".rds")
     #filename <- paste0("../pacea-data/data/",objname, ".rds")
-    assign(objname, t2_sf26)
+    assign(objname, t3_sf26)
     
     do.call("save", list(as.name(objname), file = filename, compress = "xz"))
 
@@ -220,6 +262,13 @@ for(i in ifiles) {
     print(jtime)
     names(jtime) <- paste(ti, tj, sep="_")
     proctimes <- c(proctimes, jtime)
+    
+    # remove files 
+    rm(dat, dat_sf, tdat_sf, roms_cave, roms_buff,
+       output2, output6, t2_sf2, t2_sf6, t2_sf26,
+       t2_sf26a, t2_sf26b, t3_sf26, nc_var, nc_varmat)
+    rm(list = objname)
+    gc()
   }
 }
 
