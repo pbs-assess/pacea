@@ -8,7 +8,8 @@ library(dplyr)
 options(dplyr.summarise.inform = FALSE)
 library(ggplot2)
 library(lubridate)
-
+library(sf)
+sf_use_s2(FALSE)
 
 #####
 # parameters
@@ -59,12 +60,13 @@ for(i in 1981:(lubridate::year(Sys.Date()))){
            year = lubridate::year(date),
            week = lubridate::week(date)) %>%
     group_by(latitude, longitude, year, week) %>% 
-    summarise(sst_7day = mean(sst, na.rm = TRUE),
-              sst_7daysd = sd(sst, na.rm = TRUE),
-              sst_7dayn = sum(!is.na(sst)),
+    summarise(tsst = mean(sst, na.rm = TRUE),
+              sst_sd = sd(sst, na.rm = TRUE),
+              sst_n = sum(!is.na(sst)),
               start_date = min(as.Date(time)),
               end_date = max(as.Date(time))) %>%
-    ungroup()
+    ungroup() %>%
+    rename(sst = tsst)
   
   sstdata_7day_sf <- st_as_sf(sstdata_7day, coords = c("longitude", "latitude")) %>%
     st_set_crs("EPSG: 4326")
@@ -79,7 +81,8 @@ for(i in 1981:(lubridate::year(Sys.Date()))){
 
 # rename output and save data
 oisst_7day <- out.dat
-use_data(oisst_7day, compress = "xz")
+class(oisst_7day) <- c("pacea_st", class(oisst_7day))
+use_data(oisst_7day, compress = "xz", overwrite = TRUE)
 
 
 
@@ -115,12 +118,13 @@ for(i in 1981:(lubridate::year(Sys.Date()))){
            year = lubridate::year(date),
            month = lubridate::month(date)) %>%
     group_by(latitude, longitude, year, month) %>% 
-    summarise(sst_month = mean(sst, na.rm = TRUE),
-              sst_monthsd = sd(sst, na.rm = TRUE),
-              sst_monthn = sum(!is.na(sst)),
+    summarise(tsst = mean(sst, na.rm = TRUE),
+              sst_sd = sd(sst, na.rm = TRUE),
+              sst_n = sum(!is.na(sst)),
               start_date = min(as.Date(time)),
               end_date = max(as.Date(time))) %>%
-    ungroup()
+    ungroup() %>%
+    rename(sst = tsst)
   
   sstdata_month_sf <- st_as_sf(sstdata_month, coords = c("longitude", "latitude")) %>%
     st_set_crs("EPSG: 4326")
@@ -135,7 +139,8 @@ for(i in 1981:(lubridate::year(Sys.Date()))){
 
 # rename output and save data
 oisst_month <- out.dat
-use_data(oisst_month, compress = "xz")
+class(oisst_month) <- c("pacea_st", class(oisst_month))
+use_data(oisst_month, compress = "xz", overwrite = TRUE)
 
 
 # 30-year climatology 1991-2020 - use data already downloaded and processed
@@ -145,30 +150,32 @@ tdat <- oisst_7day
 oisst_7dayclim <- tdat %>% 
   filter(year %in% 1991:2020) %>% 
   group_by(week, geometry) %>% 
-  summarise(sst_7day_clim = mean(sst_7day, na.rm = TRUE),
-            sst_7day_climsd = sd(sst_7day, na.rm = TRUE),
-            sst_7day_climn = sum(sst_7dayn),
-            sst_7day_90p = quantile(sst_7day, probs = 0.9)) %>% 
+  summarise(tsst = mean(sst, na.rm = TRUE),
+            sst_sd = sd(sst, na.rm = TRUE),
+            sst_n = sum(!is.na(sst_n))) %>% 
   ungroup() %>%
+  rename(sst = tsst) %>%
   relocate(geometry, .after = last_col()) 
 
 str(oisst_7dayclim)
-use_data(oisst_7dayclim, compress = "xz")
+class(oisst_7dayclim) <- c("pacea_st", class(oisst_7dayclim))
+use_data(oisst_7dayclim, compress = "xz", overwrite = TRUE)
  
 # month
 tdat <- oisst_month
 oisst_monthclim <- tdat %>% 
   filter(year %in% 1991:2020) %>% 
   group_by(month, geometry) %>% 
-  summarise(sst_month_clim = mean(sst_month, na.rm = TRUE),
-            sst_month_climsd = sd(sst_month, na.rm = TRUE),
-            sst_month_climn = sum(sst_monthn),
-            sst_month_90 = quantile(sst_month, probs = 0.9)) %>% 
+  summarise(tsst = mean(sst, na.rm = TRUE),
+            sst_sd = sd(sst, na.rm = TRUE),
+            sst_n = sum(!is.na(sst_n))) %>% 
   ungroup() %>%
+  rename(sst = tsst) %>%
   relocate(geometry, .after = last_col()) 
 
 str(oisst_monthclim)
-use_data(oisst_monthclim, compress = "xz")
+class(oisst_monthclim) <- c("pacea_st", class(oisst_monthclim))
+use_data(oisst_monthclim, compress = "xz", overwrite = TRUE)
 
 
 
