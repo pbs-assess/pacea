@@ -225,18 +225,22 @@ for(i in ifiles) {
     # assign column names as year_month
     names(t2_sf26)[1:(ncol(t2_sf26) - 1)] <- cnames 
     
-    # covert to long format data
-    t3_sf26 <- t2_sf26 %>%
-      tidyr::pivot_longer(cols = !last_col(), cols_vary = "slowest", names_to = "date", values_to = "value")  %>%
-      mutate(year = substr(date, 1, 4),
-             month = substr(date, 6, 7)) %>%
-      dplyr::select(-date) %>%
-      relocate(value, .after = last_col()) %>%
-      relocate(geometry, .after = last_col()) 
+    # covert to long format data - Don't do long format as it is too big
+    # t3_sf26 <- t2_sf26 %>%
+    #   tidyr::pivot_longer(cols = !last_col(), cols_vary = "slowest", names_to = "date", values_to = "value")  %>%
+    #   mutate(year = substr(date, 1, 4),
+    #          month = substr(date, 6, 7)) %>%
+    #   dplyr::select(-date) %>%
+    #   relocate(value, .after = last_col()) %>%
+    #   relocate(geometry, .after = last_col()) 
     
     # round to 6 decimal places to reduce file size 
-    t3_sf26[, "value"] <- t3_sf26$value %>% 
-      round(digits = 6)
+    # t3_sf26[, "value"] <- t3_sf26$value %>% # for long format
+    #   round(digits = 6)
+    t3_sf26 <- t2_sf26 %>%
+      st_drop_geometry() %>%
+      round(digits = 6) %>%
+      st_as_sf(geometry = st_geometry(t2_sf26))
     
     # assign pacea class 
     class(t3_sf26) <- c("pacea_st", class(t3_sf26))
