@@ -18,6 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(pacea)
 library(dplyr)
 library(sf)
+library(ggplot2)
 ```
 
 Regional Ocean Modelling System (ROMS) data are available to download separately from the `pacea` package. These modelled output data were provided by Pena et al. (2019) and wrangled to simplify data format and structure.
@@ -25,7 +26,7 @@ Regional Ocean Modelling System (ROMS) data are available to download separately
 Data have been processed to an inshore 2km x 2km grid, and an offshore 6km x 6km grid. The area for these region are accessible as data objects `romseez_poly`, `inshore_poly` and `offshore_poly`. They use the 'NAD83/BC Albers' projection. The polygons are `sf` (simple feature) objects.
 
 ```{r Polygons}
-romseez_poly
+romseez_poly  # CRS is NAD 83/ BC Albers
 
 # plotting the polygons
 plot(romseez_poly, border = "black")
@@ -33,20 +34,24 @@ plot(inshore_poly, col = "green", add = TRUE)
 plot(offshore_poly, col = "blue", add = TRUE)
 ```
 
-To see where these are in relation to the BC coastline and Exclusive Economic Zone (EEZ), we have to reproject the `bc_coast` and `bc_eez` objects as they use the 'WGS 84' projection
+To see where these are in relation to the BC coastline and Exclusive Economic Zone (EEZ), we can plot these polygons with `ggplot`.
 
 ```{r}
-# transform to NAD 83/BC Albers
-tbc_coast <- bc_coast %>% st_transform(crs = "EPSG: 3005") 
-tbc_eez <- bc_eez %>% st_transform(crs = "EPSG: 3005") 
+# BC coast and EEZ shapefile - CRS is WGS 84
+bc_coast 
+bc_eez 
 
 # plot
-plot(romseez_poly, border = "black")
-plot(inshore_poly, col = "green", add = TRUE)
-plot(offshore_poly, col = "blue", add = TRUE)
-plot(tbc_eez, lty = 2, add = TRUE)
-plot(tbc_coast, col = "grey", add = TRUE)
+ggplot() + 
+  geom_sf(data = romseez_poly, col = "black", lwd = 2) +
+  geom_sf(data = inshore_poly, col = NA, fill = "green") +
+  geom_sf(data = offshore_poly, col = NA, fill = "blue") +
+  geom_sf(data = bc_eez, col = "black", fill = NA, lty = 2) +
+  geom_sf(data = bc_coast)
+
 ```
+NOTE: 
+`ggplot()` recognizes that the projection of bc_coast and bc_eez shapefile (WGS 84) are different from the roms shapefiles (NAD 83), and the function will reproject the layers to match the first layer. It also provides the axes units in degrees, regardless of projection. Adding layers with different projections using the base `plot()` function would not work.
 
 The mixed grid (2km x 2km and 6km x 6km) can also be viewed.
 
@@ -184,7 +189,7 @@ p2
 ```
 
 NOTE: 
-`ggplot()` recognizes that the projection of the ROMS data and the bc_coast and bc_eez shapefile are different, and will transform the layers to match the first layer. It also provides the axes units in degrees, regardless of projection.
+Again, `ggplot()` recognizes that the projection of bc_coast and bc_eez shapefile are different thanthe ROMS data (NAD 83), and will reproject the layers to match the first layer.
 
 As with regular `ggplot()`, you can customize the plot using typical ggplot syntax (see `?ggplot` for more information)
 
