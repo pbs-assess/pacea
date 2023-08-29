@@ -1,7 +1,12 @@
 # Code to download and save buoy temperature into pacea. Resulting file of over
 #  170,000 sst's is only 371 kb, so fine to not move into pacea-data.
 #  Adding NAs for missing dates gives 199,000 rows (still 170,000 sst's).
-# Adapting from Andrea Hilborn's code in andrea-code/
+# Adapting from Andrea Hilborn's code in andrea-code/.
+# 28/8/23: Had originally kept the DFO data when there was ECCC also, but turns
+#  out the ECCC is the only one being updated for some of them (e.g. some had
+#  nothing for 2023, but Andrea's plot did), so switching
+#  that. So some of the 170,000 type numbers may bump up a lot with this change.
+
 
 # Run line-by-line while developing. Can source to update data, check that
 #  redownload_data = TRUE.
@@ -216,17 +221,21 @@ buoy_list <- c("MEDS107",
 # AH had
 # sstdata = sstdata %>% filter(!(STN_ID %in% c("MEDS107",....[the above list]
 
-filter(dfo_daily_mean, stn_id %in% buoy_list)    # 5477 out of 172,236. Come
-                                        # back to at end after doing ECCC data.
-unique(filter(dfo_daily_mean, stn_id %in% buoy_list)$stn_id)
+filter(dfo_daily_mean,
+       stn_id %in% buoy_list)    # 5477 out of 172,236. Come
+                                 # back to at end after doing ECCC data.
+unique(filter(dfo_daily_mean,
+              stn_id %in% buoy_list)$stn_id)
 # C46134 C46182
 
-range(filter(dfo_daily_mean, stn_id == "C46134")$date)
+range(filter(dfo_daily_mean,
+             stn_id == "C46134")$date)
 # "2001-02-20" "2016-12-09"
 # So keep that one in (Andrea probably excluded as didn't give full climatology)
 # Though filter(buoys_metadata, wmo_id == 46134) says start date of 1999-01-01.
 
-range(filter(dfo_daily_mean, stn_id == "C46182")$date)
+range(filter(dfo_daily_mean,
+             stn_id == "C46182")$date)
 #  "1989-09-08" "1991-11-22"
 # Less than 2 years of data, 30 years ago, so removing as likely not useful for
 # anyone.
@@ -264,37 +273,123 @@ if(redownload_data){
 opp_data_raw   #  A tibble: 1,278,688 × 11. File size (of temp download file I
                #  think) is 119 Mb. First rows have NaN's.
 
-# Andrea doesn't use the flags in these data, so not using here. Keeping only
-# the two buoys not in DFO data above (but for other buoys the opp_data_raw may
-# be slightly more up to date).
+# Andrea doesn't use the flags in these data, so not using here. Originally was keeping only
+# the two buoys not in DFO data above, but now checking and using OPP when it is
+# updated more recently than DFO.
+
+# Standardising stn_id here to compare datasets
+opp_data_raw$stn_id = as.factor(paste0("C",
+                                       opp_data_raw$wmo_synop_id))
+
+# Figure out stations in both data sets
+dfo_and_opp_stn <- intersect(unique(dfo_daily_mean$stn_id),
+                             unique(opp_data_raw$stn_id))
+dfo_and_opp_stn   # seems to be 16 of the 17 in DFO data
+
+dfo_only_stn <- setdiff(unique(dfo_daily_mean$stn_id),
+                             unique(opp_data_raw$stn_id))
+dfo_only_stn
+
+# Check the dates of those in both
+dfo_ranges <- dfo_daily_mean %>%
+  filter(stn_id %in% dfo_and_opp_stn) %>%
+  group_by(stn_id) %>%
+  summarise(start_dfo = min(date),
+            end_dfo = max(date))
+dfo_ranges
+
+opp_ranges <- opp_data_raw %>%
+  filter(stn_id %in% dfo_and_opp_stn) %>%
+  group_by(stn_id) %>%
+  mutate(time = with_tz(ymd_hms(time),
+                        "Etc/GMT+8"),
+         date = as.Date(time)) %>%
+  summarise(start_opp = min(date, na.rm = TRUE),
+            end_opp = max(date, na.rm= TRUE))
+opp_ranges
+
+dfo_opp_ranges <- left_join(dfo_ranges,
+                            opp_ranges,
+                            by = "stn_id") %>%
+  relocate(stn_id, start_dfo, start_opp) %>%
+  mutate(dfo_starts_first = (start_dfo < start_opp),
+         dfo_ends_last = (end_dfo >= end_opp),
+         opp_later_by = end_opp - end_dfo)
+
+as.data.frame(dfo_opp_ranges)
+# They all have DFO starting strictly (<) first, so need DFO data for all these.
+filter(dfo_opp_ranges, dfo_ends_last == TRUE)
+
+# So only three that have both ending on same day, but that looks to be because
+# data has stopped coming in (as of 2023-08-28, they are June 2023, May 2023,
+# and September 2022). So still makes sense to use OPP for those recent ones in
+# case they come online again.
+
+# So, want DFO data first, then add on OPP data after as either
+#  (i) they are both 2-11 months ago, which is presumably something failing) - 3 buoys
+#  (ii) OPP data is updated in real time, giving the 4-day lag for DFO data - 10 buoys
+#  (iii) OPP data are 355, 470, and 1150 days more recent, so definitely need
+#   that - 3 buoys
+# Also need the DFO-only buoy, and the two OPP-only ones. May have incorrectly
+#  used OPP in variable names when it should really all be ECCC.
+
+# All start_opp are 2021-09-07, except one is a day earlier on 2021-09-06. So
+# let's switch to opp on 2021-09-10 to ensure a full day of data and give a few
+# days (see below - one buoy looked to have big daily variation straight away,
+# maybe it was 'settling down'?). C46131 will
+# still have a gap with no data, but less so than presently have.
+
+switch_dfo_to_opp <- as.Date("2021-09-10")
+
+# Adapting what originally had to now calc daily sst for all opp stations that
+# we want, including the overlapping ones.
 opp_data <- as_tibble(opp_data_raw) %>%
-  filter(wmo_synop_id %in% c("46303", "46304")) %>%
+  filter(stn_id %in% c(dfo_and_opp_stn, "C46303", "C46304")) %>%
   mutate(time = with_tz(ymd_hms(time),
                         "Etc/GMT+8"),
          longitude = as.numeric(longitude),
          latitude = as.numeric(latitude),
-         stn_id = as.factor(wmo_synop_id),
+         stn_id = as.factor(stn_id),
          sst = as.numeric(avg_sea_sfc_temp_pst10mts)) %>%
   select(time,
          stn_id,
          sst) %>%
   filter(!is.na(time),
-         !is.na(sst))
+         !is.na(sst),
+         sst > -50,    # There were 9,655 of with -51.3 and 6 with -51.2, presumably NA
+         sst != 49.3)  # One value of that.
+
+opp_data # A tibble: 569,537 × 3, was 346,659 with only C46303 and C46304
+                                                          # First record is now correctly
+                                                          #  2019-09-30 16:00:00, GMT-8
+summary(opp_data)
+
+## # Previously had this, only adding the two new buoys on (copying this above to
+## # use it): TODO can delete once finished these updates
+## opp_data <- as_tibble(opp_data_raw) %>%
+##   filter(wmo_synop_id %in% c("46303", "46304")) %>%
+##   mutate(time = with_tz(ymd_hms(time),
+##                         "Etc/GMT+8"),
+##          longitude = as.numeric(longitude),
+##          latitude = as.numeric(latitude),
+##          stn_id = as.factor(wmo_synop_id),
+##          sst = as.numeric(avg_sea_sfc_temp_pst10mts)) %>%
+##   select(time,
+##          stn_id,
+##          sst) %>%
+##   filter(!is.na(time),
+##          !is.na(sst))
 
 #opp_data_posix    # was saved using posix
 #filter(opp_data_raw, wmo_synop_id == "46303")[1, "time"]  # First record of both
                                                           # is midnight
                                                           # 2019-10-01, but
                                                           # posix assumes it's PST/PDT.
-opp_data # A tibble: 346,659 × 3                          # First record is now correctly
-                                                          #  2019-09-30 16:00:00, GMT-8
-summary(opp_data)
-
 opp_data_full_range <- opp_data %>%
    group_by(stn_id) %>%
    summarise(start_date = min(time),
              end_date = max(time))
-sort(opp_data_full_range$end_date)
+sort(opp_data_full_range$end_date)   # Now this gives 18 buoys.
 # "2023-06-14 15:00:00 -08" "2023-06-14 15:10:00 -08"
 # So latest measurements are just over an hour before I downloaded them!
 
@@ -336,16 +431,60 @@ sort(opp_data_full_range$end_date)
 #  AE: there is a -08 coded in the times (it doesn't always show up in tibble
 #  view), so not adding.
 
-opp_daily_mean = opp_data %>%
+# TODO come back to, see Issue, discuss with Andrea and Charles
+# Want to look at plot of fine-scale data:
+opp_data_example <- filter(opp_data,
+                           stn_id == "C46208")[1:150, ]   # Looks better
+                                        # resolution there
+
+plot(opp_data_example$time,
+     opp_data_example$sst,
+     type = "o")
+
+# Can calculate daily variation
+opp_daily_range <- opp_data %>%
   mutate(time_day = as.Date(time)) %>%
   group_by(date = time_day,
            stn_id) %>%
-  summarise(sst = mean(sst)) %>%     # TODO Should check the data are
+  summarise(sst_abs_range = diff(range(sst))) %>%
+  ungroup()
+
+opp_daily_range
+
+# Gives 10.8 for C46304, for first day. And many other large values. Look into
+# the fine-scale data:
+opp_data_C46304 <- filter(opp_data,
+                           stn_id == "C46304")
+
+plot(opp_data_C46304$time[1:200],
+     opp_data_C46304$sst[1:200],
+     type = "o",
+     xlab = "Time",
+     ylab = "SST")
+
+# TODO calc is not quite right I think, this seems strange, though it's a time
+# zone thing - these may still be in UTC.
+min(filter(opp_data_C46304, as.Date(time) == "2019-10-01")$sst)
+max(filter(opp_data_C46304, as.Date(time) == "2019-10-01")$sst)
+filter(opp_data_C46304, as.Date(time) == "2019-10-01") %>% as.data.frame()
+
+# Overlay the daily ranges (won't see the small ones). Not working, don't worry
+lines(filter(opp_daily_range, stn_id == "C46304")$date,
+      filter(opp_daily_range, stn_id == "C46304")$sst_abs_range,
+      col = "red")
+
+
+# Calculate daily mean.
+opp_daily_mean <- opp_data %>%
+  mutate(time_day = as.Date(time)) %>%
+  group_by(date = time_day,
+           stn_id) %>%
+  summarise(sst = mean(sst)) %>%     # TODO (started above) Should check the data are
                                      # representative through the day. And for
                                      # DFO data.
   ungroup()
 
-opp_daily_mean # A tibble: 2,530 × 3
+opp_daily_mean # A tibble: 11,840 × 3
 summary(opp_daily_mean)
 
 # Keep these as comments, prob don't need them and data filtering has since
@@ -360,20 +499,33 @@ summary(opp_daily_mean)
 # sort(unique(opp_daily_mean$wmo_synop_id))
 # 46004 46036 46131 46132 46145 46146 46147 46181 46183 46184 46185 46204
 # 46205 46206 46207 46208 46303* 46304*
-# Those two * are the only ones we use in opp now.
-
-
-# TODO - redownload both and check latest times of data. AH thinks ECCC is
-# updated a bit quicker than DFO ones.
+# Those two * are the only ones we use in opp now. - Nope, now doing others.
 
 expect_equal(colnames(dfo_daily_mean),
              colnames(opp_daily_mean))
 
-opp_daily_mean$stn_id = as.factor(paste0("C", opp_daily_mean$stn_id))
+# Should check the overlapping values agree? TODO
 
-# Join together, then fill in missing-sst dates with NAs, so plotting gives gaps
-buoy_sst = full_join(dfo_daily_mean,
-                     opp_daily_mean) %>%
+
+
+# Check the dfo_only_stn still has only historical data. If this test fails then need
+# to add the later data in (expect buoy is not going to be restarted). Else is okay
+# to just filter all dfo_daily_mean data before swtich_dfo_to_opp.
+expect_true(max((filter(dfo_daily_mean, stn_id == dfo_only_stn))$date) <
+            switch_dfo_to_opp)
+
+# opp_daily_mean has the two non-dfo stations that we need to keep, and then
+# just use the values after switch_dfo_to_opp for the remaining stations.
+opp_daily_mean_to_use <- bind_rows(filter(opp_daily_mean,
+                                          !(stn_id %in% dfo_and_opp_stn)),
+                                   filter(opp_daily_mean,
+                                          stn_id %in% dfo_and_opp_stn,
+                                          date >= switch_dfo_to_opp))
+
+# Join together, filtering by the switch-over day, then fill in missing-sst dates with NAs, so plotting gives gaps
+buoy_sst = full_join(filter(dfo_daily_mean,
+                            date < switch_dfo_to_opp),
+                     opp_daily_mean_to_use) %>%
   group_by(stn_id) %>%
   tidyr::complete(date = seq.Date(from = min(date),
                                   to = max(date),
@@ -388,7 +540,10 @@ buoy_sst = full_join(dfo_daily_mean,
 class(buoy_sst) <- c("pacea_buoy",
                      class(buoy_sst))
 
-buoy_sst
+buoy_sst     # 201,641 on 28 August 2023 after adding in ECCC data instead of
+             # DFO ones. Have added with the switch to ECCC values. Previously had 199,625 values
+             # (165 extra are from updating in time) Adding days: 15 + 1131 + 450 + 15 + 45 + 45 +
+             # 240 + 45 =~ 1986
 
 usethis::use_data(buoy_sst,
                   overwrite = TRUE)
