@@ -14,7 +14,9 @@ This function will prompt the user on whether to delete all files in the cache d
 }
 \examples{
 \dontrun{
-get_pacea_data("roms_surface_temperature")
+bccm_avg0to40m_oxygen()
+list.files(pacea_cache())
+pacea_clear_cache()
 }
 
 }

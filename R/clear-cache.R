@@ -9,7 +9,9 @@
 #'
 #' @examples
 #' \dontrun{
-#' get_pacea_data("roms_surface_temperature")
+#' bccm_avg0to40m_oxygen()
+#' list.files(pacea_cache())
+#' pacea_clear_cache()
 #' }
 #' 
 pacea_clear_cache <- function() {
@@ -24,7 +26,7 @@ pacea_clear_cache <- function() {
   
   if (!ans) stop("Exiting...", call. = FALSE)
   
-  unlink(paste0(cache_dir,"/roms_*"))
+  unlink(paste0(cache_dir,"/bccm_*"))
   
   cat("All ROMS data files removed from cache.")
 }
