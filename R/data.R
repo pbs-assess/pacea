@@ -739,36 +739,36 @@
 
 #' Polygons masking layers for BC waters
 #'
-#' Simple features objects of ROMs data, inshore, and offshore regions of BC Exclusive Economic Zone (EEZ) waters.
+#' Simple features objects of BCCM ROMS data, inshore, and offshore regions of BC Exclusive Economic Zone (EEZ) waters.
 #'
-#' Bathymetric classifications were used to derive a line to separate continental shelf (inshore) and deep sea regions. Includes a 10km buffer around the EEZ and limited by ROMs data coverage.
+#' Bathymetric classifications were used to derive a line to separate continental shelf (inshore) and deep sea regions. Includes a 10km buffer around the EEZ and limited by BCCM  data coverage.
 #'
 #' Source of bathymetric classifications:
 #' GIS hub Pacific Marine Habitat Classes - obtained from: https://www.gis-hub.ca/dataset/marine-habitat-classes
 #'
 #' @format A simple features polygon dataframe.
 #' \describe{
-#'   \item{romseez_poly}{BC EEZ boundary witha 10km buffer and clipped with ROMs data output boundary}
-#'   \item{inshore_poly}{inshore (continental shelf) region of romseez_poly}
-#'   \item{offshore_poly}{offshore (deep seafloor) region of roms eez_poly}
+#'   \item{bccm_eez_poly}{BC EEZ boundary witha 10km buffer and clipped with BCCM data output boundary}
+#'   \item{inshore_poly}{inshore (continental shelf) region of bccm_eez_poly}
+#'   \item{offshore_poly}{offshore (deep seafloor) region of bccm_eez_poly}
 #' }
 #' @examples
 #' \dontrun{
-#' romseez_poly
+#' bccm_eez_poly
 #' inshore_poly
 #' offshore_poly
-#' plot(romseez_poly)
+#' plot(bccm_eez_poly)
 #' plot(inshore_poly)
 #' plot(offshore_poly)
 #' }
 #'
 #' @source Generated from running `data-raw/grids/make-mask-layer.R`.
-"romseez_poly"
+"bccm_eez_poly"
 
-#' @rdname romseez_poly
+#' @rdname bccm_eez_poly
 "inshore_poly"
 
-#' @rdname romseez_poly
+#' @rdname bccm_eez_poly
 "offshore_poly"
 
 ##' Metadata regarding buoys for sea surface temperature.
@@ -879,18 +879,18 @@
 ##' @source Generated from running `data-raw/buoys/buoy-sst.R`.
 "buoy_sst"
 
-#' ROMS data layers
+#' BCCM data layers
 #'
-#' List of available ROMS data layers for download.
+#' List of available BCCM data layers for download.
 #'
 #' @format table
 #' @examples
 #' \dontrun{
-#' roms_data
+#' bccm_data
 #' }
 #'
 #' @source Pena et al., 2019.
-"roms_data"
+"bccm_data"
 
 #' Optimal interpolation SST
 #' 

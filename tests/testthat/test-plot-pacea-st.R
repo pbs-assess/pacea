@@ -5,7 +5,7 @@ test_that("multiplication works", {
 
 
 test_that("Base plot for pacea.st objects work with various functions", {
-  pdata <- roms_surface_temperature(force = T)
+  pdata <- bccm_surface_temperature(force = T)
   
   expect_invisible(plot(pdata))
   expect_invisible(plot(pdata, 
@@ -27,7 +27,7 @@ test_that("Base plot for pacea.st objects work with various functions", {
 
 
 test_that("geospatial plotting: test that stopifnot commands are working", {
-  pdata <- roms_surface_temperature(force = T)
+  pdata <- bccm_surface_temperature(force = T)
   
   expect_error(plot.pacea_st(npi_monthly))
   

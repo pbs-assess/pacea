@@ -1,7 +1,9 @@
 
-#' ROMS clear cache
+#' pacea clear cache
 #'
-#' Delete all ROMS data files in cache folder
+#' Delete all data files in cache folder.
+#' 
+#' This function will prompt the user on whether to delete all files in the cache directory. This cannot be undone and the user will have to download the files again.
 #' 
 #' @export
 #'
@@ -10,12 +12,14 @@
 #' get_pacea_data("roms_surface_temperature")
 #' }
 #' 
-roms_clear_cache <- function() {
+pacea_clear_cache <- function() {
   
   cache_dir <- pacea_cache()
   
+  cache_list <- list.files(pacea_cache())
+  
   ## interactive ask to delete files from cache
-  ans <- ask(paste("About to delete ALL ROMS data files in cache directory:",
+  ans <- ask(paste("About to delete ALL data files in cache directory:",
                    cache_dir, "Is that okay?", sep = "\n"))
   
   if (!ans) stop("Exiting...", call. = FALSE)
