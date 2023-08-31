@@ -1,7 +1,9 @@
-# create mask layers of roms, eez, and bc coast data
+# create mask layers of roms bccm, eez, and bc coast data
 library(devtools)
 library(sf)
 library(ncdf4)
+
+setwd("C:/github/pacea/")
 load_all()
 
 sf_use_s2(FALSE)  # remove spherical geometry (s2) for sf operations
@@ -63,7 +65,7 @@ tbuff <- st_buffer(teez, dist = 10000)
 tsst_poly1 <- tsst_sf1 %>% summarise(geometry = st_union(geometry)) %>% st_convex_hull()
 
 # create a combined eez buffer and ROMs mask layer 
-romseez_poly <- tbuff %>% st_intersection(tsst_poly1)
+bccm_eez_poly <- tbuff %>% st_intersection(tsst_poly1)
 
 # bc coast bounding box
 (bc_bbox <- st_bbox(tbc))
@@ -112,14 +114,14 @@ inshore_poly <- pt1 %>%
   st_as_sf(coords = c("X", "Y"), crs = st_crs(teez)) %>% 
   summarise(geometry = st_combine(geometry)) %>%
   st_cast("POLYGON") %>%
-  st_intersection(romseez_poly)
+  st_intersection(bccm_eez_poly)
 
-offshore_poly <- romseez_poly %>%
+offshore_poly <- bccm_eez_poly %>%
   st_difference(inshore_poly)
 
 # save polygons as sf object to package
-usethis::use_data(inshore_poly)
-usethis::use_data(offshore_poly)
-usethis::use_data(romseez_poly)
+usethis::use_data(inshore_poly, overwrite = TRUE)
+usethis::use_data(offshore_poly, overwrite = TRUE)
+usethis::use_data(bccm_eez_poly, overwrite = TRUE)
 #####
 

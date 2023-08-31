@@ -17,7 +17,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' get_pacea_data("roms_surface_temperature")
+#' get_pacea_data("bccm_surface_temperature")
 #' }
 #' 
 
@@ -33,7 +33,7 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
   test_names <- c("test_data", "test_data_01", "test_data_02", "test_corruptdata")
   
   ## find data in row - CHANGE datalist name if necessary
-  data_list <- roms_data
+  data_list <- bccm_data
   data_row <- data_list[grep(layer, data_list[["data_name"]], ignore.case = TRUE), , drop = FALSE]  
   if (nrow(data_row) != 1L && !(layer %in% test_names)) {
     stop(layer, " is not an available data object")

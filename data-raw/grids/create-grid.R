@@ -13,7 +13,7 @@ sf_use_s2(FALSE)
 # START - load data to environment
 
 # transform bc_coast
-tbc <- st_transform(bc_coast, crs=crs(romseez_poly))
+tbc <- st_transform(bc_coast, crs=crs(bccm_eez_poly))
 
 # convert to multilinestring
 tbc.line <- st_cast(tbc, "MULTILINESTRING")

@@ -175,12 +175,12 @@ for(i in ifiles) {
     
     # crop out grid cells with polygon masks
     t2_sf2 <- output2 %>% 
-      mask(romseez_poly) %>% 
+      mask(bccm_eez_poly) %>% 
       mask(inshore_poly) %>%
       stars::st_as_stars() %>%  ## check here for converting to points (not raster)
       st_as_sf()
     t2_sf6 <- output6 %>%
-      mask(romseez_poly) %>%
+      mask(bccm_eez_poly) %>%
       mask(offshore_poly) %>%
       stars::st_as_stars() %>%
       st_as_sf()
@@ -251,9 +251,9 @@ for(i in ifiles) {
     # name file and write data
     tj <- jvars_table[which(jvars_table[, 1] == j), 2]
     if(ti == "zInt"){
-      objname <- paste("roms", tj, sep = "_")
+      objname <- paste("bccm", tj, sep = "_")
     } else {
-      objname <- paste("roms", ti, tj, sep = "_")
+      objname <- paste("bccm", ti, tj, sep = "_")
     }
     filename <- paste0("../pacea-data/data/",objname, "_", version, ".rds")
     #filename <- paste0("../pacea-data/data/",objname, ".rds")

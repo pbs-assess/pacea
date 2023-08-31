@@ -1,5 +1,5 @@
 ---
-title: "ROMS Data"
+title: "BCCM Data"
 author: "Travis Tai"
 output: html_document
 date: "2023-06-19"
@@ -9,7 +9,7 @@ date: "2023-06-19"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# ROMS data from `pacea`
+# BCCM data from `pacea`
 
 ```{r packages}
 # run this if pacea has not been installed
@@ -21,15 +21,17 @@ library(sf)
 library(ggplot2)
 ```
 
-Regional Ocean Modelling System (ROMS) data are available to download separately from the `pacea` package. These modelled output data were provided by Pena et al. (2019) and wrangled to simplify data format and structure.
+This vignette provides information on the BCCM model data and an introduction to how to download and use the data from `pacea`. 
 
-Data have been processed to an inshore 2km x 2km grid, and an offshore 6km x 6km grid. The area for these region are accessible as data objects `romseez_poly`, `inshore_poly` and `offshore_poly`. They use the 'NAD83/BC Albers' projection. The polygons are `sf` (simple feature) objects.
+The British Columbia continental margin (BCCM) model is an ocean circulation-biogeochemical model implementation of the regional ocean modelling system (ROMS). It has a horizontal resolution of 3km x 3km and a vertical discretization based on bathymetry of 42 depth levels increasing in resolution near the surface. These modelled output data were provided by Angelica Pena and the data is further detailed in Pena et al. (2019). 
+
+Data have been processed to an inshore 2km x 2km grid, and an offshore 6km x 6km grid. The area for these regions are accessible as polygon data objects `bccm_eez_poly`, `inshore_poly` and `offshore_poly`. They use the 'NAD83/BC Albers' projection. The polygons are `sf` (simple feature) objects.
 
 ```{r Polygons}
-romseez_poly  # CRS is NAD 83/ BC Albers
+bccm_eez_poly  # CRS is NAD 83/ BC Albers
 
 # plotting the polygons
-plot(romseez_poly, border = "black")
+plot(bccm_eez_poly, border = "black")
 plot(inshore_poly, col = "green", add = TRUE)
 plot(offshore_poly, col = "blue", add = TRUE)
 ```
@@ -43,7 +45,7 @@ bc_eez
 
 # plot
 ggplot() + 
-  geom_sf(data = romseez_poly, col = "black", lwd = 2) +
+  geom_sf(data = bccm_eez_poly, col = "black", lwd = 2) +
   geom_sf(data = inshore_poly, col = NA, fill = "green") +
   geom_sf(data = offshore_poly, col = NA, fill = "blue") +
   geom_sf(data = bc_eez, col = "black", fill = NA, lty = 2) +
@@ -51,7 +53,7 @@ ggplot() +
 
 ```
 NOTE: 
-`ggplot()` recognizes that the projection of bc_coast and bc_eez shapefile (WGS 84) are different from the roms shapefiles (NAD 83), and the function will reproject the layers to match the first layer. It also provides the axes units in degrees, regardless of projection. Adding layers with different projections using the base `plot()` function would not work.
+`ggplot()` recognizes that the projection of bc_coast and bc_eez shapefile (WGS 84) are different from the BCCM shapefiles (NAD 83), and the function will reproject the layers to match the first layer. It also provides the axes units in degrees, regardless of projection. Adding layers with different projections using the base `plot()` function would not work.
 
 The mixed grid (2km x 2km and 6km x 6km) can also be viewed.
 
@@ -61,23 +63,23 @@ plot(grid26)
 ```
 
 
-## Downloading ROMS data
+## Downloading BCCM data
 
-ROMS data are large as they are spatially and temporally resolved. Thus, to reduce the size of the `pacea` package, the data are stored in a GitHub repository. Users can download specific datasets to their local computer. An internet connection is required.
+The BCCM data were wrangled to simplify data format and structure. Because the data are spatially and temporally resolved, the compressed file size of each variable is fairly large (between 30-40 Mb). To keep the `pacea` package a reasonable downloadable size, the BCCM data are stored in a GitHub repository and can be downloaded locally using functions within `pacea`. An internet connection is required.
 
-The list of ROMS data available can be viewed from the list `roms_data`. ROMS data can be accessed using placeholder functions, named as in `roms_data`, that download the data to a local cache folder - this directory can be identified using `pacea_cache`.
+The list of variables of the BCCM data available can be viewed from the list `bccm_data`. BCCM data can be accessed using placeholder functions, named as in `bccm_data`, that download the data to a local cache folder - this directory can be identified using `pacea_cache()`.
 
-View data function help files for more information on ROMS data (e.g. `?roms_bottom_oxygen`)
+View data function help files for more information on bccm data (e.g. `?bccm_bottom_oxygen`)
 
-```{r ROMS}
-# list available ROMS data
-#head(roms_data)
+```{r BCCM}
+# list available BCCM data
+bccm_data
 
 # local cache folder
 pacea_cache()
 
 # download data to cache folder and name object; `force = TRUE` to skip user prompt
-pdata <- roms_surface_temperature(force = TRUE)
+pdata <- bccm_surface_temperature(force = TRUE)
 ```
 
 If `force = FALSE`, the user will be prompted on whether to download the data to the cache folder. 
@@ -104,29 +106,29 @@ attributes(pdata)$units
 ```
 
 
-## Updating ROMS data
+## Updating BCCM data
 
-When you download ROMS data, the most recent version of the data will be downloaded to your cache folder. 
+When you download BCCM data, the most recent version of the data will be downloaded to your cache folder. 
 
-Occasionally, there will be updates to the ROMS data (e.g. adding data from more recent years). If you want to check for an update for a data file you have already downloaded to the pacea_cache directory:
+Occasionally, there will be updates to the BCCM data (e.g. adding data from more recent years). If you want to check for an update for a data file you have already downloaded to the pacea_cache directory:
 
 ```{r}
-pdata <- roms_surface_temperature(update = TRUE)
+pdata <- bccm_surface_temperature(update = TRUE)
 ```
 
 If there is an update available, you will be prompted on whether to download the data and replace the older version you have in the pacea cache directory. If declined, the current version of the data will be loaded to the workspace.
 
-## ROMS visualization
+## BCCM visualization
 
-Here, we plot the ROMS data using some built in package functions, as well as `ggplot2`. We introduce some of the available polygon simple feature layers that can be plotted with the ROMS data.
+Here, we plot the BCCM data using some built in package functions, as well as `ggplot2`. We introduce some of the available polygon simple feature layers that can be plotted with the BCCM data.
 
 ### Base `plot()`
 
-ROMS data can be plotted using the `plot()` function for a quick view of the data. The default settings are to plot the April every five years for the time series available.
+BCCM data can be plotted using the `plot()` function for a quick view of the data. The default settings are to plot the April every five years for the time series available.
 
 ```{r}
 # data should already be downloaded to cache folder
-pdata <- roms_surface_temperature()
+pdata <- bccm_surface_temperature()
 
 plot(pdata)
 ```
@@ -189,7 +191,7 @@ p2
 ```
 
 NOTE: 
-Again, `ggplot()` recognizes that the projection of bc_coast and bc_eez shapefile are different thanthe ROMS data (NAD 83), and will reproject the layers to match the first layer.
+Again, `ggplot()` recognizes that the projection of bc_coast and bc_eez shapefile are different thanthe BCCM data (NAD 83), and will reproject the layers to match the first layer.
 
 As with regular `ggplot()`, you can customize the plot using typical ggplot syntax (see `?ggplot` for more information)
 
@@ -258,13 +260,13 @@ reg.p2 +
            ylim = c(tbbox[c(2,4)]))
 ```
 
-## Wrangling ROMS data
+## Wrangling BCCM data
 
-Here are some examples of how to easy wrangle ROMS data that may be of interest in your analyses. We will continue to use `pdata` which was the `roms_surface_temperature()` data we loaded to the workspace.
+Here are some examples of how to easy wrangle BCCM data that may be of interest in your analyses. We will continue to use `pdata` which was the `bccm_surface_temperature()` data we loaded to the workspace.
 
 ### Obtain centroids of each cell
 
-Currently, the ROMS data are simple feature (sf) objects of polygons (gridded square cells). The polygon boundaries are identified by coordinates for the perimeter of the cell. We can also obtain the centroids of each cell.
+Currently, the BCCM data are simple feature (sf) objects of polygons (gridded square cells). The polygon boundaries are identified by coordinates for the perimeter of the cell. We can also obtain the centroids of each cell.
 
 ```{r}
 # this will replace convert the geometry column from a polygon to a point, with the centroid of the gridded cell
@@ -366,7 +368,7 @@ The dark black line is the time series mean and while there isn't an clear trend
 
 ### Extract data using coordinates
 
-We can extract the spatial data using coordinates of interest. We can use the same indexing to extract gridded cells where the coordinate data fall into. This could be used to compare the modelled ROMS data with field observations.
+We can extract the spatial data using coordinates of interest. We can use the same indexing to extract gridded cells where the coordinate data fall into. This could be used to compare the modelled BCCM data with field observations.
 
 We'll use the location of data buoys. There is a list of buoys and locations in this pacakge, named as object: `buoy_metadata`.
 

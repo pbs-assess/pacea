@@ -1,19 +1,21 @@
-#' ROMS environmental variable data 
+#' BCCM environmental variable data 
 #' 
 #' @description 
-#' Regional Ocean Modelling System (ROMS) data for the BC Pacific region.
-#' 
-#' ROMS data interpolated to a 2km x 2km inshore grid and a 6km x 6km offshore grid. 
-#' Data are monthly averages from 1993-2019. Each column represents a distinct 'year_month' combination (e.g. 2010_4).
+#' British Columbia continental margin (BCCM) model data for the BC Pacific region.
 #' 
 #' @details
+#' The British Columbia continental margin (BCCM) model is an ocean circulation-biogeochemical model implementation of the regional ocean modelling system (ROMS). It has a horizontal resolution of 3km x 3km and a vertical discretization based on bathymetry of 42 depth levels increasing in resolution near the surface. These modelled output data were provided by Angelica Pena and the data is further detailed in Pena et al. (2019). 
+#' 
+#' BCCM data were interpolated to a 2km x 2km inshore grid and a 6km x 6km offshore grid. Data provided are monthly means that span from 1993-2019. Each column represents a distinct 'year_month' combination (e.g. 2010_4).
+#' 
+#' 
 #' \describe{
-#'   \code{roms_*depth*_oxygen()} Dissolved oxygen measured as mmol-oxygen m^-3\cr
-#'   \code{roms_*depth*_salinity()} Salinity in ppt\cr
-#'   \code{roms_*depth*_temperature()} Temperature in oC\cr
-#'   \code{roms_*depth*_ph()} pH\cr
-#'   \code{roms_phytoplankton()} Total phytoplankton biomass in mmol-nitrogen m^-2\cr
-#'   \code{roms_primaryproduction()} Total primary production in gC m^-2 d^-1
+#'   \code{bccm_*depth*_oxygen()} Dissolved oxygen measured as mmol-oxygen m^-3\cr
+#'   \code{bccm_*depth*_salinity()} Salinity in ppt\cr
+#'   \code{bccm_*depth*_temperature()} Temperature in oC\cr
+#'   \code{bccm_*depth*_ph()} pH\cr
+#'   \code{bccm_phytoplankton()} Total phytoplankton biomass in mmol-nitrogen m^-2\cr
+#'   \code{bccm_primaryproduction()} Total primary production in gC m^-2 d^-1
 #' }
 #' 
 #' NOTE:\cr
@@ -40,135 +42,135 @@
 #' 
 #' @examples
 #' \dontrun{
-#' my_data <- roms_bottom_oxygen()
+#' my_data <- bccm_bottom_oxygen()
 #' }
-roms_bottom_oxygen <- function(update = FALSE, ask = interactive(), force = FALSE) {
-  get_pacea_data("roms_bottom_oxygen", update = update, ask = ask, force = force)
+bccm_bottom_oxygen <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("bccm_bottom_oxygen", update = update, ask = ask, force = force)
 }
 
-#' @rdname roms_bottom_oxygen
+#' @rdname bccm_bottom_oxygen
 #' @export
-roms_bottom_ph <- function(update = FALSE, ask = interactive(), force = FALSE) {
-  get_pacea_data("roms_bottom_pH", update = update, ask = ask, force = force)
+bccm_bottom_ph <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("bccm_bottom_pH", update = update, ask = ask, force = force)
 }
 
-#' @rdname roms_bottom_oxygen
+#' @rdname bccm_bottom_oxygen
 #' @export
-roms_bottom_salinity <- function(update = FALSE, ask = interactive(), force = FALSE) {
-  get_pacea_data("roms_bottom_salinity", update = update, ask = ask, force = force)
+bccm_bottom_salinity <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("bccm_bottom_salinity", update = update, ask = ask, force = force)
 }
 
-#' @rdname roms_bottom_oxygen
+#' @rdname bccm_bottom_oxygen
 #' @export
-roms_bottom_temperature <- function(update = FALSE, ask = interactive(), force = FALSE) {
-  get_pacea_data("roms_bottom_temperature", update = update, ask = ask, force = force)
+bccm_bottom_temperature <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("bccm_bottom_temperature", update = update, ask = ask, force = force)
 }
 
-#' @rdname roms_bottom_oxygen
+#' @rdname bccm_bottom_oxygen
 #' @export
-roms_surface_oxygen <- function(update = FALSE, ask = interactive(), force = FALSE) {
-  get_pacea_data("roms_surface_oxygen", update = update, ask = ask, force = force)
+bccm_surface_oxygen <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("bccm_surface_oxygen", update = update, ask = ask, force = force)
 }
 
-#' @rdname roms_bottom_oxygen
+#' @rdname bccm_bottom_oxygen
 #' @export
-roms_surface_ph <- function(update = FALSE, ask = interactive(), force = FALSE) {
-  get_pacea_data("roms_surface_pH", update = update, ask = ask, force = force)
+bccm_surface_ph <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("bccm_surface_pH", update = update, ask = ask, force = force)
 }
 
-#' @rdname roms_bottom_oxygen
+#' @rdname bccm_bottom_oxygen
 #' @export
-roms_surface_salinity <- function(update = FALSE, ask = interactive(), force = FALSE) {
-  get_pacea_data("roms_surface_salinity", update = update, ask = ask, force = force)
+bccm_surface_salinity <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("bccm_surface_salinity", update = update, ask = ask, force = force)
 }
 
-#' @rdname roms_bottom_oxygen
+#' @rdname bccm_bottom_oxygen
 #' @export
-roms_surface_temperature <- function(update = FALSE, ask = interactive(), force = FALSE) {
-  get_pacea_data("roms_surface_temperature", update = update, ask = ask, force = force)
+bccm_surface_temperature <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("bccm_surface_temperature", update = update, ask = ask, force = force)
 }
 
-#' @rdname roms_bottom_oxygen
+#' @rdname bccm_bottom_oxygen
 #' @export
-roms_avg0to40m_oxygen <- function(update = FALSE, ask = interactive(), force = FALSE) {
-  get_pacea_data("roms_avg0to40m_oxygen", update = update, ask = ask, force = force)
+bccm_avg0to40m_oxygen <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("bccm_avg0to40m_oxygen", update = update, ask = ask, force = force)
 }
 
-#' @rdname roms_bottom_oxygen
+#' @rdname bccm_bottom_oxygen
 #' @export
-roms_avg0to40m_ph <- function(update = FALSE, ask = interactive(), force = FALSE) {
-  get_pacea_data("roms_avg0to40m_ph", update = update, ask = ask, force = force)
+bccm_avg0to40m_ph <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("bccm_avg0to40m_ph", update = update, ask = ask, force = force)
 }
 
-#' @rdname roms_bottom_oxygen
+#' @rdname bccm_bottom_oxygen
 #' @export
-roms_avg0to40m_salinity <- function(update = FALSE, ask = interactive(), force = FALSE) {
-  get_pacea_data("roms_avg0to40m_salinity", update = update, ask = ask, force = force)
+bccm_avg0to40m_salinity <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("bccm_avg0to40m_salinity", update = update, ask = ask, force = force)
 }
 
-#' @rdname roms_bottom_oxygen
+#' @rdname bccm_bottom_oxygen
 #' @export
-roms_avg0to40m_temperature <- function(update = FALSE, ask = interactive(), force = FALSE) {
-  get_pacea_data("roms_avg0to40m_temperature", update = update, ask = ask, force = force)
+bccm_avg0to40m_temperature <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("bccm_avg0to40m_temperature", update = update, ask = ask, force = force)
 }
 
-#' @rdname roms_bottom_oxygen
+#' @rdname bccm_bottom_oxygen
 #' @export
-roms_avg40to100m_oxygen <- function(update = FALSE, ask = interactive(), force = FALSE) {
-  get_pacea_data("roms_avg40to100m_oxygen", update = update, ask = ask, force = force)
+bccm_avg40to100m_oxygen <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("bccm_avg40to100m_oxygen", update = update, ask = ask, force = force)
 }
 
-#' @rdname roms_bottom_oxygen
+#' @rdname bccm_bottom_oxygen
 #' @export
-roms_avg40to100m_ph <- function(update = FALSE, ask = interactive(), force = FALSE) {
-  get_pacea_data("roms_avg40to100m_ph", update = update, ask = ask, force = force)
+bccm_avg40to100m_ph <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("bccm_avg40to100m_ph", update = update, ask = ask, force = force)
 }
 
-#' @rdname roms_bottom_oxygen
+#' @rdname bccm_bottom_oxygen
 #' @export
-roms_avg40to100m_salinity <- function(update = FALSE, ask = interactive(), force = FALSE) {
-  get_pacea_data("roms_avg40to100m_salinity", update = update, ask = ask, force = force)
+bccm_avg40to100m_salinity <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("bccm_avg40to100m_salinity", update = update, ask = ask, force = force)
 }
 
-#' @rdname roms_bottom_oxygen
+#' @rdname bccm_bottom_oxygen
 #' @export
-roms_avg40to100m_temperature <- function(update = FALSE, ask = interactive(), force = FALSE) {
-  get_pacea_data("roms_avg40to100m_temperature", update = update, ask = ask, force = force)
+bccm_avg40to100m_temperature <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("bccm_avg40to100m_temperature", update = update, ask = ask, force = force)
 }
 
-#' @rdname roms_bottom_oxygen
+#' @rdname bccm_bottom_oxygen
 #' @export
-roms_avg100mtoBot_oxygen <- function(update = FALSE, ask = interactive(), force = FALSE) {
-  get_pacea_data("roms_avg100mtoBot_oxygen", update = update, ask = ask, force = force)
+bccm_avg100mtoBot_oxygen <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("bccm_avg100mtoBot_oxygen", update = update, ask = ask, force = force)
 }
 
-#' @rdname roms_bottom_oxygen
+#' @rdname bccm_bottom_oxygen
 #' @export
-roms_avg100mtoBot_ph <- function(update = FALSE, ask = interactive(), force = FALSE) {
-  get_pacea_data("roms_avg100mtoBot_ph", update = update, ask = ask, force = force)
+bccm_avg100mtoBot_ph <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("bccm_avg100mtoBot_ph", update = update, ask = ask, force = force)
 }
 
-#' @rdname roms_bottom_oxygen
+#' @rdname bccm_bottom_oxygen
 #' @export
-roms_avg100mtoBot_salinity <- function(update = FALSE, ask = interactive(), force = FALSE) {
-  get_pacea_data("roms_avg100mtoBot_salinity", update = update, ask = ask, force = force)
+bccm_avg100mtoBot_salinity <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("bccm_avg100mtoBot_salinity", update = update, ask = ask, force = force)
 }
 
-#' @rdname roms_bottom_oxygen
+#' @rdname bccm_bottom_oxygen
 #' @export
-roms_avg100mtoBot_temperature <- function(update = FALSE, ask = interactive(), force = FALSE) {
-  get_pacea_data("roms_avg100mtoBot_temperature", update = update, ask = ask, force = force)
+bccm_avg100mtoBot_temperature <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("bccm_avg100mtoBot_temperature", update = update, ask = ask, force = force)
 }
 
-#' @rdname roms_bottom_oxygen
+#' @rdname bccm_bottom_oxygen
 #' @export
-roms_phytoplankton <- function(update = FALSE, ask = interactive(), force = FALSE) {
-  get_pacea_data("roms_phytoplankton", update = update, ask = ask, force = force)
+bccm_phytoplankton <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("bccm_phytoplankton", update = update, ask = ask, force = force)
 }
 
-#' @rdname roms_bottom_oxygen
+#' @rdname bccm_bottom_oxygen
 #' @export
-roms_primaryproduction <- function(update = FALSE, ask = interactive(), force = FALSE) {
-  get_pacea_data("roms_primaryproduction", update = update, ask = ask, force = force)
+bccm_primaryproduction <- function(update = FALSE, ask = interactive(), force = FALSE) {
+  get_pacea_data("bccm_primaryproduction", update = update, ask = ask, force = force)
 }
 
