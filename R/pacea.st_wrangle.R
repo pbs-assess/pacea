@@ -21,18 +21,18 @@
 #' }
 pacea_long <- function(data, names_to = "date", values_to = "value") {
   
-  # object size > 100 MB
-  if(object.size(data) > 100*10^6) {
-    ans <- ask("Current object size may result in a long format of data >1GB (and upwards of 10GB), which may affect local computational performance. Do you wish to continue?")
-    
-    if (!ans) stop("Exiting...", call. = FALSE)
-  }
+  # # object size > 100 MB
+  # if(object.size(data) > 100*10^6) {
+  #   ans <- ask("Current object size may result in a long format of data >1GB (and upwards of 10GB), which may affect local computational performance. Do you wish to continue?")
+  #   
+  #   if (!ans) stop("Exiting...", call. = FALSE)
+  # }
            
   dat <- data %>% 
     tidyr::pivot_longer(cols = !last_col(), cols_vary = "slowest", names_to = names_to, values_to = values_to)  %>%
     mutate(year = substr(get(names_to), 1, 4),
            month = substr(get(names_to), 6, 7)) %>%
-    select(-date) %>%
+    select(get(names_to)) %>%
     relocate(value, .after = last_col()) %>%
     relocate(geometry, .after = last_col()) 
     
