@@ -243,7 +243,7 @@ for(i in ifiles) {
       st_as_sf(geometry = st_geometry(t2_sf26))
     
     # assign pacea class 
-    class(t3_sf26) <- c("pacea_st", class(t3_sf26))
+    class(t3_sf26) <- c("pacea_st", class(t3_sf26), "tbl_df", "tbl")
     
     # assign units attribute
     attr(t3_sf26, "units") <- jvars_table[which(jvars_table[, 1] == j), 3]
