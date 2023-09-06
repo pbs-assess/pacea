@@ -49,3 +49,6 @@ data-raw/buoys/opp_info.Rds
 
 /data-raw/groundfish/hake-recruitment-over-2010.csv
 /data-raw/groundfish/hake-recruitment.csv
+/data-raw/mammals/harbour-seals/N_region_data_request_June_2023.csv
+/data-raw/mammals/harbour-seals/pred_all_regions.csv
+/data-raw/mammals/harbour-seals/SAR_harbour seal 2019.pdf

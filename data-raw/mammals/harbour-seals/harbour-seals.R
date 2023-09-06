@@ -100,6 +100,3 @@ harbour_seals <- harbour_seals_gam_new %>%
 
 usethis::use_data(harbour_seals,
                   overwrite = TRUE)
-
-# TODO write plotting function:
-plot(harbour_seals)

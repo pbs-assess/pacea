@@ -993,7 +993,7 @@
 ##'   \item{low:}{low end of the estimate of abundance, defined as
 ##'   the TODO CHECK}
 ##'   \item{mean:}{mean estimate of abundance, numbers of seals (in that region)}
-##'   \item{low:}{low end of the estimate of abundance, defined TODO CHECK as
+##'   \item{high:}{high end of the estimate of abundance, defined TODO CHECK as
 ##'   the TODO CHECK}
 ##'  }
 ##'
