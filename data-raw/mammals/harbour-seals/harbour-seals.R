@@ -98,5 +98,15 @@ harbour_seals <- harbour_seals_gam_new %>%
          mean,
          high)                  # not keeping year as duplicated for some years
 
+# Also need the final date of the data, to then colour code the
+# figures.
+
+harbour_seals_data_final_year <- harbour_seals_data %>%
+   group_by(region) %>%
+   summarise(final_year = max(year))
+
 usethis::use_data(harbour_seals,
+                  overwrite = TRUE)
+
+usethis::use_data(harbour_seals_data_final_year,
                   overwrite = TRUE)

@@ -970,10 +970,9 @@
 ##' and Haida Gwaii (HG); see Figure 1 of DFO (2022). The estimated abundances
 ##' were calculated using Generalised Additive Models, and are included here
 ##' (yielding the trends shown in Figure 3 of DFO, 2022). See that figure to see
-##' the amount of data available in each region (these data can be added to
-##' `pacea` if desired -- please let us know). The coastwide population was
-##' calculated by summing the estimates from each region, and is mostly driven
-##' by the large population in the SOG region.
+##' the amount of data available in each region; these data can be added to
+##' `pacea` if desired -- please let us know. The final year of data in each
+##' region is saved in the object `harbour_seals_data_final_year`.
 ##'
 ##' For further details see DFO (2022), from which some of the above text was
 ##' adapted. Full details of the underlying modelling should be available in the
@@ -990,6 +989,8 @@
 ##'   \item{date:}{Date of the GAM estimate of abundance; there is a time step
 ##'   of about 250 days in the GAM, hence some years have more than one value
 ##'   and so we give a date rather than a year}
+##'   \item{region:}{the region that the estimate corresponds to; one of SOG,
+##'   WCVI, QCS, DP, CMC, NMC, or HG}
 ##'   \item{low:}{low end of the estimate of abundance, defined as
 ##'   the TODO CHECK}
 ##'   \item{mean:}{mean estimate of abundance, numbers of seals (in that region)}
@@ -1006,3 +1007,20 @@
 ##' @source Estimates provided by Strahan Tucker, then wrangled and imported using
 ##'   `data-raw/mammals/harbour-seals/harbour-seals.R`.
 "harbour_seals"
+
+##' Final year of Pacific Harbour Seals survey in each of seven regions
+##'
+##' Used for colouring the plots of the estimates contained in `harbour_seals`
+##' (since some are projections beyond the data). Also see `?harbour_seals`.
+##'
+##' @format A tibble with columns:
+##' \describe{
+##'   \item{region:}{the region that the final year corresponds to; one of SOG,
+##'   WCVI, QCS, DP, CMC, NMC, or HG}
+##'   \item{final_year:}{final year of the data for that region}
+##'  }
+##' @examples
+##' \dontrun{
+##' harbour_seals_data_final_year
+##' }
+"harbour_seals_data_final_year"
