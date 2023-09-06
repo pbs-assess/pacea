@@ -1,7 +1,6 @@
 # Harbour Seal estimates. Run code line-by-line and check plots.
 #  See ?harbour-seals for details.
 
-load_all()
 library(dplyr)
 library(ggplot2)
 library(lubridate)
@@ -37,7 +36,7 @@ unique(diff(harbour_seals_gam_raw$x))
 # -54 is the jump back to the start for the next Region
 # So need to create a Date that is based on these
 
-harbour_seals_gam <- harbour_seals_gam_raw %>%
+harbour_seals_gam_new <- harbour_seals_gam_raw %>%
   mutate(Region = factor(Region,
                          levels = unique(Region)), # retain order
          year = floor(x),
@@ -54,7 +53,7 @@ harbour_seals_gam <- harbour_seals_gam_raw %>%
            mean = y,
            high = ymax)             # But then only keeping some columns when saving
 
-harbour_seals_gam[1:30, ] %>% as.data.frame()
+harbour_seals_gam_new[1:30, ] %>% as.data.frame()
 
 harbour_seals_data <- harbour_seals_data_raw %>%
   rename(region = RegionID,
@@ -64,7 +63,7 @@ harbour_seals_data <- harbour_seals_data_raw %>%
    mutate(region = factor(region,
                           levels = unique(region)))  # retain order
 
-p <- ggplot(data = harbour_seals_gam,
+p <- ggplot(data = harbour_seals_gam_new,
             aes(x = date,
                 y = mean)) +
   geom_ribbon(aes(ymin = low,
@@ -83,23 +82,24 @@ p
 # original SAR in the help file.
 #  TODO in help clarify what these are, as caption talks about se only
 
-class(harbour_seals_gam) <- c("harbour_seals_gam",
-                              class(harbour_seals_gam))
-attr(harbour_seals_gam, "axis_name") <-
+class(harbour_seals_gam_new) <- c("pacea_harbour_seals",
+                              class(harbour_seals_gam_new))
+attr(harbour_seals_gam_new, "axis_name") <-
   "Estimated abundance (number of seals)"
 
 # Get rid of columns that don't need to be saved (either original ones or
-# intermediates)
+# intermediates), and just save as harbour_seals. Can add data if people request
+# it.
 
-harbour_seals_gam <- harbour_seals_gam %>%
+harbour_seals <- harbour_seals_gam_new %>%
   select(date,
          region,
          low,
          mean,
          high)                  # not keeping year as duplicated for some years
 
-usethis::use_data(harbour_seals_gam,
+usethis::use_data(harbour_seals,
                   overwrite = TRUE)
 
 # TODO write plotting function:
-plot(harbour_seals_gam)
+plot(harbour_seals)

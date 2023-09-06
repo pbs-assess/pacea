@@ -584,7 +584,7 @@
 ##'   \item{low:}{low end (2.5th percentile) of the 95\% credible interval for
 ##'   recruitment, billions of age-0 fish}
 ##'   \item{median:}{median estimate of recruitment, billions of age-0 fish}
-##'   \item{low:}{high end (97.5th percentile) of the 95\% credible interval for
+##'   \item{high:}{high end (97.5th percentile) of the 95\% credible interval for
 ##'   recruitment, billions of age-0 fish}
 ##'  }
 ##'
@@ -617,7 +617,7 @@
 ##'   biomass, units as for `median`}
 ##'   \item{median:}{median estimate of biomass, in millions of tonnes of female
 ##'   spawning biomass at the start of the year}
-##'   \item{low:}{high end (97.5th percentile) of the 95\% credible interval for
+##'   \item{high:}{high end (97.5th percentile) of the 95\% credible interval for
 ##'   biomass, units as for `median`}
 ##'  }
 ##'
@@ -656,7 +656,7 @@
 ##'   \item{low:}{low end (2.5th percentile) of the 95\% credible interval for
 ##'   the scaled recruitment, unitless}
 ##'   \item{median:}{median estimate of scaled recruitment, unitless}
-##'   \item{low:}{high end (97.5th percentile) of the 95\% credible interval for
+##'   \item{high:}{high end (97.5th percentile) of the 95\% credible interval for
 ##'   the scaled recruitment, unitless}
 ##'  }
 ##'
@@ -687,7 +687,7 @@
 ##'   \item{low:}{low end (2.5th percentile) of the 95\% credible interval for
 ##'   the scaled recruitment, unitless}
 ##'   \item{median:}{median estimate of scaled recruitment, unitless}
-##'   \item{low:}{high end (97.5th percentile) of the 95\% credible interval for
+##'   \item{high:}{high end (97.5th percentile) of the 95\% credible interval for
 ##'   the scaled recruitment, unitless}
 ##'  }
 ##'
@@ -893,8 +893,8 @@
 "bccm_data"
 
 #' Optimal interpolation SST
-#' 
-#' @description 
+#'
+#' @description
 #' Simple features objects of NOAA's Optimal Interpolation SST
 #' \describe{
 #'   \item{oisst_7day}{7-day mean sea surface temperature (deg C)}
@@ -902,14 +902,14 @@
 #'   \item{oisst_month}{Monthly mean sea surface temperature in (deg C}
 #'   \item{oisst_monthclim}{Monthly climatology (1991-2020) for sea surface temperature (deg C)}
 #' }
-#' 
-#' @details 
+#'
+#' @details
 #' From NOAA:
 #' "The NOAA 1/4° Daily Optimum Interpolation Sea Surface Temperature (OISST) is a long term Climate Data Record that incorporates observations from different platforms (satellites, ships, buoys and Argo floats) into a regular global grid. The dataset is interpolated to fill gaps on the grid and create a spatially complete map of sea surface temperature. Satellite and ship observations are referenced to buoys to compensate for platform differences and sensor biases."
 #'
-#' The data starts from 1981-09-01 and ends in the previous month from the current month. These data will be updated monthly. 
-#' 
-#' @format 
+#' The data starts from 1981-09-01 and ends in the previous month from the current month. These data will be updated monthly.
+#'
+#' @format
 #' \describe{
 #'   \item{year}{Year}
 #'   \item{week}{Calendar week}
@@ -921,7 +921,7 @@
 #'   \item{end_date}{End date of mean SST estimate}
 #' }
 #' `oisst_7day` An object of class sf with 2051650 rows and 8 columns.
-#' 
+#'
 #' @usage oisst_7day
 #' @examples
 #' \dontrun{
@@ -930,24 +930,79 @@
 #' }
 #'
 #' @source https://www.ncei.noaa.gov/products/optimum-interpolation-sst
-#' 
+#'
 #' Generated from running `data-raw/erddap/OISST.R`.
 "oisst_7day"
 
 #' @rdname oisst_7day
-#' @format 
+#' @format
 #' `oisst_7dayclim` An object of class sf with 49025 rows and 6 columns.
 #' @usage oisst_7dayclim
 "oisst_7dayclim"
 
 #' @rdname oisst_7day
-#' @format 
+#' @format
 #' `oisst_month` An object of class sf with 464350 rows and 8 columns.
 #' @usage oisst_month
 "oisst_month"
 
 #' @rdname oisst_7day
-#' @format 
+#' @format
 #' `oisst_monthclim` An object of class sf with 11100 rows and 6 columns.
 #' @usage oisst_monthclim
 "oisst_monthclim"
+
+##' Estimated abundance of Pacific Harbour Seals in each of seven regions
+##'
+##' The Pacific Harbour Seal (\emph{Phoca vitulina richardsi}) is the most abundant pinniped species in the
+##' Northeast Pacific and is found throughout coastal and estuarine waters of
+##' British Columbia. A coastwide survey of harbour seals was conducted from
+##' 2015 to 2019 and used to inform the estimated trends in abundance given here.
+##'
+##' The Pacific Harbour Seal stock in Canada is
+##' assessed as a single stock. The coastwide abundance of harbour
+##' seals in British Columbia was assessed through aerial surveys conducted over multiple
+##' years, and corrected for area covered, survey timing relative to peak
+##' pupping, and proportion of seals hauled out during surveys. Estimated
+##' abundance was calculated for seven regions: the Strait of Georgia (SOG),
+##' West Coast Vancouver Island (WCVI), Queen Charlotte Strait (QCS), Discovery
+##' Passage (DP), Central Mainland Coast (CMC), Northern Mainland Coast (NMC),
+##' and Haida Gwaii (HG); see Figure 1 of DFO (2022). The estimated abundances
+##' were calculated using Generalised Additive Models, and are included here
+##' (yielding the trends shown in Figure 3 of DFO, 2022). See that figure to see
+##' the amount of data available in each region (these data can be added to
+##' `pacea` if desired -- please let us know). The coastwide population was
+##' calculated by summing the estimates from each region, and is mostly driven
+##' by the large population in the SOG region.
+##'
+##' For further details see DFO (2022), from which some of the above text was
+##' adapted. Full details of the underlying modelling should be available in the
+##' resulting Research Document (check
+##' https://www.isdm-gdsi.gc.ca/csas-sccs/applications/events-evenements/result-eng.asp?DateMatch=on&StartDate=&ToDate=&mode=0&desc=PHOCA+VITULINA+RICHARDSI&mode1=0&location=&B1=Search for updates).
+##'
+##' DFO. 2022. Stock Assessment of Pacific Harbour Seals (\emph{Phoca vitulina richardsi}) in Canada in
+##' 2019. DFO Canadian Science Advisory Secretariat Science Advisory
+##' Report. 2022/034.
+##' https://www.dfo-mpo.gc.ca/csas-sccs/Publications/SAR-AS/2022/2022_034-eng.html
+##'
+##' @format A tibble also of class `pacea_harbour_seals` with columns:
+##' \describe{
+##'   \item{date:}{Date of the GAM estimate of abundance; there is a time step
+##'   of about 250 days in the GAM, hence some years have more than one value
+##'   and so we give a date rather than a year}
+##'   \item{low:}{low end of the estimate of abundance, defined as
+##'   the TODO CHECK}
+##'   \item{mean:}{mean estimate of abundance, numbers of seals (in that region)}
+##'   \item{low:}{low end of the estimate of abundance, defined TODO CHECK as
+##'   the TODO CHECK}
+##'  }
+##'
+##' @examples
+##' \dontrun{
+##' harbour_seals
+##' plot(harbour_seals)   # TODO reproduce trends in Figure 3
+##' }
+##' @author Andrew Edwards
+##' @source Estimates provided by Strahan Tucker, then wrangled and imported using
+##'   `data-raw/mammals/harbour-seals/harbour-seals.R`.
+"harbour_seals"

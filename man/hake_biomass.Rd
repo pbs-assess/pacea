@@ -14,7 +14,7 @@ A tibble also of class `pacea_biomass` with columns:
   biomass, units as for `median`}
   \item{median:}{median estimate of biomass, in millions of tonnes of female
   spawning biomass at the start of the year}
-  \item{low:}{high end (97.5th percentile) of the 95\% credible interval for
+  \item{high:}{high end (97.5th percentile) of the 95\% credible interval for
   biomass, units as for `median`}
  }
 }

@@ -12,7 +12,7 @@ A tibble also of class `pacea_recruitment` with columns:
   \item{low:}{low end (2.5th percentile) of the 95\% credible interval for
   the scaled recruitment, unitless}
   \item{median:}{median estimate of scaled recruitment, unitless}
-  \item{low:}{high end (97.5th percentile) of the 95\% credible interval for
+  \item{high:}{high end (97.5th percentile) of the 95\% credible interval for
   the scaled recruitment, unitless}
  }
 }

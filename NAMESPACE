@@ -2,6 +2,7 @@
 
 S3method(plot,pacea_biomass)
 S3method(plot,pacea_buoy)
+S3method(plot,pacea_harbour_seals)
 S3method(plot,pacea_index)
 S3method(plot,pacea_recruitment)
 S3method(plot,pacea_st)
