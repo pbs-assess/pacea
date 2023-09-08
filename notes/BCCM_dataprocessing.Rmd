@@ -39,6 +39,9 @@ nc_dat <- nc_open("data-raw/roms/bcc42_era5glo12r4_mon1993to2019_surTSOpH.nc")
 nc_lon <- as.vector(ncvar_get(nc_dat, "lon_rho"))
 nc_lat <- as.vector(ncvar_get(nc_dat, "lat_rho"))
 
+# list layers and dimensions
+nc_dat
+
 nc_var <- ncvar_get(nc_dat, "temp")
 nc_varmat <- apply(nc_var, 3, c)
 
@@ -346,6 +349,10 @@ plot(output)
 
 
 This function is used in 'roms-data-interpolation.R' to interpolate all BCCM ROMS data from Angelica to and write it to the 'pacea-data' directory. This data is then uploaded to GitHub, where users can download the files separately (to reduce overall size of 'pacea' pacakge).
+
+NOTE ON CLASS OF OBJECTS
+
+For some reason, certain `dplyr` functions (e.g. mutate) don't work if the order of classes for an object is incorrect. Need to have "data.frame" as the last class.
 
 
 ### Testing file sizes
