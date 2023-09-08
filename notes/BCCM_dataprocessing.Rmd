@@ -1,0 +1,675 @@
+---
+title: "BCCM data processing"
+author: "Travis Tai"
+date: "2023-09-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r packages}
+# set to github/pacea folder
+setwd("C:/github/pacea")
+
+library(devtools)
+library(ncdf4)
+library(ggplot2)
+library(sf)
+library(dplyr)
+library(sp)
+library(terra)
+load_all()
+```
+
+## Processing BCCM ROMs data
+
+British Columbia continental margin model (BCCM) is an ocean circulation-biogeochemical model that implements the Regional Ocean Modelling System (ROMS) framework. Data were provided by Angelica Pena and more information on the model can be found in Pena et al. (2019). 
+
+Below we tested various ways in which the data could be interpolated. There are four methods we tested.
+
+
+```{r data setup}
+
+#####
+## read in and create sst data
+
+nc_dat <- nc_open("data-raw/roms/bcc42_era5glo12r4_mon1993to2019_surTSOpH.nc")
+nc_lon <- as.vector(ncvar_get(nc_dat, "lon_rho"))
+nc_lat <- as.vector(ncvar_get(nc_dat, "lat_rho"))
+
+nc_var <- ncvar_get(nc_dat, "temp")
+nc_varmat <- apply(nc_var, 3, c)
+
+dat <- data.frame(x = nc_lon, y = nc_lat) %>% cbind(nc_varmat)
+dat_sf <- st_as_sf(dat, coords = c("x", "y"), crs = "EPSG:4326")
+
+# subset only one layer
+tsst_sf1 <- st_transform(dat_sf, crs = "EPSG: 3005")[, 1] %>%
+  rename(sst = '1')
+
+
+
+##### 
+# INTERPOLATION METHODS
+# used this website to follow interpolate:
+#  https://bookdown.org/igisc/EnvDataSci/spatial-interpolation.html
+#  https://rspatial.org/analysis/4-interpolation.html
+library(gstat)
+
+
+#####
+# cross validation - setup
+
+# create NULL model
+##  RMSE for cross validation to test intepolation sd against data sd - interpolation should be lower than data sd
+##  performance = 0, interpolation has same sd as data; performance = 1, interpolation has no error
+RMSE <- function(observed, predicted) {
+  sqrt(mean((predicted - observed)^2, na.rm=TRUE))
+}
+
+# performance function for interpolation model fitting 
+perf <- function(trmse, h0 = null) {
+  round(1 - (mean(trmse) / h0), 3)
+}
+
+testdat <- tsst_sf1 %>% 
+  na.omit() %>% # remove NAs
+  st_filter(bccm_eez_poly)
+plot(testdat)
+
+null <- RMSE(mean(testdat$sst), testdat$sst)
+null
+
+
+#####
+# make raster grid
+rast2 <- rast(ext(bccm_eez_poly), res = c(2000, 2000), crs = st_crs(bccm_eez_poly)$wkt)
+rast3 <- rast(ext(bccm_eez_poly), res = c(3000, 3000), crs = st_crs(bccm_eez_poly)$wkt)
+rast6 <- rast(ext(bccm_eez_poly), res = c(6000, 6000), crs = st_crs(bccm_eez_poly)$wkt)
+
+#####
+# transform polygons
+
+tbccm <- bccm_eez_poly %>% st_transform(crs = "EPSG: 3005")
+tbc_coast <- bc_coast %>% st_transform(crs = "EPSG: 3005")
+tbc_eez <- bc_eez %>% st_transform(crs = "EPSG: 3005")
+
+```
+
+### Testing various methods
+
+Method 1:
+
+```{r}
+#####
+# method 1 - proximity polygons
+#  
+#  best for categorical data, probably not the best for continuous (e.g. SST)
+
+# convert to SpatVector
+sst_v <- terra::vect(tsst_sf1) 
+
+# interpolation happens here, creating proximity polygons
+v <- terra::voronoi(sst_v)
+plot(v)
+points(sst_v)
+
+# crop to extent desired - doesn't seem to affect values as interpolation happens with voronoi()
+vca <- crop(v, bccm_eez_poly)
+plot(vca, "sst")
+
+# rasterize to different grids - no interpolation, just assigning polygon values to grid cells (I think?)
+vr2 <- rasterize(vca, rast2, "sst")
+vr3 <- rasterize(vca, rast3, "sst")  
+vr6 <- rasterize(vca, rast6, "sst")  
+
+# different min and max values when rasterizing at 6km grid 
+##  likely from coastal areas missing the extreme values
+vr2
+vr3
+vr6
+
+# plot outputs
+plot(vr2, range = c(3.4, 10.2))
+plot(vr3, range = c(3.4, 10.2))
+plot(vr6, range = c(3.4, 10.2))
+
+# mask to eez buffer layer and ROMs extent layer
+vr2_mask <- mask(vr2, tbccm) 
+plot(vr2_mask, range = c(3.4, 10.2))
+plot(tsst_sf1, pch=".", col="grey", add=T)
+plot(tbccm, add = T)  # not in same projection
+
+vr6_mask <- mask(vr6, bccm_eez_poly) 
+plot(vr6_mask, range = c(3.4, 10.2))
+
+# cross validation model
+set.seed(500)
+kf_dat <- sst_v
+kf <- sample(1:5, nrow(kf_dat), replace=TRUE)
+rmse <- rep(NA, 5)
+for (k in 1:5) {
+  test <- kf_dat[kf == k, ]
+  train <- kf_dat[kf != k, ]
+  v <- voronoi(train)
+  p <- extract(v, test)
+  rmse[k] <- RMSE(test$sst, p$sst)
+}
+rmse
+## [1] 0.04621527 0.04288521 0.04510016 0.04530809 0.04740594
+mean(rmse)
+## [1] 0.04538293
+# relative model performance
+perf(rmse)
+## [1] 0.927
+
+```
+
+
+Method 2
+
+```{r}
+#####  
+# method 2 - nearest neighbour interpolation
+#  followed directions from website above
+#  also used this site for reference:
+#    http://jonkatz2.github.io/2017/11/15/interpolating-points-to-raster-in-r#:~:text=Interpolation%20can%20be%20done%20by,creating%20value%2Dgradients%20between%20points.
+#  issues with sf objects have also been a problem:
+#    https://github.com/rspatial/terra/issues/208
+
+# create data frame from sf
+tdat <- data.frame(st_coordinates(tsst_sf1), st_drop_geometry(tsst_sf1)) %>% 
+  rename(x=X, y=Y) %>%
+  na.omit()
+
+# set up formula - for near neighb, idp=0 and nmax>0
+gs <- gstat(formula = sst ~ 1, locations = ~x+y, data = tdat, nmax = 5, set=list(idp = 0))
+
+# interpolate to 2km grid
+nn2 <- terra::interpolate(rast2, gs, debug.level=0)
+
+# mask eez buffer layer, bc land, ROMs extent layer
+nn2.mask <- mask(nn2, tbccm) %>% 
+  mask(tbc_coast, inverse=T, touches=F)
+
+plot(nn2.mask, 1, range = c(3.4, 10.2))
+
+# cross validation model
+set.seed(200)
+kf_dat <- tdat
+kf <- sample(1:5, nrow(kf_dat), replace=TRUE)
+rmsenn <- rep(NA, 5)
+for (k in 1:5) {
+  test <- kf_dat[kf == k, ]
+  train <- kf_dat[kf != k, ]
+  gscv <- gstat(formula = sst ~ 1, locations = ~x+y, data = train, nmax = 5, set=list(idp = 0))
+  p <- predict(gscv, test, debug.level=0)$var1.pred
+  rmsenn[k] <- RMSE(test$sst, p)
+}
+## nmax = 5
+rmsenn
+## [1] 0.04337047 0.04052218 0.04116311 0.04341000 0.04547439
+mean(rmsenn)
+## [1] 0.04278803
+perf(rmsenn)
+## [1] 0.931
+
+## performance for differing nmax
+## nmax = 
+##   1 = 0.914; 2 = 0.934; 3 = 0.935; 4 = 0.934; 5= 0.931; 6 = 0.93; 7 = 0.927; 10 = 0.919
+
+```
+
+Method 3
+
+```{r}
+#####
+# method 3 - inverse distance weighted
+#  need to set idp>0 parameter to indicate distance weight (e.g. 2 = 'gravity model')
+#  IDW tends to have peaks and dips aroun data points, reduced with lower idp parameter
+#  followed directions from website above
+
+# create data frame from sf
+tdat <- data.frame(st_coordinates(tsst_sf1), st_drop_geometry(tsst_sf1)) %>% 
+  rename(x=X, y=Y) %>%
+  na.omit()
+
+# set up formula
+gs <- gstat(formula = sst ~ 1, locations = ~x+y, data=tdat, nmax=Inf, set=list(idp=20))
+
+# interpolate to 2km grid - seems to take a very long time
+indw <- terra::interpolate(rast2, gs, debug.level=0)
+
+# mask eez buffer layer, bc land, ROMs extent layer
+indw_m <- mask(indw, tbccm) %>% 
+  mask(tbc_coast, inverse=T, touches=F) 
+
+plot(indw_m, 1, range = c(3.4, 10.2))
+
+
+# cross validation model
+set.seed(700)
+kf_dat <- tdat
+kf <- sample(1:5, nrow(kf_dat), replace=TRUE)
+rmse_indw <- rep(NA, 5)
+idp_val <- 20
+for (k in 1:5) {
+  test <- kf_dat[kf == k, ]
+  train <- kf_dat[kf != k, ]
+  gs <- gstat(formula=sst~1, locations=~X+Y, data=train, set=list(idp=idp_val))
+  p <- predict(gs, test, debug.level=0)
+  rmse_indw[k] <- RMSE(test$sst, p$var1.pred)
+}
+rmse_indw
+perf(rmse_indw)
+
+# Cross validation results
+## idp = 0.5 
+## RMSE: [1] 0.7800549 0.7868507 0.7798944 0.7775673 0.7838023
+## performance: [1] -0.253  
+##   - poor performance with greater RMSE than null; high error in predictions
+#
+## idp = 1
+## RMSE: [1] 0.5703845 0.5771281 0.5709078 0.5698201 0.5745518
+## performance: [1] 0.082
+##   - low performance, indicates error is similar to null, much lower than voronoi and nn
+#
+## idp = 2
+## RMSE: [1] 0.1785572 0.1832581 0.1772752 0.1805609 0.1830259
+## performance: [1] 0.711
+##   - not bad performance, still lower than voronoi and nn
+#
+## idp = 3
+## RMSE: [1] 0.04939176 0.05150063 0.04640220 0.05137390 0.04881741
+## performance: [1] 0.921
+##   - really good, competes with voronoi and nn
+#
+## idp = 5, performance: [1] 0.939
+## idp = 7, performance: [1] 0.939
+## idp = 9, performance: [1] 0.939
+## idp = 20, performance: [1] 0.938
+
+
+```
+
+Method 4
+
+```{r}
+#####
+# method 4 - geostatistical (Kriging)
+#  followed directions from website above
+#  need to set width value ()
+
+
+# convert to SpatVector
+sst_v <- vect(tsst_sf1) 
+
+# create data frame from sf
+tdat <- data.frame(st_coordinates(tsst_sf1), st_drop_geometry(tsst_sf1)) %>% 
+  na.omit()
+
+gs <- gstat(formula=sst~1, locations = ~X + Y, data=tdat)
+v <- variogram(gs, width=20000)  # what to set cutoff and width to?
+plot(v)
+
+fve <- fit.variogram(v, vgm(psill=2e5, model="Lin", range=200e3, nugget=0))
+fve
+
+plot(variogramLine(fve, maxdist=6e5), type='l', ylim=c(0,1))
+points(v[,2:3], pch=20, col='red')
+
+
+```
+
+
+### Actual script for interpolation
+
+The file './R/interpolate.R' contains the function `point2rast()` used to interpolate point (coordinate) data to a uniform raster grid of a user-defined grid size. 
+
+An example of the point2rast function:
+
+```{r point2rast}
+# create data frame with coordinates and random values for point data
+dat <- data.frame(x = runif(5, 0, 10), y = runif(5, 0, 10), var = rnorm(5))
+
+# spatial extent (bounding box) to interpolate to
+extent <- st_bbox(c(xmin = 0, ymin = 0, xmax= 10, ymax = 10),crs = NA)
+
+# point2rast interpolation function
+output <- point2rast(dat, extent, loc = c("x","y"), cellsize = 0.5, nnmax = 2, as = "SpatRast")
+
+output
+plot(output)
+```
+
+
+This function is used in 'roms-data-interpolation.R' to interpolate all BCCM ROMS data from Angelica to and write it to the 'pacea-data' directory. This data is then uploaded to GitHub, where users can download the files separately (to reduce overall size of 'pacea' pacakge).
+
+
+### Testing file sizes
+
+BCCM ROMS data were written to .rds/.rda files using the function for package building `usethis::use_data()`. We tested file sizes based on data structure to see what would work best.
+
+Initially we tested file sizes as an array and as a vector without NA values. 
+
+```{r}
+# testing file size differences
+
+library(terra)
+library(ncdf4)
+library(sf)
+library(stars)
+library(dplyr)
+
+# read ncdf data with nc_open as array - test file from Angelica
+temp_nc <- nc_open("./data-raw/roms/Roms_bcc42_mon_2008to2011_sst.nc") # 38.5 mb as netcdf file
+temp_ncfull <- nc_open("./data-raw/roms/bcc42_era5glo12r4_mon1993to2019_surTSOpH.nc") # 982.9 mb as netcdf file
+
+
+print(temp_nc)
+sst <- ncvar_get(temp_nc, varid = "sst")
+sst1 <- sst[,,1]
+sstfull <- ncvar_get(temp_ncfull, varid = "temp") %>%
+  round(digits = 6) # reduce file size by rounding
+
+# write out as array
+#usethis::use_data(sst, compress = "xz") # 9 mb for 3 years of data (dim = [236, 410, 48])
+#usethis::use_data(sstfull, compress = "xz") # 58 to 63 mb for 27 years of data (dim = [236, 410, 324])
+
+rm(sstfull, temp_ncfull)
+gc()
+
+#-------------------------------------------------#
+# creating sf object of sst with lat lon
+# SST
+
+# convert array to matrix
+sst.m <- apply(sst, MARGIN = c(3), FUN = c)
+dim(sst.m)
+
+# lon
+lon <- ncvar_get(temp_nc, varid = "lon_rho")
+lon.v <- c(lon)
+
+# lat
+lat <- ncvar_get(temp_nc, varid = "lat_rho")
+lat.v <- c(lat)
+
+# assign correct lat-lon coordinates and crs
+sst_sf <- as.data.frame(sst.m) %>% 
+  mutate(lon = lon.v,
+         lat = lat.v) %>% 
+  st_as_sf(coords = c("lon", "lat"), crs = "EPSG: 4326")
+
+# create data 
+#usethis::use_data(sst_sf) # 12.5mb
+
+
+#-------------------------------------------------#
+# checking rdata file size of dataframe/array
+# usethis::use_data(sst)  # 11.5 mb (saves 300kb to store as one file)
+# usethis::use_data(sst1) # 244 kb
+
+# converting sst data to vector to eliminate NAs
+sst_vec <- sst %>% 
+  apply(3,c) # concatenate into single vector by 3rd (layer) dimension
+sst_vecNA <- sst_vec %>%
+  na.omit()
+
+dim(sst_vec)
+summary(sst)  # 1.03M NA cells
+summary(sst_vec)
+1.03/4.64  # approx proportion of NA cells = 22%
+
+# checking file sizes between vectorized data and without NAs
+# usethis::use_data(sst_vec) # 11.5 mb
+# usethis::use_data(sst_vecNA) # 11.3 mb
+
+# read ncdf data directly as a raster
+nc_all <- terra::rast("./data-raw/roms/Roms_bcc42_mon_2008to2011_sst.nc", subds = "sst") 
+crs(nc_all) <- "EPSG:4326"
+nc_all
+
+plot(nc_all)
+
+# use_data to create file from raster
+#usethis::use_data(nc_all, compress = "xz") # for some reason it doesn't save values for rasters, just the grid and extent. see below
+
+```
+
+
+Checking file sizes when we convert the data to a raster
+
+```{r}
+#-------------------------------------------------#
+# converting array to raster
+
+dim(sst)
+
+sst_rast <- terra::rast(sst)
+sst1_rast <- terra::rast(sst[,,1]) ## subset of 1 layer
+
+# set crs
+crs(sst_rast) <- "EPSG:4326"
+
+# checking rdata file size of raster
+# use_data() (i.e. save) doesn't seem to work when storing SpatRaster class objects
+# load_all() (i.e. load) fails when loading in this as an .rda file
+# data is lost when saving this way
+# usethis::use_data(sst_rast) # 244 kb
+# usethis::use_data(sst1_rast) # 244 kb
+
+# saveRDS function preserves raster data and can be loaded with readRDS, but cannot
+#  be loaded using loaded as part of package load_all()
+# terra::saveRDS(sst_rast, file = "./data/sst_rast_saveRDS.rda")
+
+# write out raster as .tif
+#terra::writeRaster(sst_rast, "./data/sst_rastC.tif")
+
+
+#-------------------------------------------------#
+# converting raster to sf (via stars)
+
+sst_starsA <- stars::st_as_stars(sst_rast)
+sst_sf_nolatlon <- sf::st_as_sf(sst_starsA, as_points = T)  # points is marginally smaller file size than polygons
+
+# checking rdata file size of sf object
+# usethis::use_data(sst_sf_nolatlon) # 11.3 mb
+
+plot(sst_sf_nolatlon[,c(1,49)])
+
+```
+
+Checking file sizes as a matrix object without dates (i.e. date stored in another file), and without NAs.
+
+```{r}
+
+#-------------------------------------------------#
+# create example dataframe that will be stored to check file size
+
+# parameters
+set.seed(500)
+ncell <- 150000   # number of cells
+yrs <- 1950:2050  # 100 years of data/projections
+mths <- 1:12      # monthly time series
+NAsample <- sample(1:ncell,33000)  # portion of cells that are blank (e.g. land)
+
+A <- matrix(rnorm(ncell * length(yrs) * length(mths)), nrow = length(yrs) * length(mths), ncol = ncell)
+dat <- tibble(year = rep(yrs, each = length(mths)),
+              month = rep(mths, times = length(yrs)))
+dat <- dat %>% cbind(A) 
+dat[,c(NAsample+2)] <- NA  # assign cells NA value
+rm(A)
+
+dim(dat)
+
+# remove date columns and NA columns
+Adummy <- dat
+Adummy_nodate <- dat[,-c(1:2)]
+Adummy_nodateNA <-dat[,-c(NAsample+2)] # approx 22% of cells are NAs (based on ROMs)
+
+# checking file size of data stored as dataframes
+# Not much file size savings in removing NA data. 
+# usethis::use_data(Adummy)          # 1072 mb
+# usethis::use_data(Adummy_nodate)   # 1072 mb
+# usethis::use_data(Adummy_nodateNA) # 1071 mb
+
+```
+
+Checking file sizes of an sf object.
+
+```{r}
+# converting to sf object - convert to array, raster, add geometries and crs
+Adummy_array <- dat[,-c(1,2)] %>% 
+  as.matrix() %>%
+  t() %>%
+  as.vector() %>%
+  array(dim = c(300,500,1212))
+
+Adummy_rast <- terra::rast(Adummy_array)
+terra::crs(Adummy_rast) <- "EPSG:4326"
+
+Adummy_sf <- stars::st_as_stars(Adummy_rast)
+Adummy_sfpoly <- sf::st_as_sf(Adummy_sf)  # points is marginally smaller than polygons
+Adummy_sfpoints <- sf::st_as_sf(Adummy_sf, as_points = T)  # points is marginally smaller than polygons
+# NOTE: gridded cells (ie. rows when converted to sf) that have no data (NA) 
+#  across all layers get omitted automatically
+
+# checking file size
+# usethis::use_data(Adummy_array)          # 1071 mb
+# usethis::use_data(Adummy_rast)          # 303 mb - rasters don't work with save/load
+# usethis::use_data(Adummy_sfpoly)          # 1071 mb
+# usethis::use_data(Adummy_sfpoints)        # 1071 mb
+
+# Conclusion: there are minimal differences in file size between data types 
+#  (e.g. dataframe, array, sf). Data compression handles NAs and doesn't increase file size
+
+```
+
+We determined that the best file type was to use `sf` objects stored in wide format where each column is a data layer (i.e. specific date).
+
+Now that the files were all writted to the data file, we tested various `sf` object file sizes based on long vs wide structure with geometries.
+
+```{r}
+## Testing file size formats 
+
+# normal format - function to download data file
+pdata <- bccm_avg0to40m_oxygen()
+
+# wide format
+pdata_wide <- pdata %>%
+  mutate(newnames = paste(year, month, sep = "_")) %>%
+  tidyr::pivot_wider(id_cols = "geometry", names_from = "newnames", values_from = "value") %>%
+  dplyr::relocate(geometry, .after = last_col()) 
+
+# compressed size: long = 37.719 mb; wide = 32.124 mb
+#use_data(pdata_wide, compress = "xz")
+
+pdata_nogeo <- pdata %>% 
+  st_drop_geometry() %>%
+  mutate(cellid = round(rep(1:40580, times = 324), digits = 0)) 
+
+pdata_nogeo_wide <- pdata_wide %>% 
+  st_drop_geometry() %>%
+  mutate(cellid = round(1:40580, digits = 0))
+
+# compressed size no geo: long = 32.1 mb; wide = 32 mb
+#use_data(pdata_nogeo, compress = "xz", overwrite = TRUE)
+#use_data(pdata_nogeo_wide, compress = "xz", overwrite = TRUE)
+
+# r environment object size
+object.size(pdata) # 10.4 GB
+object.size(pdata_wide) # 136 MB
+
+object.size(pdata_nogeo) # 420 MB
+object.size(pdata_nogeo_wide) # 105 MB
+```
+
+While there is little difference between the saved compressed sizes, there is big different in object size within the R environment. The long format of the data are multiple-fold bigger than the wide format, likely from the repeated values in the geometry column. This seriously slows down processing in R and is not practical. 
+
+Therefore, it makes most sense to have the BCCM ROMS data stored in wide format. 
+
+
+
+#### Creating smaller files for testing functions and plotting
+
+Below we create files that are dummy files and subsets of BCCM ROMS data to use for testing the `pacea` package functions. These are written to the `pacea-data` GitHub repository - where users can download individual data files. 
+
+```{r}
+#####
+# subset of surface temperature
+
+dir <- "C:/github/pacea-data/data/"
+filedir <- "bccm_surface_temperature_01.rds"
+local_file_dir <- paste0(dir, filedir)
+
+# read in data 
+dat_name <- load(local_file_dir)
+
+# only one column (layer) for file size
+test_surftemp <- bccm_surface_temperature[, 1]
+
+filename <- paste0("C:/github/pacea-data/data/test_surftemp.rds")
+
+save(test_surftemp, file = filename, compress = "xz")
+#do.call("save", list(test_surftemp, file = filename, compress = "xz"))
+
+```
+
+Dummy files - these are small vectors to test 'get-pacea-data' functions
+
+```{r}
+#####
+# test dummy files 
+
+test_data_01 <- 1:100
+test_data_02 <- 1:200
+
+dir <- "C:/github/pacea-data/data/"
+filename1 <- paste0(dir, "test_data_01.rds")
+filename2 <- paste0(dir, "test_data_02.rds")
+
+# save test_data files to pacea-data
+#save(test_data_01, file = filename1, compress = "xz")
+#save(test_data_02, file = filename2, compress = "xz")
+
+```
+
+Creating a test file of corrupt data. The only way I could create a corrupt file was to shut down R while the data was being saved using 'Task Manager' to force quit the application.
+
+```{r}
+
+dir <- "C:/github/pacea-data/data/"
+filedir <- "bccm_surface_temperature_01.rds"
+local_file_dir <- paste0(dir, filedir)
+
+# read in data 
+dat_name <- load(local_file_dir)
+
+test_corruptdata <- bccm_surface_temperature
+
+dir <- "C:/github/pacea-data/data/"
+filename <- paste0(dir, "test_corruptdata.rds")
+
+# save test_corruptdata files to pacea-data - MUST QUIT R WHILE FILE IS SAVING FOR CORRUPT DATA
+#save(test_corruptdata, file = filename, compress = "xz")
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

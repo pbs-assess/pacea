@@ -1,0 +1,227 @@
+---
+title: "British Columbia Coastline, EEZ and ROMS grid generation"
+author: "Travis Tai"
+date: "2023-08-30"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r packages}
+# set to github/pacea folder
+setwd("C:/github/pacea")
+
+library(devtools)
+library(ncdf4)
+library(ggplot2)
+library(sf)
+library(dplyr)
+library(sp)
+library(terra)
+load_all()
+```
+
+## Generating polygons
+
+Boundary polygons were created for geographic layers and to mask interpolated data. 
+
+### BC coastline
+
+First we tested BC coastline files from three different packages: `bcmaps`, `PBSdata`, and `rnaturalearth`.
+
+Looking a the detail, native file format and metadata, we determined that the 'rnaturalearth' was best suited to produce a coastline 'sf' object for the pacea package. See 'data-raw/coastline/coastline-testing.R' script for testing different mapping options.
+
+To generate the `bc_coast` object for pacea, we used 'rnaturalearth'; code can be found in 'data-raw/coastline/coastline-eez.R'. 
+
+### BC exclusive economic zone
+
+The BC exclusive economic zone object was taken from the 'PBSdata' package. However, the class of the file is a 'polyset', and the object had to be transformed into a shapefile 'SpatialPolygons' object. The 'maptools' package that contains the function to convert a 'polyset' object is being deprecated, so these operations may not work.
+
+See 'data-raw/coastline/coastline-eez.R' for generation of the 'sf' object.
+
+
+```{r}
+head(bc_coast)
+head(bc_eez)
+
+plot(bc_coast)
+plot(bc_eez)
+```
+
+### Create grid
+
+Below is testing of a mixed grid. 
+
+```{r}
+# Spatial grid creation
+
+library(sf)
+library(devtools)
+library(ggplot2)
+library(terra)
+library(ncdf4)
+load_all()
+
+sf_use_s2(FALSE)  # remove spherical geometry (s2) for sf operations
+
+#####
+# load data to environment
+
+# GIS hub Pacific Marine Habitat Classes
+#  obtained from: https://www.gis-hub.ca/dataset/marine-habitat-classes
+#  requires access to gis-hub
+pmhc_dir <- "./data-raw/pacific_marine_habitat_classes/Pacific_Marine_Habitat_Classes.gdb"
+(pmhc_layers <- st_layers(pmhc_dir))
+
+# use benthic habitat (bh) layer
+pmhc <- st_read(pmhc_dir, layer = pmhc_layers$name[3])
+str(pmhc)
+unique(pmhc$Habitat)
+
+# pacea - rnaturalearth bc coast
+data(bc_coast)
+
+# pacea - PBSdata eez
+data(bc_eez)
+
+
+#####
+# make sf grid 
+grid2 <- st_make_grid(romsbuff_poly, cellsize = 2000)  # 2x2km
+grid6 <- st_make_grid(romsbuff_poly, cellsize = 6000)  # 6x6km
+
+# crop grid of buffer area and remove land area cells
+grid2c <- grid2[romsbuff_poly]
+grid2c <- grid2c[inshore_poly] %>% st_as_sf()
+grid6c <- grid6[romsbuff_poly] 
+grid6c <- grid6c[offshore_poly] 
+grid6c <- st_difference(grid6c, st_union(grid2c)) %>% st_as_sf()
+
+# combine grids
+grid26 <- grid6c %>% rbind(grid2c) 
+
+grid26_data <- grid26 %>%
+  mutate(dummyvar1 = rnorm(nrow(grid26)))
+
+dum_mat <- matrix(rnorm(nrow(grid26)*360), ncol = 360, nrow = nrow(grid26))
+
+grid26_databig <- grid26 %>% 
+  cbind(dum_mat)
+
+grid26_nogeom <- grid26_databig %>% 
+  st_drop_geometry()
+
+
+# visualization
+ggplot() + 
+  geom_sf(data = grid26_sf, fill = NA) +
+  geom_sf(data = tbc) + 
+  geom_sf(data = inshore_poly, fill = NA) +
+  geom_sf(data = offshore_poly, fill = NA) 
+
+# size of sf grid object, with and without one column of data
+# usethis::use_data(grid26)  # without data:                   140 kb
+# usethis::use_data(grid26_data)  # with data:                 741 kb
+# usethis::use_data(grid26_databig, overwrite=T)  # with 360 column data:     210,578 kb
+# usethis::use_data(grid26_nogeom, overwrite=T)   # with 360 column, no geom: 210,431 kb
+
+##  removing the geometry from sf object with 77360 cells, and 360 layers saves about 147 kb, vs 140kb 
+
+
+#####
+## read in and create sst data
+
+nc_dat <- nc_open("data-raw/roms/bcc42_era5glo12r4_mon1993to2019_surTSOpH.nc")
+nc_lon <- as.vector(ncvar_get(nc_dat, "lon_rho"))
+nc_lat <- as.vector(ncvar_get(nc_dat, "lat_rho"))
+
+nc_var <- ncvar_get(nc_dat, "temp")
+nc_varmat <- apply(nc_var, 3, c)
+
+dat <- data.frame(x = nc_lon, y = nc_lat) %>% cbind(nc_varmat)
+dat_sf <- st_as_sf(dat, coords = c("x", "y"), crs = "EPSG:4326")
+
+# subset only one layer
+tsst_sf1 <- st_transform(dat_sf, crs = "EPSG: 3005")[, 1] %>%
+  rename(sst = '1')
+
+#####
+# make raster grid
+rast2 <- rast(ext(bccm_eez_poly), res = c(2000, 2000), crs = st_crs(bccm_eez_poly)$wkt)
+rast3 <- rast(ext(bccm_eez_poly), res = c(3000, 3000), crs = st_crs(bccm_eez_poly)$wkt)
+rast6 <- rast(ext(bccm_eez_poly), res = c(6000, 6000), crs = st_crs(bccm_eez_poly)$wkt)
+
+
+#####
+# force data point values into grid and use 'fun' to summarize point data into raster cells
+##  I don't think you can include a predict function for interpolation
+summary(tsst_sf1)
+
+# create raster to assign values to
+r <- terra::rast(tsst_sf1)
+
+# vectorize values for terra package
+v <- terra::vect(tsst_sf1)
+
+# rasterize sf point data to grid:
+##  this uses a simple 'function' to assign a value to gridded cell based on points that fall within cell
+##  can end up with empty cells (at high resolution)
+
+# 2km grid
+res(r) <- 2000
+sst_rast2 <- terra::rasterize(v, r, field = "sst")
+sst_rast2
+plot(sst_rast2,range = c(3.4, 10.2))
+
+# 3km grid
+res(r) <- 3000
+sst_rast3 <- terra::rasterize(v, r, field = "sst")
+sst_rast3
+plot(sst_rast3,range = c(3.4, 10.2))
+
+# 4km grid
+res(r) <- 4000
+sst_rast4 <- terra::rasterize(v, r, field = "sst")
+sst_rast4
+plot(sst_rast4,range = c(3.4, 10.2))
+
+# 6km grid
+res(r) <- 6000
+sst_rast6 <- terra::rasterize(v, r, field = "sst")
+sst_rast6
+plot(sst_rast6,range = c(3.4, 10.2))
+
+# resample 6km grid to 2km grid
+rr2 <- resample(sst_rast6, rast2, method = "bilinear")
+
+# doesn't work
+#rr2 <- resample(v, rast2, method = "bilinear")
+
+summary(rr2)
+
+plot(rr2,range = c(3.4, 10.2))
+plot(bccm_eez_poly, add = T)
+
+## NOTE: these methods are not the best for interpolation to a grid, especially at a higher resolution
+
+
+
+
+```
+
+Creating the grid for use an object in pacea was done using code in the file: 
+'./data-raw/grids/create-grid.R'
+
+```{r}
+head(grid26)
+
+plot(grid26)
+```
+
+
+
+
+
+
