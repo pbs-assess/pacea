@@ -2,12 +2,12 @@
 % Please edit documentation in R/calc_climatology_anomaly.R
 \name{calc_clim}
 \alias{calc_clim}
-\alias{calc_anomaly}
+\alias{calc_anom}
 \title{Calculate climatology and anomaly}
 \usage{
 calc_clim(data, clim_years = c(1991:2020), temporal_FUN = "month")
 
-calc_anomaly(data, clim_years = c(1991:2020), temporal_FUN = "month")
+calc_anom(data, clim_years = c(1991:2020), temporal_FUN = "month")
 }
 \arguments{
 \item{data}{}

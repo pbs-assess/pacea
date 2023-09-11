@@ -82,6 +82,7 @@ for(i in 1981:(lubridate::year(Sys.Date()))){
 # rename output and save data
 oisst_7day <- out.dat
 class(oisst_7day) <- c("pacea_oi", class(oisst_7day))
+attr(oisst_7day, "units") <- "Temperature (\u00B0C)"
 use_data(oisst_7day, compress = "xz", overwrite = TRUE)
 
 
@@ -140,6 +141,7 @@ for(i in 1981:(lubridate::year(Sys.Date()))){
 # rename output and save data
 oisst_month <- out.dat
 class(oisst_month) <- c("pacea_oi", class(oisst_month))
+attr(oisst_month, "units") <- "Temperature (\u00B0C)"
 use_data(oisst_month, compress = "xz", overwrite = TRUE)
 
 

@@ -11,7 +11,7 @@
 #' @param clim_years climatology period years 
 #' @param temporal_FUN temporal unit for climatology as lubridate 'date' function (for objects of class 'pacea_buoy')
 #'
-#' @import dplyr sf
+#' @import dplyr sf lubridate
 #' @return anomaly data values of same class as input pacea data
 #' @export
 #'
@@ -57,7 +57,7 @@ calc_clim <- function(data, clim_years = c(1991:2020), temporal_FUN = "month") {
     # warning for climatology not equal to full 30 years specified
     dat.years <- unique(out$year)
     if(!all(clim_years %in% dat.years)) {
-      warning(paste0("Number of years for climatology only span ", min(dat.years), " to ", max(dat.years)))
+      warning(paste0("Number of years for climatology only span ", length(dat.years)," years:", min(dat.years), " to ", max(dat.years)))
     }
     
     out <- out %>%
@@ -71,7 +71,8 @@ calc_clim <- function(data, clim_years = c(1991:2020), temporal_FUN = "month") {
       dplyr::select(-ind) %>%
       st_as_sf()
     
-    class(out) <- c("pacea_st", class(out))
+    class(out) <- c("pacea_stclim", "sf", "tbl_df", "tbl", "data.frame")
+    attr(out, "units") <- attributes$(data)$units
     
     gc()
     return(out)
@@ -103,8 +104,9 @@ calc_clim <- function(data, clim_years = c(1991:2020), temporal_FUN = "month") {
         rename(sst = tsst) %>%
         relocate(geometry, .after = last_col()) 
     }
-      
-    class(out) <- c("pacea_oi", class(out))
+    
+    class(out) <- c("pacea_oiclim", "sf", "tbl_df", "tbl", "data.frame")
+    attr(out, "units") <- "Temperature (\u00B0C)"
     return(out)
   }
   
@@ -124,6 +126,8 @@ calc_clim <- function(data, clim_years = c(1991:2020), temporal_FUN = "month") {
       rename(sst = tsst)
     colnames(out)[which(colnames(out) == "time_unit")] <- temporal_FUN
     
+    class(out) <- c("pacea_buoyclim", "sf", "tbl_df", "tbl", "data.frame")
+    attr(out, "units") <- "Temperature (\u00B0C)"
     return(out)
   }
   
@@ -141,7 +145,7 @@ calc_clim <- function(data, clim_years = c(1991:2020), temporal_FUN = "month") {
 #' @param temporal_FUN 
 #'
 #' @return anomaly data values of same class as input pacea data
-#' @import dplyr sf
+#' @import dplyr sf lubridate
 #' 
 #' @rdname calc_clim
 #' @export
@@ -149,7 +153,7 @@ calc_clim <- function(data, clim_years = c(1991:2020), temporal_FUN = "month") {
 #' @examples
 #' \dontrun{
 #' }
-calc_anomaly <- function(data, clim_years = c(1991:2020), temporal_FUN = "month"){
+calc_anom <- function(data, clim_years = c(1991:2020), temporal_FUN = "month"){
   
   # if class is pacea_st
   if("pacea_st" %in% class(data)) {
@@ -169,7 +173,7 @@ calc_anomaly <- function(data, clim_years = c(1991:2020), temporal_FUN = "month"
     # warning for climatology not equal to full 30 years specified
     dat.years <- unique(long.dat$year)
     if(!all(clim_years %in% dat.years)) {
-      warning(paste0("Number of years for climatology only span ", min(dat.years), " to ", max(dat.years)))
+      warning(paste0("Number of years for climatology only span ", length(dat.years)," years:", min(dat.years), " to ", max(dat.years)))
     }
     
     # climatology of data
@@ -187,8 +191,10 @@ calc_anomaly <- function(data, clim_years = c(1991:2020), temporal_FUN = "month"
       dplyr::select(-ind) %>%
       st_as_sf()
     
-    class(out) <- c("pacea_st", class(out))
+    class(out) <- c("pacea_stanom", "sf", "tbl_df", "tbl", "data.frame")
+    attr(out, "units") <- paste(attributes(data)$units, " anomaly"
     
+    gc()
     return(out)
     
   }
@@ -215,8 +221,6 @@ calc_anomaly <- function(data, clim_years = c(1991:2020), temporal_FUN = "month"
         left_join(clim.dat, by = join_by(week == week, x == x, y == y)) %>%
         mutate(anom = sst - clim_value) %>%
         st_as_sf(coords = c("x", "y"))
-      
-      return(out)
     }
     
     if("month" %in% colnames(data)){
@@ -238,9 +242,12 @@ calc_anomaly <- function(data, clim_years = c(1991:2020), temporal_FUN = "month"
         left_join(clim.dat, by = join_by(month == month, x == x, y == y)) %>%
         mutate(anom = sst - clim_value) %>%
         st_as_sf(coords = c("x", "y"))
-      
-      return(out)
     }
+    
+    class(out) <- c("pacea_oianom", "sf", "tbl_df", "tbl", "data.frame")
+    attr(out, "units") <- "Temperature (\u00B0C) anomaly"
+    return(out)
+    
   }
   
   # if class is buoy_sst
@@ -261,6 +268,8 @@ calc_anomaly <- function(data, clim_years = c(1991:2020), temporal_FUN = "month"
       mutate(anom = sst - clim_value) %>%
       dplyr::select(-time_unit)
     
+    class(out) <- c("pacea_buoyanom", "sf", "tbl_df", "tbl", "data.frame")
+    attr(out, "units") <- "Temperature (\u00B0C) anomaly"
     return(out)
   }
   
