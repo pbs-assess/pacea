@@ -3,9 +3,7 @@
 \docType{data}
 \name{oisst_7day}
 \alias{oisst_7day}
-\alias{oisst_7dayclim}
 \alias{oisst_month}
-\alias{oisst_monthclim}
 \title{Optimal interpolation SST}
 \format{
 \describe{
@@ -20,11 +18,7 @@
 }
 `oisst_7day` An object of class sf with 2051650 rows and 8 columns.
 
-`oisst_7dayclim` An object of class sf with 49025 rows and 6 columns.
-
 `oisst_month` An object of class sf with 464350 rows and 8 columns.
-
-`oisst_monthclim` An object of class sf with 11100 rows and 6 columns.
 }
 \source{
 https://www.ncei.noaa.gov/products/optimum-interpolation-sst
@@ -34,11 +28,7 @@ Generated from running `data-raw/erddap/OISST.R`.
 \usage{
 oisst_7day
 
-oisst_7dayclim
-
 oisst_month
-
-oisst_monthclim
 }
 \description{
 Simple features objects of NOAA's Optimal Interpolation SST
