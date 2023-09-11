@@ -81,7 +81,7 @@ for(i in 1981:(lubridate::year(Sys.Date()))){
 
 # rename output and save data
 oisst_7day <- out.dat
-class(oisst_7day) <- c("pacea_st", class(oisst_7day))
+class(oisst_7day) <- c("pacea_oi", class(oisst_7day))
 use_data(oisst_7day, compress = "xz", overwrite = TRUE)
 
 
@@ -139,7 +139,7 @@ for(i in 1981:(lubridate::year(Sys.Date()))){
 
 # rename output and save data
 oisst_month <- out.dat
-class(oisst_month) <- c("pacea_st", class(oisst_month))
+class(oisst_month) <- c("pacea_oi", class(oisst_month))
 use_data(oisst_month, compress = "xz", overwrite = TRUE)
 
 
@@ -158,7 +158,7 @@ oisst_7dayclim <- tdat %>%
   relocate(geometry, .after = last_col()) 
 
 str(oisst_7dayclim)
-class(oisst_7dayclim) <- c("pacea_st", class(oisst_7dayclim))
+class(oisst_7dayclim) <- c("pacea_oi", class(oisst_7dayclim))
 use_data(oisst_7dayclim, compress = "xz", overwrite = TRUE)
  
 # month
@@ -174,7 +174,7 @@ oisst_monthclim <- tdat %>%
   relocate(geometry, .after = last_col()) 
 
 str(oisst_monthclim)
-class(oisst_monthclim) <- c("pacea_st", class(oisst_monthclim))
+class(oisst_monthclim) <- c("pacea_oi", class(oisst_monthclim))
 use_data(oisst_monthclim, compress = "xz", overwrite = TRUE)
 
 
