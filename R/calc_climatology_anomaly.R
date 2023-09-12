@@ -72,7 +72,7 @@ calc_clim <- function(data, clim_years = c(1991:2020), temporal_FUN = "month") {
       st_as_sf()
     
     class(out) <- c("pacea_stclim", "sf", "tbl_df", "tbl", "data.frame")
-    attr(out, "units") <- attributes$(data)$units
+    attr(out, "units") <- attributes(data)$units
     
     gc()
     return(out)
@@ -192,7 +192,7 @@ calc_anom <- function(data, clim_years = c(1991:2020), temporal_FUN = "month"){
       st_as_sf()
     
     class(out) <- c("pacea_stanom", "sf", "tbl_df", "tbl", "data.frame")
-    attr(out, "units") <- paste(attributes(data)$units, " anomaly"
+    attr(out, "units") <- paste(attributes(data)$units, " anomaly")
     
     gc()
     return(out)
