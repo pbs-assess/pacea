@@ -1,14 +1,12 @@
-# plot pacea_st function
-
 #' Plot a pacea spatiotemporal data layer
 #' 
-#' Base plot for sf objects using `plot.sf()`. Quick visualization of data, specifying month(s) and year(s). For more options and configurable plots use `ggplot2`. 
+#' Plot for BCCM ROMS sf objects using `ggplot()`. A quick visualization of data, specifying month(s) and year(s). For more options and configurable plots see vignette. 
 #'
-#' @param obj a `pacea_st` object, which is an `sf` object
-#' @param months character or numeric vector to indicate which months to include (e.g. `c(1, 2)`, `c("April", "may")`, `c(1, "April")`)
-#' @param years vector of years to include, from 1993 to 2019
-#' @param bc logical. Should BC coastline layer be plotted? Can only be plotted with one plot layer.
-#' @param eez logical. Should BC EEZ layer be plotted? Can only be plotted with one plot layer.
+#' @param obj a BCCM ROMS `pacea_st` object, which is an `sf` object
+#' @param months.plot character or numeric vector to indicate which months to include (e.g. `c(1, 2)`, `c("April", "may")`, `c(1, "April")`)
+#' @param years.plot vector of years to include, from 1993 to 2019
+#' @param bc logical. Should BC coastline layer be plotted? 
+#' @param eez logical. Should BC EEZ layer be plotted? 
 #' @param ... optional arguments passed on to `plot.sf()`
 #'
 #' @return plot of the spatial data to the current device (returns nothing)
@@ -17,15 +15,17 @@
 #'
 #' @examples
 #' \dontrun{
-#' dat <- roms_surface_temperature()
-#' plot(dat)
+#' pdata <- bccm_surface_temperature()
+#' plot(pdata)
 #' }
 plot.pacea_st <- function(obj,
-                          months = c("April"),
-                          years = c(1993, 1998, 2003, 2008, 2013, 2018),
-                          bc = FALSE, 
-                          eez = FALSE,
-                          ...) {
+                          months.plot = c("April"),
+                          years.plot = c(2018),
+                          bc = TRUE, 
+                          eez = TRUE,
+                          ...
+                          ) {
+  
   
   # create new names for plot
   month_table <- data.frame(month.name = month.name,
@@ -35,53 +35,128 @@ plot.pacea_st <- function(obj,
   stopifnot("obj must be of class `sf`" =
               "sf" %in% class(obj))
   
-  stopifnot("Must enter valid numerals for 'years'" = !any(is.na(suppressWarnings(as.numeric(years)))))
-  
-  stopifnot("'months' are invalid - must be full names, abbreviations, or numeric" = 
-              as.character(months) %in% c(month.name, month.abb, 1:12))
+  stopifnot("Must enter valid numerals for 'years'" = !any(is.na(suppressWarnings(as.numeric(years.plot)))))
   
   # check if years are available in data
   obj_names <- obj %>% st_drop_geometry() %>%
     colnames() %>% strsplit(split = "_") %>%
     unlist() %>% as.numeric() %>%
     matrix(ncol = 2, byrow = TRUE) %>% as.data.frame()
-  stopifnot("Invalid 'years' specified" = suppressWarnings(as.numeric(years)) %in% unique(obj_names$V1))
+  stopifnot("Invalid 'years' specified" = suppressWarnings(as.numeric(years.plot)) %in% unique(obj_names$V1))
   rm(obj_names)
   
   # object units attribute
   obj_unit <- attributes(obj)$units
   
   # subset year_month columns
-  tobj <- subset_pacea_ym(data = obj, months = months, years = years)  ####MOVE THIS DOWN
-  
-  # year-month combinations
-  tobj_names <- as.data.frame(matrix(as.numeric(unlist(strsplit(names(st_drop_geometry(tobj)), split = "_"))), 
-                                     ncol = 2, byrow = TRUE)) 
-  tobj_names <- merge(tobj_names, month_table, by.x = "V2", by.y = "month.num", sort = FALSE)[,c("V1", "V2", "month.name", "month.abb")] %>%
-    arrange(V1,V2)
+  tobj <- subset_pacea_ym(data = obj, months = months.plot, years = years.plot)  ####MOVE THIS DOWN
   
   
-  tnew_names <- do.call(paste, c(tobj_names[c("V1", "month.abb")], sep = "_"))
+  ##### OPTION 1
+  # ggplotting
+  
+  # convert to long format
+  tobj2 <- tobj %>%
+    tidyr::pivot_longer(cols = !last_col(), cols_vary = "slowest", names_to = "date", values_to = "value") %>%
+    mutate(year = as.numeric(substr(date, 1, 4)),
+           month.num = as.numeric(substr(date, 6,7))) %>%
+    left_join(month_table, by = join_by(month.num == month.num)) %>%
+    mutate(plot.date = paste(year, month.name, sep = " ")) %>% 
+    arrange(year, month.num)
+  
+  # create factor for correct order of plotting
+  tobj2$month.f <- factor(tobj2$month.name, levels = c(unique(tobj2$month.name)))
+  tobj2$plot.date.f <- factor(tobj2$plot.date, levels = c(unique(tobj2$plot.date)))
   
   
-  names(tobj) <- c(tnew_names, "geometry")
-  class(tobj) <- c("sf", "pacea_st", "data.frame")
+  # color pallete index table
+  vars_units <- c("Temperature\n(\u00B0C)",
+                  "Salinity\n(ppt)",
+                  "Dissolved oxygen content\n(mmol-oxygen m^-3)",
+                  "pH",
+                  "Phytoplankton\n(mmol-nitrogen m^-2)",
+                  "Total primary production\n(gC m^-2 d^-1)")
+  colpal <- c(list(pals::jet(50)), 
+              list(pals::cividis(50)),
+              list(pals::ocean.oxy(50)),
+              list(pals::plasma(50)),
+              list(rev(pals::ocean.algae(50))),
+              list(pals::ocean.tempo(50)))
+  limit_funs <- c(list(c(floor(min(tobj2$value)), ceiling(max(tobj2$value)))),
+                  list(c(floor(min(tobj2$value)), ceiling(max(tobj2$value)))),
+                  list(c(floor(min(tobj2$value)), ceiling(max(tobj2$value)))),
+                  list(c(floor(min(tobj2$value)*10)/10, ceiling(max(tobj2$value)*10)/10)),
+                  list(c(floor(min(tobj2$value)), ceiling(max(tobj2$value)))),
+                  list(c(floor(min(tobj2$value)), ceiling(max(tobj2$value)))))
+
+  # parameters for plotting 
+  pind <- grep(strsplit(obj_unit, " ")[[1]][1], vars_units)
+  pfill <- vars_units[pind]
+  pcol <- colpal[pind] %>% unlist()
+  plimits <- limit_funs[pind] %>% unlist()
   
-  plot(tobj, border = NA, key.pos = 4, reset = FALSE, ...)
+  tplot <- tobj2 %>%
+    ggplot() + theme_bw() + 
+    theme(strip.background = element_blank()) +
+    geom_sf(aes(fill = value), col = NA) + 
+    scale_fill_gradientn(colours = pcol, limits = plimits) +
+    guides(fill = guide_colorbar(barheight = 12, 
+                                 ticks.colour = "grey30", ticks.linewidth = 0.5, 
+                                 frame.colour = "black", frame.linewidth = 0.5,
+                                 order = 1),
+           colour = guide_legend(override.aes = list(linetype = NA), order = 2)) +
+    labs(fill = pfill) + xlab(NULL) + ylab(NULL) 
   
-  if(ncol(tobj) == 2){
-    mtext(text = obj_unit, side = 4, line = 0)
-    if(eez == TRUE){
-      tbc_eez <- st_transform(bc_eez, crs = "EPSG: 3005")
-      plot(tbc_eez, border = "black", col = NA, lty = 2, add = TRUE)
-    }
-    if(bc == TRUE){
-      tbc_coast <- st_transform(bc_coast, crs = "EPSG: 3005")
-      plot(tbc_coast, border = "grey50", col = "grey80", add = TRUE,)
-    }
+  # facet based on year * month combination
+  if(all(months.plot > 1, years.plot > 1)){
+    tplot <- tplot +
+      facet_grid(year ~ month.f) 
   } else {
-    mtext(text = obj_unit, side = 4, line = -4)
+    tplot <- tplot +
+    facet_wrap(.~plot.date.f) 
   }
+  
+  # eez and bc layers
+  if(eez == TRUE){
+    tplot <- tplot + 
+      geom_sf(data = bc_eez, fill = NA, lty = "dotted") 
+  }
+  if(bc == TRUE){
+    tplot <- tplot + 
+      geom_sf(data = bc_coast, fill = "darkgrey") 
+  }  
+  
+  tplot
+  
+  ##### OPTION 2
+  # base plotting
+  
+  # # year-month combinations
+  # tobj_names <- as.data.frame(matrix(as.numeric(unlist(strsplit(names(st_drop_geometry(tobj)), split = "_"))), 
+  #                                    ncol = 2, byrow = TRUE)) %>% 
+  #   left_join(month_table, by = join_by(V2 == month.num))
+  # 
+  # # tnew_names <- do.call(paste, c(tobj_names[c("V1", "month.abb")], sep = "_"))
+  # tnew_names <- do.call(paste, c(tobj_names[c("V1", "month.name")], sep = " "))
+  # 
+  # names(tobj) <- c(tnew_names, "geometry")
+  # class(tobj) <- c("sf", "pacea_st", "data.frame")
+  # 
+  # plot(tobj, border = NA, key.pos = 4, reset = FALSE, ...)
+  # 
+  # if(ncol(tobj) == 2){
+  #   mtext(text = obj_unit, side = 4, line = 0)
+  #   if(eez == TRUE){
+  #     tbc_eez <- st_transform(bc_eez, crs = "EPSG: 3005")
+  #     plot(tbc_eez, border = "black", col = NA, lty = 2, add = TRUE)
+  #   }
+  #   if(bc == TRUE){
+  #     tbc_coast <- st_transform(bc_coast, crs = "EPSG: 3005")
+  #     plot(tbc_coast, border = "grey50", col = "grey80", add = TRUE,)
+  #   }
+  # } else {
+  #   mtext(text = obj_unit, side = 4, line = -4)
+  # }
 }
 
 
@@ -104,13 +179,15 @@ subset_pacea_ym <- function(data, years = years, months = months) {
       tind <- as.vector(unlist(apply(month_table, 2, function(x) {
         grep(pattern = imonth, x = x, ignore.case = TRUE)
       })))
-      if(length(unique(tind)) != 1) stop("Month name incorrect")
+      
+      if(length(unique(tind)) == 0) stop("'clim_timeunits' month names are invalid - must be full names, abbreviations, or numeric")
+      if(length(unique(tind)) > 1) stop(paste0("'", imonth, "'", " month name incorrect or abbreviation too short - more than one name matched"))
       
       m_ind <- c(m_ind, unique(tind))
     } else {
-      as.numeric(imonth)
-      
       tind <- which(month_table$month.num == as.numeric(imonth))
+      
+      if(length(unique(tind)) == 0) stop(paste0("'", imonth, "'", " is not a valid month."))
       
       m_ind <- c(m_ind, unique(tind))
     }
