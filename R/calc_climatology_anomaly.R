@@ -126,7 +126,7 @@ calc_clim <- function(data, clim_years = c(1991:2020), temporal_FUN = "month") {
       rename(sst = tsst)
     colnames(out)[which(colnames(out) == "time_unit")] <- temporal_FUN
     
-    class(out) <- c("pacea_buoyclim", "sf", "tbl_df", "tbl", "data.frame")
+    class(out) <- c("pacea_buoyclim", "tbl_df", "tbl", "data.frame")
     attr(out, "units") <- "Temperature (\u00B0C)"
     return(out)
   }

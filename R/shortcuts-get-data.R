@@ -198,14 +198,14 @@ bccm_primaryproduction <- function(update = FALSE, ask = interactive(), force = 
 #' }
 bccm_all_variables <- function() {
   
-  cache_dir <- pacea_cache()
+  cache_dir <- pacea::pacea_cache()
   
-  ans <- ask(paste("Downloading all BCCM data may take many minutes. Files will be downloaded to pacea_cache directory:",
-                   cache_dir, "Would you like to continue?", sep = "\n"))
+  ans <- pacea::ask(paste("Downloading all BCCM data may take many minutes. Files will be downloaded to pacea_cache directory:",
+                          cache_dir, "Would you like to continue?", sep = "\n"))
   
   if (!ans) stop("Exiting...", call. = FALSE)
   
-  bccm.datalist <- bccm_data
+  bccm.datalist <- pacea::bccm_data
   
   for(i in 1:nrow(bccm.datalist)){
     data.name <- bccm.datalist[i, 1]

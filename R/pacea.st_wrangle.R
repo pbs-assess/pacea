@@ -7,8 +7,8 @@
 #' @param names_to A character value for the column name representing the date. Defaults to separate 'year' and 'month' for BCCM data.
 #' @param values_to A character value for the column name representing variable data (e.g. temperature)
 #' 
-#' @import dplyr
-#' @importFrom tidyr pivot_longer pivot_wider
+#' @importFrom dplyr mutate select
+#' @importFrom tidyr pivot_longer last_col
 #'
 #' @return pacea spatiotemporal data in long/wide format
 #' @export
@@ -32,9 +32,7 @@ pacea_long <- function(data, names_to = "date", values_to = "value") {
     tidyr::pivot_longer(cols = !last_col(), cols_vary = "slowest", names_to = names_to, values_to = values_to)  %>%
     mutate(year = substr(get(names_to), 1, 4),
            month = substr(get(names_to), 6, 7)) %>%
-    select(get(names_to)) %>%
-    relocate(value, .after = last_col()) %>%
-    relocate(geometry, .after = last_col()) 
+    dplyr::select(year, month, value, geometry)
     
   return(dat)
 }
@@ -45,6 +43,10 @@ pacea_long <- function(data, names_to = "date", values_to = "value") {
 #' @param data pacea.st data object in long format to pivot.
 #' @param names_from A character vector representing the date from which to name columns from. If vector is greater than 1, column values will be pasted together, separated by '_'. Defaults to paste BCCM data in 'year_month' format.
 #' @param values_from A character value representing the column names from which to get variable data values.
+#'
+#' @importFrom dplyr mutate relocate
+#' @importFrom tidyr pivot_wider 
+#' @importFrom sf st_drop_geometry
 #'
 #' @export
 #' @rdname pacea_long

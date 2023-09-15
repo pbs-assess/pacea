@@ -16,13 +16,13 @@
 #' 
 pacea_clear_cache <- function() {
   
-  cache_dir <- pacea_cache()
+  cache_dir <- pacea::pacea_cache()
   
   cache_list <- list.files(pacea_cache())
   
   ## interactive ask to delete files from cache
-  ans <- ask(paste("About to delete ALL data files in cache directory:",
-                   cache_dir, "Is that okay?", sep = "\n"))
+  ans <- pacea::ask(paste("About to delete ALL data files in cache directory:",
+                          cache_dir, "Is that okay?", sep = "\n"))
   
   if (!ans) stop("Exiting...", call. = FALSE)
   

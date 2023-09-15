@@ -10,7 +10,11 @@
 #' @return A terra SpatRaster or SpatVector object 
 #' 
 #' @author Travis Tai
-#' @import sf
+#' @importFrom sf 
+#' @importFrom stats setNames na.omit
+#' @importFrom methods is
+#' @importFrom terra ext crs rast vect interpolate
+#' @importFrom gstat gstat
 #'
 #' @examples
 #' \dontrun{
