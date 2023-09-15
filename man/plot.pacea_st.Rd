@@ -4,16 +4,10 @@
 \alias{plot.pacea_st}
 \title{Plot a pacea spatiotemporal data layer}
 \usage{
-\method{plot}{pacea_st}(
-  obj,
-  months.plot = c("April"),
-  years.plot = c(2018),
-  bc = TRUE,
-  eez = TRUE
-)
+\method{plot}{pacea_st}(x, months.plot = c("April"), years.plot = c(2018), bc = TRUE, eez = TRUE)
 }
 \arguments{
-\item{obj}{a BCCM ROMS `pacea_st` object, which is an `sf` object}
+\item{x}{a BCCM ROMS `pacea_st` object, which is an `sf` object}
 
 \item{months.plot}{character or numeric vector to indicate which months to include (e.g. `c(1, 2)`, `c("April", "may")`, `c(1, "April")`)}
 
@@ -22,8 +16,6 @@
 \item{bc}{logical. Should BC coastline layer be plotted?}
 
 \item{eez}{logical. Should BC EEZ layer be plotted?}
-
-\item{...}{optional arguments passed on to `plot.sf()`}
 }
 \value{
 plot of the spatial data to the current device (returns nothing)
