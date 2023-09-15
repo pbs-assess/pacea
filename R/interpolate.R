@@ -10,11 +10,6 @@
 #' @return A terra SpatRaster or SpatVector object 
 #' 
 #' @author Travis Tai
-#' @importFrom sf 
-#' @importFrom stats setNames na.omit
-#' @importFrom methods is
-#' @importFrom terra ext crs rast vect interpolate
-#' @importFrom gstat gstat
 #'
 #' @examples
 #' \dontrun{
@@ -27,10 +22,14 @@
 point2rast <- function(data, spatobj, loc = c("x", "y"), cellsize, nnmax = 4, 
                        as = c("SpatRast","SpatVect")) {
   
+  requireNamespace("methods", quietly = TRUE)
+  requireNamespace("terra", quietly = TRUE)
+  requireNamespace("gstat", quietly = TRUE)
+  
   stopifnot("must provide cellsize value" = exists("cellsize"))
   stopifnot("must specify valid value for 'as'" = as %in% c("SpatRast", "SpatVect"))
   
-  if(!any(sapply(c("sf", "Spatial"), function(cl) is(data, cl)))) {
+  if(!any(sapply(c("sf", "Spatial"), function(cl) methods::is(data, cl)))) {
     
     data <- as.data.frame(data)
     
@@ -56,12 +55,12 @@ point2rast <- function(data, spatobj, loc = c("x", "y"), cellsize, nnmax = 4,
     }
   }
   
-  if(is(data, "Spatial")) {
+  if(methods::is(data, "Spatial")) {
     coords <- setNames(as.data.frame(data)[,c("coords.x1", "coords.x2")], c("x", "y"))
     tdat <- as.data.frame(data)[, names(data), drop = FALSE]    
   }
   
-  if(is(data, "sf")) {
+  if(methods::is(data, "sf")) {
     coords <- setNames(as.data.frame(matrix(unlist(data$geometry), ncol=2, byrow = TRUE)), c("x", "y"))
     tdat <- as.data.frame(data)[, -which(names(data) == "geometry"), drop = FALSE]
   }

@@ -4,10 +4,10 @@
 \alias{plot.pacea_oi}
 \title{Plot OISST data}
 \usage{
-\method{plot}{pacea_oi}(obj, weeks.plot, months.plot, years.plot, bc = TRUE, eez = TRUE)
+\method{plot}{pacea_oi}(x, weeks.plot, months.plot, years.plot, bc = TRUE, eez = TRUE)
 }
 \arguments{
-\item{obj}{a OISST `pacea_oi` object, which is an `sf` object.}
+\item{x}{a OISST `pacea_oi` object, which is an `sf` object.}
 
 \item{weeks.plot}{numeric vector to indicate which weeks to plot. Defaults to current week (or most recent) available.}
 

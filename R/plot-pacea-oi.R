@@ -14,13 +14,9 @@
 #'
 #' @return plot of the spatial data to the current device (returns nothing)
 #' 
-#' @importFrom tidyr pivot_wider
-#' @import ggplot2
-#' 
 #' @importFrom sf st_coordinates
 #' @importFrom lubridate week month
 #' @importFrom dplyr filter mutate rename left_join bind_cols
-#' @importFrom tidyr pivot_longer
 #' @importFrom ggplot2 ggplot aes theme_bw theme geom_tile geom_sf scale_fill_gradientn guides guide_colorbar guide_legend labs facet_grid facet_wrap
 #' @importFrom pals jet
 #'

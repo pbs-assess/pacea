@@ -9,8 +9,7 @@
   months.plot = c("April"),
   years.plot = c(2018),
   bc = TRUE,
-  eez = TRUE,
-  ...
+  eez = TRUE
 )
 }
 \arguments{

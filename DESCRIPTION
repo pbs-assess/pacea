@@ -50,6 +50,7 @@ Suggests:
     Matrix,
     testthat (>= 3.0.0),
     terra,
-    gstat
+    gstat,
+    methods
 VignetteBuilder: knitr
 Config/testthat/edition: 3

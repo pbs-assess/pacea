@@ -11,7 +11,7 @@
 #'
 #' @return plot of the spatial data to the current device (returns nothing)
 #' 
-#' @importFrom sf st_drop_geometry st_transform plot
+#' @importFrom sf st_drop_geometry st_transform
 #' @importFrom dplyr left_join select mutate arrange
 #' @importFrom tidyr pivot_longer
 #' @importFrom ggplot2 ggplot aes theme_bw theme geom_sf scale_fill_gradientn guides guide_colorbar guide_legend labs facet_grid facet_wrap
@@ -24,7 +24,7 @@
 #' pdata <- bccm_surface_temperature()
 #' plot(pdata)
 #' }
-tplot <- function(obj,
+plot.pacea_st <- function(obj,
                           months.plot = c("April"),
                           years.plot = c(2018),
                           bc = TRUE, 
