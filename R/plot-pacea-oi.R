@@ -5,7 +5,7 @@
 #'
 #' Plot for NOAA OISST sf objects using `ggplot()`. A quick visualization of data, specifying month(s) and year(s). For more options and configurable plots see vignette. 
 #' 
-#' @param obj a OISST `pacea_oi` object, which is an `sf` object. 
+#' @param x a OISST `pacea_oi` object, which is an `sf` object. 
 #' @param weeks.plot numeric vector to indicate which weeks to plot. Defaults to current week (or most recent) available.
 #' @param months.plot character or numeric vector to indicate which months to plot (e.g. `c(1, 2)`, `c("April", "may")`, `c(1, "April")`). Defaults to current month (or most recent) available.
 #' @param years.plot numeric vector to indicate which years to plot. Defaults to current year (or most recent) available.
@@ -13,6 +13,17 @@
 #' @param eez logical. Should BC EEZ layer be plotted? 
 #'
 #' @return plot of the spatial data to the current device (returns nothing)
+#' 
+#' @importFrom tidyr pivot_wider
+#' @import ggplot2
+#' 
+#' @importFrom sf st_coordinates
+#' @importFrom lubridate week month
+#' @importFrom dplyr filter mutate rename left_join bind_cols
+#' @importFrom tidyr pivot_longer
+#' @importFrom ggplot2 ggplot aes theme_bw theme geom_tile geom_sf scale_fill_gradientn guides guide_colorbar guide_legend labs facet_grid facet_wrap
+#' @importFrom pals jet
+#'
 #' @export
 #'
 #' @examples
@@ -20,29 +31,29 @@
 #' pdata <- oisst_7day
 #' plot(pdata)
 #' }
-plot.pacea_oi <- function(obj,
+plot.pacea_oi <- function(x,
                           weeks.plot,
                           months.plot,
                           years.plot,
                           bc = TRUE, 
                           eez = TRUE) {
   
-  stopifnot("'obj' must have 'week' or 'month' as column name" = any(c("week", "month") %in% colnames(obj)))
-  
+  stopifnot("'x' must have 'week' or 'month' as column name" = any(c("week", "month") %in% colnames(x)))
+
   # month table
   month_table <- data.frame(month.name = month.name,
                             month.abb = month.abb,
                             month.num = 1:12)
   
   # object units attribute
-  obj_unit <- attributes(obj)$units
+  obj_unit <- attributes(x)$units
   
   # filter years to plot 
-  if(missing(years.plot))  years.plot <- max(obj$year)
-  tobj <- obj %>% dplyr::filter(year == years.plot) 
+  if(missing(years.plot))  years.plot <- max(x$year)
+  tobj <- x %>% dplyr::filter(year == years.plot) 
   
   # weekly data
-  if("week" %in% colnames(obj)){
+  if("week" %in% colnames(x)){
     
     # set week to current week if missing
     if(missing(weeks.plot)) {
@@ -77,7 +88,7 @@ plot.pacea_oi <- function(obj,
   }
   
   # monthly data
-  if("month" %in% colnames(obj)){
+  if("month" %in% colnames(x)){
     if(missing(months.plot)) {
       months.plot <- lubridate::month(Sys.Date())
       if(!(months.plot %in% tobj$month)) {
@@ -133,20 +144,15 @@ plot.pacea_oi <- function(obj,
   if(!all(yind %in% testyind$yind)) {warning("Not all date combinations entered available for the years specified")}
   
   # stop if no data extracted
-  plot.dat <- tobj %>%
-    dplyr::filter(tunit %in% ind)
-  stopifnot("Date combinations specified do not exist in current dataset" = nrow(plot.dat) > 0)
-  
-  
-  
+  stopifnot("Date combinations specified do not exist in current dataset" = nrow(tobj) > 0)
   
   # parameters for plotting 
   pfill <- "Temperature\n(\u00B0C)"
   pcol <- pals::jet(50)
-  plimits <- c(floor(min(plot.dat$sst)), ceiling(max(plot.dat$sst)))
+  plimits <- c(floor(min(tobj$sst)), ceiling(max(tobj$sst)))
   
-  tplot <- plot.dat %>% 
-    bind_cols(st_coordinates(plot.dat)) %>%
+  tplot <- tobj %>% 
+    bind_cols(st_coordinates(tobj)) %>%
     ggplot() + theme_bw() + 
     theme(strip.background = element_blank()) +
     geom_tile(aes(x = X, y= Y, fill = sst)) + 
@@ -156,7 +162,7 @@ plot.pacea_oi <- function(obj,
                                  frame.colour = "black", frame.linewidth = 0.5,
                                  order = 1),
            colour = guide_legend(override.aes = list(linetype = NA), order = 2)) +
-    labs(fill = pfill) + xlab(NULL) + ylab(NULL) +
+    labs(fill = pfill) + 
     tfacet
   
   # eez and bc layers

@@ -7,20 +7,20 @@ test_that("multiplication works", {
 test_that("Base plot for pacea.st objects work with various functions", {
   pdata <- bccm_surface_temperature(force = T)
   
-  expect_invisible(plot(pdata))
-  expect_invisible(plot(pdata, 
-                        months = c("June", "September"), 
-                        years = c(1995)))
-  expect_invisible(plot(pdata, 
-                        months = c("June", 1),
-                        years = c(1995)))
-  expect_invisible(plot(pdata, 
-                        months = c(1),
-                        years = c(1995)))
-  expect_invisible(plot(pdata, 
-                        months = c("September"),
-                        years = c(2019), 
-                        bc = T, eez = T))
+  expect_true(is.ggplot(plot(pdata)))
+  expect_true(is.ggplot(plot(pdata, 
+                             months = c("June", "September"), 
+                             years = c(1995))))
+  expect_true(is.ggplot(plot(pdata, 
+                             months = c("June", 1),
+                             years = c(1995))))
+  expect_true(is.ggplot(plot(pdata, 
+                             months = c(1),
+                             years = c(1995))))   
+  expect_true(is.ggplot(plot(pdata, 
+                             months = c("September"),
+                             years = c(2019), 
+                             bc = FALSE, eez = FALSE)))
   
 })
 

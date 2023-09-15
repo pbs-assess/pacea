@@ -6,23 +6,23 @@
 \usage{
 \method{plot}{pacea_st}(
   obj,
-  months = c("April"),
-  years = c(1993, 1998, 2003, 2008, 2013, 2018),
-  bc = FALSE,
-  eez = FALSE,
+  months.plot = c("April"),
+  years.plot = c(2018),
+  bc = TRUE,
+  eez = TRUE,
   ...
 )
 }
 \arguments{
-\item{obj}{a `pacea_st` object, which is an `sf` object}
+\item{obj}{a BCCM ROMS `pacea_st` object, which is an `sf` object}
 
-\item{months}{character or numeric vector to indicate which months to include (e.g. `c(1, 2)`, `c("April", "may")`, `c(1, "April")`)}
+\item{months.plot}{character or numeric vector to indicate which months to include (e.g. `c(1, 2)`, `c("April", "may")`, `c(1, "April")`)}
 
-\item{years}{vector of years to include, from 1993 to 2019}
+\item{years.plot}{vector of years to include, from 1993 to 2019}
 
-\item{bc}{logical. Should BC coastline layer be plotted? Can only be plotted with one plot layer.}
+\item{bc}{logical. Should BC coastline layer be plotted?}
 
-\item{eez}{logical. Should BC EEZ layer be plotted? Can only be plotted with one plot layer.}
+\item{eez}{logical. Should BC EEZ layer be plotted?}
 
 \item{...}{optional arguments passed on to `plot.sf()`}
 }
@@ -30,11 +30,11 @@
 plot of the spatial data to the current device (returns nothing)
 }
 \description{
-Base plot for sf objects using `plot.sf()`. Quick visualization of data, specifying month(s) and year(s). For more options and configurable plots use `ggplot2`.
+Plot for BCCM ROMS sf objects using `ggplot()`. A quick visualization of data, specifying month(s) and year(s). For more options and configurable plots see vignette.
 }
 \examples{
 \dontrun{
-dat <- roms_surface_temperature()
-plot(dat)
+pdata <- bccm_surface_temperature()
+plot(pdata)
 }
 }

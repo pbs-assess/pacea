@@ -11,6 +11,12 @@
 #'
 #' @return plot of the spatial data to the current device (returns nothing)
 #' 
+#' @importFrom sf st_drop_geometry st_transform plot
+#' @importFrom dplyr left_join select mutate arrange
+#' @importFrom tidyr pivot_longer
+#' @importFrom ggplot2 ggplot aes theme_bw theme geom_sf scale_fill_gradientn guides guide_colorbar guide_legend labs facet_grid facet_wrap
+#' @importFrom pals jet cividis ocean.oxy plasma ocean.algae ocean.tempo
+#' 
 #' @export
 #'
 #' @examples
@@ -18,13 +24,11 @@
 #' pdata <- bccm_surface_temperature()
 #' plot(pdata)
 #' }
-plot.pacea_st <- function(obj,
+tplot <- function(obj,
                           months.plot = c("April"),
                           years.plot = c(2018),
                           bc = TRUE, 
-                          eez = TRUE,
-                          ...
-                          ) {
+                          eez = TRUE) {
   
   
   # create new names for plot
@@ -54,21 +58,21 @@ plot.pacea_st <- function(obj,
   
   ##### OPTION 1
   # ggplotting
-  
+
   # convert to long format
   tobj2 <- tobj %>%
     tidyr::pivot_longer(cols = !last_col(), cols_vary = "slowest", names_to = "date", values_to = "value") %>%
     mutate(year = as.numeric(substr(date, 1, 4)),
            month.num = as.numeric(substr(date, 6,7))) %>%
     left_join(month_table, by = join_by(month.num == month.num)) %>%
-    mutate(plot.date = paste(year, month.name, sep = " ")) %>% 
+    mutate(plot.date = paste(year, month.name, sep = " ")) %>%
     arrange(year, month.num)
-  
+
   # create factor for correct order of plotting
   tobj2$month.f <- factor(tobj2$month.name, levels = c(unique(tobj2$month.name)))
   tobj2$plot.date.f <- factor(tobj2$plot.date, levels = c(unique(tobj2$plot.date)))
-  
-  
+
+
   # color pallete index table
   vars_units <- c("Temperature\n(\u00B0C)",
                   "Salinity\n(ppt)",
@@ -76,7 +80,7 @@ plot.pacea_st <- function(obj,
                   "pH",
                   "Phytoplankton\n(mmol-nitrogen m^-2)",
                   "Total primary production\n(gC m^-2 d^-1)")
-  colpal <- c(list(pals::jet(50)), 
+  colpal <- c(list(pals::jet(50)),
               list(pals::cividis(50)),
               list(pals::ocean.oxy(50)),
               list(pals::plasma(50)),
@@ -89,74 +93,44 @@ plot.pacea_st <- function(obj,
                   list(c(floor(min(tobj2$value)), ceiling(max(tobj2$value)))),
                   list(c(floor(min(tobj2$value)), ceiling(max(tobj2$value)))))
 
-  # parameters for plotting 
+  # parameters for plotting
   pind <- grep(strsplit(obj_unit, " ")[[1]][1], vars_units)
   pfill <- vars_units[pind]
   pcol <- colpal[pind] %>% unlist()
   plimits <- limit_funs[pind] %>% unlist()
-  
+
   tplot <- tobj2 %>%
-    ggplot() + theme_bw() + 
+    ggplot() + theme_bw() +
     theme(strip.background = element_blank()) +
-    geom_sf(aes(fill = value), col = NA) + 
+    geom_sf(aes(fill = value), col = NA) +
     scale_fill_gradientn(colours = pcol, limits = plimits) +
-    guides(fill = guide_colorbar(barheight = 12, 
-                                 ticks.colour = "grey30", ticks.linewidth = 0.5, 
+    guides(fill = guide_colorbar(barheight = 12,
+                                 ticks.colour = "grey30", ticks.linewidth = 0.5,
                                  frame.colour = "black", frame.linewidth = 0.5,
                                  order = 1),
            colour = guide_legend(override.aes = list(linetype = NA), order = 2)) +
-    labs(fill = pfill) + xlab(NULL) + ylab(NULL) 
-  
+    labs(fill = pfill) 
+
   # facet based on year * month combination
   if(all(months.plot > 1, years.plot > 1)){
     tplot <- tplot +
-      facet_grid(year ~ month.f) 
+      facet_grid(year ~ month.f)
   } else {
     tplot <- tplot +
-    facet_wrap(.~plot.date.f) 
+    facet_wrap(.~plot.date.f)
   }
-  
+
   # eez and bc layers
   if(eez == TRUE){
-    tplot <- tplot + 
-      geom_sf(data = bc_eez, fill = NA, lty = "dotted") 
+    tplot <- tplot +
+      geom_sf(data = bc_eez, fill = NA, lty = "dotted")
   }
   if(bc == TRUE){
-    tplot <- tplot + 
-      geom_sf(data = bc_coast, fill = "darkgrey") 
-  }  
-  
+    tplot <- tplot +
+      geom_sf(data = bc_coast, fill = "darkgrey")
+  }
+
   tplot
-  
-  ##### OPTION 2
-  # base plotting
-  
-  # # year-month combinations
-  # tobj_names <- as.data.frame(matrix(as.numeric(unlist(strsplit(names(st_drop_geometry(tobj)), split = "_"))), 
-  #                                    ncol = 2, byrow = TRUE)) %>% 
-  #   left_join(month_table, by = join_by(V2 == month.num))
-  # 
-  # # tnew_names <- do.call(paste, c(tobj_names[c("V1", "month.abb")], sep = "_"))
-  # tnew_names <- do.call(paste, c(tobj_names[c("V1", "month.name")], sep = " "))
-  # 
-  # names(tobj) <- c(tnew_names, "geometry")
-  # class(tobj) <- c("sf", "pacea_st", "data.frame")
-  # 
-  # plot(tobj, border = NA, key.pos = 4, reset = FALSE, ...)
-  # 
-  # if(ncol(tobj) == 2){
-  #   mtext(text = obj_unit, side = 4, line = 0)
-  #   if(eez == TRUE){
-  #     tbc_eez <- st_transform(bc_eez, crs = "EPSG: 3005")
-  #     plot(tbc_eez, border = "black", col = NA, lty = 2, add = TRUE)
-  #   }
-  #   if(bc == TRUE){
-  #     tbc_coast <- st_transform(bc_coast, crs = "EPSG: 3005")
-  #     plot(tbc_coast, border = "grey50", col = "grey80", add = TRUE,)
-  #   }
-  # } else {
-  #   mtext(text = obj_unit, side = 4, line = -4)
-  # }
 }
 
 
@@ -209,6 +183,3 @@ subset_pacea_ym <- function(data, years = years, months = months) {
   
   return(tdat)
 }
-
-
-
