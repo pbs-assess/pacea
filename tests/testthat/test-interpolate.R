@@ -4,6 +4,8 @@ test_that("multiplication works", {
 
 test_that("Errors work", {
   
+  library(sf)
+  
   dat <- data.frame(x = runif(5, 0, 10), y = runif(5, 0, 10), var = rnorm(5))
   
   extent <- st_bbox(c(xmin = 0, ymin = 0, xmax= 10, ymax = 10),crs = NA)
@@ -25,6 +27,8 @@ test_that("Errors work", {
 
 
 test_that("Warnings for loc coordinates outside extent of object to interpolate to.", {
+  library(sf)
+  
   dat <- data.frame(x = runif(5, 10, 20), y = runif(5, 10, 20), var = rnorm(5))
   
   extent <- st_bbox(c(xmin = 0, ymin = 0, xmax= 10, ymax = 10), crs = NA)
@@ -35,6 +39,8 @@ test_that("Warnings for loc coordinates outside extent of object to interpolate 
 
 
 test_that("Output of SpatialRaster and SpatialVector from dataframe successful.", {
+  library(sf)
+  
   dat <- data.frame(x = runif(5, 0, 10), y = runif(5, 0, 10), var = rnorm(5))
   
   extent <- st_bbox(c(xmin = 0, ymin = 0, xmax= 10, ymax = 10), crs = NA)
@@ -51,6 +57,8 @@ test_that("Output of SpatialRaster and SpatialVector from dataframe successful."
 
 
 test_that("Output from vector and matrix of data and coordinates successful.", {
+  library(sf)
+  
   dat <- rnorm(5)
   ll <- matrix(runif(10, 0, 10), ncol = 2)
   
@@ -65,6 +73,8 @@ test_that("Output from vector and matrix of data and coordinates successful.", {
 
 
 test_that("Output from sf object successful", {
+  library(sf)
+  
   dat <- data.frame(x = runif(5, 0, 10), y = runif(5, 0, 10), var = rnorm(5)) %>% 
     st_as_sf(coords = c("x", "y"))
   
@@ -79,6 +89,8 @@ test_that("Output from sf object successful", {
 
 
 test_that("Output from Spatial object successful", {
+  library(sf)
+  
   dat <- data.frame(x = runif(5, 0, 10), y = runif(5, 0, 10), var = rnorm(5)) %>% 
     st_as_sf(coords = c("x", "y")) %>% as_Spatial()
     
@@ -92,6 +104,8 @@ test_that("Output from Spatial object successful", {
 
 
 test_that("Including extent of SpatObj works", {
+  library(sf)
+  
   dat <- data.frame(x = runif(5, 0, 10), y = runif(5, 0, 10), var = rnorm(5)) %>% 
     st_as_sf(coords = c("x", "y"))
   
