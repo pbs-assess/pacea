@@ -25,6 +25,7 @@ point2rast <- function(data, spatobj, loc = c("x", "y"), cellsize, nnmax = 4,
   requireNamespace("methods", quietly = TRUE)
   requireNamespace("terra", quietly = TRUE)
   requireNamespace("gstat", quietly = TRUE)
+  requireNamespace("sf", quietly = TRUE)
   
   stopifnot("must provide cellsize value" = exists("cellsize"))
   stopifnot("must specify valid value for 'as'" = as %in% c("SpatRast", "SpatVect"))

@@ -1,6 +1,3 @@
-
-
-
 #' Plot OISST data 
 #'
 #' Plot for NOAA OISST sf objects using `ggplot()`. A quick visualization of data, specifying month(s) and year(s). For more options and configurable plots see vignette. 
@@ -17,7 +14,7 @@
 #' @importFrom sf st_coordinates
 #' @importFrom lubridate week month
 #' @importFrom dplyr filter mutate rename left_join bind_cols
-#' @importFrom ggplot2 ggplot aes theme_bw theme geom_tile geom_sf scale_fill_gradientn guides guide_colorbar guide_legend labs facet_grid facet_wrap
+#' @importFrom ggplot2 ggplot aes theme_bw theme geom_tile geom_sf scale_fill_gradientn guides guide_colorbar guide_legend labs facet_grid facet_wrap xlab ylab
 #' @importFrom pals jet
 #'
 #' @export
@@ -36,7 +33,7 @@ plot.pacea_oi <- function(x,
   
   stopifnot("'x' must have 'week' or 'month' as column name" = any(c("week", "month") %in% colnames(x)))
 
-  # month table
+  # month reference table
   month_table <- data.frame(month.name = month.name,
                             month.abb = month.abb,
                             month.num = 1:12)
@@ -92,25 +89,7 @@ plot.pacea_oi <- function(x,
       }
     }
     
-    m_ind <- vector()
-    for(imonth in months.plot) {
-      if(is.na(suppressWarnings(as.numeric(imonth)))){
-        tind <- as.vector(unlist(apply(month_table, 2, function(x) {
-          grep(pattern = imonth, x = x, ignore.case = TRUE)
-        })))
-        
-        if(length(unique(tind)) == 0) stop("'months.plot' month names are invalid - must be full names, abbreviations, or numeric")
-        if(length(unique(tind)) > 1) stop(paste0("'", imonth, "'", " month name incorrect or abbreviation too short - more than one name matched"))
-        
-        m_ind <- c(m_ind, unique(tind))
-      } else {
-        tind <- which(month_table$month.num == as.numeric(imonth))
-        
-        if(length(unique(tind)) == 0) stop(paste0("'", imonth, "'", " is not a valid month."))
-        
-        m_ind <- c(m_ind, unique(tind))
-      }
-    }
+    m_ind <- month_match(months.plot)
     ind <- m_ind[order(m_ind)]
     
     # filter data join month names and create factors for plotting 
@@ -145,7 +124,7 @@ plot.pacea_oi <- function(x,
   # parameters for plotting 
   pfill <- "Temperature\n(\u00B0C)"
   pcol <- pals::jet(50)
-  plimits <- c(floor(min(tobj$sst)), ceiling(max(tobj$sst)))
+  plimits <- c(floor(min(x$sst)), ceiling(max(x$sst)))
   
   tplot <- tobj %>% 
     bind_cols(st_coordinates(tobj)) %>%
@@ -158,7 +137,7 @@ plot.pacea_oi <- function(x,
                                  frame.colour = "black", frame.linewidth = 0.5,
                                  order = 1),
            colour = guide_legend(override.aes = list(linetype = NA), order = 2)) +
-    labs(fill = pfill) + 
+    labs(fill = pfill) + xlab(NULL) + ylab(NULL) +
     tfacet
   
   # eez and bc layers
