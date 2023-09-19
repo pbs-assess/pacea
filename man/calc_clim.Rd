@@ -8,7 +8,7 @@ calc_clim(
   data,
   clim_years = c(1991:2020),
   clim_time = "month",
-  time_period_return
+  time_period_return = "all"
 )
 }
 \arguments{

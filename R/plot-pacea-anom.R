@@ -1,14 +1,14 @@
 
 #' Plot a pacea spatiotemporal data layer
 #' 
-#' Base plot for BCCM ROMS sf objects using `plot.sf()`. Quick visualization of data, specifying month(s) and year(s). For more options and configurable plots use `ggplot2`. 
+#' Plot for BCCM ROMS anomaly objects using `ggplot()`. A quick visualization of anomaly data (relative to climatology), specifying month(s) and year(s). For more options and configurable plots see vignette. 
 #'
-#' @param obj a `pacea_st` object, which is an `sf` object
-#' @param months character or numeric vector to indicate which months to include (e.g. `c(1, 2)`, `c("April", "may")`, `c(1, "April")`)
-#' @param years vector of years to include, from 1993 to 2019
-#' @param bc logical. Should BC coastline layer be plotted? Can only be plotted with one plot layer.
+#' @param x a BCCM ROMS `pacea_stanom` object; output from using `calc_anom()`
+#' @param months.plot months to plot. Defaults to current month (if available)
+#' @param years.plot years to plot.
+#' @param clim.dat climatology data, obtained from using `calc_clim()`. If used, contours of deviations from climatology will be plotted
 #' @param eez logical. Should BC EEZ layer be plotted? Can only be plotted with one plot layer.
-#' @param ... optional arguments passed on to `plot.sf()`
+#' @param bc logical. Should BC coastline layer be plotted? Can only be plotted with one plot layer.
 #'
 #' @return plot of the spatial data to the current device (returns nothing)
 #' 
