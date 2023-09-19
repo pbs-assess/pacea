@@ -111,7 +111,7 @@ plot.pacea_st <- function(x,
     labs(fill = pfill) + xlab(NULL) + ylab(NULL)
 
   # facet based on year * month combination
-  if(all(months.plot > 1, years.plot > 1)){
+  if(all(length(months.plot) > 1, length(years.plot) > 1)){
     tplot <- tplot +
       facet_grid(year ~ month.f)
   } else {

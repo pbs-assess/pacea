@@ -39,7 +39,7 @@
 #' 
 #' clim_buoy2 <- calc_clim(buot_sst, clim_time = "week")
 #' }
-calc_clim <- function(data, clim_years = c(1991:2020), clim_time = "month", time_period_return) {
+calc_clim <- function(data, clim_years = c(1991:2020), clim_time = "month", time_period_return = "all") {
   
   
   # month reference table
@@ -55,14 +55,14 @@ calc_clim <- function(data, clim_years = c(1991:2020), clim_time = "month", time
   if("week" %in% colnames(data)) clim_time <- "week"
   
   # index values for time_period_return to subset from data
-  if(missing(time_period_return)) {
-    if(clim_time == "month") time_period_return <- lubridate::month(Sys.Date())
-    if(clim_time == "week") time_period_return <- lubridate::week(Sys.Date())
-  }
-  
   if(time_period_return[1] == "all"){
     if(clim_time == "month") time_period_return <- 1:12
     if(clim_time == "week") time_period_return <- 1:53
+  }
+  
+  if(missing(time_period_return)) {
+    if(clim_time == "month") time_period_return <- lubridate::month(Sys.Date())
+    if(clim_time == "week") time_period_return <- lubridate::week(Sys.Date())
   }
   
   if(clim_time == "month") {
@@ -104,7 +104,7 @@ calc_clim <- function(data, clim_years = c(1991:2020), clim_time = "month", time
       dplyr::select(-ind) %>%
       st_as_sf()
     
-    class(out) <- c("sf", "tbl_df", "tbl", "data.frame")
+    class(out) <- c("pacea_stclim", "sf", "tbl_df", "tbl", "data.frame")
     attr(out, "units") <- attributes(data)$units
     
     gc()
@@ -138,7 +138,7 @@ calc_clim <- function(data, clim_years = c(1991:2020), clim_time = "month", time
         relocate(geometry, .after = last_col()) 
     }
     
-    class(out) <- c("sf", "tbl_df", "tbl", "data.frame")
+    class(out) <- c("pacea_oiclim", "sf", "tbl_df", "tbl", "data.frame")
     attr(out, "units") <- "Temperature (\u00B0C)"
     return(out)
   }
@@ -273,8 +273,8 @@ calc_anom <- function(data, clim_years = c(1991:2020), clim_time = "month", time
       dplyr::select(-ind) %>%
       st_as_sf()
     
-    class(out) <- c("sf", "tbl_df", "tbl", "data.frame")
-    attr(out, "units") <- paste(attributes(data)$units, " anomaly")
+    class(out) <- c("pacea_stanom", "sf", "tbl_df", "tbl", "data.frame")
+    attr(out, "units") <- paste0(attributes(data)$units, " anomaly")
     
     gc()
     return(out)
@@ -329,7 +329,7 @@ calc_anom <- function(data, clim_years = c(1991:2020), clim_time = "month", time
         st_as_sf(coords = c("x", "y"))
     }
     
-    class(out) <- c("sf", "tbl_df", "tbl", "data.frame")
+    class(out) <- c("pacea_oianom", "sf", "tbl_df", "tbl", "data.frame")
     attr(out, "units") <- "Temperature (\u00B0C) anomaly"
     return(out)
     
@@ -356,7 +356,7 @@ calc_anom <- function(data, clim_years = c(1991:2020), clim_time = "month", time
       mutate(anom = sst - clim_value)
     colnames(out)[which(colnames(out) == "time_unit")] <- clim_time
     
-    class(out) <- c("sf", "tbl_df", "tbl", "data.frame")
+    class(out) <- c("pacea_buoyclim", "sf", "tbl_df", "tbl", "data.frame")
     attr(out, "units") <- "Temperature (\u00B0C) anomaly"
     return(out)
   }
