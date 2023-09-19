@@ -1,0 +1,333 @@
+
+#' Plot a pacea spatiotemporal data layer
+#' 
+#' Base plot for BCCM ROMS sf objects using `plot.sf()`. Quick visualization of data, specifying month(s) and year(s). For more options and configurable plots use `ggplot2`. 
+#'
+#' @param obj a `pacea_st` object, which is an `sf` object
+#' @param months character or numeric vector to indicate which months to include (e.g. `c(1, 2)`, `c("April", "may")`, `c(1, "April")`)
+#' @param years vector of years to include, from 1993 to 2019
+#' @param bc logical. Should BC coastline layer be plotted? Can only be plotted with one plot layer.
+#' @param eez logical. Should BC EEZ layer be plotted? Can only be plotted with one plot layer.
+#' @param ... optional arguments passed on to `plot.sf()`
+#'
+#' @return plot of the spatial data to the current device (returns nothing)
+#' 
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' pdata <- bccm_surface_temperature()
+#' anom_data <- calc_anom(pdata)
+#' plot(anom_data)
+#' }
+plot.pacea_stanom <- function(x,
+                              months.plot,
+                              years.plot,
+                              clim.dat,
+                              bc = TRUE, 
+                              eez = TRUE) {
+  
+  requireNamespace("terra", quietly = TRUE)
+  
+  # create new names for plot
+  month_table <- data.frame(month.name = month.name,
+                            month.abb = month.abb,
+                            month.num = 1:12)
+  
+  # stop errors
+  stopifnot("'x' must be of class `sf`" =
+              "sf" %in% class(x))
+  
+  # check if years are available in data
+  obj_names <- x %>% st_drop_geometry() %>%
+    colnames() %>% strsplit(split = "_") %>%
+    unlist() %>% as.numeric() %>%
+    matrix(ncol = 2, byrow = TRUE) %>% as.data.frame()
+
+  # set month and year to plot
+  if(missing(years.plot)) years.plot <- max(obj_names[,1])
+  if(missing(months.plot)) {
+    months.plot <- lubridate::month(Sys.Date())
+    subobj_names <- obj_names %>% 
+      filter(V1 == years.plot)
+    if(!(months.plot %in% unique(subobj_names$V2))){
+      months.plot <- max(subobj_names$V2)
+    }
+  }
+  
+  if(ncol(x) == 2){
+    years.plot <- as.numeric(substr(colnames(x)[1], 1, 4))
+    months.plot <- as.numeric(substr(colnames(x)[1], 6, 7))
+  }
+  
+  m_ind <- month_match(months.plot)
+  
+  # stop errors
+  stopifnot("Invalid 'months.plot' specified" = suppressWarnings(as.numeric(m_ind)) %in% unique(obj_names$V2))
+  stopifnot("Must enter valid numerals for 'years'" = !any(is.na(suppressWarnings(as.numeric(years.plot)))))
+  stopifnot("Invalid 'years.plot' specified" = suppressWarnings(as.numeric(years.plot)) %in% unique(obj_names$V1))
+  
+  # object units attribute
+  obj_unit <- attributes(x)$units
+  
+  # subset year_month columns
+  tobj <- subset_pacea_ym(data = x, months = months.plot, years = years.plot)
+  
+  # convert to long format
+  tobj2 <- tobj %>%
+    tidyr::pivot_longer(cols = !last_col(), cols_vary = "slowest", names_to = "date", values_to = "value") %>%
+    mutate(year = as.numeric(substr(date, 1, 4)),
+           month.num = as.numeric(substr(date, 6,7))) %>%
+    left_join(month_table, by = join_by(month.num == month.num)) %>%
+    mutate(plot.date = paste(year, month.name, sep = " ")) %>%
+    arrange(year, month.num)
+  
+  # create factor for correct order of plotting
+  tobj2$month.f <- factor(tobj2$month.name, levels = c(unique(tobj2$month.name)))
+  tobj2$plot.date.f <- factor(tobj2$plot.date, levels = c(unique(tobj2$plot.date)))
+  
+  # merge with clim.dat (if available)
+  if(!missing(clim.dat)) {
+    
+    # months.plot match clim.dat months
+    stopifnot("'clim.dat' must be of class 'pacea_stclim'" = 
+                "pacea_stclim" %in% class(clim.dat))
+    if(!all(m_ind %in% unique(clim.dat$month))) warning("Not all values found for 'months.plot' in clim.dat")
+    
+    tclim <- clim.dat %>% filter(month %in% months.plot) %>%
+      mutate(tgeo = as.character(geometry)) %>% st_drop_geometry()
+    
+    tclim.x <- tobj2 %>%
+      mutate(tgeo = as.character(geometry)) %>%
+      left_join(tclim, by = join_by(month.num == month, tgeo == tgeo)) %>% 
+      mutate(lon = st_coordinates(suppressWarnings(st_centroid(tobj2)))[,1],
+             lat = st_coordinates(suppressWarnings(st_centroid(tobj2)))[,2],
+             sd_1.3_pos = clim_sd * 1.282,
+             sd_2.3_pos = clim_sd * 2.326,
+             sd_above1.3 = value - sd_1.3_pos,
+             sd_above2.3 = value - sd_2.3_pos,
+             sd_below1.3 = value + sd_1.3_pos,
+             sd_below2.3 = value + sd_2.3_pos) %>%
+      st_drop_geometry() %>% 
+      as.data.frame()
+    
+    tgrid <- terra::rast(tobj2, resolution = 6000)
+    
+    contour.dat <- data.frame()
+    for(j in 1:length(unique(tclim.x$plot.date.f))){
+      
+      jind <- unique(tclim.x$plot.date.f)[j]
+      
+      tdat <- tclim.x %>%
+        filter(plot.date.f == jind)
+      
+      tmeta <- tdat[!duplicated(tdat[, c("year", "month.f", "plot.date.f")]), c("year", "month.f", "plot.date.f")]
+      
+      #contour +90%
+      tclim.x1 <- tdat[, c("lon", "lat", "sd_above1.3")]
+      trast <- terra::rasterize(terra::vect(tclim.x1), tgrid, field = "sd_above1.3", fun = mean, na.rm = TRUE) 
+      tcontour1 <- data.frame(terra::crds(trast, na.rm = FALSE),
+                              z = as.vector(trast),
+                              sd_var = "sd_above1.3") %>%
+        bind_cols(tmeta)
+      
+      # contour +99%
+      tclim.x1 <- tdat[, c("lon", "lat", "sd_above2.3")]
+      trast <- terra::rasterize(terra::vect(tclim.x1), tgrid, field = "sd_above2.3", fun = mean, na.rm = TRUE) 
+      tcontour2 <- data.frame(terra::crds(trast, na.rm = FALSE),
+                              z = as.vector(trast),
+                              sd_var = "sd_above2.3") %>%
+        bind_cols(tmeta)
+      
+      #contour -90%
+      tclim.x1 <- tdat[, c("lon", "lat", "sd_below1.3")]
+      trast <- terra::rasterize(terra::vect(tclim.x1), tgrid, field = "sd_below1.3", fun = mean, na.rm = TRUE) 
+      tcontour3 <- data.frame(terra::crds(trast, na.rm = FALSE),
+                              z = as.vector(trast),
+                              sd_var = "sd_below1.3") %>%
+        bind_cols(tmeta)
+      
+      # contour +99%
+      tclim.x1 <- tdat[, c("lon", "lat", "sd_below2.3")]
+      trast <- terra::rasterize(terra::vect(tclim.x1), tgrid, field = "sd_below2.3", fun = mean, na.rm = TRUE) 
+      tcontour4 <- data.frame(terra::crds(trast, na.rm = FALSE),
+                              z = as.vector(trast),
+                              sd_var = "sd_below2.3") %>%
+        bind_cols(tmeta)
+      
+      contour.dat <- contour.dat %>% bind_rows(tcontour1, tcontour2, tcontour3, tcontour4)
+    }
+  }
+  
+  # Plot Aesthetics:
+  # "Boiling cauldron of death" palette 
+  # Re: Charles - Similar to pals::brewer.rdylbu 
+  
+  gmt_jet <- c("#000080", "#0000bf", "#0000FF", "#007fff", "#00FFFF", "#7fffff", 
+               "#FFFFFF", 
+               "#FFFF7F", "#FFFF00", "#ff7f00", "#FF0000", "#bf0000", "#820000")
+  
+  # color pallete index table
+  vars_units <- c("Temperature\nanomaly (\u00B0C)",
+                  "Salinity\nanomaly (ppt)",
+                  "Dissolved oxygen content\nanomaly (mmol-oxygen m^-3)",
+                  "pH anomaly",
+                  "Phytoplankton anomaly\n(mmol-nitrogen m^-2)",
+                  "Total primary production\nanomaly (gC m^-2 d^-1)")
+  colpal <- c(list(gmt_jet),
+              list(pals::brewer.prgn(50)),
+              list(rev(gmt_jet)),
+              list(pals::brewer.rdgy(50)),
+              list(rev(pals::brewer.brbg(50))),
+              list(pals::brewer.piyg(50)))
+  limit_funs <- c(list(c(-3, 3)),
+                  list(c(-ceiling(max(abs(tobj2$value))), ceiling(max(abs(tobj2$value))))),
+                  list(c(-max(abs(tobj2$value)), max(abs(tobj2$value)))),
+                  list(c(-0.2, 0.2)),
+                  list(c(-30,30)),
+                  list(c(-1, 1)))
+  breaks_plot <- c(1, 1, 5, 0.05, 10, 0.5)
+  
+  # parameters for plotting
+  pind <- grep(strsplit(obj_unit, " ")[[1]][1], vars_units)
+  pfill <- vars_units[pind]
+  pcol <- colpal[pind] %>% unlist()
+  plimits <- limit_funs[pind] %>% unlist()
+  pbreaks <- breaks_plot[pind]
+  
+  # main plot
+  tplot <- tobj2 %>% 
+    ggplot() + theme_bw() +
+    theme(strip.background = element_blank()) +
+    geom_sf(aes(fill = value), col = NA) +
+    scale_fill_gradientn(colours = pcol, limits = plimits, breaks = seq(plimits[1], plimits[2], pbreaks)) + 
+    guides(fill = guide_colorbar(barheight = 12,
+                                 ticks.colour = "grey30", ticks.linewidth = 0.5,
+                                 frame.colour = "black", frame.linewidth = 0.5,
+                                 order = 1)) +
+    labs(fill = pfill) + xlab(NULL) + ylab(NULL)
+
+  if(!missing(clim.dat)) {
+    
+    # if positive or negative SD to draw contours
+    if(pind %in% c(1)) {
+      tcon1 <- contour.dat %>%
+        dplyr::filter(sd_var == "sd_above1.3")
+      tcon2 <- contour.dat %>%
+        dplyr::filter(sd_var == "sd_above2.3")
+      
+      tplot <- tplot + 
+        geom_contour(data = tcon1, aes(x = x, y = y, z = z, colour = "sd_above1.3"), linewidth = 0.5, breaks = 0) +
+        geom_contour(data = tcon2, aes(x = x, y = y, z = z, colour = "sd_above2.3"), linewidth = 0.5, breaks = 0) +
+        scale_colour_manual(name = NULL, guide = "legend",
+                            values = c("sd_above1.3" = "grey60",
+                                       "sd_above2.3" = "black"),
+                            labels = c("+90th %-ile", c("+99th %-ile"))) 
+    } else {
+      
+      tcon1 <- contour.dat %>%
+        dplyr::filter(sd_var == "sd_below1.3")
+      tcon2 <- contour.dat %>%
+        dplyr::filter(sd_var == "sd_below2.3")
+      
+      tplot <- tplot + 
+        geom_contour(data = tcon1, aes(x = x, y = y, z = z, colour = "sd_below1.3"), linewidth = 0.5, breaks = 0) +
+        geom_contour(data = tcon2, aes(x = x, y = y, z = z, colour = "sd_below2.3"), linewidth = 0.5, breaks = 0) +
+        scale_colour_manual(name = NULL, guide = "legend",
+                            values = c("sd_below1.3" = "grey60",
+                                       "sd_below2.3" = "black"),
+                            labels = c("-90th %-ile", c("-99th %-ile"))) 
+    }
+  }
+    
+  # facet based on year * month combination
+  if(all(length(months.plot) > 1, length(years.plot) > 1)){
+    tplot <- tplot +
+      facet_grid(year ~ month.f)
+  } else {
+    tplot <- tplot +
+      facet_wrap(.~plot.date.f)
+  }
+  
+  # eez and bc layers
+  if(eez == TRUE){
+    tplot <- tplot +
+      geom_sf(data = bc_eez, fill = NA, lty = "dotted")
+  }
+  if(bc == TRUE){
+    tplot <- tplot +
+      geom_sf(data = bc_coast, fill = "darkgrey")
+  }
+  
+  suppressWarnings(tplot)
+}
+
+
+
+# 
+# plot.pacea_oianom <- function(obj,
+#                               months,
+#                               years,
+#                               bc = FALSE, 
+#                               eez = FALSE,
+#                               ...) {
+#   
+#   # create new names for plot
+#   month_table <- data.frame(month.name = month.name,
+#                             month.abb = month.abb,
+#                             month.num = 1:12)
+#   
+#   stopifnot("obj must be of class `sf`" =
+#               "sf" %in% class(obj))
+#   
+#   stopifnot("Must enter valid numerals for 'years'" = !any(is.na(suppressWarnings(as.numeric(years)))))
+#   
+#   
+#   
+#   
+#   # check if years are available in data
+#   obj_names <- obj %>% st_drop_geometry() %>%
+#     colnames() %>% strsplit(split = "_") %>%
+#     unlist() %>% as.numeric() %>%
+#     matrix(ncol = 2, byrow = TRUE) %>% as.data.frame()
+#   stopifnot("Invalid 'years' specified" = suppressWarnings(as.numeric(years)) %in% unique(obj_names$V1))
+#   rm(obj_names)
+#   
+#   # object units attribute
+#   obj_unit <- attributes(obj)$units
+#   
+#   # subset year_month columns
+#   tobj <- subset_pacea_ym(data = obj, months = months, years = years)  ####MOVE THIS DOWN
+#   
+#   # year-month combinations
+#   tobj_names <- as.data.frame(matrix(as.numeric(unlist(strsplit(names(st_drop_geometry(tobj)), split = "_"))), 
+#                                      ncol = 2, byrow = TRUE)) 
+#   tobj_names <- merge(tobj_names, month_table, by.x = "V2", by.y = "month.num", sort = FALSE)[,c("V1", "V2", "month.name", "month.abb")] %>%
+#     arrange(V1,V2)
+#   
+#   
+#   tnew_names <- do.call(paste, c(tobj_names[c("V1", "month.abb")], sep = "_"))
+#   
+#   
+#   names(tobj) <- c(tnew_names, "geometry")
+#   class(tobj) <- c("sf", "pacea_st", "data.frame")
+#   
+#   plot(tobj, border = NA, key.pos = 4, reset = FALSE, ...)
+#   
+#   if(ncol(tobj) == 2){
+#     mtext(text = obj_unit, side = 4, line = 0)
+#     if(eez == TRUE){
+#       tbc_eez <- st_transform(bc_eez, crs = "EPSG: 3005")
+#       plot(tbc_eez, border = "black", col = NA, lty = 2, add = TRUE)
+#     }
+#     if(bc == TRUE){
+#       tbc_coast <- st_transform(bc_coast, crs = "EPSG: 3005")
+#       plot(tbc_coast, border = "grey50", col = "grey80", add = TRUE,)
+#     }
+#   } else {
+#     mtext(text = obj_unit, side = 4, line = -4)
+#   }
+#   
+#   
+#   
+# }
