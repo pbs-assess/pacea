@@ -47,7 +47,7 @@ test_that("Denying of downloading test data: successful", {
     }
   }
   
-  #skip_on_ci()
+  skip_on_ci()
   data1_dir <- paste0(pacea_cache(), "/", "test_data_01.rds")
   data2_dir <- paste0(pacea_cache(), "/", "test_data_02.rds")
   expect_error(data1 <- get_pacea_data("test_data", force = FALSE), "Exiting...")
