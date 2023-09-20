@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot-pacea-anom.R
 \name{plot.pacea_stanom}
 \alias{plot.pacea_stanom}
-\title{Plot a pacea spatiotemporal data layer}
+\title{Plot anomaly of BCCM spatiotemporal data layer}
 \usage{
 \method{plot}{pacea_stanom}(x, months.plot, years.plot, clim.dat, bc = TRUE, eez = TRUE)
 }

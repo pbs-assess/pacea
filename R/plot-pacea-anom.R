@@ -1,5 +1,5 @@
 
-#' Plot a pacea spatiotemporal data layer
+#' Plot anomaly of BCCM spatiotemporal data layer
 #' 
 #' Plot for BCCM ROMS anomaly objects using `ggplot()`. A quick visualization of anomaly data (relative to climatology), specifying month(s) and year(s). For more options and configurable plots see vignette. 
 #'
@@ -49,7 +49,7 @@ plot.pacea_stanom <- function(x,
   if(missing(months.plot)) {
     months.plot <- lubridate::month(Sys.Date())
     subobj_names <- obj_names %>% 
-      filter(V1 == years.plot)
+      filter(V1 %in% years.plot)
     if(!(months.plot %in% unique(subobj_names$V2))){
       months.plot <- max(subobj_names$V2)
     }
@@ -160,9 +160,6 @@ plot.pacea_stanom <- function(x,
   }
   
   # Plot Aesthetics:
-  # "Boiling cauldron of death" palette 
-  # Re: Charles - Similar to pals::brewer.rdylbu 
-  
   gmt_jet <- c("#000080", "#0000bf", "#0000FF", "#007fff", "#00FFFF", "#7fffff", 
                "#FFFFFF", 
                "#FFFF7F", "#FFFF00", "#ff7f00", "#FF0000", "#bf0000", "#820000")
@@ -263,71 +260,202 @@ plot.pacea_stanom <- function(x,
 }
 
 
-
-# 
-# plot.pacea_oianom <- function(obj,
-#                               months,
-#                               years,
-#                               bc = FALSE, 
-#                               eez = FALSE,
-#                               ...) {
-#   
-#   # create new names for plot
-#   month_table <- data.frame(month.name = month.name,
-#                             month.abb = month.abb,
-#                             month.num = 1:12)
-#   
-#   stopifnot("obj must be of class `sf`" =
-#               "sf" %in% class(obj))
-#   
-#   stopifnot("Must enter valid numerals for 'years'" = !any(is.na(suppressWarnings(as.numeric(years)))))
-#   
-#   
-#   
-#   
-#   # check if years are available in data
-#   obj_names <- obj %>% st_drop_geometry() %>%
-#     colnames() %>% strsplit(split = "_") %>%
-#     unlist() %>% as.numeric() %>%
-#     matrix(ncol = 2, byrow = TRUE) %>% as.data.frame()
-#   stopifnot("Invalid 'years' specified" = suppressWarnings(as.numeric(years)) %in% unique(obj_names$V1))
-#   rm(obj_names)
-#   
-#   # object units attribute
-#   obj_unit <- attributes(obj)$units
-#   
-#   # subset year_month columns
-#   tobj <- subset_pacea_ym(data = obj, months = months, years = years)  ####MOVE THIS DOWN
-#   
-#   # year-month combinations
-#   tobj_names <- as.data.frame(matrix(as.numeric(unlist(strsplit(names(st_drop_geometry(tobj)), split = "_"))), 
-#                                      ncol = 2, byrow = TRUE)) 
-#   tobj_names <- merge(tobj_names, month_table, by.x = "V2", by.y = "month.num", sort = FALSE)[,c("V1", "V2", "month.name", "month.abb")] %>%
-#     arrange(V1,V2)
-#   
-#   
-#   tnew_names <- do.call(paste, c(tobj_names[c("V1", "month.abb")], sep = "_"))
-#   
-#   
-#   names(tobj) <- c(tnew_names, "geometry")
-#   class(tobj) <- c("sf", "pacea_st", "data.frame")
-#   
-#   plot(tobj, border = NA, key.pos = 4, reset = FALSE, ...)
-#   
-#   if(ncol(tobj) == 2){
-#     mtext(text = obj_unit, side = 4, line = 0)
-#     if(eez == TRUE){
-#       tbc_eez <- st_transform(bc_eez, crs = "EPSG: 3005")
-#       plot(tbc_eez, border = "black", col = NA, lty = 2, add = TRUE)
-#     }
-#     if(bc == TRUE){
-#       tbc_coast <- st_transform(bc_coast, crs = "EPSG: 3005")
-#       plot(tbc_coast, border = "grey50", col = "grey80", add = TRUE,)
-#     }
-#   } else {
-#     mtext(text = obj_unit, side = 4, line = -4)
-#   }
-#   
-#   
-#   
-# }
+#' Plot anomaly of OISST spatiotemporal data layer
+#' 
+#' @param x an OISST `pacea_oianom` object; output from using `calc_anom()` of `oisst_7day` or `oisst_month` data
+#' @param weeks.plot weeks to plot. Defaults to current week (if available)
+#' @param months.plot months to plot. Defaults to current month (if available)
+#' @param years.plot years to plot. Defaults to current year (if available)
+#' @param clim.dat climatology data, obtained from using `calc_clim()`. If used, contours of deviations from climatology mean will be plotted
+#' @param eez logical. Should BC EEZ layer be plotted? Can only be plotted with one plot layer.
+#' @param bc logical. Should BC coastline layer be plotted? Can only be plotted with one plot layer.
+#'
+#' @return plot of the spatial data to the current device (returns nothing)
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' }
+plot.pacea_oianom <- function(x,
+                              weeks.plot,
+                              months.plot,
+                              years.plot,
+                              clim.dat,
+                              bc = TRUE,
+                              eez = TRUE) {
+  
+  # create new names for plot
+  month_table <- data.frame(month.name = month.name,
+                            month.abb = month.abb,
+                            month.num = 1:12)
+  
+  # stop errors
+  stopifnot("'x' must be of class `sf`" =
+              "sf" %in% class(x))
+  
+  # set year to plot
+  if(missing(years.plot)) {
+    years.plot <- lubridate::year(Sys.Date())
+    if(!(years.plot %in% unique(x$year))){
+      years.plot <- max(x$year)
+    }
+  }
+  
+  # stop errors
+  stopifnot("Must enter valid numerals for 'years'" = !any(is.na(suppressWarnings(as.numeric(years.plot)))))
+  stopifnot("Invalid 'years.plot' specified" = suppressWarnings(as.numeric(years.plot)) %in% unique(x$year))
+  
+  # month/week plot if missing
+  if("week" %in% colnames(x)){
+    get.tunit <- "week"
+    obj_names <- x %>% st_drop_geometry() %>% dplyr::select(year, week)
+    obj_names <- obj_names[-which(duplicated(obj_names)),]
+    
+    if(missing(weeks.plot)) {
+      weeks.plot <- lubridate::week(Sys.Date())
+      subobj_names <- obj_names %>% 
+        filter(year %in% years.plot)
+      if(!(weeks.plot %in% unique(subobj_names$week))){
+        weeks.plot <- max(subobj_names$week)
+      }
+    }
+    
+    tunits.plot <- weeks.plot
+    
+    # stop errors
+    stopifnot("Invalid 'weeks.plot' specified" = suppressWarnings(as.numeric(weeks.plot)) %in% unique(obj_names$week))
+    
+    # subset data
+    tobj <- x %>%
+      dplyr::filter(year %in% years.plot,
+                    week %in% tunits.plot) %>%
+      rename(tunit = week) %>% 
+      mutate(tunit.name = paste0("Week ", tunit),
+             plot.date = paste(year, tunit.name, sep = " ")) %>%
+      arrange(year, tunit)
+  }
+  
+  if("month" %in% colnames(x)){
+    get.tunit <- "month"
+    obj_names <- x %>% st_drop_geometry() %>% dplyr::select(year, month)
+    obj_names <- obj_names[-which(duplicated(obj_names)),]
+    
+    # set month to plot if missing
+    if(missing(months.plot)) {
+      months.plot <- lubridate::month(Sys.Date())
+      subobj_names <- obj_names %>% 
+        filter(year %in% years.plot)
+      if(!(months.plot %in% unique(subobj_names$month))){
+        months.plot <- max(subobj_names$month)
+      }
+    }
+    
+    m_ind <- month_match(months.plot)
+    tunits.plot <- m_ind
+    
+    # stop errors
+    stopifnot("Invalid 'months.plot' specified" = suppressWarnings(as.numeric(m_ind)) %in% unique(obj_names$month))
+    
+    # subset data
+    tobj <- x %>%
+      dplyr::filter(year %in% years.plot,
+                    month %in% tunits.plot) %>%
+      left_join(month_table, by = join_by(month == month.num)) %>%
+      rename(tunit = month,
+             tunit.name = month.name) %>%
+      mutate(plot.date = paste(year, month.name, sep = " ")) %>%
+      arrange(year, tunit)
+  }
+  
+  # get coordinates
+  tobj2 <- tobj %>%
+    bind_cols(st_coordinates(tobj))
+  
+  # create factor for correct order of plotting
+  tobj2$tunit.namef <- factor(tobj2$tunit.name, levels = c(unique(tobj2$tunit.name)))
+  tobj2$plot.date.f <- factor(tobj2$plot.date, levels = c(unique(tobj2$plot.date)))
+  
+  # object units attribute
+  obj_unit <- attributes(x)$units
+  
+  # merge with clim.dat (if available)
+  if(!missing(clim.dat)) {
+    stopifnot("'clim.dat' variable time units do not equal that of 'x' object (e.g. both must have 'month' column)" = 
+                get.tunit %in% colnames(clim.dat))
+    colnames(clim.dat)[which(colnames(clim.dat) == get.tunit)] <- "tunit"
+    
+    # match clim.dat tunits
+    stopifnot("'clim.dat' must be of class 'pacea_oiclim'" = 
+                "pacea_oiclim" %in% class(clim.dat))
+    if(!all(tunits.plot %in% unique(clim.dat$tunit))) warning("Not all values for 'months.plot' or 'weeks.plot' were found in clim.dat")
+    
+    tclim <- clim.dat %>% filter(tunit %in% tunits.plot) %>%
+      mutate(tgeo = as.character(geometry)) %>% st_drop_geometry()
+    
+    tobj2 <- tobj2 %>%
+      mutate(tgeo = as.character(geometry)) %>%
+      left_join(tclim, by = join_by(tunit == tunit, tgeo == tgeo)) %>% 
+      mutate(lon = st_coordinates(tobj2)[,1],
+             lat = st_coordinates(tobj2)[,2],
+             sd_1.3_pos = clim_sd * 1.282,
+             sd_2.3_pos = clim_sd * 2.326,
+             sd_above1.3 = anom - sd_1.3_pos,
+             sd_above2.3 = anom - sd_2.3_pos)
+  }
+  
+  # Plot Aesthetics:
+  gmt_jet <- c("#000080", "#0000bf", "#0000FF", "#007fff", "#00FFFF", "#7fffff", 
+                        "#FFFFFF", 
+                        "#FFFF7F", "#FFFF00", "#ff7f00", "#FF0000", "#bf0000", "#820000")
+                        
+  # parameters for plotting
+  pfill <- obj_unit
+  pcol <- gmt_jet
+  plimits <- c(-3, 3)
+  pbreaks <- 1
+  
+  tempdat <- tobj2 %>% dplyr::select(anom)
+  
+  # main plot
+  tplot <- tobj2 %>% 
+    ggplot() + theme_bw() +
+    theme(strip.background = element_blank()) +
+    geom_tile(aes(x = X, y = Y, fill = anom)) +
+    scale_fill_gradientn(colours = pcol, limits = plimits, breaks = seq(plimits[1], plimits[2], pbreaks)) + 
+    guides(fill = guide_colorbar(barheight = 12,
+                                 ticks.colour = "grey30", ticks.linewidth = 0.5,
+                                 frame.colour = "black", frame.linewidth = 0.5,
+                                 order = 1)) +
+    labs(fill = pfill) + xlab(NULL) + ylab(NULL)
+  
+  if(!missing(clim.dat)){
+    tplot <- tplot + 
+      geom_contour(aes(x = X, y = Y, z = sd_above1.3, colour = "sd_above1.3"), linewidth = 0.5, breaks = 0) +
+      geom_contour(aes(x = X, y = Y, z = sd_above2.3, colour = "sd_above2.3"), linewidth = 0.5, breaks = 0) +
+      scale_colour_manual(name = NULL, guide = "legend",
+                          values = c("sd_above1.3" = "grey60",
+                                     "sd_above2.3" = "black"),
+                          labels = c("+90th %-ile", c("+99th %-ile"))) 
+  }
+  
+  # facet based on year * month combination
+  if(all(length(tunits.plot) > 1, length(years.plot) > 1)){
+    tplot <- tplot +
+      facet_grid(year ~ tunit.namef)
+  } else {
+    tplot <- tplot +
+      facet_wrap(.~plot.date.f)
+  }
+  
+  # eez and bc layers
+  if(eez == TRUE){
+    tplot <- tplot +
+      geom_sf(data = bc_eez, fill = NA, lty = "dotted")
+  }
+  if(bc == TRUE){
+    tplot <- tplot +
+      geom_sf(data = bc_coast, fill = "darkgrey")
+  }
+  
+  suppressWarnings(tplot)
+}

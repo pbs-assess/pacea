@@ -182,7 +182,7 @@ calc_clim <- function(data, clim_years = c(1991:2020), clim_time = "month", time
 #' @return anomaly data values of same class as input pacea data
 #' 
 #' @importFrom dplyr mutate select filter group_by summarise ungroup left_join join_by rename relocate
-#' @importFrom sf st_drop_geometry st_as_sf
+#' @importFrom sf st_drop_geometry st_as_sf st_crs
 #' @importFrom tidyr pivot_longer pivot_wider
 #' @importFrom lubridate year month week
 #' 
@@ -303,7 +303,7 @@ calc_anom <- function(data, clim_years = c(1991:2020), clim_time = "month", time
                week %in% time_period_return) %>% 
         left_join(clim.dat, by = join_by(week == week, x == x, y == y)) %>%
         mutate(anom = sst - clim_value) %>%
-        st_as_sf(coords = c("x", "y"))
+        st_as_sf(coords = c("x", "y"), crs = st_crs(data))
     }
     
     if("month" %in% colnames(data)){
@@ -326,7 +326,7 @@ calc_anom <- function(data, clim_years = c(1991:2020), clim_time = "month", time
                month %in% time_period_return) %>% 
         left_join(clim.dat, by = join_by(month == month, x == x, y == y)) %>%
         mutate(anom = sst - clim_value) %>%
-        st_as_sf(coords = c("x", "y"))
+        st_as_sf(coords = c("x", "y"), crs = st_crs(data))
     }
     
     class(out) <- c("pacea_oianom", "sf", "tbl_df", "tbl", "data.frame")
