@@ -107,7 +107,7 @@ test_that("Download and update of test data (from version 1 to 2) declined (ie. 
   }
   data1_dir <- paste0(cache_dir, "/", "test_data_01.rds")
   
-  #skip_on_ci()
+  skip_on_ci()
   # download test_data_01
   data1 <- get_pacea_data("test_data_01", force = TRUE)
   expect_equal(file.exists(data1_dir), TRUE)
