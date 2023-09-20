@@ -21,13 +21,21 @@ pacea_clear_cache <- function() {
   cache_list <- list.files(pacea_cache())
   
   ## interactive ask to delete files from cache
-  ans <- pacea::ask(paste("About to delete ALL data files in cache directory:",
-                          cache_dir, "Is that okay?", sep = "\n"))
+  ans <- ask(paste("About to delete ALL data files in cache directory:",
+                   cache_dir, "Is that okay?", sep = "\n"))
   
   if (!ans) stop("Exiting...", call. = FALSE)
   
-  unlink(paste0(cache_dir,"/bccm_*"))
+  pat <- "/bccm_*"
   
-  cat("All ROMS data files removed from cache.")
+  # calling scope - testthat detection
+  tb <- .traceback(x = 0)
+  if(any(unlist(lapply(tb, function(x) any(grepl("test_env", x)))))){
+    pat <- "/test_*"
+  }
+  
+  unlink(paste0(cache_dir, pat))
+  
+  cat("All BCCM data files removed from cache.")
 }
 

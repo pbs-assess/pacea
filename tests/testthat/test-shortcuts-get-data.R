@@ -32,3 +32,11 @@ test_that("shortcuts work", {
   expect_error(bccm_phytoplankton(force = "testDataFunctions"))
   expect_error(bccm_primaryproduction(force = "testDataFunctions"))
 })
+
+test_that("Download all bccm data works", {
+  bccm_all_variables()
+  data1_dir <- paste0(pacea_cache(),"/test_data_01.rds")
+  expect_equal(file.exists(data1_dir), TRUE)
+  unlink(data1_dir)
+})
+

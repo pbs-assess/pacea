@@ -45,6 +45,8 @@ plot.pacea_oi <- function(x,
   if(missing(years.plot))  years.plot <- max(x$year)
   tobj <- x %>% dplyr::filter(year == years.plot) 
   
+  stopifnot("'years.plot' not found in data, enter valid numeric value" = nrow(tobj)>0)
+  
   # weekly data
   if("week" %in% colnames(x)){
     
@@ -56,9 +58,9 @@ plot.pacea_oi <- function(x,
       }
     }
     
-    stopifnot("'weeks.plot' week numbers are invalid - must be values specifying weeks '1:53'" = all(as.numeric(weeks.plot) %in% 1:53))
+    stopifnot("'weeks.plot' week numbers are invalid - must be values specifying weeks '1:53'" = all((weeks.plot) %in% 1:53))
     
-    ind <- as.numeric(weeks.plot)
+    ind <- weeks.plot
     ind <- ind[order(ind)]
     
     # filter data and create factors for plotting 
@@ -73,7 +75,7 @@ plot.pacea_oi <- function(x,
     tobj$plot.date <- factor(tobj$plot.date, levels = unique(tobj$plot.date))
     
     # set facets
-    if(all(weeks.plot > 1, years.plot > 1)){
+    if(all(length(weeks.plot) > 1, length(years.plot) > 1)){
       tfacet <- facet_grid(year ~ plot.tunit) 
     } else {
       tfacet <- facet_wrap(.~plot.date) 
@@ -105,7 +107,7 @@ plot.pacea_oi <- function(x,
     tobj$plot.date <- factor(tobj$plot.date, levels = unique(tobj$plot.date))
     
     # set facets
-    if(all(months.plot > 1, years.plot > 1)){
+    if(all(length(months.plot) > 1, length(years.plot) > 1)){
       tfacet <- facet_grid(year ~ plot.tunit) 
     } else {
       tfacet <- facet_wrap(.~plot.date) 
@@ -116,10 +118,11 @@ plot.pacea_oi <- function(x,
   yind <- paste0(unique(tobj$year),ind)
   testyind <- tobj %>%
     mutate(yind = paste0(year,tunit))
-  if(!all(yind %in% testyind$yind)) {warning("Not all date combinations entered available for the years specified")}
   
   # stop if no data extracted
   stopifnot("Date combinations specified do not exist in current dataset" = nrow(tobj) > 0)
+  
+  if(!all(yind %in% testyind$yind)) {warning("Not all date combinations entered available for the years specified")}
   
   # parameters for plotting 
   pfill <- "Temperature\n(\u00B0C)"

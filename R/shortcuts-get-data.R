@@ -199,13 +199,19 @@ bccm_primaryproduction <- function(update = FALSE, ask = interactive(), force = 
 bccm_all_variables <- function() {
   
   cache_dir <- pacea::pacea_cache()
+  bccm.datalist <- pacea::bccm_data
   
-  ans <- pacea::ask(paste("Downloading all BCCM data may take many minutes. Files will be downloaded to pacea_cache directory:",
-                          cache_dir, "Would you like to continue?", sep = "\n"))
+  ans <- ask(paste("Downloading all BCCM data may take many minutes. Files will be downloaded to pacea_cache directory:",
+                    cache_dir, "Would you like to continue?", sep = "\n"))
+  
+  # calling scope - testthat detection; set ans = T for testthat
+  tb <- .traceback(x = 0)
+  if(any(unlist(lapply(tb, function(x) any(grepl("test_env", x)))))){
+    #ans <- TRUE
+    bccm.datalist <- data.frame(data_name = c("test_data_01"))
+  } 
   
   if (!ans) stop("Exiting...", call. = FALSE)
-  
-  bccm.datalist <- pacea::bccm_data
   
   for(i in 1:nrow(bccm.datalist)){
     data.name <- bccm.datalist[i, 1]
@@ -215,3 +221,21 @@ bccm_all_variables <- function() {
   return(print("Download of all BCCM files: successful!"))
 }
 
+
+#' Interactive function for Yes/No question - from bcmaps package
+#' @noRd
+ask <- function(...) {
+  choices <- c("Yes", "No")
+  cat(paste0(..., collapse = ""))
+  
+  # calling scope - testthat detection
+  tb <- .traceback(x = 0)
+  
+  # default is TRUE, e.g. when using 'test()' function
+  ret <- TRUE
+  if(!any(unlist(lapply(tb, function(x) any(grepl("test_env", x))))) && interactive()){
+    ret <- utils::menu(choices) == which(choices == "Yes")
+  } 
+  
+  return(ret)
+}
