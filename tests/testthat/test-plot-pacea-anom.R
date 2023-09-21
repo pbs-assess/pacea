@@ -4,7 +4,7 @@ test_that("multiplication works", {
 
 # bccm
 test_that("plot works for bccm anom data", {
-  pdata <- get_pacea_data("test_surftemp")
+  pdata <- get_pacea_data("test_surftemp", force = TRUE)
   expect_warning(clim1 <- calc_clim(pdata, time_period_return = c(1,6)))
   expect_warning(anom1 <- calc_anom(pdata, time_period_return = c(1,6), years_return = c(2000, 2019)))
   
@@ -20,7 +20,7 @@ test_that("plot works for bccm anom data", {
 })
 
 test_that("stop errors work for bccm anom data", {
-  pdata <- bccm_surface_temperature()
+  pdata <- get_pacea_data("test_surftemp", force = TRUE)
   expect_warning(clim1 <- calc_clim(pdata, time_period_return = c(1,6)))
   expect_warning(anom1 <- calc_anom(pdata, time_period_return = c(1,6), years_return = c(2000, 2019)))
   

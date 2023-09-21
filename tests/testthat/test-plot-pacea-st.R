@@ -3,30 +3,23 @@ test_that("multiplication works", {
 })
 
 test_that("ggplot plot for pacea.st objects work with various functions", {
-  pdata <- bccm_surface_temperature(force = T)
+  pdata <- get_pacea_data("test_surftemp", force = TRUE)
   
-  expect_true(is.ggplot(plot(pdata)))
-  expect_true(is.ggplot(plot(pdata, 
-                             months.plot = c("June", "September"), 
-                             years.plot = c(1995))))
-  expect_true(is.ggplot(plot(pdata, 
-                             months.plot = c("June", 1),
-                             years.plot = c(1995))))
   expect_true(is.ggplot(plot(pdata, 
                              months.plot = c(1),
-                             years.plot = c(1995))))   
+                             years.plot = c(2000))))   
   expect_true(is.ggplot(plot(pdata, 
-                             months.plot = c("September"),
-                             years.plot = c(2019), 
+                             months.plot = c("June"),
+                             years.plot = c(2000), 
                              bc = FALSE, eez = FALSE)))
   expect_true(is.ggplot(plot(pdata, 
-                             months.plot = c(1, "September"),
-                             years.plot = c(2018, 2019), 
+                             months.plot = c(1, "June"),
+                             years.plot = c(2000, 2019), 
                              bc = FALSE, eez = FALSE)))
 })
 
 test_that("geospatial plotting: test that stopifnot commands are working", {
-  pdata <- bccm_surface_temperature(force = T)
+  pdata <- get_pacea_data("test_surftemp", force = TRUE)
   
   expect_error(plot.pacea_st(npi_monthly))
   

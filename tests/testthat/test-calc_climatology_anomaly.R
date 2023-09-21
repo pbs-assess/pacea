@@ -4,7 +4,7 @@ test_that("multiplication works", {
 
 # calc_clim
 test_that("calc_clim works for bccm data", {
-  pdata <- get_pacea_data("test_surftemp")
+  pdata <- get_pacea_data("test_surftemp", force = TRUE)
   expect_warning(clim_bccm <- calc_clim(pdata, time_period_return = 6))
   expect_equal(class(clim_bccm)[1], "pacea_stclim")
 })
@@ -45,7 +45,7 @@ test_that("calc_clim stop errors work",{
 
 # calc_anom
 test_that("calc_anom works for bccm data", {
-  pdata <- get_pacea_data("test_surftemp")
+  pdata <- get_pacea_data("test_surftemp", force = TRUE)
   expect_warning(anom_bccm <- calc_anom(pdata, time_period_return = 6, years_return = 2000))
   expect_equal(class(anom_bccm)[1], "pacea_stanom")
 })
