@@ -21,7 +21,7 @@ calc_clim(
 \item{time_period_return}{vector of value(s) for the specific time units to estimate climatologies (e.g. '4' for week 4 or April). Set to equal 'all' for all time units.}
 }
 \value{
-climatology of
+climatology of data
 }
 \description{
 Function for calculating climatology of a pacea data object.

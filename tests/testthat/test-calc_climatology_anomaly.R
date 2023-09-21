@@ -4,18 +4,20 @@ test_that("multiplication works", {
 
 # calc_clim
 test_that("calc_clim works for bccm data", {
-  pdata <- bccm_surface_temperature()
-  expect_warning(clim_bccm <- calc_clim(pdata))
+  pdata <- get_pacea_data("test_surftemp")
+  expect_warning(clim_bccm <- calc_clim(pdata, time_period_return = 6))
   expect_equal(class(clim_bccm)[1], "pacea_stclim")
 })
 
 test_that("calc_clim works for oisst data", {
-  clim_oisst <- calc_clim(oisst_7day)
+  sub.dat <- oisst_7day %>% dplyr::filter(year %in% c(2000:2010))
+  clim_oisst <- calc_clim(sub.dat)
   
   expect_equal(class(clim_oisst)[1], "pacea_oiclim")
   expect_equal(colnames(clim_oisst)[1], "week")
   
-  clim_oisst <- calc_clim(oisst_month)
+  sub.dat <- oisst_month %>% dplyr::filter(year %in% c(2000:2010))
+  clim_oisst <- calc_clim(sub.dat)
   
   expect_equal(class(clim_oisst)[1], "pacea_oiclim")
   expect_equal(colnames(clim_oisst)[1], "month")
@@ -43,28 +45,30 @@ test_that("calc_clim stop errors work",{
 
 # calc_anom
 test_that("calc_anom works for bccm data", {
-  pdata <- bccm_surface_temperature()
-  expect_warning(anom_bccm <- calc_anom(pdata))
+  pdata <- get_pacea_data("test_surftemp")
+  expect_warning(anom_bccm <- calc_anom(pdata, time_period_return = 6, years_return = 2000))
   expect_equal(class(anom_bccm)[1], "pacea_stanom")
 })
 
 
 test_that("calc_anom works for oisst data", {
-  anom_oisst <- calc_anom(oisst_7day)
+  sub.dat <- oisst_7day %>% dplyr::filter(year %in% c(2000:2010))
+  anom_oisst <- calc_anom(sub.dat, time_period_return = 6, years_return = 2000)
   
   expect_equal(class(anom_oisst)[1], "pacea_oianom")
   expect_equal(colnames(anom_oisst)[2], "week")
   
-  anom_oisst <- calc_anom(oisst_month)
+  sub.dat <- oisst_month %>% dplyr::filter(year %in% c(2000:2010))
+  anom_oisst <- calc_anom(sub.dat, time_period_return = 6, years_return = 2000)
   
   expect_equal(class(anom_oisst)[1], "pacea_oianom")
   expect_equal(colnames(anom_oisst)[2], "month")
 })
 
 test_that("calc_anom works for pacea_buoy data", {
-  anom1 <- calc_anom(buoy_sst, clim_time = "month")
-  anom2 <- calc_anom(buoy_sst, clim_time = "week")
-  anom3 <- calc_anom(buoy_sst, clim_years = c(1971:2000))
+  anom1 <- calc_anom(buoy_sst, clim_time = "month", time_period_return = 9, years_return = 2000)
+  anom2 <- calc_anom(buoy_sst, clim_time = "week", time_period_return = 9, years_return = 2000)
+  anom3 <- calc_anom(buoy_sst, clim_years = c(1971:2000), time_period_return = 9, years_return = 2000)
   
   expect_equal(class(anom1)[1], "pacea_buoyclim")
   expect_equal(colnames(anom1)[5], "month")

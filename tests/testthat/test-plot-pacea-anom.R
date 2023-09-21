@@ -4,7 +4,7 @@ test_that("multiplication works", {
 
 # bccm
 test_that("plot works for bccm anom data", {
-  pdata <- bccm_surface_temperature()
+  pdata <- get_pacea_data("test_surftemp")
   expect_warning(clim1 <- calc_clim(pdata, time_period_return = c(1,6)))
   expect_warning(anom1 <- calc_anom(pdata, time_period_return = c(1,6), years_return = c(2000, 2019)))
   
@@ -63,12 +63,14 @@ test_that("plot works for oisst anom data", {
 })
 
 test_that("stop errors work for oisst anom data", {
-  clim_week <- calc_clim(oisst_7day, time_period_return = c(1,6))
-  anom_week <- calc_anom(oisst_7day, time_period_return = c(1,6), years_return = c(2000, 2019))
+  sub.dat <- oisst_7day %>% dplyr::filter(year %in% c(2000, 2019))
+  clim_week <- calc_clim(sub.dat, time_period_return = c(1,6))
+  anom_week <- calc_anom(sub.dat, time_period_return = c(1,6), years_return = c(2000, 2019))
   
-  clim_month <- calc_clim(oisst_month, time_period_return = c(1,6))
-  clim_month2 <- calc_clim(oisst_month, time_period_return = c(2,6))
-  anom_month <- calc_anom(oisst_month, time_period_return = c(1,6), years_return = c(2000, 2019))
+  sub.dat <- oisst_month %>% dplyr::filter(year %in% c(2000, 2019))
+  clim_month <- calc_clim(sub.dat, time_period_return = c(1,6))
+  clim_month2 <- calc_clim(sub.dat, time_period_return = c(2,6))
+  anom_month <- calc_anom(sub.dat, time_period_return = c(1,6), years_return = c(2000, 2019))
   
   # error for input data
   expect_error(plot.pacea_oianom(buoy_sst))
@@ -78,7 +80,7 @@ test_that("stop errors work for oisst anom data", {
   expect_error(plot(anom_week, weeks.plot = 1, years.plot = "Jan"))
   expect_error(plot(anom_week, weeks.plot = 1, years.plot = 1999))
   
-  expect_error(plot(clim_month, months.plot = 2, years.plot = 2000))
+  expect_error(plot(anom_month, months.plot = 2, years.plot = 2000))
   
   # error for incorrect clim.dat
   expect_error(plot(anom_week, clim.dat = pdata, months.plot = 1, years.plot = 2000))
