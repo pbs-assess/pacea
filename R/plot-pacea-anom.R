@@ -173,13 +173,13 @@ plot.pacea_stanom <- function(x,
                   "Total primary production\nanomaly (gC m^-2 d^-1)")
   colpal <- c(list(gmt_jet),
               list(pals::brewer.prgn(50)),
-              list(rev(gmt_jet)),
+              list(rev(pals::ocean.curl(50))),
               list(pals::brewer.rdgy(50)),
               list(rev(pals::brewer.brbg(50))),
               list(pals::brewer.piyg(50)))
   limit_funs <- c(list(c(-3, 3)),
                   list(c(-ceiling(max(abs(tobj2$value))), ceiling(max(abs(tobj2$value))))),
-                  list(c(-max(abs(tobj2$value)), max(abs(tobj2$value)))),
+                  list(c(-ceiling(max(abs(tobj2$value))), ceiling(max(abs(tobj2$value))))),
                   list(c(-0.2, 0.2)),
                   list(c(-30,30)),
                   list(c(-1, 1)))
