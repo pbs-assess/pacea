@@ -220,22 +220,3 @@ bccm_all_variables <- function() {
   
   return(print("Download of all BCCM files: successful!"))
 }
-
-
-#' Interactive function for Yes/No question - from bcmaps package
-#' @noRd
-ask <- function(...) {
-  choices <- c("Yes", "No")
-  cat(paste0(..., collapse = ""))
-  
-  # calling scope - testthat detection
-  tb <- .traceback(x = 0)
-  
-  # default is TRUE, e.g. when using 'test()' function
-  ret <- TRUE
-  if(!any(unlist(lapply(tb, function(x) any(grepl("test_env", x))))) && interactive()){
-    ret <- utils::menu(choices) == which(choices == "Yes")
-  } 
-  
-  return(ret)
-}

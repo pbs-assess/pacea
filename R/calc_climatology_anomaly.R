@@ -16,7 +16,7 @@
 #' @importFrom tidyr pivot_longer pivot_wider
 #' @importFrom lubridate year month week
 #' 
-#' @return climatology of 
+#' @return climatology of data
 #' @export
 #'
 #' @examples
@@ -58,11 +58,6 @@ calc_clim <- function(data, clim_years = c(1991:2020), clim_time = "month", time
   if(time_period_return[1] == "all"){
     if(clim_time == "month") time_period_return <- 1:12
     if(clim_time == "week") time_period_return <- 1:53
-  }
-  
-  if(missing(time_period_return)) {
-    if(clim_time == "month") time_period_return <- lubridate::month(Sys.Date())
-    if(clim_time == "week") time_period_return <- lubridate::week(Sys.Date())
   }
   
   if(clim_time == "month") {
@@ -356,7 +351,7 @@ calc_anom <- function(data, clim_years = c(1991:2020), clim_time = "month", time
       mutate(anom = sst - clim_value)
     colnames(out)[which(colnames(out) == "time_unit")] <- clim_time
     
-    class(out) <- c("pacea_buoyclim", "sf", "tbl_df", "tbl", "data.frame")
+    class(out) <- c("pacea_buoyclim", "tbl_df", "tbl", "data.frame")
     attr(out, "units") <- "Temperature (\u00B0C) anomaly"
     return(out)
   }
