@@ -36,6 +36,9 @@ test_that("calc_clim works for pacea_buoy data", {
   expect_equal(colnames(clim3)[2], "month")
 })
 
+test_that("calc_clim stop errors work",{
+  expect_error(clim1 <- calc_clim(buoy_sst, clim_time = "year"))
+})
 
 
 # calc_anom
@@ -73,3 +76,6 @@ test_that("calc_anom works for pacea_buoy data", {
   expect_equal(colnames(anom3)[5], "month")
 })
 
+test_that("calc_anom stop errors work",{
+  expect_error(clim1 <- calc_anom(buoy_sst, clim_time = "year"))
+})

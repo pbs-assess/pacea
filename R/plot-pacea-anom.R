@@ -363,7 +363,7 @@ plot.pacea_oianom <- function(x,
       left_join(month_table, by = join_by(month == month.num)) %>%
       rename(tunit = month,
              tunit.name = month.name) %>%
-      mutate(plot.date = paste(year, month.name, sep = " ")) %>%
+      mutate(plot.date = paste(year, tunit.name, sep = " ")) %>%
       arrange(year, tunit)
   }
   
@@ -380,7 +380,9 @@ plot.pacea_oianom <- function(x,
   
   # merge with clim.dat (if available)
   if(!missing(clim.dat)) {
-    stopifnot("'clim.dat' variable time units do not equal that of 'x' object (e.g. both must have 'month' column)" = 
+    stopifnot("'clim.dat' must be of class 'pacea_oiclim'" = 
+                "pacea_oiclim" %in% class(clim.dat))
+    stopifnot("'clim.dat' variable for time units do not equal that of 'x' object (e.g. both must have 'month' column)" = 
                 get.tunit %in% colnames(clim.dat))
     colnames(clim.dat)[which(colnames(clim.dat) == get.tunit)] <- "tunit"
     
@@ -413,8 +415,6 @@ plot.pacea_oianom <- function(x,
   pcol <- gmt_jet
   plimits <- c(-3, 3)
   pbreaks <- 1
-  
-  tempdat <- tobj2 %>% dplyr::select(anom)
   
   # main plot
   tplot <- tobj2 %>% 
