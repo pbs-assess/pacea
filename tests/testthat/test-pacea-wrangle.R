@@ -22,3 +22,16 @@ test_that("pacea_wide function works", {
   expect_equal(nrow(wide_dat), nrow(pdata))
   expect_length(wide_dat, 5)
 })
+
+test_that("pacea_wide errors work", {
+  pdata <- get_pacea_data("test_surftemp", force = TRUE)
+  
+  long_dat <- pacea_long(pdata)
+  wide_dat <- pacea_wide(long_dat)
+  
+  expect_error(pacea_wide(long_dat, names_from = c("week")))
+  
+  expect_error(pacea_wide(long_dat, values_from = c("value", "valuefake")))
+  expect_error(pacea_wide(long_dat, values_from = c("valuefake")))
+})
+
