@@ -282,7 +282,7 @@ plot.pacea_stanom <- function(x,
 #' @importFrom lubridate year month week
 #' @importFrom dplyr select filter rename mutate arrange left_join join_by bind_cols 
 #' @importFrom sf st_drop_geometry st_coordinates 
-#' @importFrom ggplot2 ggplot theme_by theme element_blank aes geom_tile scale_fill_gradientn guides guide_colorbar labs xlab ylab geom_contour scale_colour_manual facet_grid facet_wrap geom_sf
+#' @importFrom ggplot2 ggplot theme_bw theme element_blank aes geom_tile scale_fill_gradientn guides guide_colorbar labs xlab ylab geom_contour scale_colour_manual facet_grid facet_wrap geom_sf
 #' 
 #' @export
 #'
