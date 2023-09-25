@@ -10,16 +10,16 @@ Encoding: UTF-8
 LazyData: true
 LazyDataCompression: xz
 Depends:
-    R (>= 3.5.0),
-    stats (>= 4.0.2),
-    ggplot2 (>= 3.3.5)
+    R (>= 3.5.0)
 Imports:
     dplyr (>= 1.0.2),
+    ggplot2,
     httr,
     lubridate (>= 1.8.0),
     pals,
     rappdirs,
     sf (>= 1.0.10),
+    stats,
     tidyr
 RoxygenNote: 7.2.3
 Remotes: github::pbs-assess/gfiphc
