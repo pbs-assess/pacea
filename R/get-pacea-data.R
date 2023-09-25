@@ -30,7 +30,7 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
   }
   
   # testing data
-  test_names <- c("test_data", "test_data_01", "test_data_02", "test_corruptdata", "test_surftemp")
+  test_names <- c("test_data", "test_data_01", "test_data_02", "test_corruptdata", "test_surftemp", "test_surfsal")
   
   ## find data in row - CHANGE datalist name if necessary
   data_list <- pacea::bccm_data

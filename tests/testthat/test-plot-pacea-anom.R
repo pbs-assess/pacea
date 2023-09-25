@@ -34,6 +34,10 @@ test_that("stop errors work for bccm anom data", {
   
   # error for incorrect clim.dat
   expect_error(plot(anom1, clim.dat = pdata, months.plot = 1, years.plot = 2000))
+  
+  # error for months,plot not matching what is available in climatology data
+  clim.sub <- clim1 %>% dplyr::filter(month == 6)
+  expect_warning(plot(anom1, clim.dat = clim.sub, months.plot = 1))
 })
 
 
@@ -88,6 +92,30 @@ test_that("stop errors work for oisst anom data", {
   
   expect_warning(plot(anom_month, clim.dat = clim_month2, months.plot = c(1,6), years.plot = 2019))
 })
+
+test_that("Plotting anomaly with only one column (layer) of data", {
+  pdata <- get_pacea_data("test_surftemp", force = TRUE)
+  expect_warning(clim1 <- calc_clim(pdata, time_period_return = c(1)))
+  expect_warning(anom1 <- calc_anom(pdata, time_period_return = c(1), years_return = c(2000)))
+  
+  head(clim1)
+  head(anom1)
+  
+  p1 <- plot(anom1, clim.dat = clim1)
+  expect_true(is.ggplot(p1))
+})
+
+
+test_that("Plotting anomaly with negative SD contour lines",{
+  pdata <- get_pacea_data("test_surfsal", force = TRUE)
+  expect_warning(clim1 <- calc_clim(pdata, time_period_return = c(1)))
+  expect_warning(anom1 <- calc_anom(pdata, time_period_return = c(1), years_return = c(2000)))
+  
+  p1 <- plot(anom1, clim.dat = clim1)
+  expect_true(is.ggplot(p1))
+})
+
+
 
 
 
