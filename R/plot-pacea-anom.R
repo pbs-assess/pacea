@@ -12,6 +12,13 @@
 #'
 #' @return plot of the spatial data to the current device (returns nothing)
 #' 
+#' @importFrom tidyr pivot_longer last_col
+#' @importFrom lubridate year month week
+#' @importFrom dplyr left_join join_by mutate arrange filter bind_cols
+#' @importFrom sf st_centroid st_drop_geometry
+#' @importFrom pals brewer.prgn ocean.curl brewer.rdgy brewer.brbg brewer.piyg
+#' @importFrom ggplot2 ggplot theme_bw theme element_blank geom_sf aes scale_fill_gradientn guides guide_colorbar labs xlab ylab geom_contour scale_colour_manual facet_grid facet_wrap
+#' 
 #' @export
 #'
 #' @examples
@@ -271,6 +278,12 @@ plot.pacea_stanom <- function(x,
 #' @param bc logical. Should BC coastline layer be plotted? Can only be plotted with one plot layer.
 #'
 #' @return plot of the spatial data to the current device (returns nothing)
+#' 
+#' @importFrom lubridate year month week
+#' @importFrom dplyr select filter rename mutate arrange left_join join_by bind_cols 
+#' @importFrom sf st_drop_geometry st_coordinates 
+#' @importFrom ggplot2 ggplot theme_by theme element_blank aes geom_tile scale_fill_gradientn guides guide_colorbar labs xlab ylab geom_contour scale_colour_manual facet_grid facet_wrap geom_sf
+#' 
 #' @export
 #'
 #' @examples

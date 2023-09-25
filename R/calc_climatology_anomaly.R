@@ -13,8 +13,8 @@
 #'
 #' @importFrom dplyr mutate select filter group_by summarise ungroup left_join join_by rename relocate
 #' @importFrom sf st_drop_geometry st_as_sf
-#' @importFrom tidyr pivot_longer pivot_wider
-#' @importFrom lubridate year month week
+#' @importFrom tidyr pivot_longer 
+#' @importFrom lubridate year 
 #' 
 #' @return climatology of data
 #' @export
@@ -93,8 +93,6 @@ calc_clim <- function(data, clim_years = c(1991:2020), clim_time = "month", time
                 clim_sd = sd(value, na.rm = TRUE),
                 clim_n = sum(!is.na(value))) %>%
       ungroup() %>%
-      # left_join(month_table, by = join_by(month == month.num)) %>%
-      # tidyr::pivot_wider(id_cols = "ind", names_from = "month.abb", values_from = "clim_value") %>%
       left_join(index, by = join_by(ind == ind)) %>%
       dplyr::select(-ind) %>%
       st_as_sf()
@@ -179,7 +177,7 @@ calc_clim <- function(data, clim_years = c(1991:2020), clim_time = "month", time
 #' @importFrom dplyr mutate select filter group_by summarise ungroup left_join join_by rename relocate
 #' @importFrom sf st_drop_geometry st_as_sf st_crs
 #' @importFrom tidyr pivot_longer pivot_wider
-#' @importFrom lubridate year month week
+#' @importFrom lubridate year
 #' 
 #' @export
 #'
