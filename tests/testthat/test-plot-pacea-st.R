@@ -3,6 +3,8 @@ test_that("multiplication works", {
 })
 
 test_that("ggplot plot for pacea.st objects work with various functions", {
+  library(ggplot2)
+  
   pdata <- get_pacea_data("test_surftemp", force = TRUE)
   
   expect_true(is.ggplot(plot(pdata, 

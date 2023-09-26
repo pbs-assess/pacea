@@ -29,5 +29,7 @@ Plot anomaly of OISST spatiotemporal data layer
 }
 \examples{
 \dontrun{
+anom_data <- calc_anom(oisst_7day)
+plot(anom_data)
 }
 }

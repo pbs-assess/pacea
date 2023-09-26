@@ -13,6 +13,7 @@ test_that("plot works for bccm anom data", {
   p3 <- plot(anom1, clim.dat = clim1, months.plot = 1, years.plot = c(2000,2019))
   p4 <- plot(anom1, clim.dat = clim1, months.plot = c(1, "June"), years.plot = c(2000,2019))
   
+  library(ggplot2)
   expect_true(is.ggplot(p1))
   expect_true(is.ggplot(p2))
   expect_true(is.ggplot(p3))
@@ -50,16 +51,17 @@ test_that("plot works for oisst anom data", {
   p2w <- plot(anom_week, clim.dat = clim_week, weeks.plot = 1, years.plot = 2000)
   p3w <- plot(anom_week, clim.dat = clim_week, weeks.plot = c(1, 6), years.plot = c(2000, 2019))
   
-  expect_true(is.ggplot(p1w))
-  expect_true(is.ggplot(p2w))
-  expect_true(is.ggplot(p3w))
-  
   clim_month <- calc_clim(oisst_month, time_period_return = c(1,6))
   anom_month <- calc_anom(oisst_month, time_period_return = c(1,6), years_return = c(2000, 2019))
   
   p1m <- plot(anom_month)
   p2m <- plot(anom_month, clim.dat = clim_month, months.plot = 1, years.plot = 2000)
   p3m <- plot(anom_month, clim.dat = clim_month, months.plot = c(1, 6), years.plot = c(2000, 2019))
+  
+  library(ggplot2)
+  expect_true(is.ggplot(p1w))
+  expect_true(is.ggplot(p2w))
+  expect_true(is.ggplot(p3w))
   
   expect_true(is.ggplot(p1m))
   expect_true(is.ggplot(p2m))
@@ -102,6 +104,8 @@ test_that("Plotting anomaly with only one column (layer) of data", {
   head(anom1)
   
   p1 <- plot(anom1, clim.dat = clim1)
+  
+  library(ggplot2)
   expect_true(is.ggplot(p1))
 })
 
@@ -112,6 +116,8 @@ test_that("Plotting anomaly with negative SD contour lines",{
   expect_warning(anom1 <- calc_anom(pdata, time_period_return = c(1), years_return = c(2000)))
   
   p1 <- plot(anom1, clim.dat = clim1)
+  
+  library(ggplot2)
   expect_true(is.ggplot(p1))
 })
 

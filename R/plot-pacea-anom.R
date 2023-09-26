@@ -288,6 +288,8 @@ plot.pacea_stanom <- function(x,
 #'
 #' @examples
 #' \dontrun{
+#' anom_data <- calc_anom(oisst_7day)
+#' plot(anom_data)
 #' }
 plot.pacea_oianom <- function(x,
                               weeks.plot,
