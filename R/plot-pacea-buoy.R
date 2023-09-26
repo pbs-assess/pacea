@@ -52,6 +52,7 @@ plot.pacea_buoy <- function(obj,
 ##' @param title text string for title of plot; defaults to `stn_id` followed by
 ##'   the buoy's name (e.g. C46146 Halibut Bank), like Andrea Hilborn has.
 ##' @return ggplot object of the plot
+##' @importFrom ggplot2 ggplot aes geom_line theme_bw theme element_text element_rect labs scale_colour_viridis_c ylab 
 ##' @export
 ##' @author Andrew Edwards
 ##' @examples
