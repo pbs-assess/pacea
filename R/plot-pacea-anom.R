@@ -102,8 +102,8 @@ plot.pacea_stanom <- function(x,
     if(!all(m_ind %in% unique(clim.dat$month))) warning("Not all values found for 'months.plot' in clim.dat")
     
     tclim <- clim.dat %>% filter(month %in% m_ind) %>%
-      mutate(lon = st_coordinates(suppressWarnings(st_centroid(tobj2)))[,1],
-             lat = st_coordinates(suppressWarnings(st_centroid(tobj2)))[,2]) %>%
+      mutate(lon = st_coordinates(suppressWarnings(st_centroid(clim.dat)))[,1],
+             lat = st_coordinates(suppressWarnings(st_centroid(clim.dat)))[,2]) %>%
       st_drop_geometry()
     
     tclim.x <- tobj2 %>%
