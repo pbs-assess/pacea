@@ -101,21 +101,22 @@ plot.pacea_stanom <- function(x,
                 "pacea_stclim" %in% class(clim.dat))
     if(!all(m_ind %in% unique(clim.dat$month))) warning("Not all values found for 'months.plot' in clim.dat")
     
-    tclim <- clim.dat %>% filter(month %in% months.plot) %>%
-      mutate(tgeo = as.character(geometry)) %>% st_drop_geometry()
+    tclim <- clim.dat %>% filter(month %in% m_ind) %>%
+      mutate(lon = st_coordinates(suppressWarnings(st_centroid(tobj2)))[,1],
+             lat = st_coordinates(suppressWarnings(st_centroid(tobj2)))[,2]) %>%
+      st_drop_geometry()
     
     tclim.x <- tobj2 %>%
-      mutate(tgeo = as.character(geometry)) %>%
-      left_join(tclim, by = join_by(month.num == month, tgeo == tgeo)) %>% 
       mutate(lon = st_coordinates(suppressWarnings(st_centroid(tobj2)))[,1],
-             lat = st_coordinates(suppressWarnings(st_centroid(tobj2)))[,2],
-             sd_1.3_pos = clim_sd * 1.282,
+             lat = st_coordinates(suppressWarnings(st_centroid(tobj2)))[,2]) %>%
+      st_drop_geometry() %>%
+      left_join(tclim, by = join_by(month.num == month, lon == lon, lat == lat)) %>%
+      mutate(sd_1.3_pos = clim_sd * 1.282,
              sd_2.3_pos = clim_sd * 2.326,
              sd_above1.3 = value - sd_1.3_pos,
              sd_above2.3 = value - sd_2.3_pos,
              sd_below1.3 = value + sd_1.3_pos,
              sd_below2.3 = value + sd_2.3_pos) %>%
-      st_drop_geometry() %>% 
       as.data.frame()
     
     tgrid <- terra::rast(tobj2, resolution = 6000)
