@@ -11,6 +11,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # BCCM data from `pacea`
 
+This vignette provides information on the BCCM model data and an introduction to how to download and use the data from `pacea`. 
+
+The British Columbia continental margin (BCCM) model is an ocean circulation-biogeochemical model implementation of the regional ocean modelling system (ROMS). It has a horizontal resolution of 3km x 3km and a vertical discretization based on bathymetry of 42 depth levels increasing in resolution near the surface. These modelled output data were provided by Angelica Pena and the data is further detailed in Pena et al. (2019). 
+
 ```{r packages}
 # run this if pacea has not been installed
 #remotes::install_github("pbs-assess/pacea")
@@ -20,10 +24,6 @@ library(dplyr)
 library(sf)
 library(ggplot2)
 ```
-
-This vignette provides information on the BCCM model data and an introduction to how to download and use the data from `pacea`. 
-
-The British Columbia continental margin (BCCM) model is an ocean circulation-biogeochemical model implementation of the regional ocean modelling system (ROMS). It has a horizontal resolution of 3km x 3km and a vertical discretization based on bathymetry of 42 depth levels increasing in resolution near the surface. These modelled output data were provided by Angelica Pena and the data is further detailed in Pena et al. (2019). 
 
 Data have been processed to an inshore 2km x 2km grid, and an offshore 6km x 6km grid. The area for these regions are accessible as polygon data objects `bccm_eez_poly`, `inshore_poly` and `offshore_poly`. They use the 'NAD83/BC Albers' projection. The polygons are `sf` (simple feature) objects.
 
@@ -61,7 +61,6 @@ The mixed grid (2km x 2km and 6km x 6km) can also be viewed.
 # grid cells may not be visible if resolution of plot is too low
 plot(grid26)
 ```
-
 
 ## Downloading BCCM data
 
@@ -105,6 +104,11 @@ names(attributes(pdata))
 attributes(pdata)$units
 ```
 
+The class of BCCM data is a `pacea_st` object, in addition to sf, tbl, and dataframe objects.
+
+```{r}
+class(pdata)
+```
 
 ## Updating BCCM data
 
@@ -122,9 +126,9 @@ If there is an update available, you will be prompted on whether to download the
 
 Here, we plot the BCCM data using some built in package functions, as well as `ggplot2`. We introduce some of the available polygon simple feature layers that can be plotted with the BCCM data.
 
-### Base `plot()`
+### Plotting with `plot()`
 
-BCCM data can be plotted using the `plot()` function for a quick view of the data. The default settings are to plot the April every five years for the time series available.
+BCCM data can be plotted using the `plot()` function for a quick view of the data. We used the generic `plot` function for BCCM class data and integrated ggplot functionality. The default settings are to plot the April, 2018. However, users can specify any time period(s) available in the data (see e.g. `?bccm_surface_temperature` for details on BCCM data).
 
 ```{r}
 # data should already be downloaded to cache folder
@@ -133,52 +137,64 @@ pdata <- bccm_surface_temperature()
 plot(pdata)
 ```
 
-Other months and years can be selected.
+Other months and years can be selected, and month selections can be done with abbreviations, full names, or numbers.
 
 ```{r}
 plot(pdata, months = c("June", "September"), years = c(1995, 2010, 2019))
+
+plot(pdata, months = c("Jan", "10"), years = c(1995, 2010, 2019))
 ```
 
-The BC coastline and Exclusive Economic Zone (EEZ) can be plotted if there is only one layer selected.
+The BC coastline and Exclusive Economic Zone (EEZ) can also be excluded.
 
 ```{r}
-plot(pdata, months = c("September"), years = c(2019), bc = T, eez = T)
+plot(pdata, months = c("September"), years = c(2019), bc = FALSE, eez = FALSE)
 ```
 
-### Using ggplot
-
-Using `ggplot2` is recommended if you would like to customize the plots, especially for multipanel plots. 
-
-Since the data are in wide format, it needs to be wrangled into long format for `ggplot()`.
+The different BCCM variables available are assigned different colour palettes  
 
 ```{r}
-library(ggplot2)
+# not run
 
+# pdata_suroxy <- bccm_surface_oxygen()
+# plot(pdata_suroxy)
+```
+
+### More customizations and using ggplot
+
+Using `ggplot2` is recommended if you would like to customize the plots further especially for multipanel plots. 
+
+Since the data are in wide format, it needs to be wrangled into long format for `ggplot()`. There is a built in 'pacea' function for wrangling BCCM data to long format.
+
+```{r}
 # months and years of interest
 yrs <- c(1999, 2009, 2019)
 mths <- c(8) # august
 ym <- paste(yrs, mths, sep = "_")
 
-# subset data based on year_month column name
+# subset data based on year_month column name - reduces processing time
 tdat <- pdata %>%
   dplyr::select(all_of(ym))
 
-# wrangle data to long format and add columns for year and month
-sub.dat <- tdat %>%
-  tidyr::pivot_longer(cols = !last_col(), cols_vary = "slowest", names_to = "date", values_to = "value")  %>%
-  mutate(year = substr(date, 1, 4),
-         month = substr(date, 6, 7)) %>%
-  relocate(geometry, .after = last_col()) 
+# convert to long format
+sub.dat <- pacea_long(tdat)
 
 # plot selected years and month
 p1 <- ggplot(data = sub.dat) +
   geom_sf(aes(fill = value), col = NA) +
-  facet_grid(month~year) +
-  scale_fill_continuous(name = attributes(pdata)$units)
+  facet_grid(month~year)
 
 p1
 ```
 
+Customize colour scale for plot and add legend label
+
+```{r}
+p1 <- p1 + 
+  scale_fill_gradientn(colours = c("blue", "grey", "red"), name = attributes(pdata)$units)
+
+p1
+```
 
 Adding BC coast layer and BC EEZ layer
 
@@ -191,9 +207,9 @@ p2
 ```
 
 NOTE: 
-Again, `ggplot()` recognizes that the projection of bc_coast and bc_eez shapefile are different thanthe BCCM data (NAD 83), and will reproject the layers to match the first layer.
+Again, `ggplot()` recognizes that the projection of bc_coast and bc_eez shapefile (WGS 84) are different than the BCCM data (NAD 83), and will reproject the layers to match the first layer.
 
-As with regular `ggplot()`, you can customize the plot using typical ggplot syntax (see `?ggplot` for more information)
+You can customize the plot using typical ggplot syntax (see `?ggplot` for more information)
 
 ```{r}
 p2 + 
@@ -209,9 +225,10 @@ We can select an area of interest by masking the data with another `sf` shapefil
 ```{r create sf polygon}
 # coordinates for polygon (i.e. fishing area 126)
 crds <- list(matrix(c(-127.1506, -128.2331, -129.3492, -127.9167, -127.1847, -126.8200, -127.1506,
-                      49.85766, 49.00000, 48.99991, 50.11915, 50.40183, 50.24466, 49.85766), ncol = 2))
+                      49.85766, 49.00000, 48.99991, 50.11915, 50.40183, 50.24466, 49.85766), 
+                    ncol = 2))
 
-# create polygon object and convert to sf object with bc albers projection
+# create polygon object with lat-lon WGS 84 projection (4326) and convert to sf object with BC Albers (3005) projection
 a126 <- st_sfc(st_polygon(crds), crs = 4326) %>% 
   st_as_sf() %>%
   st_transform(crs = 3005)
@@ -219,19 +236,19 @@ a126 <- st_sfc(st_polygon(crds), crs = 4326) %>%
 # mask data by indexing sf object with area 126 shapefile 
 reg.dat <- sub.dat[a126, ]
 
+# reduction in number of data points after subsetting the region
 dim(sub.dat)
 dim(reg.dat)
 ```
 
 The data went from 123,864 rows to 4,821 rows, which is a much smaller region.
 
-
 ```{r}
 # plot panel of data
 reg.p1 <- ggplot(data = reg.dat) +
   geom_sf(aes(fill = value), col = NA) +
-  facet_grid(month~year) +
-  scale_fill_continuous(name = attributes(pdata)$units)
+  facet_grid(month~year) + 
+  scale_fill_gradientn(colours = c("blue", "grey", "red"), name = attributes(pdata)$units)
 
 reg.p1
 ```
@@ -269,10 +286,20 @@ Here are some examples of how to easy wrangle BCCM data that may be of interest 
 Currently, the BCCM data are simple feature (sf) objects of polygons (gridded square cells). The polygon boundaries are identified by coordinates for the perimeter of the cell. We can also obtain the centroids of each cell.
 
 ```{r}
-# this will replace convert the geometry column from a polygon to a point, with the centroid of the gridded cell
-centroid.dat <- pdata %>% st_centroid()
+# First let's subset the data to reduce process time
+# months and years of interest
+yrs <- c(1999, 2009, 2019)
+mths <- c(8) # august
+ym <- paste(yrs, mths, sep = "_")
 
-head(centroid.dat[, 1:5])
+# subset data based on year_month column name - reduces processing time
+tdat <- pdata %>%
+  dplyr::select(all_of(ym))
+
+# this will replace convert the geometry column from a polygon to a point, with the centroid of the gridded cell
+centroid.dat <- tdat %>% st_centroid()
+
+head(centroid.dat)
 ```
 
 Notice that the geometry column are now `POINT`, instead of `POLYGON`. This is now the centre of each polygon grid cell.
@@ -282,7 +309,6 @@ Notice that the geometry column are now `POINT`, instead of `POLYGON`. This is n
 Wrangle data to select months of interest and convert into long format for easy wrangling.
 
 ```{r}
-
 # months and years of interest
 yrs <- c(1999, 2009, 2019)
 mths <- c(8) # august
@@ -293,78 +319,8 @@ tdat <- pdata %>%
   dplyr::select(all_of(ym))
 
 # Find mean value for each time period of interest - mean of columns
-tdat %>% 
-  st_drop_geometry() %>% # drop geometry column
-  colMeans()
+sub.dat <- pacea_long(tdat)
 ```
-
-### Mean values across a spatial area of interest
-
-If we're interested in a specific area and want to view the temporal mean trends over time, we can mask the data using a `sf` polygon. We will use DFO fishing area 126 again.
-
-```{r}
-# mask data with area of interest (Area 126) and convert to long format 
-reg.dat <- pdata[a126, ] %>% 
-  tidyr::pivot_longer(cols = !last_col(), cols_vary = "slowest", names_to = "date", values_to = "value")  %>%
-  mutate(year = as.numeric(substr(date, 1, 4)),
-         month = as.numeric(substr(date, 6, 7))) %>%
-  relocate(geometry, .after = last_col()) 
-
-# we need to get the area of each cell so we can weight the mean
-reg.dat <- reg.dat %>%
-  mutate(area = as.vector(st_area(reg.dat))) %>%
-  st_drop_geometry() # drop the geometry as we don't need that for this analysis (and it slows down processing)
-
-# summarise the data across the entire Area 126 with a weighted mean by gridded cell area
-sum.dat <- reg.dat %>%
-  group_by(year, month) %>%
-  summarise(value = weighted.mean(value, area, na.rm = TRUE))
-  
-
-# find the monthly mean across the time series
-mean.dat <- sum.dat %>%
-  group_by(month) %>%
-  summarise(mean_value = mean(value, na.rm = TRUE))
-
-```
-
-We can plot the time series to look at seasonal trends.
-
-```{r}
-sum.dat %>%
-  mutate(year = as.factor(year)) %>%  # set year to a factor so each line is plotted separately
-  ggplot() + 
-  geom_line(aes(x = month, y = value, col = year)) +
-  scale_y_continuous(name = attributes(pdata)$units)
-```
-
-Any trends are difficult to see, so let's revise the colour scheme
-
-```{r}
-sum.dat %>%
-  mutate(year = as.factor(year)) %>%
-  ggplot() +
-  geom_line(aes(x = month, y = value, col = as.factor(year))) + 
-  scale_color_manual(values = colorRampPalette(c("blue", "green", "yellow"))(27), name = "year") +
-  scale_y_continuous(name = attributes(pdata)$units)
-```
-
-
-Still no clear visual pattern. Let's look at the past 10 years compared to the time series mean.
-
-```{r}
-sum.dat %>%
-  filter(year >= 2010) %>%
-  mutate(year = as.factor(year)) %>%
-  ggplot() +
-  geom_line(aes(x = month, y = value, col = as.factor(year))) + 
-  geom_line(data = mean.dat, aes(x = month, y = mean_value), col = "black", linewidth = 2) +
-  scale_color_manual(values = colorRampPalette(c("blue", "green", "yellow"))(10), name = "year") +
-  scale_y_continuous(name = attributes(pdata)$units)
-```
-
-The dark black line is the time series mean and while there isn't an clear trend, the more recent years in the past decade appear to have higher temperatures (particularly in the summer) than the earlier part of the decade. 
-
 
 ### Extract data using coordinates
 
@@ -379,23 +335,30 @@ buoy_metadata
 lat <- buoy_metadata$latitude[which(buoy_metadata$name == "La Perouse Bank")]
 lon <- buoy_metadata$longitude[which(buoy_metadata$name == "La Perouse Bank")]
 
-# create a dataframe and convert to sf object
+# create a dataframe and convert to sf object; transform to correct projection
 coords_LP <- data.frame(x = lon, y = lat)
-sf_LP <- st_as_sf(coords_LP, coords = c("x", "y"), crs = "EPSG: 4326")
+sf_LP <- st_as_sf(coords_LP, coords = c("x", "y"), crs = "EPSG: 4326") %>% st_transform(crs = "EPSG: 3005")
 sf_LP
-
-# transform to correct projection
-sf_LP <- sf_LP %>% st_transform(crs = "EPSG: 3005")
 
 # extract cells for which coordinates fall into and wrangle to long format for plotting
 point.dat <- pdata[sf_LP,] %>%
-  tidyr::pivot_longer(cols = !last_col(), cols_vary = "slowest", names_to = "date", values_to = "value")  %>%
-  mutate(year = as.numeric(substr(date, 1, 4)),
-         month = as.numeric(substr(date, 6, 7))) %>%
-  relocate(geometry, .after = last_col()) 
+  pacea_long()
+```
 
-# plot to view seasonal trends across years
+We can plot the time series to look at seasonal trends at this location.
+
+```{r}
 point.dat %>%
+  mutate(year = as.factor(year)) %>%  # set year to a factor so each line is plotted separately
+  ggplot() + 
+  geom_line(aes(x = month, y = value, col = year)) +
+  scale_y_continuous(name = attributes(pdata)$units)
+```
+
+Any trends are difficult to see, so let's revise the colour scheme
+
+```{r}
+point.dat  %>%
   mutate(year = as.factor(year)) %>%
   ggplot() +
   geom_line(aes(x = month, y = value, col = as.factor(year))) + 
@@ -403,3 +366,107 @@ point.dat %>%
   scale_y_continuous(name = attributes(pdata)$units)
 ```
 
+Still no clear visual pattern. Let's look at the past 10 years compared to the time series median
+
+```{r}
+# calculate summary statistics (median, sd, 0.05 and 0.95 probabilities)
+sum.dat <- point.dat %>%
+  group_by(month) %>%
+  summarise(median_val = median(value, na.rm = TRUE),
+            sd_val = sd(value, na.rm = TRUE),
+            q05 = quantile(value, probs = 0.05, na.rm = TRUE),
+            q95 = quantile(value, probs = 0.95, na.rm = TRUE))
+
+point.dat %>%
+  filter(year >= 2010) %>%
+  mutate(year = as.factor(year)) %>%
+  ggplot() +
+  geom_line(aes(x = month, y = value, col = as.factor(year))) + 
+  geom_line(data = sum.dat, aes(x = month, y = median_val), col = "black", linewidth = 2) +
+  scale_color_manual(values = colorRampPalette(c("blue", "green", "yellow"))(10), name = "year") +
+  scale_y_continuous(name = attributes(pdata)$units)
+```
+
+There is a general pattern of more recent years being slightly warmer, especially in the summer.
+
+We can also plot the historical distribution of values and select a specific year to plot. Let's plot 2014, when "The Blob" was around in the Pacific
+
+```{r}
+# plot to view seasonal trends across years
+point.dat %>%
+  filter(year == 2014) %>%
+  ggplot() +
+  geom_line(aes(x = month, y = value), col = "red") + 
+  geom_line(data = sum.dat, aes(x = month, y = median_val), col = "black") +
+  geom_line(data = sum.dat, aes(x = month, y = q05), col = "grey", linetype = 2) +
+  geom_line(data = sum.dat, aes(x = month, y = q95), col = "grey", linetype = 2) 
+```
+
+While not the warmest during the 1993-2019 period in the summer months, it was above the median for most of the year.
+
+### Calculating climatogy and anomaly of BCCM data
+
+The `pacea` package has some built in functions to calculate climatologies and anomalies of the geospatial BCCM data. These functions can be customized to return specific data. See help files for details of functions.
+
+First, let's calculate a climatology, which returns data in long format. 
+
+```{r}
+# help file for function
+# ?calc_clim
+
+# let's use surface temperature again
+pdata <- bccm_surface_temperature()
+
+# the default years for climtatology is 1991 - 2020
+# Note: there may be a warning as the BCCM data only span 1993 - 2019
+clim_sst <- calc_clim(pdata)
+
+# we can also select the climatology months to be returned
+clim_sst_sub <- calc_clim(pdata, time_period_return = c("Apr", "9"))
+
+head(clim_sst)
+head(clim_sst_sub)
+```
+
+Next, we can calculate the anomalies of the data, relative to the climatological mean. This functions returns the data in wide format, which is the same format the input data (i.e. pdata).
+
+```{r}
+# help file for function
+# ?calc_anom
+
+anom_sst <- calc_anom(pdata)
+
+head(anom_sst)
+```
+
+Arguments for the anomaly function allow users to specify the climatological reference period and the months and/or years to return as anomaly data
+
+```{r}
+anom_sst_sub <- calc_anom(pdata, clim_years = c(1993:2019), time_period_return = c("Apr", "9"), years_return = c(2010, 2019))
+
+head(anom_sst_sub)
+```
+
+Anomaly data can also be plotted using built in generic functions in `pacea`.
+
+```{r}
+# plotting the subsetted data will be quicker
+plot(anom_sst_sub)
+```
+
+The plotting default is for the most recent time period in the data available. We can also specify the months and years to plot as a facet plot.
+
+```{r}
+plot(anom_sst_sub, months.plot = c("Apr", "Sep"), years.plot = c(2010, 2019))
+```
+
+We have also incorporated the ability to add climatological data to the plot, which creates contour lines showing the anomaly areas that are above (or below for other variables) the 90th and 99th percentile of data.
+
+```{r}
+# there may be warnings that arise from the interpolation of the contour lines
+plot(anom_sst_sub, months.plot = c("Apr", "Sep"), years.plot = c(2010, 2019), clim.dat = clim_sst_sub)
+```
+
+## References 
+
+Peña, M.A., Fine, I. and Callendar, W. 2019. Interannual variability in primary production and shelf-offshore transport of nutrients along the northeast Pacific Ocean margin. Deep-Sea Research II, doi:10.1016/j.dsr2.2019.104637.
