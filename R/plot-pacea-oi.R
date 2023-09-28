@@ -43,7 +43,7 @@ plot.pacea_oi <- function(x,
   
   # filter years to plot 
   if(missing(years.plot))  years.plot <- max(x$year)
-  tobj <- x %>% dplyr::filter(year == years.plot) 
+  tobj <- x %>% dplyr::filter(year %in% years.plot) 
   
   stopifnot("'years.plot' not found in data, enter valid numeric value" = nrow(tobj)>0)
   
@@ -58,9 +58,9 @@ plot.pacea_oi <- function(x,
       }
     }
     
-    stopifnot("'weeks.plot' week numbers are invalid - must be values specifying weeks '1:53'" = all((weeks.plot) %in% 1:53))
+    stopifnot("'weeks.plot' week numbers are invalid - must be values specifying weeks '1:53'" = all(as.numeric(weeks.plot) %in% 1:53))
     
-    ind <- weeks.plot
+    ind <- as.numeric(weeks.plot)
     ind <- ind[order(ind)]
     
     # filter data and create factors for plotting 
@@ -76,7 +76,7 @@ plot.pacea_oi <- function(x,
     
     # set facets
     if(all(length(weeks.plot) > 1, length(years.plot) > 1)){
-      tfacet <- facet_grid(year ~ plot.tunit) 
+      tfacet <- facet_grid(as.factor(year) ~ plot.tunit) 
     } else {
       tfacet <- facet_wrap(.~plot.date) 
     }
@@ -114,13 +114,13 @@ plot.pacea_oi <- function(x,
     }
   }
   
+  # stop if no data extracted
+  stopifnot("Date combinations specified do not exist in current dataset" = nrow(tobj) > 0)
+  
   # warning if year-timeunit combination not available
   yind <- paste0(unique(tobj$year),ind)
   testyind <- tobj %>%
     mutate(yind = paste0(year,tunit))
-  
-  # stop if no data extracted
-  stopifnot("Date combinations specified do not exist in current dataset" = nrow(tobj) > 0)
   
   if(!all(yind %in% testyind$yind)) {warning("Not all date combinations entered available for the years specified")}
   
@@ -153,5 +153,5 @@ plot.pacea_oi <- function(x,
       geom_sf(data = bc_coast, fill = "darkgrey") 
   }  
   
-  tplot
+  suppressWarnings(print(tplot))
 }
