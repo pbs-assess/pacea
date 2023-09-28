@@ -1,0 +1,249 @@
+---
+title: "NOAA OI SST - Intro and wrangling"
+author: "Travis Tai"
+date: "2023-08-14"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Optimal Interoplation Sea Surface Temperature (OISST)
+
+The optimal interpolation sea surface temperature can be downloaded from NOAA's (National Oceanic and Atmospheric Administration) ERDDAP data server website: 'https://coastwatch.pfeg.noaa.gov/erddap/files/' (Huang et al., 2021). The quality-checked data ranges from 1981/09/01 to about 2 weeks before present - more recent data (only 2-day lag) is available but is only preliminary and has yet to be checked for quality.
+
+The details of the data as described by NOAA: "The NOAA 1/4° Daily Optimum Interpolation Sea Surface Temperature (OISST) is a long term Climate Data Record that incorporates observations from different platforms (satellites, ships, buoys and Argo floats) into a regular global grid. The dataset is interpolated to fill gaps on the grid and create a spatially complete map of sea surface temperature. Satellite and ship observations are referenced to buoys to compensate for platform differences and sensor biases."
+
+More details on the OISST data can be found here: 'https://www.ncei.noaa.gov/products/optimum-interpolation-sst'.
+
+## OISST data in `pacea`
+
+The OISST data were downloaded using the `rerddap` package, then wrangled similarly to what is found on this GitHub repository: 'https://github.com/IOS-OSD-DPG/Pacific_SST_Monitoring#oisst'. 
+
+This GitHub repository, by Andrea Hilborn, Charles Hannah and Lu Guan, is automatically updated approximately every week, which includes up-to-date 7-day SST means, anomalies, and recent marine heatwave status - among other data visualization products. Visit their GitHub page for a glance at recent conditions. We have adapted the code by Andrea Hilborn (found in their GitHub repository) to include the data in `pacea`.
+
+We wrangled the SST data to produce 2 simple feature `sf` products: 7-day mean, and monthly mean. The data are kept in the original spatial 1/4° longitude x 1/4° latitude grid and WGS 84 projection, and masked to show only the BC Exclusive Economic Zone area. The coordinates in the geometry column of the `sf` objects are the centroid of each grid cell.
+
+See `?oisst_7day` for the name of OISST data products and more information in the R help file.
+
+There are plans to update the data monthly, therefore, users will have access to data up to the previous month from the current month. Let's explore the OISST data in 'pacea'.
+
+```{r packages}
+# run this if pacea has not been installed
+#remotes::install_github("pbs-assess/pacea")
+
+library(pacea)
+library(dplyr)
+library(sf)
+library(ggplot2)
+```
+
+The OISST data loaded in the installation of the `pacea` package. In addition to the mean temperature value (weekly or monthly mean) for each grid cell, there are also other statistical measures, such as the standard deviation, number of observations, and the value for the 90th percentile. There is also a start- and end-date column that indicates the temporal period for which the mean is calculated from.
+
+```{r}
+oisst_7day
+
+oisst_month
+```
+
+
+## Plotting OISST data
+
+We have built a generic plot function for OISST data, which uses `ggplot2` functions to create multipanel geospatial figures. Let's use the monthly OISST data.
+
+```{r}
+# the defaulT is to provide the current or most recent data available
+plot(oisst_month)
+```
+
+We can select multiple months and/or years to plot.
+
+```{r}
+plot(oisst_month, months.plot = c("Apr", "Sep"), years.plot = c(1982, 2002, 2022))
+```
+
+This can also be done for the weekly data, where you can specify the specific week(s) to plot.
+
+```{r}
+plot(oisst_7day, weeks.plot = c(20, 35), years.plot = c(1983, 2003, 2020))
+```
+
+Knowing which week of interest may be difficult. Therefore, you can also convert a `Date` object into the week interested.
+
+```{r}
+# a random year with the date we are interested in to convert to the week of the year
+my.date <- as.Date("2015-09-04")
+lubridate::week(my.date)
+
+plot(oisst_7day, weeks.plot = lubridate::week(my.date), years.plot = c(1983, 2003, 2020))
+```
+
+## Wrangling OISST data
+
+### Masking data with shapefile 
+(adated from example vignette with BCCM data)
+
+We can select an area of interest by masking the data with another `sf` shapefile, such as for a fishing region using indexing syntax. Below is an example using coordinates from DFO fish area 126.
+
+```{r create sf polygon}
+# coordinates for polygon (i.e. fishing area 126)
+crds <- list(matrix(c(-127.1506, -128.2331, -129.3492, -127.9167, -127.1847, -126.8200, -127.1506,
+                      49.85766, 49.00000, 48.99991, 50.11915, 50.40183, 50.24466, 49.85766), 
+                    ncol = 2))
+
+# create polygon object with lat-lon WGS 84 projection (4326)
+a126 <- st_sfc(st_polygon(crds), crs = 4326) %>% 
+  st_as_sf() 
+
+# mask OISST data by indexing sf object with area 126 shapefile 
+reg.dat <- oisst_month[a126, ]
+
+# reduction in number of data points after subsetting the region
+dim(oisst_month)
+dim(reg.dat)
+```
+
+To plot these subsetted data, we must reassign the class to the object for the `pacea` generic plot function to operate.
+
+```{r}
+class(reg.dat) <- class(oisst_month)
+plot(reg.dat, months.plot = c("Apr", "Sep"), years.plot = c(1982, 2002, 2022))
+```
+
+Otherwise we can build our own ggplot.
+
+```{r}
+reg.dat %>%
+  bind_cols(st_coordinates(reg.dat)) %>% # get coordinates out for plotting with geom_tile
+  filter(year %in% c(1982, 2002, 2022),  # filter out months and years
+         month %in% c(4, 9)) %>%
+  ggplot() + 
+  geom_tile(aes(x = X, y= Y, fill = sst)) + 
+  scale_fill_gradientn(colours = c("blue", "grey", "red"), name = attributes(oisst_month)$units) +
+  facet_grid(month~year) +
+  geom_sf(data = bc_coast)
+```
+
+### Extract data using coordinates
+(adated from example vignette with BCCM data)
+
+We can extract the spatial data using coordinates of interest. However, because the OISST are coordinates, we must use the `st_nearest_point()` function to find the data which are closest to our coordinates of interest. 
+
+We'll use the location of data buoys. There is a list of buoys and locations in this pacakge, named as object: `buoy_metadata`.
+
+```{r}
+buoy_metadata
+
+# Let's use the La Perouse Bank location 
+lat <- buoy_metadata$latitude[which(buoy_metadata$name == "La Perouse Bank")]
+lon <- buoy_metadata$longitude[which(buoy_metadata$name == "La Perouse Bank")]
+
+# create a dataframe and convert to sf object
+coords_LP <- data.frame(x = lon, y = lat)
+sf_LP <- st_as_sf(coords_LP, coords = c("x", "y"), crs = "EPSG: 4326")
+sf_LP
+
+st <- Sys.time()
+
+# distance from buoy to each coordinate
+dist <- st_distance(oisst_month, sf_LP)
+
+# subset data for points that are closest to buoy
+sub.dat <- oisst_month[which(dist == min(dist)),]
+```
+
+Now we can plot the time series for the data we've extracted
+
+```{r}
+sub.dat %>%
+  mutate(year = as.factor(year)) %>%  # set year to a factor so each line is plotted separately
+  ggplot() + 
+  geom_line(aes(x = month, y = sst, col = year)) +
+  scale_y_continuous(name = attributes(oisst_month)$units)
+```
+
+To see where we are this year, let's plot just this year's data, with the historical distribution.
+
+```{r}
+# calculate summary statistics (median, sd, 0.05 and 0.95 probabilities)
+sum.dat <- sub.dat %>%
+  group_by(month) %>%
+  summarise(median_val = median(sst, na.rm = TRUE),
+            sd_val = sd(sst, na.rm = TRUE),
+            q05 = quantile(sst, probs = 0.05, na.rm = TRUE),
+            q95 = quantile(sst, probs = 0.95, na.rm = TRUE))
+
+sub.dat %>%
+  filter(year == 2023) %>%
+  mutate(year = as.factor(year)) %>%
+  ggplot() +
+  geom_ribbon(data = sum.dat, aes(x = month, ymin = q05, ymax = q95), fill = "grey") +
+  geom_line(aes(x = month, y = sst), col = "red") + 
+  geom_line(data = sum.dat, aes(x = month, y = median_val), col = "black", linewidth = 1) +
+  scale_y_continuous(name = attributes(oisst_month)$units)
+```
+
+### Climatology and anomalies
+
+The `pacea` package has some built in functions to calculate climatologies and anomalies of the OISST data. These functions can be customized to return specific data. See help files for details of functions.
+
+First, let's calculate a climatology using the weekly 'oisst_7day' data.
+
+```{r}
+# help file for function
+# ?calc_clim
+
+# the default years for climtatology is 1991 - 2020
+clim_sst <- calc_clim(oisst_7day)
+
+head(clim_sst)
+
+# we can also select the climatology weeks to be returned: either a numeric value or convert a date to the week of the year
+clim_sst_sub <- calc_clim(oisst_7day, time_period_return = c(15, lubridate::week(as.Date("2010-08-01"))))
+
+head(clim_sst_sub)
+```
+
+Next, we can calculate the anomalies of the data, relative to the climatological mean.
+
+```{r}
+# help file for function
+# ?calc_anom
+
+anom_sst <- calc_anom(oisst_7day)
+
+head(anom_sst)
+```
+
+Arguments for the anomaly function allow users to specify the climatological reference period and the months/weeks and/or years to return as anomaly data
+
+```{r}
+anom_sst_sub <- calc_anom(oisst_7day, time_period_return = c(15, lubridate::week(as.Date("2010-08-01"))), years_return = c(2010, 2019))
+
+head(anom_sst_sub)
+```
+
+Anomaly data can also be plotted using built in generic functions in `pacea`.
+
+```{r}
+# plotting the subsetted data will be quicker
+plot(anom_sst_sub)
+```
+
+The plotting default is for the most recent time period in the data available. We can also specify the weeks and years to plot as a facet plot. If using the 'oisst_month' data, use the `months.plot` argument.
+
+```{r}
+plot(anom_sst_sub, weeks.plot = c(15, lubridate::week(as.Date("2010-08-01"))), years.plot = c(2010, 2019))
+```
+
+We have also incorporated the ability to add climatological data to the plot, which creates contour lines showing the anomaly areas that are above (or below for other variables) the 90th and 99th percentile of data (99th percentile contours may not appear if data values do not exceed that value).
+
+```{r}
+# there may be warnings that arise from the interpolation of the contour lines
+plot(anom_sst_sub, weeks.plot = c(15, lubridate::week(as.Date("2010-08-01"))), years.plot = c(2010, 2019), clim.dat = clim_sst_sub)
+```
+
+## References
+
+Huang, B., Liu, C., Banzon, V., Freeman, E., Graham, G., Hankins, B., Smith, T., Zhang, H. M., 2021. Improvements of the daily optimum interpolation Sea Surface temperature (DOISST) version 2.1. J. Clim. 34 (8), 2923–2939.
