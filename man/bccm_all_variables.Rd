@@ -3,6 +3,9 @@
 \name{bccm_all_variables}
 \alias{bccm_all_variables}
 \title{Download all BCCM data}
+\source{
+Peña, M.A., Fine, I. and Callendar, W. 2019. Interannual variability in primary production and shelf-offshore transport of nutrients along the northeast Pacific Ocean margin. Deep-Sea Research II, doi:10.1016/j.dsr2.2019.104637.
+}
 \usage{
 bccm_all_variables()
 }

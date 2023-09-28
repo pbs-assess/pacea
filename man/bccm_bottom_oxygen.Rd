@@ -28,7 +28,7 @@
 A simple features dataframe.
 }
 \source{
-Pena et al., 2019
+Peña, M.A., Fine, I. and Callendar, W. 2019. Interannual variability in primary production and shelf-offshore transport of nutrients along the northeast Pacific Ocean margin. Deep-Sea Research II, doi:10.1016/j.dsr2.2019.104637.
 }
 \usage{
 bccm_bottom_oxygen(update = FALSE, ask = interactive(), force = FALSE)
