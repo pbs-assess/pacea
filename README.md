@@ -1,139 +1,192 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
 # pacea
 
 <!-- badges: start -->
+
 [![R-CMD-check](https://github.com/pbs-assess/pacea/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pbs-assess/pacea/actions/workflows/R-CMD-check.yaml)
-[![Codecov test coverage](https://codecov.io/gh/pbs-assess/pacea/branch/main/graph/badge.svg)](https://app.codecov.io/gh/pbs-assess/pacea?branch=main)
+[![Codecov test
+coverage](https://codecov.io/gh/pbs-assess/pacea/branch/main/graph/badge.svg)](https://app.codecov.io/gh/pbs-assess/pacea?branch=main)
 <!-- badges: end -->
 
-An R package to house Pacific Region ecosystem data to help operationalise an ecosystem approach to fisheries management.
+An R package to house Pacific Region ecosystem data to help
+operationalise an ecosystem approach to fisheries management.
 
-*We wrangle the data so you don't have to*
+*We wrangle the data so you don’t have to*
 
-pacea stands for PACific Ecosystem Approach. 
+pacea stands for PACific Ecosystem Approach.
 
-pacea is intended to be a data platform containing somewhat disparate data sets (we basically wrangle the data sets behind the scenes to get them into usable consistent formats in R, along with related plotting functions). Is is *not* a primary database of lots of raw data. All data sets include documentation regarding the original authors, who should be cited as appropriate. 
+pacea is intended to be a data platform containing somewhat disparate
+data sets. We wrangle the data sets behind the scenes to get them into
+usable formats in R, and provide helpful plotting functions. All data
+sets include documentation regarding the original authors, who should be
+cited as appropriate.
 
 # Installation
 
-We are still developing pacea, and so it is not meant to be fully operational yet. To install the latest version:
+We are still developing pacea, and so it is not meant to be fully
+operational yet. To install the latest version:
 
-```
-install.packages("remotes")    # If you do not already have the "remotes" package
+    install.packages("remotes")    # If you do not already have the "remotes" package
 
-remotes::install_github("pbs-assess/pacea")
-```
+    remotes::install_github("pbs-assess/pacea")
 
 If you get an error like
-```
-Error in utils::download.file(....)
-```
-then the connection may be timing out (happens to us on the DFO network). Try
 
-```
-options(timeout = 1200)
-```
-and then try and install again. If you get a different error then contact Andy and Travis for help. If the R-CMD-check badge above does not say 'passing' in green, then just try again later as we've broken something and are probably trying to fix it. (Once we officially release pacea then we will ensure the installation always works - we'll work on another GitHub branch). You can try the option `build_vignettes = TRUE` if you like and look at the vignettes the usual way. Once we finalise the vignettes we will provide the `html` version on GitHub to be easily viewed. 
+    Error in utils::download.file(....)
 
-------
+then the connection may be timing out (happens to us on the DFO
+network). Try
 
-STOP reading here - rest needs updating. 
+    options(timeout = 1200)
 
-TODO - rewrite all the following, giving some simple examples and referring to vignettes once we've finished those or Issues. 
+and then try and install again. If you get a different error then
+contact Andy and Travis for help. If the R-CMD-check badge above does
+not say ‘passing’ in green, then just try again later as we’ve broken
+something and are probably trying to fix it. (Once we officially release
+pacea then we will ensure the installation always works - we’ll work on
+another GitHub branch). You can try the option `build_vignettes = TRUE`
+if you like and look at the vignettes the usual way. Once we finalise
+the vignettes we will provide the `html` version on GitHub to be easily
+viewed.
 
-Currently, briefly (we will expand on this TODO) pacea includes output from a British Columbia ROMS (Regional Ocean Modeling System) model, climatic and oceanographic indices such as Pacific Decadal Oscillation, Pacific Hake stock assessment results, sea surface temperature from buoys, .... We do have context-specific plotting functions that relate to each type of data set.
+------------------------------------------------------------------------
 
-TODO - give simple examples here, we're focussing on vignettes first.... 
+STOP reading here - rest needs updating.
+
+TODO - rewrite all the following, giving some simple examples and
+referring to vignettes once we’ve finished those or Issues.
+
+Currently, briefly (we will expand on this TODO) pacea includes output
+from a British Columbia ROMS (Regional Ocean Modeling System) model,
+climatic and oceanographic indices such as Pacific Decadal Oscillation,
+Pacific Hake stock assessment results, sea surface temperature from
+buoys, …. We do have context-specific plotting functions that relate to
+each type of data set.
+
+TODO - give simple examples here, we’re focussing on vignettes first….
 
 ## Pacific Hake stock assessment results
 
 Type these to see the values, help file, and then a plot:
-```
-library(pacea)
 
-hake_recruitment              # estimated annual recruitment
-?hake_recruitment
-plot(hake_recruitment)
+    library(pacea)
 
-# Similar commands work for scaled versions:
-hake_recruitment_over_2010    # see for details
-?hake_recruitment_over_2010 
-plot(hake_recruitment_over_2010)
+    hake_recruitment              # estimated annual recruitment
+    ?hake_recruitment
+    plot(hake_recruitment)
 
-hake_recruitment_over_R0
-?hake_recruitment_over_R0
-plot(hake_recruitment_over_R0)
+    # Similar commands work for scaled versions:
+    hake_recruitment_over_2010    # see for details
+    ?hake_recruitment_over_2010
+    plot(hake_recruitment_over_2010)
 
-hake_biomass                  # estimated annual spawning stock biomass
-?hake_biomass                 
-# plot(biomass) not finished yet 
-```
+    hake_recruitment_over_R0
+    ?hake_recruitment_over_R0
+    plot(hake_recruitment_over_R0)
+
+    hake_biomass                  # estimated annual spawning stock biomass
+    ?hake_biomass
+    # plot(biomass) not finished yet
 
 ## Climatic and oceanographic indices
 
-See `?oni` etc. for descriptions. `plot(oni)` etc. somewhat work but not all default options are sensible yet. See `?plot.pacea_index`. 
-```
-oni
-pdo
-soi
-npi_monthly
-npi_annual 
-```
+See `?oni` etc. for descriptions. `plot(oni)` etc. somewhat work but not
+all default options are sensible yet. See `?plot.pacea_index`.
+
+    oni
+    pdo
+    soi
+    npi_monthly
+    npi_annual
 
 # Audience and motivation
 
-The primary audience is stock assessment scientists who want to analyse environmental variables in the context of their stock assessment. The Fisheries Act requires management of fisheries to take into account "[the biology of the fish and the environmental conditions affecting the stock](https://laws-lois.justice.gc.ca/eng/acts/f-14/page-3.html#h-1175547)". Such an Ecosystem Approach to Fisheries Management requires data. 
+The primary audience is stock assessment scientists who want to analyse
+environmental variables in the context of their stock assessment. The
+Fisheries Act requires management of fisheries to take into account
+“[the biology of the fish and the environmental conditions affecting the
+stock](https://laws-lois.justice.gc.ca/eng/acts/f-14/page-3.html#h-1175547)”.
+Such an Ecosystem Approach to Fisheries Management requires data.
 
-A comprehensive [2022 analysis of Canadian stock assessments](https://publications.gc.ca/collections/collection_2022/mpo-dfo/Fs97-6-3473-eng.pdf) found that availability of data on environmental variables was the leading cause of not integrating such information into assessments. pacea aims to help make data availability more streamlined, and avoid each individual assessment scientist having to figure out themselves where to get appropriate data.
+A comprehensive [2022 analysis of Canadian stock
+assessments](https://publications.gc.ca/collections/collection_2022/mpo-dfo/Fs97-6-3473-eng.pdf)
+found that availability of data on environmental variables was the
+leading cause of not integrating such information into assessments.
+pacea aims to help make data availability more streamlined, and avoid
+each individual assessment scientist having to figure out themselves
+where to get appropriate data.
 
-This work is strongly motivated by, and based on, the [GSLea](https://github.com/duplisea/gslea) R package by Dan Duplisea and colleagues for the Gulf of St Lawrence.
+This work is strongly motivated by, and based on, the
+[GSLea](https://github.com/duplisea/gslea) R package by Dan Duplisea and
+colleagues for the Gulf of St Lawrence.
 
 # Rough notes for developers
 
-Below are some rough notes and references from our original planning meeting, so just ignore these. Work is ongoing.
+Below are some rough notes and references from our original planning
+meeting, so just ignore these. Work is ongoing.
 
 ## Geographic area - rough ideas
 
-GSLea has 9 or so Ecosystem Approach Regions. We had some preliminary discussion of how we would define such regions for Pacific Region waters. One point - is there a reason to have them mutually exclusive (i.e. can allow overlapping regions)?
+GSLea has 9 or so Ecosystem Approach Regions. We had some preliminary
+discussion of how we would define such regions for Pacific Region
+waters. One point - is there a reason to have them mutually exclusive
+(i.e. can allow overlapping regions)?
 
-Could we have user-defined polygons? Seems unlikely as would require a lot of computation for some data sets.  
+Could we have user-defined polygons? Seems unlikely as would require a
+lot of computation for some data sets.
 
-Perhaps we can have various spatial scales, with smaller spatial scales being able to be joined to form larger ones if necessary. Possible Goal: Find out what spatial scales on which indices are useful/required for which species.
+Perhaps we can have various spatial scales, with smaller spatial scales
+being able to be joined to form larger ones if necessary. Possible Goal:
+Find out what spatial scales on which indices are useful/required for
+which species.
 
-Pacific Bioregions (too large-scale for our purposes) are shown [here](https://cpawsbc.org/northern-shelf-bioregion/).
+Pacific Bioregions (too large-scale for our purposes) are shown
+[here](https://cpawsbc.org/northern-shelf-bioregion/).
 
 ## Data ideas
 
 Charles: [SST and Chl-a summaries](https://bio-rsg.github.io/).
 
-Several indices were extracted and analysed in Appendix F of a [Pacific Ocean Perch assessment](https://waves-vagues.dfo-mpo.gc.ca/Library/40803569.pdf). See that for links to websites. In the assessment we used:
+Several indices were extracted and analysed in Appendix F of a [Pacific
+Ocean Perch
+assessment](https://waves-vagues.dfo-mpo.gc.ca/Library/40803569.pdf).
+See that for links to websites. In the assessment we used:
 
-- East-Pacific/North-Pacific index
-- Pressure-adjusted sea level anomalies at Prince Rupert
-- Standardized maximum area covered by Haida eddies
-- Aleutian Low Pressure Index
-- Standardized North Pacific Index
-- Pacific Decadal Oscillation
-- North Pacific Gyre Oscillation
-- Oceanic Niño Index
-- Southern Oscillation Index.
-- Aleutian low pressure index
+-   East-Pacific/North-Pacific index
+-   Pressure-adjusted sea level anomalies at Prince Rupert
+-   Standardized maximum area covered by Haida eddies
+-   Aleutian Low Pressure Index
+-   Standardized North Pacific Index
+-   Pacific Decadal Oscillation
+-   North Pacific Gyre Oscillation
+-   Oceanic Niño Index
+-   Southern Oscillation Index.
+-   Aleutian low pressure index
 
-
-Following paper discusses how the Strait of Georgia transitions to Queen Charlotte Sound through Johnstone Strait. 
-It really makes the point that the separation is abrupt not gradual. And thus that somewhere about Chatham Point is a reasonable place to start the Northern Shelf Bioregion (and thus the marine component of the great bear rainforest):
-Dosser, H.V., Waterman, S., Jackson, J.M., Hannah, C.G., Evans, W. and Hunt, B.P.V., [Stark physical and biogeochemical differences and implications for ecosystem stressors in the Northeast Pacific coastal ocean](https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/2020JC017033
-). Journal of Geophysical Research: Oceans, p.e2020JC017033.
-
+Following paper discusses how the Strait of Georgia transitions to Queen
+Charlotte Sound through Johnstone Strait. It really makes the point that
+the separation is abrupt not gradual. And thus that somewhere about
+Chatham Point is a reasonable place to start the Northern Shelf
+Bioregion (and thus the marine component of the great bear rainforest):
+Dosser, H.V., Waterman, S., Jackson, J.M., Hannah, C.G., Evans, W. and
+Hunt, B.P.V., [Stark physical and biogeochemical differences and
+implications for ecosystem stressors in the Northeast Pacific coastal
+ocean](https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/2020JC017033).
+Journal of Geophysical Research: Oceans, p.e2020JC017033.
 
 ## Other thoughts stemming from 13/10/21 planning meeting
 
-GSLea - some people wanted stock assessment output to be included in the package, some were strongly against.
+GSLea - some people wanted stock assessment output to be included in the
+package, some were strongly against.
 
-Could be good to have uncertainties associated with these indices, where possible.
+Could be good to have uncertainties associated with these indices, where
+possible.
 
 Main structure in GSLea is simply the four headings:
 
-| Year | Ecosystem Approach Region | Variable | Value |
+Year \| Ecosystem Approach Region \| Variable \| Value \|
 
 ## Notes for developers
 
@@ -141,10 +194,64 @@ Lower case as much as possible, with underscores.
 
 Document everything.
 
-Add unit tests as much as possible (though not for functions that might not end up being used).
+Add unit tests as much as possible (though not for functions that might
+not end up being used).
 
-Add examples in functions, and vignettes (once we've finalised some aspects).
+Add examples in functions, and vignettes (once we’ve finalised some
+aspects).
 
 ## Funding
 
-This work is funded by a Competitive Science Research Fund grant from Fisheries and Oceans Canada.
+This work is funded by a Competitive Science Research Fund grant from
+Fisheries and Oceans Canada.
+
+Below is from the default from `use_readme_rmd()`.
+<!-- badges: start --> <!-- badges: end -->
+
+The goal of pacea is to …
+
+## Installation
+
+You can install the development version of pacea from
+[GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("pbs-assess/pacea")
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+``` r
+library(pacea)
+## basic example code
+```
+
+What is special about using `README.Rmd` instead of just `README.md`?
+You can include R chunks like so:
+
+``` r
+summary(cars)
+#>      speed           dist       
+#>  Min.   : 4.0   Min.   :  2.00  
+#>  1st Qu.:12.0   1st Qu.: 26.00  
+#>  Median :15.0   Median : 36.00  
+#>  Mean   :15.4   Mean   : 42.98  
+#>  3rd Qu.:19.0   3rd Qu.: 56.00  
+#>  Max.   :25.0   Max.   :120.00
+```
+
+You’ll still need to render `README.Rmd` regularly, to keep `README.md`
+up-to-date. `devtools::build_readme()` is handy for this. You could also
+use GitHub Actions to re-render `README.Rmd` every time you push. An
+example workflow can be found here:
+<https://github.com/r-lib/actions/tree/v1/examples>.
+
+You can also embed plots, for example:
+
+<img src="man/figures/README-pressure-1.png" width="100%" />
+
+In that case, don’t forget to commit and push the resulting figure
+files, so they display on GitHub and CRAN.
