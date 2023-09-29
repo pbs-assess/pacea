@@ -1,5 +1,8 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- build_readme() will build this when developing, but installs pacea from -->
+<!-- scratch (and it might not be the local version) so it's much quicker to do -->
+<!-- rmarkdown::render("README.Rmd") -->
 
 # pacea
 
@@ -26,7 +29,8 @@ cited as appropriate.
 # Installation
 
 We are still developing pacea, and so it is not meant to be fully
-operational yet. To install the latest version:
+operational yet. We plan to release it in October 2023. To install the
+latest version:
 
     install.packages("remotes")    # If you do not already have the "remotes" package
 
@@ -53,7 +57,14 @@ viewed.
 
 ------------------------------------------------------------------------
 
-STOP reading here - rest needs updating.
+STOP reading here - rest needs updating and is being modified.
+
+<details>
+<summary>
+Collapsible heading
+</summary>
+This text should be hidden until user clicks on the arrow
+</details>
 
 TODO - rewrite all the following, giving some simple examples and
 referring to vignettes once we’ve finished those or Issues.
