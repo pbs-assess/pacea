@@ -20,17 +20,73 @@ operationalise an ecosystem approach to fisheries management.
 
 pacea stands for PACific Ecosystem Approach.
 
-pacea is intended to be a data platform containing somewhat disparate
-data sets. We wrangle the data sets behind the scenes to get them into
-usable formats in R, and provide helpful plotting functions. All data
-sets include documentation regarding the original authors, who should be
-cited as appropriate.
+pacea is a data platform containing somewhat a variety of data sets. We
+wrangle the data sets behind the scenes to get them into usable formats
+in R, and provide helpful plotting functions. All data sets include
+documentation regarding the original authors, who should be cited as
+appropriate.
+
+# What is in pacea?
+
+Currently, pacea contains:
+
+-   201,641 records of daily sea surface temperature measurements from
+    19 buoys.
+
+-   output from the British Columbia TODO model, including:
+
+    -   list each variable
+    -   list each depth
+
+-   NOAA’s spatial Optimum Interpolation Sea Surface Temperature record,
+    that incorporates observations from different platforms (satellites,
+    ships, buoys and Argo floats).
+
+-   climatic and oceanographic indices, such as the Pacific Decadal
+    Oscillation and those related to El Niño
+
+-   estimates of abundances of Harbour Seals and Pacific Hake
+
+# Brief examples of some questions that can be quickly investigated
+
+How does this year’s sea surface temperature (red curve) in North Hecate
+Strait compare to previous years, based on the buoy there?
+
+``` r
+plot(buoy_sst, stn_id = "C46183")
+```
+
+<img src="man/figures/README-northhecatetemp-1.png" width="100%" />
+
+TODO Take some examples from other vignettes
+
+Are we entering a phase of El Niño, based on the Oceanic Niño Index? (If
+the last bars are red, then ‘yes’)
+
+``` r
+plot(oni)
+```
+
+<img src="man/figures/README-oni-1.png" width="100%" />
+
+What the status of the Pacific Decadal Oscillation?
+
+``` r
+plot(pdo)
+```
+
+<img src="man/figures/README-pdo-1.png" width="100%" />
+
+See the vignettes (TODO link to rendered versions once we push them) for
 
 # Installation
 
 We are still developing pacea, and so it is not meant to be fully
-operational yet. We plan to release it in October 2023. To install the
-latest version:
+operational yet (though it builds and can be used). We plan to release
+it in October 2023, after which we will ensure back compatibility and
+give updates on the NEWS page.
+
+To install the latest version:
 
     install.packages("remotes")    # If you do not already have the "remotes" package
 
@@ -54,6 +110,8 @@ another GitHub branch). You can try the option `build_vignettes = TRUE`
 if you like and look at the vignettes the usual way. Once we finalise
 the vignettes we will provide the `html` version on GitHub to be easily
 viewed.
+
+</details>
 
 ------------------------------------------------------------------------
 
@@ -133,30 +191,7 @@ This work is strongly motivated by, and based on, the
 [GSLea](https://github.com/duplisea/gslea) R package by Dan Duplisea and
 colleagues for the Gulf of St Lawrence.
 
-# Rough notes for developers
-
-Below are some rough notes and references from our original planning
-meeting, so just ignore these. Work is ongoing.
-
-## Geographic area - rough ideas
-
-GSLea has 9 or so Ecosystem Approach Regions. We had some preliminary
-discussion of how we would define such regions for Pacific Region
-waters. One point - is there a reason to have them mutually exclusive
-(i.e. can allow overlapping regions)?
-
-Could we have user-defined polygons? Seems unlikely as would require a
-lot of computation for some data sets.
-
-Perhaps we can have various spatial scales, with smaller spatial scales
-being able to be joined to form larger ones if necessary. Possible Goal:
-Find out what spatial scales on which indices are useful/required for
-which species.
-
-Pacific Bioregions (too large-scale for our purposes) are shown
-[here](https://cpawsbc.org/northern-shelf-bioregion/).
-
-## Data ideas
+## Further data ideas (old - will move to Issue)
 
 Charles: [SST and Chl-a summaries](https://bio-rsg.github.io/).
 
@@ -187,82 +222,28 @@ implications for ecosystem stressors in the Northeast Pacific coastal
 ocean](https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/2020JC017033).
 Journal of Geophysical Research: Oceans, p.e2020JC017033.
 
-## Other thoughts stemming from 13/10/21 planning meeting
-
-GSLea - some people wanted stock assessment output to be included in the
-package, some were strongly against.
-
-Could be good to have uncertainties associated with these indices, where
-possible.
-
-Main structure in GSLea is simply the four headings:
-
-Year \| Ecosystem Approach Region \| Variable \| Value \|
-
-## Notes for developers
-
-Lower case as much as possible, with underscores.
-
-Document everything.
-
-Add unit tests as much as possible (though not for functions that might
-not end up being used).
-
-Add examples in functions, and vignettes (once we’ve finalised some
-aspects).
-
 ## Funding
 
 This work is funded by a Competitive Science Research Fund grant from
 Fisheries and Oceans Canada.
 
-Below is from the default from `use_readme_rmd()`.
-<!-- badges: start --> <!-- badges: end -->
+# For developers
 
-The goal of pacea is to …
+Edit and render the README.Rmd file, not the README.Md file. If you add
+any new figures then commit and push them (they will be in
+man/figures/README-<chunk-name>) so they show up on the GitHub README.
+Always render the .Rmd so that it and the rendered .Md stay in sync.
 
-## Installation
+There is the option (haven’t looked into yet) of using GitHub Actions to
+re-render `README.Rmd` every time you push. An example workflow can be
+found here: <https://github.com/r-lib/actions/tree/v1/examples>. But,
+it’s generally best to check things locally first before pushing.
 
-You can install the development version of pacea from
-[GitHub](https://github.com/) with:
+Every data set is built using code in the `raw-data/` directory, with
+documentation in `R/data.R`. Document everything!
 
-``` r
-# install.packages("devtools")
-devtools::install_github("pbs-assess/pacea")
-```
+If you add new functions please add tests as well so we retain good code
+coverage.
 
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-``` r
-library(pacea)
-## basic example code
-```
-
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
-
-``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
-```
-
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this. You could also
-use GitHub Actions to re-render `README.Rmd` every time you push. An
-example workflow can be found here:
-<https://github.com/r-lib/actions/tree/v1/examples>.
-
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
+Use the standard `lower_case_and_underscores` for naming variables and
+functions.
