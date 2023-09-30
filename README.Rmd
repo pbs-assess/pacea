@@ -12,7 +12,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "100%"
+  out.width = "60%"
 )
 ```
 
@@ -34,6 +34,10 @@ sets. We wrangle the data sets behind the scenes to get them into usable formats
 in R, and provide helpful plotting functions. All data sets include
 documentation regarding the original authors, who should be cited as
 appropriate.
+
+Under development -- feel free to install and get using, but be aware that
+code may change. We will officially release it in October 2023, after which we
+will ensure back compatibility with earlier versions.
 
 # What is in pacea?
 

@@ -26,6 +26,10 @@ in R, and provide helpful plotting functions. All data sets include
 documentation regarding the original authors, who should be cited as
 appropriate.
 
+Under development – feel free to install and get using, but be aware
+that code may change. We will officially release it in October 2023,
+after which we will ensure back compatibility with earlier versions.
+
 # What is in pacea?
 
 Currently, pacea contains:
@@ -56,7 +60,7 @@ Strait compare to previous years, based on the buoy there?
 plot(buoy_sst, stn_id = "C46183")
 ```
 
-<img src="man/figures/README-northhecatetemp-1.png" width="100%" />
+<img src="man/figures/README-northhecatetemp-1.png" width="60%" />
 
 TODO Take some examples from other vignettes
 
@@ -67,7 +71,7 @@ the last bars are red, then ‘yes’)
 plot(oni)
 ```
 
-<img src="man/figures/README-oni-1.png" width="100%" />
+<img src="man/figures/README-oni-1.png" width="60%" />
 
 What the status of the Pacific Decadal Oscillation?
 
@@ -75,7 +79,7 @@ What the status of the Pacific Decadal Oscillation?
 plot(pdo)
 ```
 
-<img src="man/figures/README-pdo-1.png" width="100%" />
+<img src="man/figures/README-pdo-1.png" width="60%" />
 
 See the vignettes (TODO link to rendered versions once we push them) for
 
