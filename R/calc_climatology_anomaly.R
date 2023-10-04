@@ -47,7 +47,7 @@ calc_clim <- function(data, clim_years = c(1991:2020), clim_time = "month", time
                             month.abb = month.abb,
                             month.num = 1:12)
   
-  stopifnot("'clim_time' must have a value of 'month' or 'week" = clim_time %in% c("month", "week"))
+  stopifnot("'clim_time' must have a value of 'month' or 'week'" = clim_time %in% c("month", "week"))
   
   # clim_time is irrelevant if class != pacea_buoy
   if("pacea_st" %in% class(data)) clim_time <- "month"
@@ -129,6 +129,12 @@ calc_clim <- function(data, clim_years = c(1991:2020), clim_time = "month", time
                   clim_n = sum(!is.na(sst_n))) %>% 
         ungroup() %>%
         relocate(geometry, .after = last_col()) 
+    }
+    
+    # warning for climatology not equal to full 30 years specified
+    dat.years <- unique(data$year)
+    if(!all(clim_years %in% dat.years)) {
+      warning(paste0("Number of years for climatology only span ", length(dat.years)," years:", min(dat.years), " to ", max(dat.years)))
     }
     
     class(out) <- c("pacea_oiclim", "sf", "tbl_df", "tbl", "data.frame")
