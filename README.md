@@ -34,22 +34,28 @@ after which we will ensure back compatibility with earlier versions.
 
 Currently, pacea contains:
 
--   201,641 records of daily sea surface temperature measurements from
-    19 buoys.
+- 201,641 records of daily sea surface temperature measurements from 19
+  buoys.
 
--   output from the British Columbia TODO model, including:
+- outputs from the British Columbia continental margin (BCCM) model,
+  including:
 
-    -   list each variable
-    -   list each depth
+  - dissolved oxygen concentration, pH, salinity, and temperature at
+    various depths, as well as surface phytoplankton and primary
+    production.
+  - various depth intervals (for applicable variables) are: surface,
+    bottom, 0m - 40m depth, 40m - 100m depth, and 100m to bottom depth.
 
--   NOAA’s spatial Optimum Interpolation Sea Surface Temperature record,
-    that incorporates observations from different platforms (satellites,
-    ships, buoys and Argo floats).
+- NOAA’s spatial Optimum Interpolation Sea Surface Temperature (OISST)
+  record, that incorporates observations from different platforms
+  (satellites, ships, buoys and Argo floats).
 
--   climatic and oceanographic indices, such as the Pacific Decadal
-    Oscillation and those related to El Niño
+  - OISST data are provided as 7-day and monthly means
 
--   estimates of abundances of Harbour Seals and Pacific Hake
+- climatic and oceanographic indices, such as the Pacific Decadal
+  Oscillation and those related to El Niño
+
+- estimates of abundances of Harbour Seals and Pacific Hake
 
 # Brief examples of some questions that can be quickly investigated
 
@@ -204,16 +210,16 @@ Ocean Perch
 assessment](https://waves-vagues.dfo-mpo.gc.ca/Library/40803569.pdf).
 See that for links to websites. In the assessment we used:
 
--   East-Pacific/North-Pacific index
--   Pressure-adjusted sea level anomalies at Prince Rupert
--   Standardized maximum area covered by Haida eddies
--   Aleutian Low Pressure Index
--   Standardized North Pacific Index
--   Pacific Decadal Oscillation
--   North Pacific Gyre Oscillation
--   Oceanic Niño Index
--   Southern Oscillation Index.
--   Aleutian low pressure index
+- East-Pacific/North-Pacific index
+- Pressure-adjusted sea level anomalies at Prince Rupert
+- Standardized maximum area covered by Haida eddies
+- Aleutian Low Pressure Index
+- Standardized North Pacific Index
+- Pacific Decadal Oscillation
+- North Pacific Gyre Oscillation
+- Oceanic Niño Index
+- Southern Oscillation Index.
+- Aleutian low pressure index
 
 Following paper discusses how the Strait of Georgia transitions to Queen
 Charlotte Sound through Johnstone Strait. It really makes the point that
