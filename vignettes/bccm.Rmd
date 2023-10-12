@@ -10,10 +10,15 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # BCCM data from `pacea`
+This vignette provides information on the BCCM model data and an introduction to
+how to download and use the data from `pacea`.
 
-This vignette provides information on the BCCM model data and an introduction to how to download and use the data from `pacea`. 
-
-The British Columbia continental margin (BCCM) model is an ocean circulation-biogeochemical model implementation of the regional ocean modelling system (ROMS). It has a horizontal resolution of 3km x 3km and a vertical discretization based on bathymetry of 42 depth levels increasing in resolution near the surface. These modelled output data were provided by Angelica Pena and the data is further detailed in Pena et al. (2019). 
+The British Columbia continental margin (BCCM) model is an ocean
+circulation-biogeochemical model implementation of the regional ocean modelling
+system (ROMS). It has a horizontal resolution of 3km x 3km and a vertical
+discretization based on bathymetry of 42 depth levels increasing in resolution
+near the surface. These modelled output data were provided by Angelica Pena and
+the data is further detailed in Pena et al. (2019).
 
 ```{r packages}
 # run this if pacea has not been installed
@@ -25,7 +30,10 @@ library(sf)
 library(ggplot2)
 ```
 
-Data have been processed to an inshore 2km x 2km grid, and an offshore 6km x 6km grid. The area for these regions are accessible as polygon data objects `bccm_eez_poly`, `inshore_poly` and `offshore_poly`. They use the 'NAD83/BC Albers' projection. The polygons are `sf` (simple feature) objects.
+Data have been processed to an inshore 2km x 2km grid, and an offshore 6km x 6km
+grid. The area for these regions are accessible as polygon data objects
+`bccm_eez_poly`, `inshore_poly` and `offshore_poly`. They use the 'NAD83/BC
+Albers' projection. The polygons are `sf` (simple feature) objects.
 
 ```{r Polygons}
 bccm_eez_poly  # CRS is NAD 83/ BC Albers
@@ -36,15 +44,16 @@ plot(inshore_poly, col = "green", add = TRUE)
 plot(offshore_poly, col = "blue", add = TRUE)
 ```
 
-To see where these are in relation to the BC coastline and Exclusive Economic Zone (EEZ), we can plot these polygons with `ggplot`.
+To see where these are in relation to the BC coastline and Exclusive Economic
+Zone (EEZ), we can plot these polygons with `ggplot`.
 
 ```{r}
 # BC coast and EEZ shapefile - CRS is WGS 84
-bc_coast 
-bc_eez 
+bc_coast
+bc_eez
 
 # plot
-ggplot() + 
+ggplot() +
   geom_sf(data = bccm_eez_poly, col = "black", lwd = 2) +
   geom_sf(data = inshore_poly, col = NA, fill = "green") +
   geom_sf(data = offshore_poly, col = NA, fill = "blue") +
@@ -52,8 +61,12 @@ ggplot() +
   geom_sf(data = bc_coast)
 
 ```
-NOTE: 
-`ggplot()` recognizes that the projection of bc_coast and bc_eez shapefile (WGS 84) are different from the BCCM shapefiles (NAD 83), and the function will reproject the layers to match the first layer. It also provides the axes units in degrees, regardless of projection. Adding layers with different projections using the base `plot()` function would not work.
+NOTE:
+`ggplot()` recognizes that the projection of bc_coast and bc_eez shapefile (WGS
+84) are different from the BCCM shapefiles (NAD 83), and the function will
+reproject the layers to match the first layer. It also provides the axes units
+in degrees, regardless of projection. Adding layers with different projections
+using the base `plot()` function would not work.
 
 The mixed grid (2km x 2km and 6km x 6km) can also be viewed.
 
@@ -64,9 +77,17 @@ plot(grid26)
 
 ## Downloading BCCM data
 
-The BCCM data were wrangled to simplify data format and structure. Because the data are spatially and temporally resolved, the compressed file size of each variable is fairly large (between 30-40 Mb). To keep the `pacea` package a reasonable downloadable size, the BCCM data are stored in a GitHub repository and can be downloaded locally using functions within `pacea`. An internet connection is required.
+The BCCM data were wrangled to simplify data format and structure. Because the
+data are spatially and temporally resolved, the compressed file size of each
+variable is fairly large (between 30-40 Mb). To keep the `pacea` package a
+reasonable downloadable size, the BCCM data are stored in a GitHub repository
+and can be downloaded locally using functions within `pacea`. An internet
+connection is required.
 
-The list of variables of the BCCM data available can be viewed from the list `bccm_data`. BCCM data can be accessed using placeholder functions, named as in `bccm_data`, that download the data to a local cache folder - this directory can be identified using `pacea_cache()`.
+The list of variables of the BCCM data available can be viewed from the list
+`bccm_data`. BCCM data can be accessed using placeholder functions, named as in
+`bccm_data`, that download the data to a local cache folder - this directory can
+be identified using `pacea_cache()`.
 
 View data function help files for more information on bccm data (e.g. `?bccm_bottom_oxygen`)
 
@@ -81,9 +102,11 @@ pacea_cache()
 pdata <- bccm_surface_temperature(force = TRUE)
 ```
 
-If `force = FALSE`, the user will be prompted on whether to download the data to the cache folder. 
+If `force = FALSE`, the user will be prompted on whether to download the data to
+the cache folder.
 
-Once the data has been downloaded into the cache folder, the placeholder function will simply load the data into the current workspace.
+Once the data has been downloaded into the cache folder, the placeholder
+function will simply load the data into the current workspace.
 
 ```{r}
 dim(pdata)
@@ -91,10 +114,13 @@ dim(pdata)
 # the data have 325 columns so we'll just preview the first 5 columns
 head(pdata[, 1:5])
 ```
-NOTE: 
-The geometry column is still included when selecting columns from an `sf` object. 
+NOTE:
+The geometry column is still included when selecting columns from an `sf`
+object.
 
-The data are in wide format, with each column representing a unique year-month combination. The data also have various attributes, such as the units for the data values.
+The data are in wide format, with each column representing a unique year-month
+combination. The data also have various attributes, such as the units for the
+data values.
 
 ```{r}
 # names of the various attributes
@@ -104,7 +130,8 @@ names(attributes(pdata))
 attributes(pdata)$units
 ```
 
-The class of BCCM data is a `pacea_st` object, in addition to sf, tbl, and dataframe objects.
+The class of BCCM data is a `pacea_st` object, in addition to sf, tbl, and
+dataframe objects.
 
 ```{r}
 class(pdata)
@@ -112,23 +139,34 @@ class(pdata)
 
 ## Updating BCCM data
 
-When you download BCCM data, the most recent version of the data will be downloaded to your cache folder. 
+When you download BCCM data, the most recent version of the data will be
+downloaded to your cache folder.
 
-Occasionally, there will be updates to the BCCM data (e.g. adding data from more recent years). If you want to check for an update for a data file you have already downloaded to the pacea_cache directory:
+Occasionally, there will be updates to the BCCM data (e.g. adding data from more
+recent years). If you want to check for an update for a data file you have
+already downloaded to the pacea_cache directory:
 
 ```{r}
 pdata <- bccm_surface_temperature(update = TRUE)
 ```
 
-If there is an update available, you will be prompted on whether to download the data and replace the older version you have in the pacea cache directory. If declined, the current version of the data will be loaded to the workspace.
+If there is an update available, you will be prompted on whether to download the
+data and replace the older version you have in the pacea cache directory. If
+declined, the current version of the data will be loaded to the workspace.
 
 ## BCCM visualization
 
-Here, we plot the BCCM data using some built in package functions, as well as `ggplot2`. We introduce some of the available polygon simple feature layers that can be plotted with the BCCM data.
+Here, we plot the BCCM data using some built in package functions, as well as
+`ggplot2`. We introduce some of the available polygon simple feature layers that
+can be plotted with the BCCM data.
 
 ### Plotting with `plot()`
 
-BCCM data can be plotted using the `plot()` function for a quick view of the data. We used the generic `plot` function for BCCM class data and integrated ggplot functionality. The default settings are to plot the April, 2018. However, users can specify any time period(s) available in the data (see e.g. `?bccm_surface_temperature` for details on BCCM data).
+BCCM data can be plotted using the `plot()` function for a quick view of the
+data. We used the generic `plot` function for BCCM class data and integrated
+ggplot functionality. The default settings are to plot the April, 2018. However,
+users can specify any time period(s) available in the data (see
+e.g. `?bccm_surface_temperature` for details on BCCM data).
 
 ```{r}
 # data should already be downloaded to cache folder
@@ -137,7 +175,8 @@ pdata <- bccm_surface_temperature()
 plot(pdata)
 ```
 
-Other months and years can be selected, and month selections can be done with abbreviations, full names, or numbers.
+Other months and years can be selected, and month selections can be done with
+abbreviations, full names, or numbers.
 
 ```{r}
 plot(pdata, months = c("June", "September"), years = c(1995, 2010, 2019))
@@ -151,7 +190,7 @@ The BC coastline and Exclusive Economic Zone (EEZ) can also be excluded.
 plot(pdata, months = c("September"), years = c(2019), bc = FALSE, eez = FALSE)
 ```
 
-The different BCCM variables available are assigned different colour palettes  
+The different BCCM variables available are assigned different colour palettes
 
 ```{r}
 # not run
@@ -162,9 +201,11 @@ The different BCCM variables available are assigned different colour palettes
 
 ### More customizations and using ggplot
 
-Using `ggplot2` is recommended if you would like to customize the plots further especially for multipanel plots. 
+Using `ggplot2` is recommended if you would like to customize the plots further especially for multipanel plots.
 
-Since the data are in wide format, it needs to be wrangled into long format for `ggplot()`. There is a built in 'pacea' function for wrangling BCCM data to long format.
+Since the data are in wide format, it needs to be wrangled into long format for
+`ggplot()`. There is a built in 'pacea' function for wrangling BCCM data to long
+format.
 
 ```{r}
 # months and years of interest
@@ -190,7 +231,7 @@ p1
 Customize colour scale for plot and add legend label
 
 ```{r}
-p1 <- p1 + 
+p1 <- p1 +
   scale_fill_gradientn(colours = c("blue", "grey", "red"), name = attributes(pdata)$units)
 
 p1
@@ -199,41 +240,46 @@ p1
 Adding BC coast layer and BC EEZ layer
 
 ```{r}
-p2 <- p1 + 
-  geom_sf(data = bc_eez, fill = NA, lty = 2) + 
+p2 <- p1 +
+  geom_sf(data = bc_eez, fill = NA, lty = 2) +
   geom_sf(data = bc_coast)
 
 p2
 ```
 
-NOTE: 
-Again, `ggplot()` recognizes that the projection of bc_coast and bc_eez shapefile (WGS 84) are different than the BCCM data (NAD 83), and will reproject the layers to match the first layer.
+NOTE:
+Again, `ggplot()` recognizes that the projection of bc_coast and bc_eez
+shapefile (WGS 84) are different than the BCCM data (NAD 83), and will reproject
+the layers to match the first layer.
 
-You can customize the plot using typical ggplot syntax (see `?ggplot` for more information)
+You can customize the plot using typical ggplot syntax (see `?ggplot` for more
+information)
 
 ```{r}
-p2 + 
-  theme_classic() + 
+p2 +
+  theme_classic() +
   theme(strip.background = element_blank()) +
-  ggtitle("Sea surface temperature") 
+  ggtitle("Sea surface temperature")
 ```
 
 ### Masking data with shapefile
 
-We can select an area of interest by masking the data with another `sf` shapefile, such as for a fishing region using indexing syntax. Below is an example using coordinates from DFO fish area 126.
+We can select an area of interest by masking the data with another `sf`
+shapefile, such as for a fishing region using indexing syntax. Below is an
+example using coordinates from DFO fish area 126.
 
 ```{r create sf polygon}
 # coordinates for polygon (i.e. fishing area 126)
 crds <- list(matrix(c(-127.1506, -128.2331, -129.3492, -127.9167, -127.1847, -126.8200, -127.1506,
-                      49.85766, 49.00000, 48.99991, 50.11915, 50.40183, 50.24466, 49.85766), 
+                      49.85766, 49.00000, 48.99991, 50.11915, 50.40183, 50.24466, 49.85766),
                     ncol = 2))
 
 # create polygon object with lat-lon WGS 84 projection (4326) and convert to sf object with BC Albers (3005) projection
-a126 <- st_sfc(st_polygon(crds), crs = 4326) %>% 
+a126 <- st_sfc(st_polygon(crds), crs = 4326) %>%
   st_as_sf() %>%
   st_transform(crs = 3005)
 
-# mask data by indexing sf object with area 126 shapefile 
+# mask data by indexing sf object with area 126 shapefile
 reg.dat <- sub.dat[a126, ]
 
 # reduction in number of data points after subsetting the region
@@ -247,24 +293,26 @@ The data went from 123,864 rows to 4,821 rows, which is a much smaller region.
 # plot panel of data
 reg.p1 <- ggplot(data = reg.dat) +
   geom_sf(aes(fill = value), col = NA) +
-  facet_grid(month~year) + 
+  facet_grid(month~year) +
   scale_fill_gradientn(colours = c("blue", "grey", "red"), name = attributes(pdata)$units)
 
 reg.p1
 ```
 
-Now to plot it with the `bc_coast` shapefile to see where this region is in relation to the coastline.
+Now to plot it with the `bc_coast` shapefile to see where this region is in
+relation to the coastline.
 
 ```{r}
 # add bc_coast layer and polygon boundary in red
-reg.p2 <- reg.p1 + 
+reg.p2 <- reg.p1 +
   geom_sf(data = a126, fill = NA, col= "red") +
   geom_sf(data = bc_coast)
 
 reg.p2
 ```
 
-Let's zoom to the area of interest, in this case our polygon that represents Area 126.
+Let's zoom to the area of interest, in this case our polygon that represents
+Area 126.
 
 ```{r}
 # identify extent of polygon with a 50 km buffer
@@ -272,18 +320,22 @@ tbbox <- st_bbox(st_buffer(a126, dist = 50000))
 tbbox
 
 # use the bounding box to set the plotting limits
-reg.p2 + 
-  coord_sf(xlim = c(tbbox[c(1,3)]), 
+reg.p2 +
+  coord_sf(xlim = c(tbbox[c(1,3)]),
            ylim = c(tbbox[c(2,4)]))
 ```
 
 ## Wrangling BCCM data
 
-Here are some examples of how to easy wrangle BCCM data that may be of interest in your analyses. We will continue to use `pdata` which was the `bccm_surface_temperature()` data we loaded to the workspace.
+Here are some examples of how to easy wrangle BCCM data that may be of interest
+in your analyses. We will continue to use `pdata` which was the
+`bccm_surface_temperature()` data we loaded to the workspace.
 
 ### Obtain centroids of each cell
 
-Currently, the BCCM data are simple feature (sf) objects of polygons (gridded square cells). The polygon boundaries are identified by coordinates for the perimeter of the cell. We can also obtain the centroids of each cell.
+Currently, the BCCM data are simple feature (sf) objects of polygons (gridded
+square cells). The polygon boundaries are identified by coordinates for the
+perimeter of the cell. We can also obtain the centroids of each cell.
 
 ```{r}
 # First let's subset the data to reduce process time
@@ -302,11 +354,13 @@ centroid.dat <- tdat %>% st_centroid()
 head(centroid.dat)
 ```
 
-Notice that the geometry column are now `POINT`, instead of `POLYGON`. This is now the centre of each polygon grid cell.
+Notice that the geometry column are now `POINT`, instead of `POLYGON`. This is
+now the centre of each polygon grid cell.
 
 ### Extract specific time periods
 
-Wrangle data to select months of interest and convert into long format for easy wrangling.
+Wrangle data to select months of interest and convert into long format for easy
+wrangling.
 
 ```{r}
 # months and years of interest
@@ -324,14 +378,17 @@ sub.dat <- pacea_long(tdat)
 
 ### Extract data using coordinates
 
-We can extract the spatial data using coordinates of interest. We can use the same indexing to extract gridded cells where the coordinate data fall into. This could be used to compare the modelled BCCM data with field observations.
+We can extract the spatial data using coordinates of interest. We can use the
+same indexing to extract gridded cells where the coordinate data fall into. This
+could be used to compare the modelled BCCM data with field observations.
 
-We'll use the location of data buoys. There is a list of buoys and locations in this pacakge, named as object: `buoy_metadata`.
+We'll use the location of data buoys. There is a list of buoys and locations in
+this pacakge, named as object: `buoy_metadata`.
 
 ```{r}
 buoy_metadata
 
-# Let's use the La Perouse Bank location 
+# Let's use the La Perouse Bank location
 lat <- buoy_metadata$latitude[which(buoy_metadata$name == "La Perouse Bank")]
 lon <- buoy_metadata$longitude[which(buoy_metadata$name == "La Perouse Bank")]
 
@@ -350,7 +407,7 @@ We can plot the time series to look at seasonal trends at this location.
 ```{r}
 point.dat %>%
   mutate(year = as.factor(year)) %>%  # set year to a factor so each line is plotted separately
-  ggplot() + 
+  ggplot() +
   geom_line(aes(x = month, y = value, col = year)) +
   scale_y_continuous(name = attributes(pdata)$units)
 ```
@@ -361,7 +418,7 @@ Any trends are difficult to see, so let's revise the colour scheme
 point.dat  %>%
   mutate(year = as.factor(year)) %>%
   ggplot() +
-  geom_line(aes(x = month, y = value, col = as.factor(year))) + 
+  geom_line(aes(x = month, y = value, col = as.factor(year))) +
   scale_color_manual(values = colorRampPalette(c("blue", "green", "yellow"))(27), name = "year") +
   scale_y_continuous(name = attributes(pdata)$units)
 ```
@@ -381,34 +438,39 @@ point.dat %>%
   filter(year >= 2010) %>%
   mutate(year = as.factor(year)) %>%
   ggplot() +
-  geom_line(aes(x = month, y = value, col = as.factor(year))) + 
+  geom_line(aes(x = month, y = value, col = as.factor(year))) +
   geom_line(data = sum.dat, aes(x = month, y = median_val), col = "black", linewidth = 2) +
   scale_color_manual(values = colorRampPalette(c("blue", "green", "yellow"))(10), name = "year") +
   scale_y_continuous(name = attributes(pdata)$units)
 ```
 
-There is a general pattern of more recent years being slightly warmer, especially in the summer.
+There is a general pattern of more recent years being slightly warmer,
+especially in the summer.
 
-We can also plot the historical distribution of values and select a specific year to plot. Let's plot 2014, when "The Blob" was around in the Pacific
+We can also plot the historical distribution of values and select a specific
+year to plot. Let's plot 2014, when "The Blob" was around in the Pacific
 
 ```{r}
 # plot to view seasonal trends across years
 point.dat %>%
   filter(year == 2014) %>%
   ggplot() +
-  geom_line(aes(x = month, y = value), col = "red") + 
+  geom_line(aes(x = month, y = value), col = "red") +
   geom_line(data = sum.dat, aes(x = month, y = median_val), col = "black") +
   geom_line(data = sum.dat, aes(x = month, y = q05), col = "grey", linetype = 2) +
-  geom_line(data = sum.dat, aes(x = month, y = q95), col = "grey", linetype = 2) 
+  geom_line(data = sum.dat, aes(x = month, y = q95), col = "grey", linetype = 2)
 ```
 
-While not the warmest during the 1993-2019 period in the summer months, it was above the median for most of the year.
+While not the warmest during the 1993-2019 period in the summer months, it was
+above the median for most of the year.
 
 ### Calculating climatogy and anomaly of BCCM data
 
-The `pacea` package has some built in functions to calculate climatologies and anomalies of the geospatial BCCM data. These functions can be customized to return specific data. See help files for details of functions.
+The `pacea` package has some built in functions to calculate climatologies and
+anomalies of the geospatial BCCM data. These functions can be customized to
+return specific data. See help files for details of functions.
 
-First, let's calculate a climatology, which returns data in long format. 
+First, let's calculate a climatology, which returns data in long format.
 
 ```{r}
 # help file for function
@@ -428,7 +490,9 @@ head(clim_sst)
 head(clim_sst_sub)
 ```
 
-Next, we can calculate the anomalies of the data, relative to the climatological mean. This functions returns the data in wide format, which is the same format the input data (i.e. pdata).
+Next, we can calculate the anomalies of the data, relative to the climatological
+mean. This functions returns the data in wide format, which is the same format
+the input data (i.e. pdata).
 
 ```{r}
 # help file for function
@@ -439,10 +503,13 @@ anom_sst <- calc_anom(pdata)
 head(anom_sst)
 ```
 
-Arguments for the anomaly function allow users to specify the climatological reference period and the months and/or years to return as anomaly data
+Arguments for the anomaly function allow users to specify the climatological
+reference period and the months and/or years to return as anomaly data
 
 ```{r}
-anom_sst_sub <- calc_anom(pdata, clim_years = c(1993:2019), time_period_return = c("Apr", "9"), years_return = c(2010, 2019))
+anom_sst_sub <- calc_anom(pdata, clim_years = c(1993:2019),
+                          time_period_return = c("Apr", "9"),
+                          years_return = c(2010, 2019))
 
 head(anom_sst_sub)
 ```
@@ -454,19 +521,27 @@ Anomaly data can also be plotted using built in generic functions in `pacea`.
 plot(anom_sst_sub)
 ```
 
-The plotting default is for the most recent time period in the data available. We can also specify the months and years to plot as a facet plot.
+The plotting default is for the most recent time period in the data
+available. We can also specify the months and years to plot as a facet plot.
 
 ```{r}
-plot(anom_sst_sub, months.plot = c("Apr", "Sep"), years.plot = c(2010, 2019))
+plot(anom_sst_sub,
+     months.plot = c("Apr", "Sep"),
+     years.plot = c(2010, 2019))
 ```
 
 We have also incorporated the ability to add climatological data to the plot, which creates contour lines showing the anomaly areas that are above (or below for other variables) the 90th and 99th percentile of data.
 
 ```{r}
 # there may be warnings that arise from the interpolation of the contour lines
-plot(anom_sst_sub, months.plot = c("Apr", "Sep"), years.plot = c(2010, 2019), clim.dat = clim_sst_sub)
+plot(anom_sst_sub,
+     months.plot = c("Apr", "Sep"),
+     years.plot = c(2010, 2019),
+     clim.dat = clim_sst_sub)
 ```
 
-## References 
+## References
 
-Peña, M.A., Fine, I. and Callendar, W. 2019. Interannual variability in primary production and shelf-offshore transport of nutrients along the northeast Pacific Ocean margin. Deep-Sea Research II, doi:10.1016/j.dsr2.2019.104637.
+Peña, M.A., Fine, I. and Callendar, W. 2019. Interannual variability in primary
+production and shelf-offshore transport of nutrients along the northeast Pacific
+Ocean margin. Deep-Sea Research II, doi:10.1016/j.dsr2.2019.104637.
