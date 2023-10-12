@@ -37,14 +37,17 @@ Currently, pacea contains:
 - 201,641 records of daily sea surface temperature measurements from 19
   buoys.
 
-- outputs from the British Columbia continental margin (BCCM) model,
-  including:
+- outputs from the spatial British Columbia continental margin (BCCM)
+  model, including:
 
   - dissolved oxygen concentration, pH, salinity, and temperature at
     various depths, as well as surface phytoplankton and primary
     production.
-  - various depth intervals (for applicable variables) are: surface,
-    bottom, 0m - 40m depth, 40m - 100m depth, and 100m to bottom depth.
+  - various depth intervals (for applicable variables): surface, bottom,
+    0m - 40m depth, 40m - 100m depth, and 100m to bottom depth.
+  - gridded to 2km x 2km inshore and 6km x 6km offshore for a total of
+    40,580 cells across the Canada’s Pacific EEZ
+  - monthly means from 1993 to 2019
 
 - NOAA’s spatial Optimum Interpolation Sea Surface Temperature (OISST)
   record, that incorporates observations from different platforms
@@ -86,6 +89,15 @@ plot(pdo)
 ```
 
 <img src="man/figures/README-pdo-1.png" width="60%" />
+
+What were the differences in spatial pattern of sea surface temperature
+in the Pacific between June 2022 and 2023?
+
+``` r
+plot(oisst_month, months.plot = "June", years.plot = c(2022, 2023))
+```
+
+<img src="man/figures/README-oisst-1.png" width="60%" />
 
 See the vignettes (TODO link to rendered versions once we push them) for
 
