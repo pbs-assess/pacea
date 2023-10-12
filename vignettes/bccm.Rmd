@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# BCCM results from `pacea`
+# Introduction
 
 The British Columbia Continental Margin (BCCM) model is a
 physical biogeochemical oceanographic model, implemented using the Regional Ocean Modeling
@@ -31,6 +31,8 @@ near the surface. The BCCM data in `pacea` are adapted from results
 provided by Angelica Peña at the Institute of Ocean Sciences (Fisheries and
 Oceans Canada). For model details see Peña et al. (2019), which
 should be cited if you use the results.
+
+The results are available are TODO get from README, Travis has updated it.
 
 This vignette describes the BCCM results that are available in `pacea`, and
 how to use and plot them for your own analyses.
@@ -98,7 +100,7 @@ plot(grid26)
 All data objects in `pacea` have help files associated with them, viewed with,
 for example, `?bccm_eez_poly`.
 
-## Spatial resolution of the bccm results in pacea - reordered version TODO
+## Spatial resolution of the bccm results in pacea - reordered version TODO (keep this or first one)
 
 First, `pacea` contains the objects `bc_coast` and `bc_eez`, to show the
 coastline and Canadian Exclusive Economic Zone (EEZ) off British Columbia. These
@@ -158,7 +160,8 @@ results are spatially and temporally resolved, the compressed file size of each
 variable is fairly large (between 30-40 Mb). To keep the `pacea` package a
 reasonable downloadable size, the BCCM results are stored in a separate GitHub repository
 (https://github.com/pbs-assess/pacea-data) and can be downloaded locally using
-functions within `pacea` (requiring internet access).
+functions within `pacea` (obviously requiring internet access). The downloading
+is only needed once as the files get cached locally on your computer.
 
 The list of variables of the BCCM results available can be viewed from the list
 `bccm_data`. BCCM results can be accessed using placeholder functions, named as in
