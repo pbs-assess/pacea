@@ -1,58 +1,78 @@
 ---
-title: "BCCM Data"
+title: "BCCM Results"
 author: "Travis Tai"
-output: html_document
-date: "2023-06-19"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{BCCM Results}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+<!-- To build either run
+   rmarkdown::render("bccm.Rmd")
+ or click the knit button in RStudio -->
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#",
+  fig.width = 5.7,
+  fig.height = 5
+)
 ```
 
-# BCCM data from `pacea`
-This vignette provides information on the BCCM model data and an introduction to
-how to download and use the data from `pacea`.
+# BCCM results from `pacea`
 
-The British Columbia continental margin (BCCM) model is an ocean
-circulation-biogeochemical model implementation of the regional ocean modelling
-system (ROMS). It has a horizontal resolution of 3km x 3km and a vertical
-discretization based on bathymetry of 42 depth levels increasing in resolution
-near the surface. These modelled output data were provided by Angelica Pena and
-the data is further detailed in Pena et al. (2019).
+The British Columbia Continental Margin (BCCM) model is a
+physical biogeochemical oceanographic model, implemented using the Regional Ocean Modeling
+System (ROMS). It has a horizontal resolution of 3km x 3km and a vertical
+discretization, based on bathymetry, of 42 depth levels that increase in resolution
+near the surface. The BCCM data in `pacea` are adapted from results
+provided by Angelica Peña at the Institute of Ocean Sciences (Fisheries and
+Oceans Canada). For model details see Peña et al. (2019), which
+should be cited if you use the results.
+
+This vignette describes the BCCM results that are available in `pacea`, and
+how to use and plot them for your own analyses.
 
 ```{r packages}
-# run this if pacea has not been installed
-#remotes::install_github("pbs-assess/pacea")
-
 library(pacea)
 library(dplyr)
 library(sf)
 library(ggplot2)
 ```
 
-Data have been processed to an inshore 2km x 2km grid, and an offshore 6km x 6km
-grid. The area for these regions are accessible as polygon data objects
-`bccm_eez_poly`, `inshore_poly` and `offshore_poly`. They use the 'NAD83/BC
-Albers' projection. The polygons are `sf` (simple feature) objects.
+## Spatial resolution of the bccm results in pacea - original but edited, see reordered one below TODO
 
+Model results have been processed for `pacea` to be saved on an inshore 2km x 2km grid and
+an offshore 6km x 6km grid, within the Canadian Exclusive Economic Zone
+(EEZ). We briefly explain this before showing the BCCM variables available.
+
+The areas for the two grids are the polygon data objects `inshore_poly` and
+`offshore_poly`, and the combined area is the object `bccm_eez_poly`. These
+objects use the 'NAD83/BC Albers' projection. The polygons are also `sf` (simple
+feature) objects, which means that they have spatial and non-spatial
+attributes. If you do not know much about `sf` objects then do not worry; the
+template code explained in this vignette should be enought to allow you to plot
+what you are interested in.
+
+Let's view the combined area `bccm_eez_poly` object and plot all three objects:
 ```{r Polygons}
-bccm_eez_poly  # CRS is NAD 83/ BC Albers
+bccm_eez_poly  # this tells you that the co-ordinate reference systm (CRS)is NAD
+               # 83/ BC Albers
 
-# plotting the polygons
 plot(bccm_eez_poly, border = "black")
 plot(inshore_poly, col = "green", add = TRUE)
 plot(offshore_poly, col = "blue", add = TRUE)
 ```
 
-To see where these are in relation to the BC coastline and Exclusive Economic
-Zone (EEZ), we can plot these polygons with `ggplot`.
-
+Obviously, these will be more informative in relation to the BC coastline and Exclusive Economic
+Zone (EEZ), which are saved as `bc_coast` and `bc_eez` objects, which we can
+view and plot:
 ```{r}
-# BC coast and EEZ shapefile - CRS is WGS 84
 bc_coast
 bc_eez
 
-# plot
 ggplot() +
   geom_sf(data = bccm_eez_poly, col = "black", lwd = 2) +
   geom_sf(data = inshore_poly, col = NA, fill = "green") +
@@ -61,35 +81,91 @@ ggplot() +
   geom_sf(data = bc_coast)
 
 ```
-NOTE:
-`ggplot()` recognizes that the projection of bc_coast and bc_eez shapefile (WGS
-84) are different from the BCCM shapefiles (NAD 83), and the function will
-reproject the layers to match the first layer. It also provides the axes units
-in degrees, regardless of projection. Adding layers with different projections
-using the base `plot()` function would not work.
 
-The mixed grid (2km x 2km and 6km x 6km) can also be viewed.
+Note that the `bc_coast` and `bc_eez` objects have the 'WGS 84' CRS, unlike the
+earlier three objects that use 'NAD 83'. Fortunately, `ggplot()` recognizes
+these differences and will reproject the layers to match the first layer. It
+also provides the axes units in degrees, regardless of projection. Adding layers
+with different projections using the base `plot()` function would not work.
 
-```{r}
-# grid cells may not be visible if resolution of plot is too low
+The mixed grid (2km x 2km and 6km x 6km) of cells can also be viewed, though the cells
+may not be clearly visible if the resolution of the plot is too low
+
+```{r, fig.width = 7}
 plot(grid26)
 ```
 
+All data objects in `pacea` have help files associated with them, viewed with,
+for example, `?bccm_eez_poly`.
+
+## Spatial resolution of the bccm results in pacea - reordered version TODO
+
+First, `pacea` contains the objects `bc_coast` and `bc_eez`, to show the
+coastline and Canadian Exclusive Economic Zone (EEZ) off British Columbia. These
+two objects are data frames that are also `sf` (simple features) objects, which
+means that they have spatial and non-spatial attributes. We can use them to plot
+the coastline and the EEZ (which is the area we are interested in for Canadian
+stock assessments):
+```{r}
+ggplot() +
+  geom_sf(data = bc_eez, col = "black", fill = "purple", lty = 2) +
+  geom_sf(data = bc_coast)
+```
+
+Results from the BCCM have been processed for `pacea` and saved on an inshore 2km x 2km grid and
+an offshore 6km x 6km grid, within the EEZ. The areas for the two grids are the
+`sf` objects `inshore_poly` and `offshore_poly`, and the combined area
+is the object `bccm_eez_poly`. We can plot these (plus the coastline and EEZ) as
+```{r combined}
+ggplot() +
+  geom_sf(data = bccm_eez_poly, col = "black", lwd = 2) +
+  geom_sf(data = inshore_poly, col = NA, fill = "green") +
+  geom_sf(data = offshore_poly, col = NA, fill = "blue") +
+  geom_sf(data = bc_eez, col = "black", fill = NA, lty = 2) +
+  geom_sf(data = bc_coast)       # Generally best to plot this last
+```
+
+The dashed line is the EEZ, and the combined area `bccm_eez_poly` (thick solid
+line) is slightly
+larger because it has a 10 km buffer added to it, and it does not include a portion
+in the northwest because this was not in the BCCM model.
+
+We can print these various objects, two of them are
+```{r sfobjects}
+bc_coast
+bccm_eez_poly
+```
+Note that the 'Geodetic CRS' (co-ordinate reference system) is 'WGS 84' for the
+first one and 'NAD83 / BC Albers' for the second. Fortunately, `ggplot()` recognizes
+these differences and will reproject the layers to match the first layer. It
+also provides the axes units in degrees, regardless of projection. Adding layers
+with different projections using the base `plot()` function would not work.
+
+The actual grid (2km x 2km and 6km x 6km) of cells on which the BCCM results are
+saved can also be viewed, though the cells may not be clearly visible if the
+resolution of the plot is too low:
+```{r, fig.height = 8}
+ggplot() + geom_sf(data = grid26)
+```
+
+All data objects in `pacea` have help files associated with them, viewed with,
+for example, `?bccm_eez_poly`, and we recommend reading them for more details.
+
 ## Downloading BCCM data
 
-The BCCM data were wrangled to simplify data format and structure. Because the
-data are spatially and temporally resolved, the compressed file size of each
+The BCCM results were wrangled to simplify data format and structure. Because the
+results are spatially and temporally resolved, the compressed file size of each
 variable is fairly large (between 30-40 Mb). To keep the `pacea` package a
-reasonable downloadable size, the BCCM data are stored in a GitHub repository
-and can be downloaded locally using functions within `pacea`. An internet
-connection is required.
+reasonable downloadable size, the BCCM results are stored in a separate GitHub repository
+(https://github.com/pbs-assess/pacea-data) and can be downloaded locally using
+functions within `pacea` (requiring internet access).
 
-The list of variables of the BCCM data available can be viewed from the list
-`bccm_data`. BCCM data can be accessed using placeholder functions, named as in
+The list of variables of the BCCM results available can be viewed from the list
+`bccm_data`. BCCM results can be accessed using placeholder functions, named as in
 `bccm_data`, that download the data to a local cache folder - this directory can
 be identified using `pacea_cache()`.
 
-View data function help files for more information on bccm data (e.g. `?bccm_bottom_oxygen`)
+View data function help files for more information on bccm results (e.g. `?bccm_bottom_oxygen`)
 
 ```{r BCCM}
 # list available BCCM data
