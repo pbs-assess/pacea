@@ -51,17 +51,17 @@ Currently, pacea contains:
  - outputs from the spatial British Columbia continental margin (BCCM) model
    - variables are:
      - dissolved oxygen concentration
-	 - pH
-	 - salinity
-	 - temperature
-	 - depth-integrated phytoplankton
-	 - depth-integrated primary production
+	   - pH
+	   - salinity
+	   - temperature
+	   - depth-integrated phytoplankton
+	   - depth-integrated primary production
    - for applicable variables these are given for
      - sea surface
-	 - sea bottom
-	 - 0-40 m integration
+	   - sea bottom
+	   - 0-40 m integration
      - 40-100 m integration
-	 - 100 m to the bottom.
+	   - 100 m to the bottom.
    - variables are for a total of 40,580 spatial cells across Canada's Pacific
      Exclusive Economic Zone
    - there are 27 years of monthly means, from 1993 to 2019
@@ -97,11 +97,15 @@ plot(oni)
 plot(pdo)
 ```
 
-**What were the differences in spatial pattern of sea surface temperature between June 2022 and 2023?**
+**What were the differences in spatial pattern of sea surface temperature between June 2022 and 2023 (using OISST data)?**
 ```{r oisst}
 plot(oisst_month, months.plot = "June", years.plot = c(2022, 2023))
 ```
 
+**How did the upper 40m of dissolved oxygen differ between January and June, in 2015 (using BCCM ROMS output)?**
+```{r bccm}
+plot(bccm_avg0to40m_oxygen(force = TRUE), months.plot = c(1, 6), years.plot = 2015)
+```
 
 <!-- See the vignettes (TODO link to rendered versions once we push them) for -->
 
