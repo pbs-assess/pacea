@@ -9,6 +9,7 @@ table
 }
 \source{
 Pena et al., 2019.
+Generated from running `data-raw/data-key/data-list.R`
 }
 \usage{
 bccm_data

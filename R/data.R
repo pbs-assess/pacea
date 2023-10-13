@@ -890,6 +890,7 @@
 #' }
 #'
 #' @source Pena et al., 2019.
+#' Generated from running `data-raw/data-key/data-list.R`
 "bccm_data"
 
 #' Optimal interpolation SST
