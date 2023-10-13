@@ -2,7 +2,8 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- build_readme() will build this when developing, but installs pacea from -->
 <!-- scratch (and it might not be the local version) so it's much quicker to do -->
-<!-- rmarkdown::render("README.Rmd") -->
+<!-- rmarkdown::render("README.Rmd"), which also builds an .html that can be -->
+<!-- viewed locally (and isn't pushed to GitHub)  -->
 
 # pacea
 
@@ -20,9 +21,9 @@ operationalise an ecosystem approach to fisheries management.
 
 pacea stands for PACific Ecosystem Approach.
 
-pacea is a data platform containing somewhat a variety of data sets. We
-wrangle the data sets behind the scenes to get them into usable formats
-in R, and provide helpful plotting functions. All data sets include
+pacea is a data platform containing a variety of data sets. We wrangle
+the data sets behind the scenes to get them into usable formats in R,
+and provide helpful plotting functions. All data sets include
 documentation regarding the original authors, who should be cited as
 appropriate.
 
@@ -34,36 +35,45 @@ after which we will ensure back compatibility with earlier versions.
 
 Currently, pacea contains:
 
-- 201,641 records of daily sea surface temperature measurements from 19
-  buoys.
+-   201,641 records of daily sea surface temperature measurements from
+    19 buoys.
 
-- outputs from the spatial British Columbia continental margin (BCCM)
-  model, including:
+-   outputs from the spatial British Columbia continental margin (BCCM)
+    model
 
-  - dissolved oxygen concentration, pH, salinity, and temperature at
-    various depths, as well as surface phytoplankton and primary
-    production.
-  - various depth intervals (for applicable variables): surface, bottom,
-    0m - 40m depth, 40m - 100m depth, and 100m to bottom depth.
-  - gridded to 2km x 2km inshore and 6km x 6km offshore for a total of
-    40,580 cells across the Canada’s Pacific EEZ
-  - monthly means from 1993 to 2019
+    -   variables are:
+        -   dissolved oxygen concentration
+        -   pH
+        -   salinity
+        -   temperature
+        -   depth-integrated phytoplankton
+        -   depth-integrated primary production
+    -   for applicable variables these are given for
+        -   sea surface
+        -   sea bottom
+        -   0-40 m integration
+        -   40-100 m integration
+        -   100 m to the bottom.
+    -   variables are for a total of 40,580 spatial cells across
+        Canada’s Pacific Exclusive Economic Zone
+    -   there are 27 years of monthly means, from 1993 to 2019
 
-- NOAA’s spatial Optimum Interpolation Sea Surface Temperature (OISST)
-  record, that incorporates observations from different platforms
-  (satellites, ships, buoys and Argo floats).
+-   NOAA’s spatial Optimum Interpolation Sea Surface Temperature (OISST)
+    record, that incorporates observations from different platforms
+    (satellites, ships, buoys, and Argo floats).
 
-  - OISST data are provided as 7-day and monthly means
+    -   OISST data are provided as 7-day and monthly means
+    -   from Sep 1981 to Jun 2023.
 
-- climatic and oceanographic indices, such as the Pacific Decadal
-  Oscillation and those related to El Niño
+-   9 climatic and oceanographic indices, such as the Pacific Decadal
+    Oscillation and those related to El Niño
 
-- estimates of abundances of Harbour Seals and Pacific Hake
+-   estimates of abundances of Harbour Seals and Pacific Hake
 
 # Brief examples of some questions that can be quickly investigated
 
-How does this year’s sea surface temperature (red curve) in North Hecate
-Strait compare to previous years, based on the buoy there?
+**How does this year’s sea surface temperature (red curve) in North
+Hecate Strait compare to previous years, based on the buoy there?**
 
 ``` r
 plot(buoy_sst, stn_id = "C46183")
@@ -71,10 +81,8 @@ plot(buoy_sst, stn_id = "C46183")
 
 <img src="man/figures/README-northhecatetemp-1.png" width="60%" />
 
-TODO Take some examples from other vignettes
-
-Are we entering a phase of El Niño, based on the Oceanic Niño Index? (If
-the last bars are red, then ‘yes’)
+**Are we entering a phase of El Niño, based on the Oceanic Niño Index?
+(If the last bars are red, then ‘yes’)**
 
 ``` r
 plot(oni)
@@ -82,7 +90,8 @@ plot(oni)
 
 <img src="man/figures/README-oni-1.png" width="60%" />
 
-What the status of the Pacific Decadal Oscillation?
+**How has the status of the Pacific Decadal Oscillation changed over
+time?**
 
 ``` r
 plot(pdo)
@@ -90,8 +99,8 @@ plot(pdo)
 
 <img src="man/figures/README-pdo-1.png" width="60%" />
 
-What were the differences in spatial pattern of sea surface temperature
-in the Pacific between June 2022 and 2023?
+**What were the differences in spatial pattern of sea surface
+temperature between June 2022 and 2023?**
 
 ``` r
 plot(oisst_month, months.plot = "June", years.plot = c(2022, 2023))
@@ -99,7 +108,7 @@ plot(oisst_month, months.plot = "June", years.plot = c(2022, 2023))
 
 <img src="man/figures/README-oisst-1.png" width="60%" />
 
-See the vignettes (TODO link to rendered versions once we push them) for
+<!-- See the vignettes (TODO link to rendered versions once we push them) for -->
 
 # Installation
 
@@ -157,6 +166,17 @@ buoys, …. We do have context-specific plotting functions that relate to
 each type of data set.
 
 TODO - give simple examples here, we’re focussing on vignettes first….
+
+Doing seals here then moving up to avoid conflict.
+
+**What is the estimated abundance of Pacific Harbour Seals for each of
+seven regions?**
+
+``` r
+plot(harbour_seals)
+```
+
+<img src="man/figures/README-sealplot-1.png" width="60%" />
 
 ## Pacific Hake stock assessment results
 
@@ -222,16 +242,16 @@ Ocean Perch
 assessment](https://waves-vagues.dfo-mpo.gc.ca/Library/40803569.pdf).
 See that for links to websites. In the assessment we used:
 
-- East-Pacific/North-Pacific index
-- Pressure-adjusted sea level anomalies at Prince Rupert
-- Standardized maximum area covered by Haida eddies
-- Aleutian Low Pressure Index
-- Standardized North Pacific Index
-- Pacific Decadal Oscillation
-- North Pacific Gyre Oscillation
-- Oceanic Niño Index
-- Southern Oscillation Index.
-- Aleutian low pressure index
+-   East-Pacific/North-Pacific index
+-   Pressure-adjusted sea level anomalies at Prince Rupert
+-   Standardized maximum area covered by Haida eddies
+-   Aleutian Low Pressure Index
+-   Standardized North Pacific Index
+-   Pacific Decadal Oscillation
+-   North Pacific Gyre Oscillation
+-   Oceanic Niño Index
+-   Southern Oscillation Index.
+-   Aleutian low pressure index
 
 Following paper discusses how the Strait of Georgia transitions to Queen
 Charlotte Sound through Johnstone Strait. It really makes the point that

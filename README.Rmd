@@ -5,7 +5,8 @@ output: github_document
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- build_readme() will build this when developing, but installs pacea from -->
 <!-- scratch (and it might not be the local version) so it's much quicker to do -->
-<!-- rmarkdown::render("README.Rmd") -->
+<!-- rmarkdown::render("README.Rmd"), which also builds an .html that can be -->
+<!-- viewed locally (and isn't pushed to GitHub)  -->
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -13,7 +14,8 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.path = "man/figures/README-",
   out.width = "60%"
-)
+  )
+library(ggplot2)    # TODO needed for harbour_seals plot - look into
 ```
 
 # pacea
@@ -29,7 +31,7 @@ An R package to house Pacific Region ecosystem data to help operationalise an ec
 
 pacea stands for PACific Ecosystem Approach.
 
-pacea is a data platform containing somewhat a variety of data
+pacea is a data platform containing a variety of data
 sets. We wrangle the data sets behind the scenes to get them into usable formats
 in R, and provide helpful plotting functions. All data sets include
 documentation regarding the original authors, who should be cited as
@@ -46,47 +48,62 @@ Currently, pacea contains:
  - `r format(nrow(buoy_sst), big.mark = ",")` records of daily sea surface temperature measurements from
    `r nrow(buoy_metadata)` buoys.
 
- - outputs from the spatial British Columbia continental margin (BCCM) model, including:
-   - dissolved oxygen concentration, pH, salinity, and temperature at various depths, as well as surface phytoplankton and primary production.
-   - various depth intervals (for applicable variables): surface, bottom, 0m - 40m depth, 40m - 100m depth, and 100m to bottom depth.
-   - gridded to 2km x 2km inshore and 6km x 6km offshore for a total of 40,580 cells across the Canada's Pacific EEZ
-   - monthly means from 1993 to 2019
- - NOAA's spatial Optimum Interpolation Sea Surface Temperature (OISST) record, that incorporates observations from different platforms (satellites,
-     ships, buoys and Argo floats).
-   - OISST data are provided as 7-day and monthly means 
- - climatic and oceanographic indices, such as the Pacific Decadal Oscillation
+ - outputs from the spatial British Columbia continental margin (BCCM) model
+   - variables are:
+     - dissolved oxygen concentration
+	 - pH
+	 - salinity
+	 - temperature
+	 - depth-integrated phytoplankton
+	 - depth-integrated primary production
+   - for applicable variables these are given for
+     - sea surface
+	 - sea bottom
+	 - 0-40 m integration
+     - 40-100 m integration
+	 - 100 m to the bottom.
+   - variables are for a total of 40,580 spatial cells across Canada's Pacific
+     Exclusive Economic Zone
+   - there are 27 years of monthly means, from 1993 to 2019
+
+- NOAA's spatial Optimum Interpolation Sea Surface Temperature (OISST) record, that incorporates observations from different platforms (satellites,
+     ships, buoys, and Argo floats).
+   - OISST data are provided as 7-day and monthly means
+   - from `r paste(lubridate::month(min(oisst_month$start_date), label = TRUE),
+     lubridate::year(min(oisst_month$start_date)))` to `r paste(lubridate::month(max(oisst_month$start_date), label = TRUE),
+     lubridate::year(max(oisst_month$start_date)))`.
+
+- 9 climatic and oceanographic indices, such as the Pacific Decadal Oscillation
    and those related to El Niño
- - estimates of abundances of Harbour Seals and Pacific Hake
+
+- estimates of abundances of Harbour Seals and Pacific Hake
 
 # Brief examples of some questions that can be quickly investigated
 
-How does this year's sea surface temperature (red curve) in North Hecate Strait compare to previous
-years, based on the buoy there?
+**How does this year's sea surface temperature (red curve) in North Hecate Strait compare to previous
+years, based on the buoy there?**
 ```{r northhecatetemp}
 plot(buoy_sst, stn_id = "C46183")
 ```
 
-
-TODO Take some examples from other vignettes
-
-Are we entering a phase of El Niño, based on the Oceanic Niño Index? (If the
-last bars are red, then 'yes')
+**Are we entering a phase of El Niño, based on the Oceanic Niño Index? (If the
+last bars are red, then 'yes')**
 ```{r oni}
 plot(oni)
 ```
 
-What the status of the Pacific Decadal Oscillation?
+**How has the status of the Pacific Decadal Oscillation changed over time?**
 ```{r pdo}
 plot(pdo)
 ```
 
-What were the differences in spatial pattern of sea surface temperature in the Pacific between June 2022 and 2023?
+**What were the differences in spatial pattern of sea surface temperature between June 2022 and 2023?**
 ```{r oisst}
 plot(oisst_month, months.plot = "June", years.plot = c(2022, 2023))
 ```
 
 
-See the vignettes (TODO link to rendered versions once we push them) for
+<!-- See the vignettes (TODO link to rendered versions once we push them) for -->
 
 # Installation
 
@@ -132,6 +149,13 @@ TODO - rewrite all the following, giving some simple examples and referring to v
 Currently, briefly (we will expand on this TODO) pacea includes output from a British Columbia ROMS (Regional Ocean Modeling System) model, climatic and oceanographic indices such as Pacific Decadal Oscillation, Pacific Hake stock assessment results, sea surface temperature from buoys, .... We do have context-specific plotting functions that relate to each type of data set.
 
 TODO - give simple examples here, we're focussing on vignettes first....
+
+Doing seals here then moving up to avoid conflict.
+
+**What is the estimated abundance of Pacific Harbour Seals for each of seven regions?**
+```{r sealplot}
+plot(harbour_seals)
+```
 
 ## Pacific Hake stock assessment results
 
