@@ -107,6 +107,11 @@ plot(oisst_month, months.plot = "June", years.plot = c(2022, 2023))
 plot(bccm_avg0to40m_oxygen(force = TRUE), months.plot = c(1, 6), years.plot = 2015)
 ```
 
+**What is the estimated abundance of Pacific Harbour Seals for each of seven regions?**
+```{r sealplot}
+plot(harbour_seals)
+```
+
 <!-- See the vignettes (TODO link to rendered versions once we push them) for -->
 
 # Installation
@@ -155,11 +160,6 @@ Currently, briefly (we will expand on this TODO) pacea includes output from a Br
 TODO - give simple examples here, we're focussing on vignettes first....
 
 Doing seals here then moving up to avoid conflict.
-
-**What is the estimated abundance of Pacific Harbour Seals for each of seven regions?**
-```{r sealplot}
-plot(harbour_seals)
-```
 
 ## Pacific Hake stock assessment results
 

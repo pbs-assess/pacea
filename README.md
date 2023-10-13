@@ -35,40 +35,40 @@ after which we will ensure back compatibility with earlier versions.
 
 Currently, pacea contains:
 
-- 201,641 records of daily sea surface temperature measurements from 19
-  buoys.
+-   201,641 records of daily sea surface temperature measurements from
+    19 buoys.
 
-- outputs from the spatial British Columbia continental margin (BCCM)
-  model
+-   outputs from the spatial British Columbia continental margin (BCCM)
+    model
 
-  - variables are:
-    - dissolved oxygen concentration
-      - pH
-      - salinity
-      - temperature
-      - depth-integrated phytoplankton
-      - depth-integrated primary production
-  - for applicable variables these are given for
-    - sea surface
-      - sea bottom
-      - 0-40 m integration
-    - 40-100 m integration
-      - 100 m to the bottom.
-  - variables are for a total of 40,580 spatial cells across Canada’s
-    Pacific Exclusive Economic Zone
-  - there are 27 years of monthly means, from 1993 to 2019
+    -   variables are:
+        -   dissolved oxygen concentration
+            -   pH
+            -   salinity
+            -   temperature
+            -   depth-integrated phytoplankton
+            -   depth-integrated primary production
+    -   for applicable variables these are given for
+        -   sea surface
+            -   sea bottom
+            -   0-40 m integration
+        -   40-100 m integration
+            -   100 m to the bottom.
+    -   variables are for a total of 40,580 spatial cells across
+        Canada’s Pacific Exclusive Economic Zone
+    -   there are 27 years of monthly means, from 1993 to 2019
 
-- NOAA’s spatial Optimum Interpolation Sea Surface Temperature (OISST)
-  record, that incorporates observations from different platforms
-  (satellites, ships, buoys, and Argo floats).
+-   NOAA’s spatial Optimum Interpolation Sea Surface Temperature (OISST)
+    record, that incorporates observations from different platforms
+    (satellites, ships, buoys, and Argo floats).
 
-  - OISST data are provided as 7-day and monthly means
-  - from Sep 1981 to Jun 2023.
+    -   OISST data are provided as 7-day and monthly means
+    -   from Sep 1981 to Jun 2023.
 
-- 9 climatic and oceanographic indices, such as the Pacific Decadal
-  Oscillation and those related to El Niño
+-   9 climatic and oceanographic indices, such as the Pacific Decadal
+    Oscillation and those related to El Niño
 
-- estimates of abundances of Harbour Seals and Pacific Hake
+-   estimates of abundances of Harbour Seals and Pacific Hake
 
 # Brief examples of some questions that can be quickly investigated
 
@@ -113,9 +113,20 @@ June, in 2015 (using BCCM ROMS output)?**
 
 ``` r
 plot(bccm_avg0to40m_oxygen(force = TRUE), months.plot = c(1, 6), years.plot = 2015)
+#> Saving to pacea cache directory at 
+#> C:\Users\EDWARD~1\AppData\Local/pacea/Cache
 ```
 
 <img src="man/figures/README-bccm-1.png" width="60%" />
+
+**What is the estimated abundance of Pacific Harbour Seals for each of
+seven regions?**
+
+``` r
+plot(harbour_seals)
+```
+
+<img src="man/figures/README-sealplot-1.png" width="60%" />
 
 <!-- See the vignettes (TODO link to rendered versions once we push them) for -->
 
@@ -177,15 +188,6 @@ each type of data set.
 TODO - give simple examples here, we’re focussing on vignettes first….
 
 Doing seals here then moving up to avoid conflict.
-
-**What is the estimated abundance of Pacific Harbour Seals for each of
-seven regions?**
-
-``` r
-plot(harbour_seals)
-```
-
-<img src="man/figures/README-sealplot-1.png" width="60%" />
 
 ## Pacific Hake stock assessment results
 
@@ -251,16 +253,16 @@ Ocean Perch
 assessment](https://waves-vagues.dfo-mpo.gc.ca/Library/40803569.pdf).
 See that for links to websites. In the assessment we used:
 
-- East-Pacific/North-Pacific index
-- Pressure-adjusted sea level anomalies at Prince Rupert
-- Standardized maximum area covered by Haida eddies
-- Aleutian Low Pressure Index
-- Standardized North Pacific Index
-- Pacific Decadal Oscillation
-- North Pacific Gyre Oscillation
-- Oceanic Niño Index
-- Southern Oscillation Index.
-- Aleutian low pressure index
+-   East-Pacific/North-Pacific index
+-   Pressure-adjusted sea level anomalies at Prince Rupert
+-   Standardized maximum area covered by Haida eddies
+-   Aleutian Low Pressure Index
+-   Standardized North Pacific Index
+-   Pacific Decadal Oscillation
+-   North Pacific Gyre Oscillation
+-   Oceanic Niño Index
+-   Southern Oscillation Index.
+-   Aleutian low pressure index
 
 Following paper discusses how the Strait of Georgia transitions to Queen
 Charlotte Sound through Johnstone Strait. It really makes the point that
