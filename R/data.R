@@ -1013,3 +1013,20 @@
 ##' harbour_seals_data_final_year
 ##' }
 "harbour_seals_data_final_year"
+
+#' 200m isobath for separating inshore and offshore Pacific using bathymetry
+#' 
+#' These coordinates roughly follow the continental shelf (200m depth) to provide the inshore and offshore boundary. The line is coarse and therefore ignores canyons. 
+#' 
+#' @format sf multilinestring object
+#'
+#' @examples 
+#' \dontrun{
+#' isobath_200m
+#' plot(isobath_200m)
+#' plot(bccm_eez_poly, add = TRUE)
+#' }
+#' 
+#' @source Generated from running `data-raw/roms/isobath_sfline.R`.
+"isobath_200m"
+
