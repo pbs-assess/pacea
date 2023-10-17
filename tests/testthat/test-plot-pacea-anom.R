@@ -70,12 +70,12 @@ test_that("plot works for oisst anom data", {
 
 test_that("stop errors work for oisst anom data", {
   sub.dat <- oisst_7day %>% dplyr::filter(year %in% c(2000, 2019))
-  clim_week <- calc_clim(sub.dat, time_period_return = c(1,6))
+  expect_warning(clim_week <- calc_clim(sub.dat, time_period_return = c(1,6)))
   anom_week <- calc_anom(sub.dat, time_period_return = c(1,6), years_return = c(2000, 2019))
   
   sub.dat <- oisst_month %>% dplyr::filter(year %in% c(2000, 2019))
-  clim_month <- calc_clim(sub.dat, time_period_return = c(1,6))
-  clim_month2 <- calc_clim(sub.dat, time_period_return = c(2,6))
+  expect_warning(clim_month <- calc_clim(sub.dat, time_period_return = c(1,6)))
+  expect_warning(clim_month2 <- calc_clim(sub.dat, time_period_return = c(2,6)))
   anom_month <- calc_anom(sub.dat, time_period_return = c(1,6), years_return = c(2000, 2019))
   
   # error for input data

@@ -30,7 +30,7 @@ test_that("calc_clim works for oisst data", {
   sub.dat <- oisst_month %>% dplyr::filter(year %in% c(2000:2010))
   
   # expect warning for climatology only 11 years (defauly is 30 years)
-  clim_oisst <- calc_clim(sub.dat)
+  expect_warning(clim_oisst <- calc_clim(sub.dat))
   
   expect_equal(class(clim_oisst)[1], "pacea_oiclim")
   expect_equal(colnames(clim_oisst)[1], "month")
