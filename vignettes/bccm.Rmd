@@ -619,6 +619,20 @@ plot(anom_sst_sub,
      clim.dat = clim_sst_sub)
 ```
 
+### Estimate mean (median, sd, etc.) across entire spatial area
+
+Mean of an entire area can also be estimated using the `area_mean()` function from 'pacea'. The data entered must be an 'sf' object and contain only one column of values - this column should be a single spatial layer (i.e. one time period) with the spatial cells of interest (e.g. area 126).
+
+The function will provide the mean (median, sd, n) across the entire area, as well as the inshore and offshore statistics, based on the 200m isobath (i.e. continental shelf).
+
+```{r}
+# use pdata from above and subset only one column
+pdata_areamean <- pdata[,1]
+
+# area mean 
+area_mean(pdata_areamean)
+```
+
 ## References
 
 Peña, M.A., Fine, I. and Callendar, W. 2019. Interannual variability in primary

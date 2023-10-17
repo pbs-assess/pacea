@@ -9,7 +9,6 @@ test_that("area_mean function works with bccm roms data", {
   # area_mean output
   area_output <- area_mean(tdat)
   
-  # 
   expect_type(area_output, "list")
 })
 
@@ -37,7 +36,6 @@ test_that("stop errors work", {
 })
 
 # make_isoshape testing
-
 test_that("function make_isoshape works for both inshore and offshore polygon", {
   ipoly <- make_isoshape(inshore = TRUE)
   opoly <- make_isoshape(inshore = FALSE)

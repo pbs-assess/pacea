@@ -26,6 +26,7 @@ point2rast <- function(data, spatobj, loc = c("x", "y"), cellsize, nnmax = 4,
   requireNamespace("terra", quietly = TRUE)
   requireNamespace("gstat", quietly = TRUE)
   requireNamespace("sf", quietly = TRUE)
+  requireNamespace("stats", quietly = TRUE)
   
   stopifnot("must provide cellsize value" = exists("cellsize"))
   stopifnot("must specify valid value for 'as'" = as %in% c("SpatRast", "SpatVect"))
@@ -92,9 +93,13 @@ point2rast <- function(data, spatobj, loc = c("x", "y"), cellsize, nnmax = 4,
   return(spat)
 }
 
-
+#' nearest neighbour fit function
+#' @noRd
 nnfit <- function(x, r, loc, coords, nnmax) {
-  xdat <- na.omit(data.frame(xvar = as.vector(x), coords))
+  
+  requireNamespace("stats", quietly = TRUE)
+  
+  xdat <- stats::na.omit(data.frame(xvar = as.vector(x), coords))
   
   f <- paste0("xvar", " ~ 1")
   lf <- paste0("~", paste(loc, collapse = "+"))

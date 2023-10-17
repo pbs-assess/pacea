@@ -15,6 +15,7 @@
 #' @importFrom sf st_drop_geometry st_as_sf
 #' @importFrom tidyr pivot_longer 
 #' @importFrom lubridate year 
+#' @importFrom stats sd
 #' 
 #' @return climatology of data
 #' @export
