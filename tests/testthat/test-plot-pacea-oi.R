@@ -7,15 +7,15 @@ test_that("ggplot plot for pacea.st objects work with various functions", {
   test.dat <- oisst_7day
   
   # default plot (most recent year and week/month available)
-  expect_true(is.ggplot(plot(test.dat)))
+  expect_true(ggplot2::is.ggplot(plot(test.dat)))
   
   # specify week and year combination
-  expect_true(is.ggplot(plot(test.dat, 
+  expect_true(ggplot2::is.ggplot(plot(test.dat, 
                              weeks.plot = c(1),
                              years.plot = c(1995))))
   
   # specify week and year to create facet grid - bc and eez equals false
-  expect_true(is.ggplot(plot(test.dat, 
+  expect_true(ggplot2::is.ggplot(plot(test.dat, 
                              weeks.plot = c(1, 35),
                              years.plot = c(2018, 2019), 
                              bc = FALSE, eez = FALSE)))
@@ -23,20 +23,20 @@ test_that("ggplot plot for pacea.st objects work with various functions", {
   test.dat <- oisst_month
   
   # default plot (most recent year and week/month available)
-  expect_true(is.ggplot(plot(test.dat)))
+  expect_true(ggplot2::is.ggplot(plot(test.dat)))
   
   # plot month and year combination with facet_wrap
-  expect_true(is.ggplot(plot(test.dat, 
+  expect_true(ggplot2::is.ggplot(plot(test.dat, 
                              months.plot = c("June", "September"), 
                              years.plot = c(1995))))
   
   # inidcate months with character and numeric and abbr
-  expect_true(is.ggplot(plot(test.dat, 
+  expect_true(ggplot2::is.ggplot(plot(test.dat, 
                              months.plot = c("June", 2, "Jan"),
                              years.plot = c(1995))))
   
   # indicate months with numeric, character, abbr, bc and eez = False, facet_grid
-  expect_true(is.ggplot(plot(test.dat, 
+  expect_true(ggplot2::is.ggplot(plot(test.dat, 
                              months.plot = c(1, "September", "Oct"),
                              years.plot = c(2018, 2019), 
                              bc = FALSE, eez = FALSE)))

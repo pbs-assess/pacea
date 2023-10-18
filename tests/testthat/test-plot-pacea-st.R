@@ -3,31 +3,28 @@ test_that("multiplication works", {
 })
 
 test_that("ggplot plot for pacea.st objects work with various functions", {
-  # require ggplot2 for is.ggplot() function
-  library(ggplot2)
-  
   # download subsetted small size data
   pdata <- get_pacea_data("test_surftemp", force = TRUE)
   
   # numeric month
-  expect_true(is.ggplot(plot(pdata, 
+  expect_true(ggplot2::is.ggplot(plot(pdata, 
                              months.plot = c(1),
                              years.plot = c(2000))))   
   
   # character month - no bc or eez
-  expect_true(is.ggplot(plot(pdata, 
+  expect_true(ggplot2::is.ggplot(plot(pdata, 
                              months.plot = c("June"),
                              years.plot = c(2000), 
                              bc = FALSE, eez = FALSE)))
   
   # numeric and character month - no bc or eez
-  expect_true(is.ggplot(plot(pdata, 
+  expect_true(ggplot2::is.ggplot(plot(pdata, 
                              months.plot = c(1, "June"),
                              years.plot = c(2000, 2019), 
                              bc = FALSE, eez = FALSE)))
   
   # numeric and abbr month - no bc or eez
-  expect_true(is.ggplot(plot(pdata, 
+  expect_true(ggplot2::is.ggplot(plot(pdata, 
                              months.plot = c(1, "Jun"),
                              years.plot = c(2000, 2019), 
                              bc = FALSE, eez = FALSE)))
