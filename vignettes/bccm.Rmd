@@ -623,7 +623,7 @@ plot(anom_sst_sub,
 
 Mean of an entire area can also be estimated using the `area_mean()` function from 'pacea'. The data entered must be an 'sf' object and contain only one column of values - this column should be a single spatial layer (i.e. one time period) with the spatial cells of interest (e.g. area 126).
 
-The function will provide the mean (median, sd, n) across the entire area, as well as the inshore and offshore statistics, based on the 200m isobath (i.e. continental shelf).
+The function will provide the summary statistics (mean, median, sd, n) across the entire area, as well as for inshore areas to the 200m isobath and offshore areas from the 200m isobath (i.e. continental shelf).
 
 ```{r}
 # use pdata from above and subset only one column
@@ -632,6 +632,16 @@ pdata_areamean <- pdata[,1]
 # area mean 
 area_mean(pdata_areamean)
 ```
+
+To see where the 200m isobath line, it can be plotted along with the BC coast and EEZ shapefile.
+
+```{r}
+ggplot() + 
+  geom_sf(data = bc_eez, linetype = 2, fill = NA) +
+  geom_sf(data = bc_coast) + 
+  geom_sf(data = isobath_200m, col = "red")
+```
+
 
 ## References
 
