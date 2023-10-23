@@ -956,9 +956,15 @@
 ##' abundance was calculated for seven regions: the Strait of Georgia (SOG),
 ##' West Coast Vancouver Island (WCVI), Queen Charlotte Strait (QCS), Discovery
 ##' Passage (DP), Central Mainland Coast (CMC), Northern Mainland Coast (NMC),
-##' and Haida Gwaii (HG); see Figure 1 of DFO (2022). The estimated abundances
-##' were calculated using Generalised Additive Models, and are included here
-##' (yielding the trends shown in Figure 3 of DFO, 2022). See that figure to see
+##' and Haida Gwaii (HG); see Figure 1 of DFO (2022) for a map showing the
+##' regions. The coastwide estimates are also given (labelled `Coastwide` so the
+##' plot title is capitalised), for which the means are calculated as the sum of
+##' the regions' means and the `low` and `high` values as TODO ???
+##'
+##'
+##' The estimated abundances
+##' were calculated using Generalised Additive Models (GAMs), and are included here
+##' (reproducing the trends shown in Figure 3 of DFO, 2022). See that figure to see
 ##' the amount of data available in each region; these data can be added to
 ##' `pacea` if desired -- please let us know. The final year of data in each
 ##' region is saved in the object `harbour_seals_data_final_year`.
@@ -979,18 +985,22 @@
 ##'   of about 250 days in the GAM, hence some years have more than one value
 ##'   and so we give a date rather than a year}
 ##'   \item{region:}{the region that the estimate corresponds to; one of SOG,
-##'   WCVI, QCS, DP, CMC, NMC, or HG}
+##'   WCVI, QCS, DP, CMC, NMC, HG, or Coastwide}
 ##'   \item{low:}{low end of the estimate of abundance, defined as
-##'   the TODO CHECK}
+##'   the upper value of the 95% confidence interval (calculated on the log
+##'   scale) from the GAM}
 ##'   \item{mean:}{mean estimate of abundance, numbers of seals (in that region)}
-##'   \item{high:}{high end of the estimate of abundance, defined TODO CHECK as
-##'   the TODO CHECK}
+##'   \item{high:}{high end of the estimate of abundance, defined as
+##'    the lower value of the 95% confidence interval (calculated on the log
+##'   scale) from the GAM}
 ##'  }
 ##'
 ##' @examples
 ##' \dontrun{
 ##' harbour_seals
-##' plot(harbour_seals)   # TODO reproduce trends in Figure 3
+##' plot(harbour_seals)
+##' plot(harbour_seals, region = "SOG")
+##' plot(harbour_seals, include_coastwide = FALSE)
 ##' }
 ##' @author Andrew Edwards
 ##' @source Estimates provided by Strahan Tucker, then wrangled and imported using
@@ -1015,18 +1025,17 @@
 "harbour_seals_data_final_year"
 
 #' 200m isobath for separating inshore and offshore Pacific using bathymetry
-#' 
-#' These coordinates roughly follow the continental shelf (200m depth) to provide the inshore and offshore boundary. The line is coarse and therefore ignores canyons. 
-#' 
+#'
+#' These coordinates roughly follow the continental shelf (200m depth) to provide the inshore and offshore boundary. The line is coarse and therefore ignores canyons.
+#'
 #' @format sf multilinestring object
 #'
-#' @examples 
+#' @examples
 #' \dontrun{
 #' isobath_200m
 #' plot(isobath_200m)
 #' plot(bccm_eez_poly, add = TRUE)
 #' }
-#' 
+#'
 #' @source Generated from running `data-raw/roms/isobath_sfline.R`.
 "isobath_200m"
-

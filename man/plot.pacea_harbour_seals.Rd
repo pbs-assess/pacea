@@ -8,6 +8,7 @@
   obj,
   region = NULL,
   value = "mean",
+  include_coastwide = TRUE,
   xlab = "Year",
   ylab = attr(obj, "axis_name"),
   y_tick_by = 1000,
@@ -30,11 +31,14 @@
 and the plotting is tailored for this data set.}
 
 \item{region}{which region to plot for a single plot; must be one of SOG,
-WCVI, QCS, DP, CMC, NMC, or HG. If `NULL` (the default) then do a panel
+WCVI, QCS, DP, CMC, NMC, HG, or coastwide. If `NULL` (the default) then do a panel
 plot showing all seven regions.}
 
 \item{value}{the column to plot as a solid line, in this case always the
 default `mean`}
+
+\item{include_coastwide}{logical, whether to include the coastwide population in the
+eight panel plot (keep `region = NULL`).}
 
 \item{xlab}{x-axis label}
 
@@ -79,20 +83,19 @@ plot of the time series as median with bars showing uncertainty (if
   `low` and `high` are columns of `obj) to the current device; returns nothing.
 }
 \description{
-Default is to plot all seven regions, to mostly replicate
-(TODO CHECK) Figure 3 of DFO (2022; see `?harbour_seals`) in a `ggplot`
+Default is to plot all seven regions plus the coastwide estimate, to mostly replicate
+Figure 3 of DFO (2022; see `?harbour_seals`) in a `ggplot`
 style. If a single region is
-indicated selected then a time series plot is shown, in the same style as
+indicated then a time series plot is shown, in the same style as
 plots of object class `pacea_biomass` (such as `hake_biomass`).
-Note that the values are means and standard errors (not medians and
+Note that the values are means and confidence intervals (not medians and
 confidence intervals like other objects); see `?harbour_seals`.
 }
 \examples{
 \dontrun{
-plot(hake_biomass)  TODO
-plot(hake_biomass,
-     xlim = c(lubridate::dmy(01011950),
-              lubridate::dmy(01012040))) # to expand x-axis
+plot(harbour_seals)
+plot(harbour_seals, region = "SOG")
+plot(harbour_seals, include_coastwide = FALSE)
 }
 }
 \author{

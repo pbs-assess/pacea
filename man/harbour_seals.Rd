@@ -11,12 +11,14 @@ A tibble also of class `pacea_harbour_seals` with columns:
   of about 250 days in the GAM, hence some years have more than one value
   and so we give a date rather than a year}
   \item{region:}{the region that the estimate corresponds to; one of SOG,
-  WCVI, QCS, DP, CMC, NMC, or HG}
+  WCVI, QCS, DP, CMC, NMC, HG, or Coastwide}
   \item{low:}{low end of the estimate of abundance, defined as
-  the TODO CHECK}
+  the upper value of the 95% confidence interval (calculated on the log
+  scale) from the GAM}
   \item{mean:}{mean estimate of abundance, numbers of seals (in that region)}
-  \item{high:}{high end of the estimate of abundance, defined TODO CHECK as
-  the TODO CHECK}
+  \item{high:}{high end of the estimate of abundance, defined as
+   the lower value of the 95% confidence interval (calculated on the log
+  scale) from the GAM}
  }
 }
 \source{
@@ -41,9 +43,15 @@ pupping, and proportion of seals hauled out during surveys. Estimated
 abundance was calculated for seven regions: the Strait of Georgia (SOG),
 West Coast Vancouver Island (WCVI), Queen Charlotte Strait (QCS), Discovery
 Passage (DP), Central Mainland Coast (CMC), Northern Mainland Coast (NMC),
-and Haida Gwaii (HG); see Figure 1 of DFO (2022). The estimated abundances
-were calculated using Generalised Additive Models, and are included here
-(yielding the trends shown in Figure 3 of DFO, 2022). See that figure to see
+and Haida Gwaii (HG); see Figure 1 of DFO (2022) for a map showing the
+regions. The coastwide estimates are also given (labelled `Coastwide` so the
+plot title is capitalised), for which the means are calculated as the sum of
+the regions' means and the `low` and `high` values as TODO ???
+
+
+The estimated abundances
+were calculated using Generalised Additive Models (GAMs), and are included here
+(reproducing the trends shown in Figure 3 of DFO, 2022). See that figure to see
 the amount of data available in each region; these data can be added to
 `pacea` if desired -- please let us know. The final year of data in each
 region is saved in the object `harbour_seals_data_final_year`.
@@ -61,7 +69,9 @@ https://www.dfo-mpo.gc.ca/csas-sccs/Publications/SAR-AS/2022/2022_034-eng.html
 \examples{
 \dontrun{
 harbour_seals
-plot(harbour_seals)   # TODO reproduce trends in Figure 3
+plot(harbour_seals)
+plot(harbour_seals, region = "SOG")
+plot(harbour_seals, include_coastwide = FALSE)
 }
 }
 \author{

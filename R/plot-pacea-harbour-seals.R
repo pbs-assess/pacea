@@ -1,18 +1,20 @@
 ##' Plot the Pacific Harbour Seals abundance estimates
 ##'
-##' Default is to plot all seven regions, to mostly replicate
-##' (TODO CHECK) Figure 3 of DFO (2022; see `?harbour_seals`) in a `ggplot`
+##' Default is to plot all seven regions plus the coastwide estimate, to mostly replicate
+##' Figure 3 of DFO (2022; see `?harbour_seals`) in a `ggplot`
 ##' style. If a single region is
-##' indicated selected then a time series plot is shown, in the same style as
+##' indicated then a time series plot is shown, in the same style as
 ##' plots of object class `pacea_biomass` (such as `hake_biomass`).
-##' Note that the values are means and standard errors (not medians and
+##' Note that the values are means and confidence intervals (not medians and
 ##' confidence intervals like other objects); see `?harbour_seals`.
 ##'
 ##' @param obj `pacea_harbour_seals`, as this is of class `pacea_harbour_seals`
 ##'   and the plotting is tailored for this data set.
 ##' @param region which region to plot for a single plot; must be one of SOG,
-##'   WCVI, QCS, DP, CMC, NMC, or HG. If `NULL` (the default) then do a panel
+##'   WCVI, QCS, DP, CMC, NMC, HG, or coastwide. If `NULL` (the default) then do a panel
 ##'   plot showing all seven regions.
+##' @param include_coastwide logical, whether to include the coastwide population in the
+##'   eight panel plot (keep `region = NULL`).
 ##' @param value the column to plot as a solid line, in this case always the
 ##'   default `mean`
 ##' @param y_max maximum y value for certain types of plot (use this if you get
@@ -35,14 +37,14 @@
 ##' @author Andrew Edwards
 ##' @examples
 ##' \dontrun{
-##' plot(hake_biomass)  TODO
-##' plot(hake_biomass,
-##'      xlim = c(lubridate::dmy(01011950),
-##'               lubridate::dmy(01012040))) # to expand x-axis
+##' plot(harbour_seals)
+##' plot(harbour_seals, region = "SOG")
+##' plot(harbour_seals, include_coastwide = FALSE)
 ##' }
 plot.pacea_harbour_seals <- function(obj,
                                      region = NULL,
                                      value = "mean",
+                                     include_coastwide = TRUE,
                                      xlab = "Year",
                                      ylab = attr(obj, "axis_name"),
                                      y_tick_by = 1000,
@@ -64,8 +66,8 @@ plot.pacea_harbour_seals <- function(obj,
   stopifnot("value must be a column of the object in the first argument" =
             value %in% names(obj))
 
-  stopifnot("region must be one of SOG, WCVI, QCS, DP, CMC, NMC, HG" =
-            region %in% c("SOG", "WCVI", "QCS", "DP", "CMC", "NMC", "HG"))
+  stopifnot("region must be one of SOG, WCVI, QCS, DP, CMC, NMC, HG, Coastwide" =
+            region %in% c("SOG", "WCVI", "QCS", "DP", "CMC", "NMC", "HG", "Coastwide"))
 
   if(!is.null(region)){
     region_choice <- region     # Else region == region in next line does not work
@@ -94,18 +96,22 @@ plot.pacea_harbour_seals <- function(obj,
                   x_tick_extra_years = x_tick_extra_years,
                   start_decade_ticks = start_decade_ticks)
   } else {
-    ggplot(data = obj,
+    if(!include_coastwide){
+      obj <- dplyr::filter(obj, region != "Coastwide")
+    }
+
+    ggplot2::ggplot(data = obj,
            aes(x = date,
                y = mean)) +
-      geom_ribbon(aes(ymin = low,
+      ggplot2::geom_ribbon(aes(ymin = low,
                       ymax = high),
                   fill = uncertainty_shade_col) +
-      geom_line(col = uncertainty_line_col) +
+      ggplot2::geom_line(col = uncertainty_line_col) +
       # Add back in if data get included
       # geom_point(data = harbour_seals_data,
       #        aes(x = make_date(year),
       #           y = mean)) +
-      facet_wrap(~region,
+      ggplot2::facet_wrap(~region,
                  scales = "free_y",
                  ncol = 2)
   }

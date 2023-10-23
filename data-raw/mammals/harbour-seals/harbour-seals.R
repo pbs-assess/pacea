@@ -78,9 +78,9 @@ p <- ggplot(data = harbour_seals_gam_new,
              ncol = 2)
 p
 
-#Looks like matches SAR figure. Could add data, but TODO refer people to
+#Looks like matches SAR figure. Could add data, but refer people to
 # original SAR in the help file.
-#  TODO in help clarify what these are, as caption talks about se only
+
 
 class(harbour_seals_gam_new) <- c("pacea_harbour_seals",
                               class(harbour_seals_gam_new))
@@ -97,6 +97,21 @@ harbour_seals <- harbour_seals_gam_new %>%
          low,
          mean,
          high)                  # not keeping year as duplicated for some years
+
+# Calculate coastwide numbers and uncertainty
+
+coastwide <- dplyr::summarise(group_by(harbour_seals, date),
+                              low = sum(low),          # TODO this and high are
+                                        # wrong, emailed Kurtis
+                              mean = sum(mean),
+                              high = sum(high)) %>%
+  dplyr::mutate(region = "Coastwide") %>%
+  dplyr::relocate(date, region)
+
+stopifnot(names(harbour_seals) == names(coastwide))
+
+harbour_seals <- rbind(harbour_seals,
+                       coastwide)
 
 # Also need the final date of the data, to then colour code the
 # figures.
