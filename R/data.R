@@ -979,6 +979,8 @@
 ##' Report. 2022/034.
 ##' https://www.dfo-mpo.gc.ca/csas-sccs/Publications/SAR-AS/2022/2022_034-eng.html
 ##'
+##' See also: `harbour_seals_data_final_year` for the year of the final data for
+##'   each region.
 ##' @format A tibble also of class `pacea_harbour_seals` with columns:
 ##' \describe{
 ##'   \item{date:}{Date of the GAM estimate of abundance; there is a time step
@@ -1009,7 +1011,7 @@
 
 ##' Final year of Pacific Harbour Seals survey in each of seven regions
 ##'
-##' Used for colouring the plots of the estimates contained in `harbour_seals`
+##' Used for understanding the final year of data for the estimates contained in `harbour_seals`
 ##' (since some are projections beyond the data). Also see `?harbour_seals`.
 ##'
 ##' @format A tibble with columns:

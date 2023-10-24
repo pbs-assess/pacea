@@ -65,6 +65,9 @@ DFO. 2022. Stock Assessment of Pacific Harbour Seals (\emph{Phoca vitulina richa
 2019. DFO Canadian Science Advisory Secretariat Science Advisory
 Report. 2022/034.
 https://www.dfo-mpo.gc.ca/csas-sccs/Publications/SAR-AS/2022/2022_034-eng.html
+
+See also: `harbour_seals_data_final_year` for the year of the final data for
+  each region.
 }
 \examples{
 \dontrun{

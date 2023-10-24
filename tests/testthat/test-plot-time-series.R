@@ -1,4 +1,5 @@
-# These are on plotting functions for pacea_index and then pacea_recruitment and pacea_biomass objects.
+# These are on plotting functions for pacea_index and then pacea_recruitment,
+# pacea_biomass, pacea_buoy, and pacea_harbour_seals objects.
 
 test_that("index plotting: the stopifnot commands are working", {
   expect_error(plot(oni,
@@ -90,4 +91,21 @@ test_that("buoy SST plotting  works with various options", {
   expect_visible(plot(buoy_sst,
                       years = 2010:2020))
   expect_error(plot(buoy_sst, stn_id = c("C46004", "C46036")))
+})
+
+# plot.pacea_harbour_seals()
+test_that("harbour seals plotting  works with various options", {
+  expect_visible(plot(harbour_seals))
+  expect_invisible(plot(harbour_seals,
+                      region = "SOG"))
+  expect_error(plot(harbour_seals,
+                    region = "nonsense"))
+  expect_error(plot(harbour_seals,
+                    value = "nonsense"))
+  # Doesn't pass, even though figures do look the same
+  #expect_equal(plot(dplyr::filter(harbour_seals,
+  #                                region != "Coastwide")),
+  #             plot(harbour_seals,
+  #                  include_coastwide = FALSE))
+
 })

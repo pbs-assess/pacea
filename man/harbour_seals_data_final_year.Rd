@@ -16,7 +16,7 @@ A tibble with columns:
 harbour_seals_data_final_year
 }
 \description{
-Used for colouring the plots of the estimates contained in `harbour_seals`
+Used for understanding the final year of data for the estimates contained in `harbour_seals`
 (since some are projections beyond the data). Also see `?harbour_seals`.
 }
 \examples{

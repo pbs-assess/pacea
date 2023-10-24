@@ -22,8 +22,7 @@
   median_pch = 16,
   median_line_col = "black",
   median_line_lty = 1,
-  median_line_lwd = 2,
-  ...
+  median_line_lwd = 2
 )
 }
 \arguments{
@@ -75,8 +74,6 @@ means not medians)}
 \item{median_line_lty}{lty for median}
 
 \item{median_line_lwd}{lwd for median}
-
-\item{...}{further options passed onto `plot.default()`}
 }
 \value{
 plot of the time series as median with bars showing uncertainty (if

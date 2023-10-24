@@ -29,7 +29,6 @@
 ##' @param median_line_col col for median
 ##' @param median_line_lty lty for median
 ##' @param median_line_lwd lwd for median
-##' @param ... further options passed onto `plot.default()`
 ##' @inherit plot.pacea_index
 ##' @return plot of the time series as median with bars showing uncertainty (if
 ##'   `low` and `high` are columns of `obj) to the current device; returns nothing.
@@ -59,9 +58,7 @@ plot.pacea_harbour_seals <- function(obj,
                                      median_pch = 16,
                                      median_line_col = "black",
                                      median_line_lty = 1,
-                                     median_line_lwd = 2,
-                                     ...   # pass onto default plot
-                                     ){
+                                     median_line_lwd = 2){
 
   stopifnot("value must be a column of the object in the first argument" =
             value %in% names(obj))
