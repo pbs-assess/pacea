@@ -96,6 +96,8 @@ test_that("buoy SST plotting  works with various options", {
 # plot.pacea_harbour_seals()
 test_that("harbour seals plotting  works with various options", {
   expect_visible(plot(harbour_seals))
+  expect_visible(plot(harbour_seals,
+                 include_coastwide = FALSE))
   expect_invisible(plot(harbour_seals,
                       region = "SOG"))
   expect_error(plot(harbour_seals,
