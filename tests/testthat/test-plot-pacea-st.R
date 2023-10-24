@@ -51,6 +51,9 @@ test_that("geospatial plotting: test that stopifnot commands are working", {
 })
 
 test_that("month_match function errors are working", {
+  # invalid month names
+  expect_error(month_match("tt"))
+  
   # too many matched values
   expect_error(month_match("Ju"))
   
