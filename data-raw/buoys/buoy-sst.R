@@ -111,6 +111,7 @@ summary(dfo_data)   # Earliest is 1987, so not adding tons of data, yet not real
 # could be averaging six values from 10am - 11am with only one from 9pm -
 # 10pm). This may actually be easier to
 
+# Look through all this first, I'm determining what to do
 dfo_data_resolution <- dfo_data %>%
   # group_by(stn_id) %>%
 #   mutate(time_diff = time - lag(time)) %>%
@@ -144,6 +145,8 @@ temps_per_day %>% as.data.frame()
 hist(temps_per_day$per_day, breaks = 0:25 - 0.5)   # shows for C46036 long tail
 # to the left. So will need to figure out if have values every two hours.
 
+# next bit is developing/experimental
+
 # for each station, get minimum date, then create to check there's a value every
 #  two hours:
 #  grid = min_date + hours(seq(0, 24, by = 2)
@@ -155,14 +158,11 @@ min_max_date <- dfo_data_resolution %>%
          last_date = ceiling_date(last_date_time, unit = "day")) %>%
   ungroup()
 
-pull(filter(min_max_date, stn_id == "C46036"), first_date)
-pull(filter(min_max_date, stn_id == "C46036"), last_date)
-
-grid_46036 <- pull(filter(min_date, stn_id == "C46036"), first_date) +
-  hours(seq(0, 24, by = 2))
-
-day_1 <- pull(filter(min_date,
-                                stn_id == "C46036"),
+# Just one station to figure it out
+one_stn <- filter(dfo_data_resolution,
+                  stn_id == "C46036")
+day_1 <- pull(filter(min_max_date,
+                     stn_id == "C46036"),
               first_date)
 day_2 <- pull(filter(min_max_date,
                      stn_id == "C46036"),
@@ -172,13 +172,41 @@ grid_46036 <- seq(day_1,
                   day_2,
                   by = hours_increment * 60 * 60)  # works
                                         # automatically in seconds
+tail(grid_46036)
+
+one_stn_first_ones <- one_stn[1:200, ]   # just a few to understand
+grid_first <- grid_46036[1:300]
+
+count_per_grid = numeric(length(grid_first))  # Note that last value won't get
+                                        # filled in loop, but we want it as 0 anyway.
+for(i in 1:length(count_per_grid)){
+
+  count_per_grid[i] <- sum(one_stn$time %within%
+                           interval(grid_first[i],
+                                    grid_first[i+1]))   # There's probably a more
+                                        # efficient way, since it's checking
+                                        # every time against every interval; but
+  # it works
+  # HERE
+  # Then want to cbind the count corresponding to each one_stn$time to one_stn$time
+}
+tibble(grid = grid_first, count_per_grid = count_per_grid)
+
+
+77
+
+
+
+#grid_start[1] %within% interval(grid_start[1], grid_start[2] - 1)
+#grid_start[2] %within% interval(grid_start[1], grid_start[2] - 1)  # take off
+                                        # one second to make this FALSE (in
+                                        # unlikely case the sst is recorded at
+                                        # exactly two-hour time)
 
 
 
 
-
-
-
+# HERE TODO - this carries on with original code
 
 dfo_data_latest <- dfo_data %>% group_by(stn_id) %>%
   summarise(end_date = max(time))
