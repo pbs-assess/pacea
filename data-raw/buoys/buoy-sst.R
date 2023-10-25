@@ -117,7 +117,7 @@ dfo_data_resolution <- dfo_data %>%
 #   mutate(time_diff = time - lag(time)) %>%
   select(-"sstp_flags")
 
-
+# Don't think I need these now:
 simp <- filter(dfo_data_resolution,
                stn_id == "C46036")    # Just one station to understand
 
@@ -213,28 +213,60 @@ grid_first <- grid_46036[1:300]
 # tibble(grid = grid_first, count_per_grid = count_per_grid)
 
 
-grid_intervals <- interval(grid_first, lead(grid_first)-1)  # take off
+
+# HERE Now doing for all DFO stations in one go
+
+min_dfo_date <- min(dfo_data_resolution$time) %>%
+  floor_date(unit = "day")
+
+max_dfo_date <- max(dfo_data_resolution$time) %>%
+  ceiling_date(unit = "day")
+
+# lubridate way, after I'd figured out intervals:
+dfo_data_resolution_two_hours <- mutate(dfo_data_resolution,
+                                        two_hour_start = floor_date(time,
+                                                                    unit = "2 hour"))
+HERE - remove old interval code, and mention that in commit message if ever need it.
+# Just one station to figure it out
+#one_stn <- filter(dfo_data_resolution,
+#                  stn_id == "C46036")
+#day_1 <- pull(filter(min_max_date,
+#                     stn_id == "C46036"),
+#              first_date)
+#day_2 <- pull(filter(min_max_date,
+#                     stn_id == "C46036"),
+#             last_date)
+
+hours_increment <- 2
+
+dfo_two_hour_grid <- seq(min_dfo_date,
+                         max_dfo_date,
+                         by = hours_increment * 60 * 60) # works automatically
+dfo_grid_intervals <- interval(dfo_two_hour_grid,
+                               lead(dfo_two_hour_grid)-1)  # take off
                                         # one second to to cover unlikely case
                                         # when an sst is recorded at exactly
                                         # two-hour time time in grid_first, as
                                         # %within% below uses [a,b] intervals
-grid_index <- numeric(nrow(one_stn_first_ones))     # Prob don't need to keep,
+
+# one_stn_first_ones becomes dfo_data_resolution
+grid_index <- numeric(nrow(dfo_data_resolution))     # Prob don't need to keep,
                                         # but good for checking
-# two_hour_start <- numeric(nrow(one_stn_first_ones)) # Will all get filled. For
+# two_hour_start <- numeric(nrow(dfo_data_resolution)) # Will all get filled. For
                                         # each sst, the start of the two-hour
                                         # window in which it falls.
 # class(two_hour_start) <- c("POSIXct", "POSIXt")
 
-for(j in 1:nrow(one_stn_first_ones)){
+for(j in 1:nrow(dfo_data_resolution)){
 
-  grid_index[j] <- which(one_stn_first_ones$time[j] %within% grid_intervals)
+  grid_index[j] <- which(dfo_data_resolution$time[j] %within% dfo_grid_intervals)
 }
 
 two_hour_start <- grid_first[grid_index]
-one_stn_first_ones <- cbind(one_stn_first_ones,
+dfo_data_resolution <- cbind(dfo_data_resolution,
                             two_hour_start = two_hour_start)
 
-two_hourly_mean <- group_by(one_stn_first_ones,
+two_hourly_mean <- group_by(dfo_data_resolution,
                             stn_id,
                             two_hour_start) %>%
   summarise(#stn_id = unique(stn_id)
@@ -260,15 +292,6 @@ daily_mean_enough_two_hours <- filter(daily_mean,
 
 
 77
-
-
-
-#grid_start[1] %within% interval(grid_start[1], grid_start[2] - 1)
-#grid_start[2] %within% interval(grid_start[1], grid_start[2] - 1)  # take off
-                                        # one second to make this FALSE (in
-                                        # unlikely case the sst is recorded at
-                                        # exactly two-hour time)
-
 
 
 
