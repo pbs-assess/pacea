@@ -140,7 +140,7 @@ dfo_daily_mean_no_qc <- group_by(dfo_two_hourly_mean,
             num_two_hourly_in_day = n()) %>%
   ungroup()
 
-# table(dfo_daily_mean$num_two_hourly_in_day)
+# table(dfo_daily_mean_no_qc$num_two_hourly_in_day)
 #     1      2      3      4      5      6      7      8      9     10     11
 #  1091    898    775   1260   1935   1224   1427   3461   2852   4168   9761
 #    12
@@ -276,7 +276,7 @@ buoy_list <- c("MEDS107",
 # sstdata = sstdata %>% filter(!(STN_ID %in% c("MEDS107",....[the above list]
 
 filter(dfo_daily_mean,
-       stn_id %in% buoy_list)    # 5477 out of 172,236.
+       stn_id %in% buoy_list)    # 5477 out of 172,236 without two-hour calcs.
                                  # After two-hour calcs it's
                                  # 4661 out of 158,012.  Could come
                                  # back to at end after doing ECCC data.
@@ -298,6 +298,7 @@ range(filter(dfo_daily_mean,
 
 dfo_daily_mean <- filter(dfo_daily_mean,
                          stn_id != "C46182")
+
 
 # OPP Buoys. Presumably Oceans Protection Plan. Makes sense, as starts in 2019.
 # On 2023-06-14 redownloaded data and the latest value was only an hour beforehand!
@@ -350,8 +351,8 @@ dfo_only_stn
 dfo_ranges <- dfo_daily_mean %>%
   filter(stn_id %in% dfo_and_opp_stn) %>%
   group_by(stn_id) %>%
-  summarise(start_dfo = min(date),
-            end_dfo = max(date))
+  summarise(start_dfo = lubridate::date(min(date)),
+            end_dfo = lubridate::date(max(date)))
 dfo_ranges
 
 opp_ranges <- opp_data_raw %>%
@@ -379,7 +380,8 @@ filter(dfo_opp_ranges, dfo_ends_last == TRUE)
 # So only three that have both ending on same day, but that looks to be because
 # data has stopped coming in (as of 2023-08-28, they are June 2023, May 2023,
 # and September 2022). So still makes sense to use OPP for those recent ones in
-# case they come online again.
+# case they come online again. After two-hour correction above for DFO, looks
+# like end dates may be off by 1, but conclusion still holds.
 
 # So, want DFO data first, then add on OPP data after as either
 #  (i) they are both 2-11 months ago, which is presumably something failing) - 3 buoys
@@ -420,27 +422,6 @@ opp_data # A tibble: 569,537 × 3, was 346,659 with only C46303 and C46304
                                                           #  2019-09-30 16:00:00, GMT-8
 summary(opp_data)
 
-## # Previously had this, only adding the two new buoys on (copying this above to
-## # use it): TODO can delete once finished these updates
-## opp_data <- as_tibble(opp_data_raw) %>%
-##   filter(wmo_synop_id %in% c("46303", "46304")) %>%
-##   mutate(time = with_tz(ymd_hms(time),
-##                         "Etc/GMT+8"),
-##          longitude = as.numeric(longitude),
-##          latitude = as.numeric(latitude),
-##          stn_id = as.factor(wmo_synop_id),
-##          sst = as.numeric(avg_sea_sfc_temp_pst10mts)) %>%
-##   select(time,
-##          stn_id,
-##          sst) %>%
-##   filter(!is.na(time),
-##          !is.na(sst))
-
-#opp_data_posix    # was saved using posix
-#filter(opp_data_raw, wmo_synop_id == "46303")[1, "time"]  # First record of both
-                                                          # is midnight
-                                                          # 2019-10-01, but
-                                                          # posix assumes it's PST/PDT.
 opp_data_full_range <- opp_data %>%
    group_by(stn_id) %>%
    summarise(start_date = min(time),
@@ -487,7 +468,6 @@ sort(opp_data_full_range$end_date)   # Now this gives 18 buoys.
 #  AE: there is a -08 coded in the times (it doesn't always show up in tibble
 #  view), so not adding.
 
-# TODO come back to, see Issue, discuss with Andrea and Charles
 # Want to look at plot of fine-scale data:
 opp_data_example <- filter(opp_data,
                            stn_id == "C46208")[1:150, ]   # Looks better
@@ -508,7 +488,9 @@ opp_daily_range <- opp_data %>%
 opp_daily_range
 
 # Gives 10.8 for C46304, for first day. And many other large values. Look into
-# the fine-scale data:
+# the fine-scale data: (at IOS we figured out the sensor was probably turned on
+# while still on the deck). Deal with after doing daily calculations with the
+# two-hour criteria.
 opp_data_C46304 <- filter(opp_data,
                            stn_id == "C46304")
 
@@ -518,7 +500,7 @@ plot(opp_data_C46304$time[1:200],
      xlab = "Time",
      ylab = "SST")
 
-# TODO calc is not quite right I think, this seems strange, though it's a time
+#Calc is not quite right I think, this seems strange, though it's a time
 # zone thing - these may still be in UTC.
 min(filter(opp_data_C46304, as.Date(time) == "2019-10-01")$sst)
 max(filter(opp_data_C46304, as.Date(time) == "2019-10-01")$sst)
@@ -528,41 +510,95 @@ filter(opp_data_C46304, as.Date(time) == "2019-10-01") %>% as.data.frame()
 lines(filter(opp_daily_range, stn_id == "C46304")$date,
       filter(opp_daily_range, stn_id == "C46304")$sst_abs_range,
       col = "red")
+# TODO will check for anomalous values at start of time series later after calculating
+# daily values.
 
+# Repeating above DFO calcs for OPP data
 
-# Calculate daily mean.
-opp_daily_mean <- opp_data %>%
-  mutate(time_day = as.Date(time)) %>%
-  group_by(date = time_day,
-           stn_id) %>%
-  summarise(sst = mean(sst)) %>%     # TODO (started above) Should check the data are
-                                     # representative through the day. And for
-                                     # DFO data.
+opp_data_resolution_two_hours <- opp_data %>%
+  mutate(two_hour_start = floor_date(time,
+                                     unit = "2 hour"))
+
+# Calculate mean of measurements within the same two-hour interval,
+#  and assign each one a day
+opp_two_hourly_mean <- group_by(opp_data_resolution_two_hours,
+                            stn_id,
+                            two_hour_start) %>%
+  summarise(two_hour_mean_sst = mean(sst)) %>%
+  ungroup() %>%
+  mutate(day = floor_date(two_hour_start,
+                          unit = "day"))
+
+# Calculate daily mean, also keep track of how many two-hour measurements in
+# each day (no quality control yet):
+opp_daily_mean_no_qc <- group_by(opp_two_hourly_mean,
+                                 stn_id,
+                                 day) %>%
+  summarise(daily_mean_sst = mean(two_hour_mean_sst),
+            num_two_hourly_in_day = n()) %>%
   ungroup()
 
-opp_daily_mean # A tibble: 11,840 × 3
+# table(opp_daily_mean_no_qc$num_two_hourly_in_day)
+#    1     2     3     4     5     6     7     8     9    10    11    12
+#  118    94    74    73    64    50    28    44    53    56   222 10949
+
+# Great, not going to be throwing out too much at all.
+
+opp_daily_mean_enough_two_hours <- opp_daily_mean_no_qc %>%
+  filter(num_two_hourly_in_day >= num_two_hour_intervals_required)
+
+# Daily mean values to use
+opp_daily_mean <- opp_daily_mean_enough_two_hours %>%
+  mutate(date = day,
+         sst = daily_mean_sst) %>%
+  select(date,
+         stn_id,
+         sst)                # reorder columns
+# 11,227 rows up to 2023-08-27
+# Before doing two-hour quality control had less, not sure how many (can test by
+#  changing num_two_hour_intervals_required)
+
+opp_daily_latest <- opp_daily_mean %>%
+  group_by(stn_id) %>%
+  summarise(end_date = max(date))
+
+opp_daily_latest
+# After doing the two-hour calculations above, on 2023-10-25 (before
+# redownloading data), we have:
+# A tibble: 18 × 2
+##    stn_id end_date
+##    <fct>  <dttm>
+##  1 C46004 2023-06-17 00:00:00
+##  2 C46036 2023-08-27 00:00:00
+##  3 C46131 2023-08-27 00:00:00
+##  4 C46132 2023-08-27 00:00:00
+##  5 C46145 2023-08-13 00:00:00
+##  6 C46146 2023-05-13 00:00:00
+##  7 C46147 2023-08-27 00:00:00
+##  8 C46181 2023-08-27 00:00:00
+##  9 C46183 2023-08-27 00:00:00
+## 10 C46184 2023-08-27 00:00:00
+## 11 C46185 2023-08-27 00:00:00
+## 12 C46204 2023-08-27 00:00:00
+## 13 C46205 2023-08-27 00:00:00
+## 14 C46206 2022-11-30 00:00:00
+## 15 C46207 2022-09-07 00:00:00
+## 16 C46208 2023-08-03 00:00:00
+## 17 C46303 2023-08-19 00:00:00
+## 18 C46304 2023-08-27 00:00:00
+
+
+# End of repeating DFO calcs
+
+
+opp_daily_mean # A tibble: 11,217 x 3 (was 11,840 before 2-hour quality control,
+               # may have had downloaded less then also)
 summary(opp_daily_mean)
-
-# Keep these as comments, prob don't need them and data filtering has since
-# changed, and all makes sense now.
-
-# Just manually saying which are unique (*), not duplicated in other data
-#  though now removing C46182 above because it was only for 2 years, 30 years ago.
-# unique(dfo_daily_mean$stn_id)
-# C46004 C46036 C46131 C46132 C46134* C46145 C46146 C46147 C46181 C46182*
-# C46183 C46184 C46185 C46204 C46205 C46206 C46207 C46208
-
-# sort(unique(opp_daily_mean$wmo_synop_id))
-# 46004 46036 46131 46132 46145 46146 46147 46181 46183 46184 46185 46204
-# 46205 46206 46207 46208 46303* 46304*
-# Those two * are the only ones we use in opp now. - Nope, now doing others.
 
 expect_equal(colnames(dfo_daily_mean),
              colnames(opp_daily_mean))
 
 # Should check the overlapping values agree? TODO
-
-
 
 # Check the dfo_only_stn still has only historical data. If this test fails then need
 # to add the later data in (expect buoy is not going to be restarted). Else is okay
@@ -583,9 +619,9 @@ buoy_sst = full_join(filter(dfo_daily_mean,
                             date < switch_dfo_to_opp),
                      opp_daily_mean_to_use) %>%
   group_by(stn_id) %>%
-  tidyr::complete(date = seq.Date(from = min(date),
-                                  to = max(date),
-                                  by = "day")) %>%
+  tidyr::complete(date = seq(from = min(date),
+                             to = max(date),
+                             by = "day")) %>%
   relocate(date) %>%
   droplevels() %>%
   ungroup()
@@ -596,7 +632,10 @@ buoy_sst = full_join(filter(dfo_daily_mean,
 class(buoy_sst) <- c("pacea_buoy",
                      class(buoy_sst))
 
-buoy_sst     # 201,641 on 28 August 2023 after adding in ECCC data instead of
+buoy_sst     # 201,435 with same data as 28 August 2023, but having done the
+             #  two-hour quality control on all the data. So only actually lose
+             #  206 daily means, which seems fine and makes sense..
+             # 201,641 on 28 August 2023 after adding in ECCC data instead of
              # DFO ones. Have added with the switch to ECCC values. Previously had 199,625 values
              # (165 extra are from updating in time) Adding days: 15 + 1131 + 450 + 15 + 45 + 45 +
              # 240 + 45 =~ 1986
