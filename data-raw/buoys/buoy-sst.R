@@ -500,6 +500,14 @@ plot(opp_data_C46304$time[1:200],
      xlab = "Time",
      ylab = "SST")
 
+# Looking into large daily fluctuations, but this is before doing the two-hour
+# quality control. TODO HERE - need to look at this in conjuction with final
+# values. Could plot max and min
+hist(opp_daily_range$sst_abs_range, xlab = "Daily range")
+one_buoy <- filter(opp_daily_range, stn_id == "C46304")
+plot(one_buoy$date, one_buoy$sst_abs_range, type = "o")
+
+
 #Calc is not quite right I think, this seems strange, though it's a time
 # zone thing - these may still be in UTC.
 min(filter(opp_data_C46304, as.Date(time) == "2019-10-01")$sst)
@@ -557,6 +565,17 @@ opp_daily_mean <- opp_daily_mean_enough_two_hours %>%
 # 11,227 rows up to 2023-08-27
 # Before doing two-hour quality control had less, not sure how many (can test by
 #  changing num_two_hour_intervals_required)
+
+# HERE Check on the one that had big fluctations earlier:
+one_buoy_mean <- filter(opp_daily_mean,
+                        stn_id == "C46304")
+plot(one_buoy_mean$date, one_buoy_mean$sst, type = "o")   # looks okay
+min(one_buoy_mean$date)
+# Before the two-hour calcs, we had
+min(one_buoy$date)
+# So that first day is still being used, doesn't show up as an outlier on the
+# post-processed plot, yet still had large fluctuation (expect the extremes
+# of air temperature cancel out to give a realistic sst).
 
 opp_daily_latest <- opp_daily_mean %>%
   group_by(stn_id) %>%
