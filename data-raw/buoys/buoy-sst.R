@@ -20,7 +20,7 @@ library(lubridate)
 # library(tibble)
 # library(ggplot2)
 
-redownload_data = TRUE         # FALSE while developing, TRUE to update.
+redownload_data = FALSE         # FALSE while developing, TRUE to update.
 
 # CIOOS flags for the DFO MEDS record, flags to include:
 
@@ -102,6 +102,83 @@ summary(dfo_data)   # Earliest is 1987, so not adding tons of data, yet not real
                # Latest is 2023-06-11 having just downloaded on 2023-06-14. OPP
                #  data below seems to be more recent. TODO If really wanted more recent
                #  could switch to using OPP for some buoys, bit of work though.
+
+# Issue #26 - criteria for excluding days with missing values. Discussion at
+# IOS resulted in Charles suggesting :
+#  - for hourly data require a measurement every 2 hours
+#  - for 10 minute data require at least one every hour.
+# I later realised we should maybe just pick one value from every hour (else
+# could be averaging six values from 10am - 11am with only one from 9pm -
+# 10pm). This may actually be easier to
+
+dfo_data_resolution <- dfo_data %>%
+  # group_by(stn_id) %>%
+#   mutate(time_diff = time - lag(time)) %>%
+  select(-"sstp_flags")
+
+
+simp <- filter(dfo_data_resolution,
+               stn_id == "C46036")    # Just one station to understand
+
+simp <- simp %>%
+  mutate(# interval = time - lag(time),
+    floor_hour = floor_date(time, unit = "hour"),
+    floor_day = floor_date(time, unit = "day"))
+
+simp %>% as.data.frame()
+
+temps_per_hour <- simp %>%
+  group_by(stn_id,
+           floor_hour) %>%
+  summarise(per_hour = n()) %>%
+  ungroup()
+
+temps_per_day <- simp %>%
+  group_by(stn_id,
+           floor_day) %>%
+  summarise(per_day = n()) %>%
+  ungroup()
+
+temps_per_day %>% as.data.frame()
+
+hist(temps_per_day$per_day, breaks = 0:25 - 0.5)   # shows for C46036 long tail
+# to the left. So will need to figure out if have values every two hours.
+
+# for each station, get minimum date, then create to check there's a value every
+#  two hours:
+#  grid = min_date + hours(seq(0, 24, by = 2)
+min_max_date <- dfo_data_resolution %>%
+  group_by(stn_id) %>%
+  summarise(first_date_time = min(time),
+            last_date_time = max(time),) %>%
+  mutate(first_date = floor_date(first_date_time, unit = "day"),
+         last_date = ceiling_date(last_date_time, unit = "day")) %>%
+  ungroup()
+
+pull(filter(min_max_date, stn_id == "C46036"), first_date)
+pull(filter(min_max_date, stn_id == "C46036"), last_date)
+
+grid_46036 <- pull(filter(min_date, stn_id == "C46036"), first_date) +
+  hours(seq(0, 24, by = 2))
+
+day_1 <- pull(filter(min_date,
+                                stn_id == "C46036"),
+              first_date)
+day_2 <- pull(filter(min_max_date,
+                     stn_id == "C46036"),
+              last_date)
+hours_increment <- 2
+grid_46036 <- seq(day_1,
+                  day_2,
+                  by = hours_increment * 60 * 60)  # works
+                                        # automatically in seconds
+
+
+
+
+
+
+
 
 dfo_data_latest <- dfo_data %>% group_by(stn_id) %>%
   summarise(end_date = max(time))
