@@ -177,20 +177,86 @@ tail(grid_46036)
 one_stn_first_ones <- one_stn[1:200, ]   # just a few to understand
 grid_first <- grid_46036[1:300]
 
-count_per_grid = numeric(length(grid_first))  # Note that last value won't get
-                                        # filled in loop, but we want it as 0 anyway.
-for(i in 1:length(count_per_grid)){
+  ## each sst time has to be in exactly one interval.
+  ## find which one
+  ## assign that one as another column
+  ## do group_by to get two-hourly mean
+  ## so it
+  ## won't matter if only a few in, say, the first hour (for 10-minute ones) as not super variable over two hours
 
-  count_per_grid[i] <- sum(one_stn$time %within%
-                           interval(grid_first[i],
-                                    grid_first[i+1]))   # There's probably a more
+  ## then do similar idea for calculating daily mean, but should insist that
+  ## there is an sst for every two-hour interval within a day. Maybe look at if
+  ## that's too strict (perhaps 10 out of 12 two-hour intervals is sufficient).
+  ## Don't think there's an issue with taking means of means, as there might be
+  ## for some other types of analysis.
+
+
+
+# Actually don't need the count per interval I don't think. As long as we have
+# one value in a two-hour window we will just average what we have. So, see
+# below, going to loop over the measurements.
+## See loop after this one
+
+# count_per_grid = numeric(length(grid_first))  # Note that last value won't get
+                                        # filled in loop, but we want it as 0 anyway.
+# for(i in 1:length(count_per_grid)){
+
+
+  #count_per_grid[i] <- sum(one_stn_first_ones$time %within%
+  #                         interval(grid_first[i],
+  #                                  grid_first[i+1]))   # There's probably a more
                                         # efficient way, since it's checking
                                         # every time against every interval; but
   # it works
-  # HERE
-  # Then want to cbind the count corresponding to each one_stn$time to one_stn$time
+    # Then want to cbind the count corresponding to each one_stn$time to one_stn$time
 }
-tibble(grid = grid_first, count_per_grid = count_per_grid)
+# tibble(grid = grid_first, count_per_grid = count_per_grid)
+
+
+grid_intervals <- interval(grid_first, lead(grid_first)-1)  # take off
+                                        # one second to to cover unlikely case
+                                        # when an sst is recorded at exactly
+                                        # two-hour time time in grid_first, as
+                                        # %within% below uses [a,b] intervals
+grid_index <- numeric(nrow(one_stn_first_ones))     # Prob don't need to keep,
+                                        # but good for checking
+# two_hour_start <- numeric(nrow(one_stn_first_ones)) # Will all get filled. For
+                                        # each sst, the start of the two-hour
+                                        # window in which it falls.
+# class(two_hour_start) <- c("POSIXct", "POSIXt")
+
+for(j in 1:nrow(one_stn_first_ones)){
+
+  grid_index[j] <- which(one_stn_first_ones$time[j] %within% grid_intervals)
+}
+
+two_hour_start <- grid_first[grid_index]
+one_stn_first_ones <- cbind(one_stn_first_ones,
+                            two_hour_start = two_hour_start)
+
+two_hourly_mean <- group_by(one_stn_first_ones,
+                            stn_id,
+                            two_hour_start) %>%
+  summarise(#stn_id = unique(stn_id)
+            #two_hour_start = unique(two_hour_start)
+    two_hour_mean_sst = mean(sstp)) %>%
+  ungroup() %>%
+  mutate(day = floor_date(two_hour_start,
+                          unit = "day"))
+
+daily_mean <- group_by(two_hourly_mean,
+                       stn_id,
+                       day) %>%
+  summarise(daily_mean_sst = mean(two_hour_mean_sst),
+            num_two_hourly_in_day = n()) %>%
+  ungroup()
+
+num_two_hour_intervals_required <- 10  # Number of two-hour intervals in a day
+                                       # that must have sst values in order to
+                                       # use the daily mean for that day.
+
+daily_mean_enough_two_hours <- filter(daily_mean,
+                                      num_two_hourly_in_day > num_two_hour_intervals_required)
 
 
 77
