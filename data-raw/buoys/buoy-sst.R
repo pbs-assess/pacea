@@ -107,222 +107,92 @@ summary(dfo_data)   # Earliest is 1987, so not adding tons of data, yet not real
 # IOS resulted in Charles suggesting :
 #  - for hourly data require a measurement every 2 hours
 #  - for 10 minute data require at least one every hour.
-# I later realised we should maybe just pick one value from every hour (else
-# could be averaging six values from 10am - 11am with only one from 9pm -
-# 10pm). This may actually be easier to
+# Easier to just take the average in every two hour interval (midnight - 2am,
+# 2am-4am, etc.), and only calculate daily means for days which have
+# >= num_two_hour_intervals_required  two-hour intervals with data.
 
-# Look through all this first, I'm determining what to do
-dfo_data_resolution <- dfo_data %>%
-  # group_by(stn_id) %>%
-#   mutate(time_diff = time - lag(time)) %>%
-  select(-"sstp_flags")
+# lubridate way, after I'd figured out interval approach that have now deleted
+# (commit ac09d9d and the subsequent one). Assign each time a two-hour-interval
+# start time:
+dfo_data_resolution_two_hours <- dfo_data %>%
+  arrange(desc(latitude),
+          longitude) %>%     # To order the stations sensibly
+  select(-"sstp_flags") %>%
+  mutate(two_hour_start = floor_date(time,
+                                     unit = "2 hour"))
 
-# Don't think I need these now:
-simp <- filter(dfo_data_resolution,
-               stn_id == "C46036")    # Just one station to understand
-
-simp <- simp %>%
-  mutate(# interval = time - lag(time),
-    floor_hour = floor_date(time, unit = "hour"),
-    floor_day = floor_date(time, unit = "day"))
-
-simp %>% as.data.frame()
-
-temps_per_hour <- simp %>%
-  group_by(stn_id,
-           floor_hour) %>%
-  summarise(per_hour = n()) %>%
-  ungroup()
-
-temps_per_day <- simp %>%
-  group_by(stn_id,
-           floor_day) %>%
-  summarise(per_day = n()) %>%
-  ungroup()
-
-temps_per_day %>% as.data.frame()
-
-hist(temps_per_day$per_day, breaks = 0:25 - 0.5)   # shows for C46036 long tail
-# to the left. So will need to figure out if have values every two hours.
-
-# next bit is developing/experimental
-
-# for each station, get minimum date, then create to check there's a value every
-#  two hours:
-#  grid = min_date + hours(seq(0, 24, by = 2)
-min_max_date <- dfo_data_resolution %>%
-  group_by(stn_id) %>%
-  summarise(first_date_time = min(time),
-            last_date_time = max(time),) %>%
-  mutate(first_date = floor_date(first_date_time, unit = "day"),
-         last_date = ceiling_date(last_date_time, unit = "day")) %>%
-  ungroup()
-
-# Just one station to figure it out
-one_stn <- filter(dfo_data_resolution,
-                  stn_id == "C46036")
-day_1 <- pull(filter(min_max_date,
-                     stn_id == "C46036"),
-              first_date)
-day_2 <- pull(filter(min_max_date,
-                     stn_id == "C46036"),
-              last_date)
-hours_increment <- 2
-grid_46036 <- seq(day_1,
-                  day_2,
-                  by = hours_increment * 60 * 60)  # works
-                                        # automatically in seconds
-tail(grid_46036)
-
-one_stn_first_ones <- one_stn[1:200, ]   # just a few to understand
-grid_first <- grid_46036[1:300]
-
-  ## each sst time has to be in exactly one interval.
-  ## find which one
-  ## assign that one as another column
-  ## do group_by to get two-hourly mean
-  ## so it
-  ## won't matter if only a few in, say, the first hour (for 10-minute ones) as not super variable over two hours
-
-  ## then do similar idea for calculating daily mean, but should insist that
-  ## there is an sst for every two-hour interval within a day. Maybe look at if
-  ## that's too strict (perhaps 10 out of 12 two-hour intervals is sufficient).
-  ## Don't think there's an issue with taking means of means, as there might be
-  ## for some other types of analysis.
-
-
-
-# Actually don't need the count per interval I don't think. As long as we have
-# one value in a two-hour window we will just average what we have. So, see
-# below, going to loop over the measurements.
-## See loop after this one
-
-# count_per_grid = numeric(length(grid_first))  # Note that last value won't get
-                                        # filled in loop, but we want it as 0 anyway.
-# for(i in 1:length(count_per_grid)){
-
-
-  #count_per_grid[i] <- sum(one_stn_first_ones$time %within%
-  #                         interval(grid_first[i],
-  #                                  grid_first[i+1]))   # There's probably a more
-                                        # efficient way, since it's checking
-                                        # every time against every interval; but
-  # it works
-    # Then want to cbind the count corresponding to each one_stn$time to one_stn$time
-}
-# tibble(grid = grid_first, count_per_grid = count_per_grid)
-
-
-
-# HERE Now doing for all DFO stations in one go
-
-min_dfo_date <- min(dfo_data_resolution$time) %>%
-  floor_date(unit = "day")
-
-max_dfo_date <- max(dfo_data_resolution$time) %>%
-  ceiling_date(unit = "day")
-
-# lubridate way, after I'd figured out intervals:
-dfo_data_resolution_two_hours <- mutate(dfo_data_resolution,
-                                        two_hour_start = floor_date(time,
-                                                                    unit = "2 hour"))
-HERE - remove old interval code, and mention that in commit message if ever need it.
-# Just one station to figure it out
-#one_stn <- filter(dfo_data_resolution,
-#                  stn_id == "C46036")
-#day_1 <- pull(filter(min_max_date,
-#                     stn_id == "C46036"),
-#              first_date)
-#day_2 <- pull(filter(min_max_date,
-#                     stn_id == "C46036"),
-#             last_date)
-
-hours_increment <- 2
-
-dfo_two_hour_grid <- seq(min_dfo_date,
-                         max_dfo_date,
-                         by = hours_increment * 60 * 60) # works automatically
-dfo_grid_intervals <- interval(dfo_two_hour_grid,
-                               lead(dfo_two_hour_grid)-1)  # take off
-                                        # one second to to cover unlikely case
-                                        # when an sst is recorded at exactly
-                                        # two-hour time time in grid_first, as
-                                        # %within% below uses [a,b] intervals
-
-# one_stn_first_ones becomes dfo_data_resolution
-grid_index <- numeric(nrow(dfo_data_resolution))     # Prob don't need to keep,
-                                        # but good for checking
-# two_hour_start <- numeric(nrow(dfo_data_resolution)) # Will all get filled. For
-                                        # each sst, the start of the two-hour
-                                        # window in which it falls.
-# class(two_hour_start) <- c("POSIXct", "POSIXt")
-
-for(j in 1:nrow(dfo_data_resolution)){
-
-  grid_index[j] <- which(dfo_data_resolution$time[j] %within% dfo_grid_intervals)
-}
-
-two_hour_start <- grid_first[grid_index]
-dfo_data_resolution <- cbind(dfo_data_resolution,
-                            two_hour_start = two_hour_start)
-
-two_hourly_mean <- group_by(dfo_data_resolution,
+# Calculate mean of measurements within the same two-hour interval,
+#  and assign each one a day
+dfo_two_hourly_mean <- group_by(dfo_data_resolution_two_hours,
                             stn_id,
                             two_hour_start) %>%
-  summarise(#stn_id = unique(stn_id)
-            #two_hour_start = unique(two_hour_start)
-    two_hour_mean_sst = mean(sstp)) %>%
+  summarise(two_hour_mean_sst = mean(sstp)) %>%
   ungroup() %>%
   mutate(day = floor_date(two_hour_start,
                           unit = "day"))
 
-daily_mean <- group_by(two_hourly_mean,
-                       stn_id,
-                       day) %>%
+# Calculate daily mean, also keep track of how many two-hour measurements in
+# each day (no quality control yet):
+dfo_daily_mean_no_qc <- group_by(dfo_two_hourly_mean,
+                                 stn_id,
+                                 day) %>%
   summarise(daily_mean_sst = mean(two_hour_mean_sst),
             num_two_hourly_in_day = n()) %>%
   ungroup()
+
+# table(dfo_daily_mean$num_two_hourly_in_day)
+#     1      2      3      4      5      6      7      8      9     10     11
+#  1091    898    775   1260   1935   1224   1427   3461   2852   4168   9761
+#    12
+#144083
 
 num_two_hour_intervals_required <- 10  # Number of two-hour intervals in a day
                                        # that must have sst values in order to
                                        # use the daily mean for that day.
 
-daily_mean_enough_two_hours <- filter(daily_mean,
-                                      num_two_hourly_in_day > num_two_hour_intervals_required)
+dfo_daily_mean_enough_two_hours <- dfo_daily_mean_no_qc %>%
+  filter(num_two_hourly_in_day >= num_two_hour_intervals_required)
 
+# Daily mean values to use
+dfo_daily_mean <- dfo_daily_mean_enough_two_hours %>%
+  mutate(date = day,
+         sst = daily_mean_sst) %>%
+  select(date,
+         stn_id,
+         sst)                # reorder columns
 
-77
+# 158,012 rows up to 2023-08-23
+# Before doing two-hour quality control had less, not sure how many (can test by
+#  changing num_two_hour_intervals_required)
 
+dfo_daily_latest <- dfo_daily_mean %>%
+  group_by(stn_id) %>%
+  summarise(end_date = max(date))
 
-
-# HERE TODO - this carries on with original code
-
-dfo_data_latest <- dfo_data %>% group_by(stn_id) %>%
-  summarise(end_date = max(time))
-dfo_data_latest
-# On 2023-06-14 having downloaded data at 15:51, we have:
-# A tibble: 18 × 2      # similar results on 2023-08-04, i.e. values from 3 days ago
+dfo_daily_latest
+# After doing the two-hour calculations above, on 2023-10-25 (before
+# redownloading data), we have:
+# A tibble: 18 × 2
 ##    stn_id end_date
 ##    <fct>  <dttm>
-##  1 C46004 2023-06-11 14:40:00
-##  2 C46036 2023-06-11 14:28:00
-##  3 C46131 2020-07-04 15:32:00
-##  4 C46132 2022-05-15 06:38:00
-##  5 C46134 2016-12-09 07:39:00
-##  6 C46145 2023-06-11 11:28:00
-##  7 C46146 2023-05-13 19:28:00
-##  8 C46147 2023-06-11 14:28:00
-##  9 C46181 2023-06-11 14:20:00
-## 10 C46182 1991-11-21 13:44:00
-## 11 C46183 2023-06-11 14:39:00
-## 12 C46184 2023-06-11 14:39:00
-## 13 C46185 2023-06-11 14:34:00
-## 14 C46204 2023-06-11 14:33:00
-## 15 C46205 2023-06-11 14:38:00
-## 16 C46206 2022-04-17 15:38:00
-## 17 C46207 2022-09-08 10:26:00
-## 18 C46208 2023-06-11 14:37:00
-
+##  1 C46004 2023-06-17 00:00:00
+##  2 C46036 2023-08-23 00:00:00
+##  3 C46131 2020-07-03 00:00:00
+##  4 C46132 2022-05-14 00:00:00
+##  5 C46134 2016-12-08 00:00:00
+##  6 C46145 2023-08-21 00:00:00
+##  7 C46146 2023-05-13 00:00:00
+##  8 C46147 2023-08-23 00:00:00
+##  9 C46181 2023-08-23 00:00:00
+## 10 C46182 1991-11-05 00:00:00
+## 11 C46183 2023-08-23 00:00:00
+## 12 C46184 2023-08-23 00:00:00
+## 13 C46185 2023-08-23 00:00:00
+## 14 C46204 2023-08-23 00:00:00
+## 15 C46205 2023-08-23 00:00:00
+## 16 C46206 2022-04-10 00:00:00
+## 17 C46207 2022-09-07 00:00:00
+## 18 C46208 2023-08-03 00:00:00
 
 # > unique(dfo_data$stn_id)
 # [1] C46206 C46004 C46184 C46036 C46208 C46205 C46207 C46181 C46204 C46145
@@ -335,28 +205,18 @@ dfo_data_latest
 # So the pre-1991 data adds another 100,000 rows (still multiple per day), but
 #  no new stations. Worth keeping in for our purposes.
 
-# Daily mean values
-dfo_daily_mean <- dfo_data %>%
-  arrange(desc(latitude),
-          longitude) %>%
-  group_by(stn_id,
-           date = as.Date(time)) %>%
-  summarise(sst = mean(sstp)) %>%
-  ungroup() %>%
-  select(date,
-         stn_id,
-         sst)                # to reorder
+
 
 # This outlier has gone away now (strangely, since I fixed time zones). Keeping
 # for now, but can delete when have plotting functions. TODO
 # Just looking at first buoy, looks like an outlier early on (pre-1991). Should
 #  analyse these once have plotting functions nicely done.
-buoy_1 <- filter(dfo_daily_mean, stn_id == "C46207")
-plot(buoy_1$date, buoy_1$sst, type = "o")
-which(buoy_1$sst > 20)   # 254  # This did give a value one time
-buoy_1[250:260, ]
-buoy_1_lm <- lm(buoy_1$sst ~ buoy_1$date)
-abline(buoy_1_lm)    # But need to have complete years (i.e. not start in spring and
+## buoy_1 <- filter(dfo_daily_mean, stn_id == "C46207")
+## plot(buoy_1$date, buoy_1$sst, type = "o")
+## which(buoy_1$sst > 20)   # 254  # This did give a value one time
+## buoy_1[250:260, ]
+## buoy_1_lm <- lm(buoy_1$sst ~ buoy_1$date)
+## abline(buoy_1_lm)    # But need to have complete years (i.e. not start in spring and
                      # finish in fall), so can't be this simplistic.
 
 # So have dfo_daily_mean which has all buoys.
@@ -364,7 +224,7 @@ abline(buoy_1_lm)    # But need to have complete years (i.e. not start in spring
 
 
 # From Andrea, to keep all buoys that were older and went to 'relatively
-#  present'. TODO
+#  present'.
 # List of ones that she would get rid of, could be old naming convention, some
 #  might only be a year. See metadata fields. Some might be useful for me (she's
 #  interested more in 1991-2020 climatology and ongoing data), so I could maybe
@@ -416,7 +276,9 @@ buoy_list <- c("MEDS107",
 # sstdata = sstdata %>% filter(!(STN_ID %in% c("MEDS107",....[the above list]
 
 filter(dfo_daily_mean,
-       stn_id %in% buoy_list)    # 5477 out of 172,236. Come
+       stn_id %in% buoy_list)    # 5477 out of 172,236.
+                                 # After two-hour calcs it's
+                                 # 4661 out of 158,012.  Could come
                                  # back to at end after doing ECCC data.
 unique(filter(dfo_daily_mean,
               stn_id %in% buoy_list)$stn_id)
