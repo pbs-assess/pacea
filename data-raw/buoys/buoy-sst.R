@@ -330,7 +330,20 @@ if(redownload_data){
 opp_data_raw   #  A tibble: 1,278,688 × 11. File size (of temp download file I
                #  think) is 119 Mb. First rows have NaN's.
 
-# Andrea doesn't use the flags in these data, so not using here. Originally was keeping only
+# Andrea doesn't use the flags in these data, so not using here.
+# But, we get the spurious large fluctations at the start of the data for C46304
+# (opp_data_C463404 below and the plot).
+# The only flags with values are
+# > table(opp_data_raw$avg_sea_sfc_temp_pst10mts_qa_summary)
+#
+#    -10      -1       0      20     100
+#  51257    3363     789   37167 1241984
+# So, try keeping just flag 100 (92.5% of all of them, and these are 10-minute
+# values so may actually not exclude many days of calculations).
+# Doing below then keeping track of how it changes opp_daily_mean later.
+
+
+# Originally was keeping only
 # the two buoys not in DFO data above, but now checking and using OPP when it is
 # updated more recently than DFO.
 
@@ -400,9 +413,11 @@ filter(dfo_opp_ranges, dfo_ends_last == TRUE)
 switch_dfo_to_opp <- as.Date("2021-09-10")
 
 # Adapting what originally had to now calc daily sst for all opp stations that
-# we want, including the overlapping ones.
+# we want, including the overlapping ones. Filtering based on ...qa_summary also
+# (keeping track of resulting influence on opp_daily_mean later).
 opp_data <- as_tibble(opp_data_raw) %>%
-  filter(stn_id %in% c(dfo_and_opp_stn, "C46303", "C46304")) %>%
+  filter(stn_id %in% c(dfo_and_opp_stn, "C46303", "C46304"),
+         avg_sea_sfc_temp_pst10mts_qa_summary == 100) %>%
   mutate(time = with_tz(ymd_hms(time),
                         "Etc/GMT+8"),
          longitude = as.numeric(longitude),
@@ -487,18 +502,81 @@ opp_daily_range <- opp_data %>%
 
 opp_daily_range
 
-# Gives 10.8 for C46304, for first day. And many other large values. Look into
+# Gives 10.8 for C46304, for first day (and still does with keeping only 100
+# for qa). And many other large values. Look into
 # the fine-scale data: (at IOS we figured out the sensor was probably turned on
 # while still on the deck). Deal with after doing daily calculations with the
-# two-hour criteria.
-opp_data_C46304 <- filter(opp_data,
-                           stn_id == "C46304")
+# two-hour criteria, here work out the day-stn_id combinations to not use:
+opp_exclude_large_daily_range <- filter(opp_daily_range,
+                                        sst_abs_range > 5) %>%   # exclude larger values
+  select(-c("sst_abs_range")) %>%
+  cbind("large_daily" = TRUE)
+# Only 104 values with cutoff at 5. Then use later to exclude these data-stn_id
+# combinations. But 72 are 46303 (South Georgia Strait):
+opp_exclude_large_daily_range %>% as.data.frame() %>% summary()
 
-plot(opp_data_C46304$time[1:200],
-     opp_data_C46304$sst[1:200],
+# 46303 (S Georgia Strait)
+opp_data_C46303 <- filter(opp_data,
+                           stn_id == "C46303")
+
+plot(opp_data_C46303$time[1:1000],
+     opp_data_C46303$sst[1:1000],
      type = "o",
      xlab = "Time",
      ylab = "SST")
+
+plot(opp_data_C46303$time,
+      opp_data_C46303$sst,
+      type = "l",
+      xlab = "Time",
+      ylab = "SST")
+
+# Want to flag then colour-code the days with big fluctuations, and zoom in to
+# look at the 10-minute data in detail.
+opp_data_C46303_with_fluct <- mutate(opp_data_C46303,
+                                     date = date(floor_date(time,
+                                                       unit = "day")))
+
+opp_data_C46303_with_fluct_flagged <- left_join(opp_data_C46303_with_fluct,
+                                                opp_exclude_large_daily_range,
+                                                by = c("stn_id",
+                                                       "date")) %>%
+  mutate(large_daily = (!is.na(large_daily) & (large_daily))) %>%
+  mutate(col = as.factor(ifelse(large_daily, "red", "black")))
+
+plot(opp_data_C46303_with_fluct_flagged$time[1:4000],
+     opp_data_C46303_with_fluct_flagged$sst[1:4000],
+     type = "p",
+     xlab = "Time",
+     ylab = "SST",
+     col = opp_data_C46303_with_fluct_flagged$col[1:4000],
+     pch = 20)
+#     xlim = c(ymd("2019-09-30"), ymd("2020-09-30")))  HERE not working, want to
+#     plot one year
+# That plot shows the early days that would get filtered out (but not the first
+# day, but that will later since it starts at 4pm. But also shows not obvious
+# what value for fluctuation to use.
+
+# This is 46304 (Entrance English Bay), the first one I'd looked at with the
+# largest range of all, but could have a big range from river outflow.
+opp_data_C46304 <- filter(opp_data,
+                           stn_id == "C46304")
+
+plot(opp_data_C46304$time[1:1000],
+     opp_data_C46304$sst[1:1000],
+     type = "o",
+     xlab = "Time",
+     ylab = "SST")
+
+# Plotting full time series (170,000 points) shows how hard it will be to
+# manually exclude some, though looks like a few similar patterns of the
+# temperatures showing large fluctuations after a no-data time.
+plot(opp_data_C46304$time,
+      opp_data_C46304$sst,
+      type = "l",
+      xlab = "Time",
+      ylab = "SST")
+
 
 # Looking into large daily fluctuations, but this is before doing the two-hour
 # quality control. TODO HERE - need to look at this in conjuction with final
@@ -507,19 +585,27 @@ hist(opp_daily_range$sst_abs_range, xlab = "Daily range")
 one_buoy <- filter(opp_daily_range, stn_id == "C46304")
 plot(one_buoy$date, one_buoy$sst_abs_range, type = "o")
 
+h = hist(opp_daily_range$sst_abs_range, xlab = "Daily range")
+tibble(midpoints = h$mids, counts = h$counts)
 
+# Not sure what this was for:
 #Calc is not quite right I think, this seems strange, though it's a time
 # zone thing - these may still be in UTC.
-min(filter(opp_data_C46304, as.Date(time) == "2019-10-01")$sst)
-max(filter(opp_data_C46304, as.Date(time) == "2019-10-01")$sst)
-filter(opp_data_C46304, as.Date(time) == "2019-10-01") %>% as.data.frame()
+# min(filter(opp_data_C46304, as.Date(time) == "2019-10-01")$sst)
+# max(filter(opp_data_C46304, as.Date(time) == "2019-10-01")$sst)
+# filter(opp_data_C46304, as.Date(time) == "2019-10-01") %>% as.data.frame()
 
 # Overlay the daily ranges (won't see the small ones). Not working, don't worry
-lines(filter(opp_daily_range, stn_id == "C46304")$date,
-      filter(opp_daily_range, stn_id == "C46304")$sst_abs_range,
-      col = "red")
-# TODO will check for anomalous values at start of time series later after calculating
-# daily values.
+# lines(filter(opp_daily_range, stn_id == "C46304")$date,
+#       filter(opp_daily_range, stn_id == "C46304")$sst_abs_range,
+#       col = "red")
+
+
+# Was going to check for anomalous values at start of time series later after
+# calculating daily values, but the anomalous ones 10-minute ones above kind of
+# get averaged out to give a reasonable daily average. So needs to be based on
+# the opp_daily_range of 10-minute values, not on how the daily average looks.
+
 
 # Repeating above DFO calcs for OPP data
 
@@ -610,14 +696,20 @@ opp_daily_latest
 # End of repeating DFO calcs
 
 
-opp_daily_mean # A tibble: 11,217 x 3 (was 11,840 before 2-hour quality control,
-               # may have had downloaded less then also)
+opp_daily_mean # A tibble: 11,227 x 3 with data saved on 2023-08-23, run on
+# 2023-10-25, with NO removal of flags (was 11,840 before the 2-hour quality control,
+# may have had downloaded less then also)
+# Redoing with keeping only flags of 100, results in opp_daily_mean tibble of
+# size:
+#  10,774 × 3, so keeping 100 flags only loses us 453 days, 4%.
+
 summary(opp_daily_mean)
 
 expect_equal(colnames(dfo_daily_mean),
              colnames(opp_daily_mean))
 
-# Should check the overlapping values agree? TODO
+# Could check the overlapping values agree? Maybe, and see emails from Andrea
+# (26/10/2023), as quite tricky and probably not worthwhile.
 
 # Check the dfo_only_stn still has only historical data. If this test fails then need
 # to add the later data in (expect buoy is not going to be restarted). Else is okay
