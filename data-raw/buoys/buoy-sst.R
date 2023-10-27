@@ -494,8 +494,8 @@ plot(opp_data_example$time,
 
 # Can calculate daily variation
 opp_daily_range <- opp_data %>%
-  mutate(time_day = as.Date(time)) %>%
-  group_by(date = time_day,
+  mutate(day = as.Date(time)) %>%
+  group_by(date = day,
            stn_id) %>%
   summarise(sst_abs_range = diff(range(sst))) %>%
   ungroup()
@@ -579,7 +579,7 @@ plot(opp_data_C46304$time,
 
 
 # Looking into large daily fluctuations, but this is before doing the two-hour
-# quality control. TODO HERE - need to look at this in conjuction with final
+# quality control. Need to look at this in conjuction with final
 # values. Could plot max and min
 hist(opp_daily_range$sst_abs_range, xlab = "Daily range")
 one_buoy <- filter(opp_daily_range, stn_id == "C46304")
@@ -644,13 +644,23 @@ opp_daily_mean_enough_two_hours <- opp_daily_mean_no_qc %>%
 # Daily mean values to use
 opp_daily_mean <- opp_daily_mean_enough_two_hours %>%
   mutate(date = day,
-         sst = daily_mean_sst) %>%
+         sst = daily_mean_sst,
+         date_only = as.Date(date)) %>%
+  left_join(opp_exclude_large_daily_range,
+            by = c("stn_id",
+                   "date")) %>%
+  filter(is.na(large_daily)) %>%         # Remove the large_daily = TRUE days
   select(date,
          stn_id,
-         sst)                # reorder columns
-# 11,227 rows up to 2023-08-27
+         sst)                # keep and reorder columns
+
+# 11,227 rows up to 2023-08-27. Now 10,671 after taking out flags and two-hour
+# quality control and remove large daily fluctuations (> 5 degC)
+
 # Before doing two-hour quality control had less, not sure how many (can test by
 #  changing num_two_hour_intervals_required)
+
+
 
 # HERE Check on the one that had big fluctations earlier:
 one_buoy_mean <- filter(opp_daily_mean,
@@ -659,9 +669,7 @@ plot(one_buoy_mean$date, one_buoy_mean$sst, type = "o")   # looks okay
 min(one_buoy_mean$date)
 # Before the two-hour calcs, we had
 min(one_buoy$date)
-# So that first day is still being used, doesn't show up as an outlier on the
-# post-processed plot, yet still had large fluctuation (expect the extremes
-# of air temperature cancel out to give a realistic sst).
+# So that first day is now screened out.
 
 opp_daily_latest <- opp_daily_mean %>%
   group_by(stn_id) %>%
@@ -678,7 +686,10 @@ opp_daily_latest
 ##  3 C46131 2023-08-27 00:00:00
 ##  4 C46132 2023-08-27 00:00:00
 ##  5 C46145 2023-08-13 00:00:00
-##  6 C46146 2023-05-13 00:00:00
+##  6 C46146 2023-05-12 00:00:00  # This becomes a day earlier because final day
+##  is missing three two-hour chunks: filter(opp_data, stn_id == "C46146") %>%
+##  tail(n = 30) %>% as.data.frame()  [actually had it here as 2023-05-13, but
+##  just hadn't updated I think]
 ##  7 C46147 2023-08-27 00:00:00
 ##  8 C46181 2023-08-27 00:00:00
 ##  9 C46183 2023-08-27 00:00:00
@@ -692,9 +703,7 @@ opp_daily_latest
 ## 17 C46303 2023-08-19 00:00:00
 ## 18 C46304 2023-08-27 00:00:00
 
-
-# End of repeating DFO calcs
-
+# End of repeating DFO calcs for opp data
 
 opp_daily_mean # A tibble: 11,227 x 3 with data saved on 2023-08-23, run on
 # 2023-10-25, with NO removal of flags (was 11,840 before the 2-hour quality control,
@@ -702,6 +711,7 @@ opp_daily_mean # A tibble: 11,227 x 3 with data saved on 2023-08-23, run on
 # Redoing with keeping only flags of 100, results in opp_daily_mean tibble of
 # size:
 #  10,774 × 3, so keeping 100 flags only loses us 453 days, 4%.
+# 10,671 × 3 when removing the 103 days that have daily fluctuations > 5degC
 
 summary(opp_daily_mean)
 
@@ -750,7 +760,11 @@ buoy_sst     # 201,435 with same data as 28 August 2023, but having done the
              # DFO ones. Have added with the switch to ECCC values. Previously had 199,625 values
              # (165 extra are from updating in time) Adding days: 15 + 1131 + 450 + 15 + 45 + 45 +
              # 240 + 45 =~ 1986
-
+             # 201,430 after two-hour resolution requirement and 5degC
+             # removal. Number of opp days that the 5degC requirement actually
+             # removed in the end was only 58:
+             # opp_exclude_large_daily_range %>% filter(date >
+             #   switch_dfo_to_opp) %>% nrow()  # is 58
 usethis::use_data(buoy_sst,
                   overwrite = TRUE)
 
