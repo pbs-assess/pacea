@@ -128,8 +128,7 @@ dfo_two_hourly_mean <- group_by(dfo_data_resolution_two_hours,
                                 two_hour_start) %>%
   summarise(two_hour_mean_sst = mean(sstp)) %>%
   ungroup() %>%
-  mutate(day = floor_date(two_hour_start,
-                          unit = "day"))
+  mutate(day = lubridate::date(two_hour_start))
 
 # Calculate daily mean, also keep track of how many two-hour measurements in
 # each day (no such quality control yet):
@@ -171,7 +170,8 @@ dfo_daily_latest <- dfo_daily_mean %>%
 
 dfo_daily_latest
 # After doing the two-hour calculations above, on 2023-10-25 (before
-# redownloading data), we have:
+# redownloading data), we had this, then the next one when I used
+# lubridate::date() earlier:
 # A tibble: 18 × 2
 ##    stn_id end_date
 ##    <fct>  <dttm>
@@ -193,6 +193,31 @@ dfo_daily_latest
 ## 16 C46206 2022-04-10 00:00:00
 ## 17 C46207 2022-09-07 00:00:00
 ## 18 C46208 2023-08-03 00:00:00
+
+## This is using date, dates match the ones above, but this is simpler and better.
+## > dfo_daily_latest
+## # A tibble: 18 × 2
+##    stn_id end_date
+##    <fct>  <date>
+##  1 C46004 2023-06-17
+##  2 C46036 2023-08-23
+##  3 C46131 2020-07-03
+##  4 C46132 2022-05-14
+##  5 C46134 2016-12-08
+##  6 C46145 2023-08-21
+##  7 C46146 2023-05-13
+##  8 C46147 2023-08-23
+##  9 C46181 2023-08-23
+## 10 C46182 1991-11-05
+## 11 C46183 2023-08-23
+## 12 C46184 2023-08-23
+## 13 C46185 2023-08-23
+## 14 C46204 2023-08-23
+## 15 C46205 2023-08-23
+## 16 C46206 2022-04-10
+## 17 C46207 2022-09-07
+## 18 C46208 2023-08-03
+
 
 # > unique(dfo_data$stn_id)
 # [1] C46206 C46004 C46184 C46036 C46208 C46205 C46207 C46181 C46204 C46145
@@ -286,10 +311,12 @@ unique(filter(dfo_daily_mean,
 
 range(filter(dfo_daily_mean,
              stn_id == "C46134")$date)
-# "2001-02-20" "2016-12-09"    # On 27/10/23 this is now:
-# "2001-02-20 -08" "2016-12-08 -08"
-# See 'Do a date test' below -- using floor_date() above now as it keeps track of
-# time zones, unlike as.Date().
+# "2001-02-20" "2016-12-09"
+# "2001-02-20 -08" "2016-12-08 -08"  # On 27/10/23 with floor_date()
+# "2001-02-20" "2016-12-08"    # On 30/10/23 have this, now using lubridate::date()
+
+# See 'Do a date test' below -- tried floor_date() above as it keeps track of
+# time zones, unlike as.Date(), and then deciding on lubridate::date().
 
 # So keep that one in (Andrea probably excluded as didn't give full climatology)
 # Though filter(buoys_metadata, wmo_id == 46134) says start date of 1999-01-01.
@@ -299,7 +326,7 @@ range(filter(dfo_daily_mean,
 #  "1989-09-08" "1991-11-22"
 # Less than 2 years of data, 30 years ago, so removing as likely not useful for
 # anyone. And after two-hour and 5degC filtering, range is down to:
-#  "1989-11-29 -08" "1991-11-05 -08"
+# "1989-11-29" "1991-11-05"
 
 dfo_daily_mean <- filter(dfo_daily_mean,
                          stn_id != "C46182")
@@ -379,8 +406,7 @@ opp_ranges <- opp_data_raw %>%
   group_by(stn_id) %>%
   mutate(time = with_tz(ymd_hms(time),
                         "Etc/GMT+8"),
-         date = floor_date(time,
-                           unit = "day")) %>%
+         date = lubridate::date(time)) %>%
   summarise(start_opp = min(date, na.rm = TRUE),
             end_opp = max(date, na.rm= TRUE))
 opp_ranges
@@ -394,8 +420,8 @@ opp_ranges
 ##  3 C46131 2021-09-07 2023-08-28
 ##  4 C46132 2021-09-07 2023-08-28
 ##  5 C46145 2021-09-07 2023-08-28
-##  6 C46146 2021-09-06 2023-05-14
-##  7 C46147 2021-09-07 2023-08-28
+##  6 C46146 2021-09-06 2023-05-14    # This is 2012-05-13 with lubridate::date(),
+##  7 C46147 2021-09-07 2023-08-28    #  think it also changed to this with floor_date()
 ##  8 C46181 2021-09-07 2023-08-28
 ##  9 C46183 2021-09-07 2023-08-28
 ## 10 C46184 2021-09-07 2023-08-28
@@ -409,20 +435,24 @@ opp_ranges
 dfo_opp_ranges <- left_join(dfo_ranges,
                             opp_ranges,
                             by = "stn_id") %>%
-  relocate(stn_id, start_dfo, start_opp) %>%
+  relocate(stn_id,
+           start_dfo,
+           start_opp) %>%
   mutate(dfo_starts_first = (start_dfo < start_opp),
-         dfo_ends_last = (end_dfo >= end_opp),
+         dfo_ends_last = (end_dfo > end_opp),
          opp_later_by = end_opp - end_dfo)
 
 as.data.frame(dfo_opp_ranges)
-# They all have DFO starting strictly (<) first, so need DFO data for all these.
+# They all have DFO starting strictly (<) first, so need DFO data for all
+# these. One of them is 0 days difference.
 filter(dfo_opp_ranges, dfo_ends_last == TRUE)
 
 # So only three that have both ending on same day, but that looks to be because
 # data has stopped coming in (as of 2023-08-28, they are June 2023, May 2023,
 # and September 2022). So still makes sense to use OPP for those recent ones in
 # case they come online again. After two-hour correction above for DFO, looks
-# like end dates may be off by 1, but conclusion still holds.
+# like end dates may be off by 1, but conclusion still holds. Think that's now
+# fixed with the use of lubridate::date().
 
 # So, want DFO data first, then add on OPP data after as either
 #  (i) they are both 2-11 months ago, which is presumably something failing) - 3 buoys
@@ -474,12 +504,14 @@ opp_data_full_range <- opp_data %>%
    summarise(start_date = min(time),
              end_date = max(time))
 sort(opp_data_full_range$end_date)   # Now this gives 18 buoys.
-# "2023-06-14 15:00:00 -08" "2023-06-14 15:10:00 -08"
-# So latest measurements are just over an hour before I downloaded them!
+max(opp_data_full_range$end_date)
+# "2023-08-28 09:00:00 -08"
+# So latest measurements were just over an hour before I downloaded them!
 
 # For all buoys (in above, commenting out: # filter(wmo_synop_id %in% c("46303",
 #"46304")) %>%), though these now include all Canadian probably. Can look into
-#further if needed, but a bit time consuming; these are the end dates:
+#further if needed, but a bit time consuming; these are the end dates (not
+#updating this):
 ##  [1] "2021-10-19 08:05:00 -08" "2021-11-06 00:05:00 -08"
 ##  [3] "2021-11-08 11:34:00 -08" "2022-06-21 13:50:00 -08"
 ##  [5] "2022-09-08 13:10:00 -08" "2022-09-20 12:05:00 -08"
@@ -526,8 +558,7 @@ plot(opp_data_example$time,
 
 # Can calculate daily variation
 opp_daily_range <- opp_data %>%
-  mutate(day = floor_date(time,
-                          unit = "day")) %>%
+  mutate(day = lubridate::date(time)) %>%
   group_by(date = day,
            stn_id) %>%
   summarise(sst_abs_range = diff(range(sst))) %>%
@@ -544,7 +575,7 @@ opp_daily_range
 ##  3 2019-10-02 C46303         6.4
 ##  4 2019-10-02 C46304         8.5
 
-## This is correct
+## This is correct, but now using one after.
 ## opp_daily_range   # with day = floor_date(time, unit = "day") above
 ## # A tibble: 11,634 × 3
 ##    date                stn_id sst_abs_range
@@ -554,20 +585,40 @@ opp_daily_range
 ##  3 2019-10-01 00:00:00 C46303          7.4
 ##  4 2019-10-01 00:00:00 C46304          9.9
 
+## This is current, using lubridate::date() above:, so now has dates that are correct.
+## > opp_daily_range
+## # A tibble: 11,634 × 3
+##    date       stn_id sst_abs_range
+##    <date>     <fct>          <dbl>
+##  1 2019-09-30 C46303          5.5
+##  2 2019-09-30 C46304          8
+##  3 2019-10-01 C46303          7.4
+##  4 2019-10-01 C46304          9.9
+
 
 # Do a date test:
 opp_daily_range_test <- opp_data %>%
   mutate(day_from_as.Date = as.Date(time),
          day_from_floor_date = floor_date(time,
-                                    unit = "day"))
-opp_daily_range_test
+                                          unit = "day"),
+         day_from_lubridate_date = lubridate::date(time))
+opp_daily_range_test[1:10, ]  %>% select(-c("stn_id", "sst")) %>% as.data.frame()
 # Clearly shows that as.Date is giving the date in UTC, not the local date.
 #  So going back and changing as.Date where appropriate, originally to
-#  floor_date but lubridate::date() is good.
+#  floor_date but lubridate::date() is good. Need to pull a single element to
+#  check time zone:
+pull(opp_daily_range_test, day_from_as.Date)[1]
+#  "2019-10-01"     # bumped it to UTC
+pull(opp_daily_range_test, day_from_floor_date)[1]
+# "2019-09-30 -08"
+pull(opp_daily_range_test, day_from_lubridate_date)[1]
+# [1] "2019-09-30"   # So doesn't have a time zone (that's fine), but has not
+# switched to UTC, so is correct.
+
+
 # Having fixed all that, this now correctly keeps track of time zone:
 pull(opp_daily_range, date)[1]
 # "2019-09-30 -08"  whereas with as.Date used it was incorrectly:
-# "2019-10-01"
 
 
 
@@ -603,8 +654,7 @@ plot(opp_data_C46303$time,
 # Want to flag then colour-code the days with big fluctuations, and zoom in to
 # look at the 10-minute data in detail.
 opp_data_C46303_with_fluct <- mutate(opp_data_C46303,
-                                     date = date(floor_date(time,
-                                                       unit = "day")))
+                                     date = lubridate::date(time))
 
 opp_data_C46303_with_fluct_flagged <- left_join(opp_data_C46303_with_fluct,
                                                 opp_exclude_large_daily_range,
@@ -689,8 +739,7 @@ opp_two_hourly_mean <- group_by(opp_data_resolution_two_hours,
                             two_hour_start) %>%
   summarise(two_hour_mean_sst = mean(sst)) %>%
   ungroup() %>%
-  mutate(day = floor_date(two_hour_start,
-                          unit = "day"))
+  mutate(day = lubridate::date(two_hour_start))
 
 # Calculate daily mean, also keep track of how many two-hour measurements in
 # each day (no quality control yet):
@@ -701,11 +750,15 @@ opp_daily_mean_no_qc <- group_by(opp_two_hourly_mean,
             num_two_hourly_in_day = n()) %>%
   ungroup()
 
-# table(opp_daily_mean_no_qc$num_two_hourly_in_day)
+table(opp_daily_mean_no_qc$num_two_hourly_in_day)
+# Before lubridate::date(), prob with as.Date()
 #    1     2     3     4     5     6     7     8     9    10    11    12
 #  118    94    74    73    64    50    28    44    53    56   222 10949
+# With lubridate::date(), so more exact I think. Lost a few more than before if
+# <10 is cut-off. But still not throwing much out.
+#    1     2     3     4     5     6     7     8     9    10    11    12
+#  147   125   105    94    90    71    66    74    88   124   292 10358
 
-# Great, not going to be throwing out too much at all.
 
 opp_daily_mean_enough_two_hours <- opp_daily_mean_no_qc %>%
   filter(num_two_hourly_in_day >= num_two_hour_intervals_required)
@@ -721,14 +774,13 @@ opp_daily_mean <- opp_daily_mean_enough_two_hours %>%
   select(date,
          stn_id,
          sst)                # keep and reorder columns
-
+opp_daily_mean
 # 11,227 rows up to 2023-08-27. Now 10,671 after taking out flags and two-hour
 # quality control and remove large daily fluctuations (> 5 degC)
+# Now 10,669 after lubridate::date().
 
 # Before doing two-hour quality control had less, not sure how many (can test by
 #  changing num_two_hour_intervals_required)
-
-
 
 # Check on the one that had big fluctations earlier:
 one_buoy_mean <- filter(opp_daily_mean,
@@ -745,7 +797,7 @@ opp_daily_latest <- opp_daily_mean %>%
 
 opp_daily_latest
 # After doing the two-hour calculations above, on 2023-10-25 (before
-# redownloading data), we have:
+# redownloading data), before using lubridate::date() we have:
 # A tibble: 18 × 2
 ##    stn_id end_date
 ##    <fct>  <dttm>
@@ -771,6 +823,30 @@ opp_daily_latest
 ## 17 C46303 2023-08-19 00:00:00
 ## 18 C46304 2023-08-27 00:00:00
 
+## Now have, with lubridate_date():
+## > opp_daily_latest
+## # A tibble: 18 × 2
+##    stn_id end_date
+##    <fct>  <date>
+##  1 C46004 2023-06-17
+##  2 C46036 2023-08-27
+##  3 C46131 2023-08-27
+##  4 C46132 2023-08-27
+##  5 C46145 2023-08-13
+##  6 C46146 2023-05-11
+##  7 C46147 2023-08-27
+##  8 C46181 2023-08-27
+##  9 C46183 2023-08-27
+## 10 C46184 2023-08-27
+## 11 C46185 2023-08-27
+## 12 C46204 2023-08-27
+## 13 C46205 2023-08-27
+## 14 C46206 2022-11-30
+## 15 C46207 2022-09-07
+## 16 C46208 2023-08-03
+## 17 C46303 2023-08-19
+## 18 C46304 2023-08-27
+
 # End of repeating DFO calcs for opp data
 
 opp_daily_mean # A tibble: 11,227 x 3 with data saved on 2023-08-23, run on
@@ -780,6 +856,7 @@ opp_daily_mean # A tibble: 11,227 x 3 with data saved on 2023-08-23, run on
 # size:
 #  10,774 × 3, so keeping 100 flags only loses us 453 days, 4%.
 # 10,671 × 3 when removing the 103 days that have daily fluctuations > 5degC
+# 10,669 x 3 after using lubridate::date().
 
 summary(opp_daily_mean)
 
@@ -829,16 +906,20 @@ buoy_sst     # 201,435 with same data as 28 August 2023, but having done the
              # (165 extra are from updating in time) Adding days: 15 + 1131 + 450 + 15 + 45 + 45 +
              # 240 + 45 =~ 1986
              # 201,430 after two-hour resolution requirement and 5degC
-             # removal. Number of opp days that the 5degC requirement actually
-             # removed in the end was only 58:
-             # opp_exclude_large_daily_range %>% filter(date >
-             #   switch_dfo_to_opp) %>% nrow()  # is 58
+             #  removal. Number of opp days that the 5degC requirement actually
+             #  removed in the end was only 58:
+             #  opp_exclude_large_daily_range %>% filter(date >
+             #    switch_dfo_to_opp) %>% nrow()  # is 58
+             # 201,426 after using lubridate::date()
+             #  opp_exclude_large_daily_range %>% filter(date > switch_dfo_to_opp) %>% nrow()  # is 56 now
+
 usethis::use_data(buoy_sst,
                   overwrite = TRUE)
 
-# Remove erroneous buoys - shouldn't need as only using two extra ones from OPP
-#data_buoy_full3 <- data_buoy_full %>%
-#  group_by(name_key) %>%
-#  mutate(numobs = n()) %>%
-#  filter(numobs > 1) %>%
-#  ungroup()
+
+
+# Andrea example code (off top of head) for looking at flags:
+# sstdata %>%
+#     ggplot(aes(x = time, y = SSTP, colour = as.factor(flaglayer))) +
+#     geom_point() +
+#     facet_wrap(~STN_ID)
