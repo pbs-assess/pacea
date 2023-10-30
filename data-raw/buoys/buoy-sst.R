@@ -112,8 +112,8 @@ summary(dfo_data)   # Earliest is 1987, so not adding tons of data, yet not real
 # >= num_two_hour_intervals_required  two-hour intervals with data.
 
 # lubridate way, after I'd figured out interval approach that have now deleted
-# (commit ac09d9d and the subsequent one). Assign each time a two-hour-interval
-# start time:
+# (commit ac09d9d and the subsequent one) because it would have taken five hours
+# to run rather than < a second. Assign each time a two-hour-interval start time:
 dfo_data_resolution_two_hours <- dfo_data %>%
   arrange(desc(latitude),
           longitude) %>%     # To order the stations sensibly
@@ -124,15 +124,15 @@ dfo_data_resolution_two_hours <- dfo_data %>%
 # Calculate mean of measurements within the same two-hour interval,
 #  and assign each one a day
 dfo_two_hourly_mean <- group_by(dfo_data_resolution_two_hours,
-                            stn_id,
-                            two_hour_start) %>%
+                                stn_id,
+                                two_hour_start) %>%
   summarise(two_hour_mean_sst = mean(sstp)) %>%
   ungroup() %>%
   mutate(day = floor_date(two_hour_start,
                           unit = "day"))
 
 # Calculate daily mean, also keep track of how many two-hour measurements in
-# each day (no quality control yet):
+# each day (no such quality control yet):
 dfo_daily_mean_no_qc <- group_by(dfo_two_hourly_mean,
                                  stn_id,
                                  day) %>%
@@ -140,7 +140,7 @@ dfo_daily_mean_no_qc <- group_by(dfo_two_hourly_mean,
             num_two_hourly_in_day = n()) %>%
   ungroup()
 
-# table(dfo_daily_mean_no_qc$num_two_hourly_in_day)
+# table(dfo_daily_mean_no_qc$num_two_hourly_in_day) as of 2023-08-28 data
 #     1      2      3      4      5      6      7      8      9     10     11
 #  1091    898    775   1260   1935   1224   1427   3461   2852   4168   9761
 #    12
@@ -286,7 +286,12 @@ unique(filter(dfo_daily_mean,
 
 range(filter(dfo_daily_mean,
              stn_id == "C46134")$date)
-# "2001-02-20" "2016-12-09"
+# "2001-02-20" "2016-12-09"    # HERE HERE on 27/10/23 is now:
+# "2001-02-20 -08" "2016-12-08 -08"
+#  SO SOMETHING CHANGED EARLIER AS NEW DATE IS PROBABLY accounting for time
+#  zone. Agh....   Thinking it's good now, but need to go through above again
+#  with this in mind, and the opp stuff.
+
 # So keep that one in (Andrea probably excluded as didn't give full climatology)
 # Though filter(buoys_metadata, wmo_id == 46134) says start date of 1999-01-01.
 
@@ -294,13 +299,15 @@ range(filter(dfo_daily_mean,
              stn_id == "C46182")$date)
 #  "1989-09-08" "1991-11-22"
 # Less than 2 years of data, 30 years ago, so removing as likely not useful for
-# anyone.
+# anyone. And after two-hour and 5degC filtering, range is down to:
+#  "1989-11-29 -08" "1991-11-05 -08"
 
 dfo_daily_mean <- filter(dfo_daily_mean,
                          stn_id != "C46182")
 
 
-# OPP Buoys. Presumably Oceans Protection Plan. Makes sense, as starts in 2019.
+# OPP Buoys.
+# Presumably Oceans Protection Plan. Makes sense, as starts in 2019.
 # On 2023-06-14 redownloaded data and the latest value was only an hour beforehand!
 
 if(redownload_data){
@@ -437,6 +444,12 @@ opp_data # A tibble: 569,537 × 3, was 346,659 with only C46303 and C46304
                                                           #  2019-09-30 16:00:00, GMT-8
 summary(opp_data)
 
+# Both these still account for time zone:
+pull(opp_data, time)[1]
+# "2019-09-30 16:00:00 -08"
+pull(dfo_data, time)[1]
+# "1987-09-20 15:13:00 -08"
+
 opp_data_full_range <- opp_data %>%
    group_by(stn_id) %>%
    summarise(start_date = min(time),
@@ -502,7 +515,23 @@ opp_daily_range <- opp_data %>%
 
 opp_daily_range
 
-# Gives 10.8 for C46304, for first day (and still does with keeping only 100
+# This has not kept track of the time zone, whereas as.Date does. Kind of
+# thought it wouldn't matter, but seemed to in "HERE HERE" earlier
+pull(opp_daily_range, date)[1]
+# "2019-10-01"
+
+# Do a test:
+opp_daily_range_test <- opp_data %>%
+  mutate(day_from_as.Date = as.Date(time),
+         day_from_floor_date = floor_date(time,
+                                          unit = "day"))
+opp_daily_range_test
+# Clearly shows that as.Date is giving the date in UTC, not the local date.
+#  So going back and changing as.Date
+
+
+
+# opp_daily_range gives 10.8 for C46304, for first day (and still does with keeping only 100
 # for qa). And many other large values. Look into
 # the fine-scale data: (at IOS we figured out the sensor was probably turned on
 # while still on the deck). Deal with after doing daily calculations with the
