@@ -286,11 +286,10 @@ unique(filter(dfo_daily_mean,
 
 range(filter(dfo_daily_mean,
              stn_id == "C46134")$date)
-# "2001-02-20" "2016-12-09"    # HERE HERE on 27/10/23 is now:
+# "2001-02-20" "2016-12-09"    # On 27/10/23 this is now:
 # "2001-02-20 -08" "2016-12-08 -08"
-#  SO SOMETHING CHANGED EARLIER AS NEW DATE IS PROBABLY accounting for time
-#  zone. Agh....   Thinking it's good now, but need to go through above again
-#  with this in mind, and the opp stuff.
+# See 'Do a date test' below -- using floor_date() above now as it keeps track of
+# time zones, unlike as.Date().
 
 # So keep that one in (Andrea probably excluded as didn't give full climatology)
 # Though filter(buoys_metadata, wmo_id == 46134) says start date of 1999-01-01.
@@ -380,10 +379,32 @@ opp_ranges <- opp_data_raw %>%
   group_by(stn_id) %>%
   mutate(time = with_tz(ymd_hms(time),
                         "Etc/GMT+8"),
-         date = as.Date(time)) %>%
+         date = floor_date(time,
+                           unit = "day")) %>%
   summarise(start_opp = min(date, na.rm = TRUE),
             end_opp = max(date, na.rm= TRUE))
 opp_ranges
+
+## > opp_ranges # using date = as.Date(time), actually come out same as floor_date(...)
+## # A tibble: 16 × 3
+##    stn_id start_opp  end_opp
+##    <fct>  <date>     <date>
+##  1 C46004 2021-09-07 2023-06-18
+##  2 C46036 2021-09-07 2023-08-28
+##  3 C46131 2021-09-07 2023-08-28
+##  4 C46132 2021-09-07 2023-08-28
+##  5 C46145 2021-09-07 2023-08-28
+##  6 C46146 2021-09-06 2023-05-14
+##  7 C46147 2021-09-07 2023-08-28
+##  8 C46181 2021-09-07 2023-08-28
+##  9 C46183 2021-09-07 2023-08-28
+## 10 C46184 2021-09-07 2023-08-28
+## 11 C46185 2021-09-07 2023-08-28
+## 12 C46204 2021-09-07 2023-08-28
+## 13 C46205 2021-09-07 2023-08-28
+## 14 C46206 2021-09-07 2023-04-07
+## 15 C46207 2021-09-07 2022-09-08
+## 16 C46208 2021-09-07 2023-08-28
 
 dfo_opp_ranges <- left_join(dfo_ranges,
                             opp_ranges,
@@ -417,7 +438,7 @@ filter(dfo_opp_ranges, dfo_ends_last == TRUE)
 # maybe it was 'settling down'?). C46131 will
 # still have a gap with no data, but less so than presently have.
 
-switch_dfo_to_opp <- as.Date("2021-09-10")
+switch_dfo_to_opp <- lubridate::date("2021-09-10")
 
 # Adapting what originally had to now calc daily sst for all opp stations that
 # we want, including the overlapping ones. Filtering based on ...qa_summary also
@@ -440,8 +461,6 @@ opp_data <- as_tibble(opp_data_raw) %>%
          sst != 49.3)  # One value of that.
 
 opp_data # A tibble: 569,537 × 3, was 346,659 with only C46303 and C46304
-                                                          # First record is now correctly
-                                                          #  2019-09-30 16:00:00, GMT-8
 summary(opp_data)
 
 # Both these still account for time zone:
@@ -507,7 +526,8 @@ plot(opp_data_example$time,
 
 # Can calculate daily variation
 opp_daily_range <- opp_data %>%
-  mutate(day = as.Date(time)) %>%
+  mutate(day = floor_date(time,
+                          unit = "day")) %>%
   group_by(date = day,
            stn_id) %>%
   summarise(sst_abs_range = diff(range(sst))) %>%
@@ -515,19 +535,39 @@ opp_daily_range <- opp_data %>%
 
 opp_daily_range
 
-# This has not kept track of the time zone, whereas as.Date does. Kind of
-# thought it wouldn't matter, but seemed to in "HERE HERE" earlier
-pull(opp_daily_range, date)[1]
-# "2019-10-01"
+# > opp_daily_range   # with day = as.Date(time) above
+## # A tibble: 11,638 × 3
+##    date       stn_id sst_abs_range
+##    <date>     <fct>          <dbl>
+##  1 2019-10-01 C46303         8
+##  2 2019-10-01 C46304        10.8
+##  3 2019-10-02 C46303         6.4
+##  4 2019-10-02 C46304         8.5
 
-# Do a test:
+## This is correct
+## opp_daily_range   # with day = floor_date(time, unit = "day") above
+## # A tibble: 11,634 × 3
+##    date                stn_id sst_abs_range
+##    <dttm>              <fct>          <dbl>
+##  1 2019-09-30 00:00:00 C46303          5.5
+##  2 2019-09-30 00:00:00 C46304          8
+##  3 2019-10-01 00:00:00 C46303          7.4
+##  4 2019-10-01 00:00:00 C46304          9.9
+
+
+# Do a date test:
 opp_daily_range_test <- opp_data %>%
   mutate(day_from_as.Date = as.Date(time),
          day_from_floor_date = floor_date(time,
-                                          unit = "day"))
+                                    unit = "day"))
 opp_daily_range_test
 # Clearly shows that as.Date is giving the date in UTC, not the local date.
-#  So going back and changing as.Date
+#  So going back and changing as.Date where appropriate, originally to
+#  floor_date but lubridate::date() is good.
+# Having fixed all that, this now correctly keeps track of time zone:
+pull(opp_daily_range, date)[1]
+# "2019-09-30 -08"  whereas with as.Date used it was incorrectly:
+# "2019-10-01"
 
 
 
@@ -673,8 +713,7 @@ opp_daily_mean_enough_two_hours <- opp_daily_mean_no_qc %>%
 # Daily mean values to use
 opp_daily_mean <- opp_daily_mean_enough_two_hours %>%
   mutate(date = day,
-         sst = daily_mean_sst,
-         date_only = as.Date(date)) %>%
+         sst = daily_mean_sst) %>%
   left_join(opp_exclude_large_daily_range,
             by = c("stn_id",
                    "date")) %>%
@@ -691,7 +730,7 @@ opp_daily_mean <- opp_daily_mean_enough_two_hours %>%
 
 
 
-# HERE Check on the one that had big fluctations earlier:
+# Check on the one that had big fluctations earlier:
 one_buoy_mean <- filter(opp_daily_mean,
                         stn_id == "C46304")
 plot(one_buoy_mean$date, one_buoy_mean$sst, type = "o")   # looks okay
