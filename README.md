@@ -148,6 +148,27 @@ plot(harbour_seals)
 
 <img src="man/figures/README-harbour-seals.png" style="width:80.0%" />
 
+You can view and analyse all these data sets in the usual way in R. For
+example:
+
+``` r
+oni
+#> # A tibble: 884 × 4
+#>     year month value anomaly
+#>    <dbl> <dbl> <dbl>   <dbl>
+#>  1  1950     1  24.7   -1.53
+#>  2  1950     2  25.2   -1.34
+#>  3  1950     3  25.8   -1.16
+#>  4  1950     4  26.1   -1.18
+#>  5  1950     5  26.3   -1.07
+#>  6  1950     6  26.3   -0.85
+#>  7  1950     7  26.2   -0.54
+#>  8  1950     8  26.0   -0.42
+#>  9  1950     9  25.8   -0.39
+#> 10  1950    10  25.6   -0.44
+#> # ℹ 874 more rows
+```
+
 <!-- See the vignettes (TODO link to rendered versions once we push them) for -->
 
 ## Installation

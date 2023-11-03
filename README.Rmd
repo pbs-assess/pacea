@@ -20,6 +20,7 @@ knitr::opts_chunk$set(
   out.width = "60%"
   )
 library(ggplot2)    # TODO needed for harbour_seals plot - look into
+library(tibble)
 ```
 
 # pacea <img src="man/figures/logo.png" align="right" height="138" />
@@ -199,6 +200,11 @@ plot(harbour_seals)
 ```
 
 ![](man/figures/README-harbour-seals.png){width=80%}
+
+You can view and analyse all these data sets in the usual way in R. For example:
+```{r onivalues}
+oni
+```
 
 
 <!-- See the vignettes (TODO link to rendered versions once we push them) for -->
