@@ -45,10 +45,10 @@ Currently, pacea contains:
     from 19 buoys.
 
 -   outputs from the spatial British Columbia continental margin (BCCM)
-    model, a coupled physical-biogeochemical model. Variables are for
-    40,580 spatial cells across Canada’s Pacific Exclusive Economic
-    Zone, and are given as 27 years of monthly means (from 1993 to
-    2019). The variables are:
+    model, the coupled physical-biogeochemical model by Peña et
+    al. (2019). Variables are for 40,580 spatial cells across Canada’s
+    Pacific Exclusive Economic Zone, and are given as 27 years of
+    monthly means (from 1993 to 2019). The variables are:
 
     -   dissolved oxygen concentration
     -   pH
@@ -76,8 +76,15 @@ Currently, pacea contains:
 
 -   estimates of abundances of Harbour Seals and Pacific Hake.
 
-Plotting and helper functions are provided, and demonstrated in
-vignettes.
+Plotting and helper functions are provided, and demonstrated in the
+detailed vignettes. All data and model outputs are fully documented and
+referenced.
+
+Peña, M.A., Fine, I. and Callendar, W. (2019). Interannual variability
+in primary production and shelf-offshore transport of nutrients along
+the northeast Pacific Ocean margin. Deep-Sea Research II,
+<doi:10.1016/j.dsr2.2019.104637>.
+<https://www.sciencedirect.com/science/article/pii/S0967064519300220>
 
 ## Brief examples of some questions that can be quickly investigated
 
