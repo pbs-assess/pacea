@@ -23,10 +23,8 @@ library(ggplot2)    # TODO needed for harbour_seals plot - look into
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/pbs-assess/pacea/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pbs-assess/pacea/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/pbs-assess/pacea/branch/main/graph/badge.svg)](https://app.codecov.io/gh/pbs-assess/pacea?branch=main)
-[![Visitors](https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Fpbs-assess%2Fpacea&label=VISITORS&countColor=%23263759&style=flat&labelStyle=upper)]
+[![Visitors](https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Fpbs-assess%2Fpacea&label=visitors&countColor=%23263759&style=flat&labelStyle=upper)]
 <!-- badges: end -->
-
-
 
 An R package of Pacific ecosystem information to help facilitate an ecosystem approach to fisheries management
 
