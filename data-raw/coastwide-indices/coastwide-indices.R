@@ -78,13 +78,16 @@ check_index_changed(oni, oni_new)
 if(check_index_changed(oni, oni_new)){
   # Check previous values haven't changed, but for oni we expect the last two
   #  months of anomaly to get updated (and maybe one month of value)
+  par(mfrow=c(2,1))
+  plot(oni)
+  plot(oni_new)
+
   expect_equal(oni[1:(nrow(oni) - 2), ],
                oni_new[1:(nrow(oni) - 2), ]) # See note at top if this fails
 
   oni <- oni_new
   usethis::use_data(oni,
                     overwrite = TRUE)
-  plot(oni)    # To check it looks okay; if no figure then hasn't changed
 }
 
 
