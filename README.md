@@ -12,7 +12,7 @@
 [![R-CMD-check](https://github.com/pbs-assess/pacea/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pbs-assess/pacea/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/pbs-assess/pacea/branch/main/graph/badge.svg)](https://app.codecov.io/gh/pbs-assess/pacea?branch=main)
-\[![Visitors](https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Fpbs-assess%2Fpacea&label=VISITORS&countColor=%23263759&style=flat&labelStyle=upper)\]
+\[![Visitors](https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Fpbs-assess%2Fpacea&label=VISITORS&countColor=%23263759&style=flat&labelStyle=lower)\]
 <!-- badges: end -->
 
 An R package of Pacific ecosystem information to help facilitate an
@@ -304,6 +304,6 @@ Citation information is in inst/CITATION, so if you update DESCRIPTION
 file (e.g. add an author) then update that also, and may want to change
 info at the start of this file.
 
-Logo included by running `use_logo("inst/pacea-logo.png")`. The .png was
-expertly designed by Carley Colclough. There is also
+Logo included by running `use_logo("inst/pacea-logo-from-carley.png")`.
+The .png was expertly designed by Carley Colclough. There is also
 `inst/pacea-logo-for-printing.jpg` for printing purposes.
