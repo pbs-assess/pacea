@@ -4,6 +4,8 @@
 <!-- scratch (and it might not be the local version) so it's much quicker to do -->
 <!-- rmarkdown::render("README.Rmd"), which also builds an .html that can be -->
 <!-- viewed locally (and isn't pushed to GitHub)  -->
+<!-- Figures - to update a figure, manually run the piece of code that makes -->
+<!-- the .png file. See notes below (and Issue #44). -->
 
 # pacea <img src="man/figures/logo.png" align="right" height="138" />
 
@@ -81,12 +83,14 @@ vignettes.
 
 **How does this year’s sea surface temperature (red curve) in North
 Hecate Strait compare to previous years, based on the buoy there?**
+<!-- Run this png code manually (as not evaluated here) to update the figure -->
 
 ``` r
-plot(buoy_sst, stn_id = "C46183")
+plot(buoy_sst,
+     stn_id = "C46183")
 ```
 
-<img src="man/figures/README-northhecatetemp-1.png" width="60%" />
+<img src="man/figures/README-north-hecate-temp.png" style="width:80.0%" />
 
 **Are we entering a phase of El Niño, based on the Oceanic Niño Index?
 (If the last bars are red, then ‘yes’)**
@@ -95,7 +99,7 @@ plot(buoy_sst, stn_id = "C46183")
 plot(oni)
 ```
 
-<img src="man/figures/README-oni-1.png" width="60%" />
+<img src="man/figures/README-oni.png" style="width:80.0%" />
 
 **How has the status of the Pacific Decadal Oscillation changed over
 time?**
@@ -104,25 +108,29 @@ time?**
 plot(pdo)
 ```
 
-<img src="man/figures/README-pdo-1.png" width="60%" />
+<img src="man/figures/README-pdo.png" style="width:80.0%" />
 
 **What were the differences in spatial pattern of sea surface
 temperature between June 2022 and 2023 (using OISST data)?**
 
 ``` r
-plot(oisst_month, months.plot = "June", years.plot = c(2022, 2023))
+plot(oisst_month,
+     months.plot = "June",
+     years.plot = c(2022, 2023))
 ```
 
-<img src="man/figures/README-oisst-1.png" width="60%" />
+<img src="man/figures/README-oisst.png" style="width:80.0%" />
 
 **How did the upper 40m of dissolved oxygen differ between January and
 June, in 2015 (using BCCM ROMS output)?**
 
 ``` r
-plot(bccm_avg0to40m_oxygen(force = TRUE), months.plot = c(1, 6), years.plot = 2015)
+plot(bccm_avg0to40m_oxygen(force = TRUE),
+     months.plot = c(1, 6),
+     years.plot = 2015)
 ```
 
-<img src="man/figures/README-bccm-1.png" width="60%" />
+<img src="man/figures/README-bccm.png" style="width:80.0%" />
 
 **What is the estimated abundance of Pacific Harbour Seals for each of
 seven regions?**
@@ -131,7 +139,7 @@ seven regions?**
 plot(harbour_seals)
 ```
 
-<img src="man/figures/README-sealplot-1.png" width="60%" />
+<img src="man/figures/README-harbour-seals.png" style="width:80.0%" />
 
 <!-- See the vignettes (TODO link to rendered versions once we push them) for -->
 
@@ -163,9 +171,6 @@ the vignettes we will provide the `html` version on GitHub to be easily
 viewed.
 
 </details>
-
-TODO - rewrite all the following, giving some simple examples and
-referring to vignettes once we’ve finished those or Issues.
 
 ## Audience and motivation
 
