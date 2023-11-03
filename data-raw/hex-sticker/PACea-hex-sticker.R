@@ -1,6 +1,5 @@
-# Quickly tried this but didn't get very far. Waiting until we get some nice
-#  figures going.
-# Thing this is adapted from the hexSticker GitHub site.
+# Quickly tried the code at the top but didn't get very far. See further down
+# Think this is adapted from the hexSticker GitHub site.
 library(hexSticker)
 s <- sticker(~plot(cars, cex=.5, cex.axis=.5, mgp=c(0,.3,0), xlab="", ylab=""),
          package="hexSticker", p_size=20, s_x=.8, s_y=.6, s_width=1.4, s_height=1.2,
@@ -23,7 +22,7 @@ p <- sticker(~plot(cars,
              filename="inst/figures/baseplot.png")
 
 
-# Using this to send to Carley
+# Using this to send to Carley, for some ideas for the eventual logo.
 
 load_all()
 
@@ -59,7 +58,8 @@ https://www.phylopic.org/images/c1ee28a8-284f-4c4b-b8e0-82f981cac04a/acartia-ton
 
 If they were to be ordered top to bottom, then the above order would be good (as it's kind of how they would be in a food web), but spread out is fine also.
 
+# Carley's final awesome version is below is in inst/ (also a .jpg version for
+# printing), and this makes (copies?) one in man/figures/logo.png and gives code
+# to add to README.Rmd:
 
-That website does not have Sasquatch. I searched Sasquatch silhouttes and this one looks good (the turning of the head is nice), but there are many many others (not all free though, unlike the real animals!):
- https://www.pinterest.ca/pin/536280268131153798/
-If you want to sneak one into northern Van Island that'd be fun, but no big deal.
+use_logo("inst/pacea-logo-from-carley.png")

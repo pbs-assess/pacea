@@ -52,3 +52,6 @@ data-raw/buoys/opp_info.Rds
 /data-raw/mammals/harbour-seals/N_region_data_request_June_2023.csv
 /data-raw/mammals/harbour-seals/pred_all_regions.csv
 /data-raw/mammals/harbour-seals/SAR_harbour seal 2019.pdf
+/data-raw/hex-sticker/temperature-map.png
+/data-raw/hex-sticker/el-nino.png
+/data-raw/hex-sticker/pacea-logos-1.pdf

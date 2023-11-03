@@ -5,7 +5,7 @@
 <!-- rmarkdown::render("README.Rmd"), which also builds an .html that can be -->
 <!-- viewed locally (and isn't pushed to GitHub)  -->
 
-# pacea
+# pacea <img src="man/figures/logo.png" align="right" height="138" />
 
 <!-- badges: start -->
 
@@ -252,16 +252,16 @@ Ocean Perch
 assessment](https://waves-vagues.dfo-mpo.gc.ca/Library/40803569.pdf).
 See that for links to websites. In the assessment we used:
 
-- East-Pacific/North-Pacific index
-- Pressure-adjusted sea level anomalies at Prince Rupert
-- Standardized maximum area covered by Haida eddies
-- Aleutian Low Pressure Index
-- Standardized North Pacific Index
-- Pacific Decadal Oscillation
-- North Pacific Gyre Oscillation
-- Oceanic Niño Index
-- Southern Oscillation Index.
-- Aleutian low pressure index
+-   East-Pacific/North-Pacific index
+-   Pressure-adjusted sea level anomalies at Prince Rupert
+-   Standardized maximum area covered by Haida eddies
+-   Aleutian Low Pressure Index
+-   Standardized North Pacific Index
+-   Pacific Decadal Oscillation
+-   North Pacific Gyre Oscillation
+-   Oceanic Niño Index
+-   Southern Oscillation Index.
+-   Aleutian low pressure index
 
 Following paper discusses how the Strait of Georgia transitions to Queen
 Charlotte Sound through Johnstone Strait. It really makes the point that
@@ -301,4 +301,9 @@ Use the standard `lower_case_and_underscores` for naming variables and
 functions.
 
 Citation information is in inst/CITATION, so if you update DESCRIPTION
-file (e.g. add an author) then update that also.
+file (e.g. add an author) then update that also, and may want to change
+info at the start of this file.
+
+Logo included by running `use_logo("inst/pacea-logo.png")`. The .png was
+expertly designed by Carley Colclough. There is also
+`inst/pacea-logo-for-printing.jpg` for printing purposes.
