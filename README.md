@@ -25,51 +25,57 @@ pacea stands for PACific Ecosystem Approach.
 pacea is a data platform containing a variety of data sets. We wrangle
 the data sets behind the scenes to get them into usable formats in R,
 and provide helpful plotting functions. All data sets include
-documentation regarding the original authors, who should be cited as
-appropriate.
+documentation regarding the original authors, who should be cited and
+consulted as appropriate.
 
-Under development – feel free to install and get using, but be aware
-that code may change. We will officially release it in October 2023,
-after which we will ensure back compatibility with earlier versions.
+pacea will be released on 10th November 2023, and we are still
+developing and editing it before then. So while you can download it
+before then, it might be best to wait as we are still editing help
+files, vignettes, code, etc. From 10th November we will document updates
+to data, new features, and any bug fixes on the NEWS page. We will
+provide a plan for updating of certain data sets.
 
 # What is in pacea?
 
 Currently, pacea contains:
 
--   201,426 records of daily sea surface temperature measurements from
-    19 buoys.
+-   201,426 calculations of daily sea surface temperature based on data
+    from 19 buoys.
 
 -   outputs from the spatial British Columbia continental margin (BCCM)
-    model
+    model, a coupled physical-biogeochemical model. Variables are for
+    40,580 spatial cells across Canada’s Pacific Exclusive Economic
+    Zone, and are given as 27 years of monthly means (from 1993 to
+    2019). The variables are:
 
-    -   variables are:
-        -   dissolved oxygen concentration
-            -   pH
-            -   salinity
-            -   temperature
-            -   depth-integrated phytoplankton
-            -   depth-integrated primary production
-    -   for applicable variables these are given for
-        -   sea surface
-            -   sea bottom
-            -   0-40 m integration
-        -   40-100 m integration
-            -   100 m to the bottom.
-    -   variables are for a total of 40,580 spatial cells across
-        Canada’s Pacific Exclusive Economic Zone
-    -   there are 27 years of monthly means, from 1993 to 2019
+    -   dissolved oxygen concentration
+    -   pH
+    -   salinity
+    -   temperature
+    -   depth-integrated phytoplankton
+    -   depth-integrated primary production.
+
+    For applicable variables these are given for
+
+    -   sea surface
+    -   0-40 m integration
+    -   40-100 m integration
+    -   100 m to the sea bottom
+    -   sea bottom.
 
 -   NOAA’s spatial Optimum Interpolation Sea Surface Temperature (OISST)
     record, that incorporates observations from different platforms
-    (satellites, ships, buoys, and Argo floats).
+    (satellites, ships, buoys, and Argo floats):
 
-    -   OISST data are provided as 7-day and monthly means
-    -   from Sep 1981 to Jun 2023.
+    -   provided as weekly and monthly means from Sep 1981 to Jun 2023.
 
 -   9 climatic and oceanographic indices, such as the Pacific Decadal
-    Oscillation and those related to El Niño
+    Oscillation and those related to El Niño.
 
--   estimates of abundances of Harbour Seals and Pacific Hake
+-   estimates of abundances of Harbour Seals and Pacific Hake.
+
+Plotting and helper functions are provided, and demonstrated in
+vignettes.
 
 # Brief examples of some questions that can be quickly investigated
 
@@ -131,11 +137,6 @@ plot(harbour_seals)
 
 # Installation
 
-We are still developing pacea, and so it is not meant to be fully
-operational yet (though it builds and can be used). We plan to release
-it in October 2023, after which we will ensure back compatibility and
-give updates on the NEWS page.
-
 To install the latest version:
 
     install.packages("remotes")    # If you do not already have the "remotes" package
@@ -163,64 +164,8 @@ viewed.
 
 </details>
 
-------------------------------------------------------------------------
-
-STOP reading here - rest needs updating and is being modified.
-
-<details>
-<summary>
-Collapsible heading
-</summary>
-This text should be hidden until user clicks on the arrow
-</details>
-
 TODO - rewrite all the following, giving some simple examples and
 referring to vignettes once we’ve finished those or Issues.
-
-Currently, briefly (we will expand on this TODO) pacea includes output
-from a British Columbia ROMS (Regional Ocean Modeling System) model,
-climatic and oceanographic indices such as Pacific Decadal Oscillation,
-Pacific Hake stock assessment results, sea surface temperature from
-buoys, …. We do have context-specific plotting functions that relate to
-each type of data set.
-
-TODO - give simple examples here, we’re focussing on vignettes first….
-
-Doing seals here then moving up to avoid conflict.
-
-## Pacific Hake stock assessment results
-
-Type these to see the values, help file, and then a plot:
-
-    library(pacea)
-
-    hake_recruitment              # estimated annual recruitment
-    ?hake_recruitment
-    plot(hake_recruitment)
-
-    # Similar commands work for scaled versions:
-    hake_recruitment_over_2010    # see for details
-    ?hake_recruitment_over_2010
-    plot(hake_recruitment_over_2010)
-
-    hake_recruitment_over_R0
-    ?hake_recruitment_over_R0
-    plot(hake_recruitment_over_R0)
-
-    hake_biomass                  # estimated annual spawning stock biomass
-    ?hake_biomass
-    # plot(biomass) not finished yet
-
-## Climatic and oceanographic indices
-
-See `?oni` etc. for descriptions. `plot(oni)` etc. somewhat work but not
-all default options are sensible yet. See `?plot.pacea_index`.
-
-    oni
-    pdo
-    soi
-    npi_monthly
-    npi_annual
 
 # Audience and motivation
 
@@ -243,43 +188,15 @@ This work is strongly motivated by, and based on, the
 [GSLea](https://github.com/duplisea/gslea) R package by Dan Duplisea and
 colleagues for the Gulf of St Lawrence.
 
-## Further data ideas (old - will move to Issue)
-
-Charles: [SST and Chl-a summaries](https://bio-rsg.github.io/).
-
-Several indices were extracted and analysed in Appendix F of a [Pacific
-Ocean Perch
-assessment](https://waves-vagues.dfo-mpo.gc.ca/Library/40803569.pdf).
-See that for links to websites. In the assessment we used:
-
--   East-Pacific/North-Pacific index
--   Pressure-adjusted sea level anomalies at Prince Rupert
--   Standardized maximum area covered by Haida eddies
--   Aleutian Low Pressure Index
--   Standardized North Pacific Index
--   Pacific Decadal Oscillation
--   North Pacific Gyre Oscillation
--   Oceanic Niño Index
--   Southern Oscillation Index.
--   Aleutian low pressure index
-
-Following paper discusses how the Strait of Georgia transitions to Queen
-Charlotte Sound through Johnstone Strait. It really makes the point that
-the separation is abrupt not gradual. And thus that somewhere about
-Chatham Point is a reasonable place to start the Northern Shelf
-Bioregion (and thus the marine component of the great bear rainforest):
-Dosser, H.V., Waterman, S., Jackson, J.M., Hannah, C.G., Evans, W. and
-Hunt, B.P.V., [Stark physical and biogeochemical differences and
-implications for ecosystem stressors in the Northeast Pacific coastal
-ocean](https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/2020JC017033).
-Journal of Geophysical Research: Oceans, p.e2020JC017033.
-
-## Funding
+## Acknowledgments
 
 This work is funded by a Competitive Science Research Fund grant from
-Fisheries and Oceans Canada.
+Fisheries and Oceans Canada. The pacea logo was expertly designed by
+Carley Colclough. TODO add contributors.
 
-# For developers
+# Notes for developers
+
+TODO update
 
 Edit and render the README.Rmd file, not the README.Md file. If you add
 any new figures then commit and push them (they will be in
@@ -295,7 +212,7 @@ Every data set is built using code in the `raw-data/` directory, with
 documentation in `R/data.R`. Document everything!
 
 If you add new functions please add tests as well so we retain good code
-coverage.
+coverage (as indicated in the badge at the top of the README on GitHub).
 
 Use the standard `lower_case_and_underscores` for naming variables and
 functions.
@@ -307,3 +224,11 @@ info at the start of this file.
 Logo included by running `use_logo("inst/pacea-logo-from-carley.png")`.
 The .png was expertly designed by Carley Colclough. There is also
 `inst/pacea-logo-for-printing.jpg` for printing purposes.
+
+<details open>
+<summary>
+Collapsible heading
+</summary>
+This text should be open and can be hidden. Prob best to just do TOC at
+top. TODO remove if not going to use.
+</details>
