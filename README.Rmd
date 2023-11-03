@@ -36,15 +36,16 @@ An R package of Pacific ecosystem information to help facilitate an ecosystem ap
 
 pacea stands for PACific Ecosystem Approach.
 
-pacea is a data platform containing a variety of data
-sets. We wrangle the data sets behind the scenes to get them into usable formats
+pacea is a R package containing a variety of data
+sets and model output. We wrangle the data sets behind the scenes to get them into usable formats
 in R, and provide helpful plotting functions. All data sets include
 documentation regarding the original authors, who should be cited and consulted as
 appropriate.
 
-pacea will be released on 10th November 2023, and we are still developing and
+**NOTE:** pacea will be released on 10th November 2023, and we are still developing and
 editing it before then. So while you can download it before then, it might be
-best to wait as we are still editing help files, vignettes, code, etc.
+best to wait as we are still editing help files, vignettes, code, etc. (and code
+will change).
 From 10th November we will document updates to data, new features, and any bug
 fixes on the NEWS page. We will provide a plan for updating of certain data sets.
 
