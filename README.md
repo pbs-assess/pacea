@@ -15,8 +15,8 @@ coverage](https://codecov.io/gh/pbs-assess/pacea/branch/main/graph/badge.svg)](h
 \[![Visitors](https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Fpbs-assess%2Fpacea&label=VISITORS&countColor=%23263759&style=flat&labelStyle=upper)\]
 <!-- badges: end -->
 
-An R package to house Pacific Region ecosystem data to help
-operationalise an ecosystem approach to fisheries management.
+An R package of Pacific ecosystem information to help facilitate an
+ecosystem approach to fisheries management
 
 *We wrangle the data so you don’t have to*
 
@@ -36,40 +36,40 @@ after which we will ensure back compatibility with earlier versions.
 
 Currently, pacea contains:
 
-- 201,426 records of daily sea surface temperature measurements from 19
-  buoys.
+-   201,426 records of daily sea surface temperature measurements from
+    19 buoys.
 
-- outputs from the spatial British Columbia continental margin (BCCM)
-  model
+-   outputs from the spatial British Columbia continental margin (BCCM)
+    model
 
-  - variables are:
-    - dissolved oxygen concentration
-      - pH
-      - salinity
-      - temperature
-      - depth-integrated phytoplankton
-      - depth-integrated primary production
-  - for applicable variables these are given for
-    - sea surface
-      - sea bottom
-      - 0-40 m integration
-    - 40-100 m integration
-      - 100 m to the bottom.
-  - variables are for a total of 40,580 spatial cells across Canada’s
-    Pacific Exclusive Economic Zone
-  - there are 27 years of monthly means, from 1993 to 2019
+    -   variables are:
+        -   dissolved oxygen concentration
+            -   pH
+            -   salinity
+            -   temperature
+            -   depth-integrated phytoplankton
+            -   depth-integrated primary production
+    -   for applicable variables these are given for
+        -   sea surface
+            -   sea bottom
+            -   0-40 m integration
+        -   40-100 m integration
+            -   100 m to the bottom.
+    -   variables are for a total of 40,580 spatial cells across
+        Canada’s Pacific Exclusive Economic Zone
+    -   there are 27 years of monthly means, from 1993 to 2019
 
-- NOAA’s spatial Optimum Interpolation Sea Surface Temperature (OISST)
-  record, that incorporates observations from different platforms
-  (satellites, ships, buoys, and Argo floats).
+-   NOAA’s spatial Optimum Interpolation Sea Surface Temperature (OISST)
+    record, that incorporates observations from different platforms
+    (satellites, ships, buoys, and Argo floats).
 
-  - OISST data are provided as 7-day and monthly means
-  - from Sep 1981 to Jun 2023.
+    -   OISST data are provided as 7-day and monthly means
+    -   from Sep 1981 to Jun 2023.
 
-- 9 climatic and oceanographic indices, such as the Pacific Decadal
-  Oscillation and those related to El Niño
+-   9 climatic and oceanographic indices, such as the Pacific Decadal
+    Oscillation and those related to El Niño
 
-- estimates of abundances of Harbour Seals and Pacific Hake
+-   estimates of abundances of Harbour Seals and Pacific Hake
 
 # Brief examples of some questions that can be quickly investigated
 
@@ -299,3 +299,6 @@ coverage.
 
 Use the standard `lower_case_and_underscores` for naming variables and
 functions.
+
+Citation information is in inst/CITATION, so if you update DESCRIPTION
+file (e.g. add an author) then update that also.

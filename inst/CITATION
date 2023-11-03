@@ -1,0 +1,11 @@
+citHeader("To cite pacea in publications please use:")
+
+# Based on sdmTMB, DESCRIPTION approach wouldn't include a year.
+bibentry(
+  bibtype = "misc",
+  title = "pacea: An R package of Pacific ecosystem information to help facilitate an ecosystem approach to fisheries management",
+  author = "A. M. Edwards and T. C. Tai and J. Watson and M. A. Peña and A. Hilborn and C. G. Hannah and C. N. Rooper",
+  url = "https://github.com/pbs-assess/pacea",
+  year = "2023",
+  doi = "TODO"
+)

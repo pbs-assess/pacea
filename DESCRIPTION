@@ -1,10 +1,40 @@
 Package: pacea
 Type: Package
-Title: An R package to house Pacific Region ecosystem data to help facilitate an ecosystem approach to fisheries management
+Title: An R package of Pacific ecosystem information to help facilitate an ecosystem approach to fisheries management
 Version: 0.1.0
-Author: Andrew M. Edwards and Joe Watson
+Authors@R: c(
+    person(c("A.", "M."), "Edwards",
+        email = "andrew.edwards@dfo-mpo.gc.ca",
+	role = c("aut", "cre"),
+        comment = c(ORCID = "0000-0003-2749-8198")),
+    person(c("T.", "C."), "Tai",
+        email = "travis.tai@dfo-mpo.gc.ca",
+      	role = c("aut", "cre"),
+        comment = c(ORCID = "0000-0001-7013-1901")),
+    person("J.", "Watson",
+      	role = c("aut"),
+        comment = c(ORCID = "0000-0002-4773-1631")),
+    person(c("M.", "A."), "Peña",
+        email = "angelica.pena@dfo-mpo.gc.ca",
+      	role = c("aut"),
+        comment = c(ORCID = "0000-0001-8002-3402")),
+    person(c("A."), "Hilborn",
+        email = "andrea.hilborn@dfo-mpo.gc.ca",
+      	role = c("aut"),
+        comment = c(ORCID = "0000-0002-5967-5788")),
+    person(c("C.", "G."), "Hannah",
+        email = "charles.hannah@dfo-mpo.gc.ca",
+      	role = c("aut"),
+        comment = c(ORCID = "0000-0002-0238-5683")),
+    person(c("C.", "N."), "Rooper",
+        email = "chris.rooper@dfo-mpo.gc.ca",
+      	role = c("aut"),
+        comment = c(ORCID = "0000-0003-2315-1269")))
+URL: https://github.com/pbs-assess/pacea
+BugReports: https://github.com/pbs-assess/pacea/issues
 Maintainer: Andrew Edwards <andrew.edwards@dfo-mpo.gc.ca>
-Description: The package allow for extraction of all the data as a simple .csv file
+Description: TODO
+DOI: TODO
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

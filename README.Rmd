@@ -26,7 +26,7 @@ library(ggplot2)    # TODO needed for harbour_seals plot - look into
 [![Visitors](https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Fpbs-assess%2Fpacea&label=VISITORS&countColor=%23263759&style=flat&labelStyle=upper)]
 <!-- badges: end -->
 
-An R package to house Pacific Region ecosystem data to help operationalise an ecosystem approach to fisheries management.
+An R package of Pacific ecosystem information to help facilitate an ecosystem approach to fisheries management
 
 *We wrangle the data so you don't have to*
 
@@ -240,6 +240,7 @@ This work is funded by a Competitive Science Research Fund grant from Fisheries 
 
 # For developers
 
+
 Edit and render the README.Rmd file, not the README.Md file. If you add any new
 figures then commit and push them (they will be in
 man/figures/README-<chunk-name>) so they show up on the GitHub README. Always
@@ -258,3 +259,6 @@ coverage.
 
 Use the standard `lower_case_and_underscores` for naming
 variables and functions.
+
+Citation information is in inst/CITATION, so if you update DESCRIPTION file
+(e.g. add an author) then update that also.
