@@ -35,7 +35,7 @@ files, vignettes, code, etc. From 10th November we will document updates
 to data, new features, and any bug fixes on the NEWS page. We will
 provide a plan for updating of certain data sets.
 
-# What is in pacea?
+## What is in pacea?
 
 Currently, pacea contains:
 
@@ -77,7 +77,7 @@ Currently, pacea contains:
 Plotting and helper functions are provided, and demonstrated in
 vignettes.
 
-# Brief examples of some questions that can be quickly investigated
+## Brief examples of some questions that can be quickly investigated
 
 **How does this year’s sea surface temperature (red curve) in North
 Hecate Strait compare to previous years, based on the buoy there?**
@@ -135,7 +135,7 @@ plot(harbour_seals)
 
 <!-- See the vignettes (TODO link to rendered versions once we push them) for -->
 
-# Installation
+## Installation
 
 To install the latest version:
 
@@ -167,7 +167,7 @@ viewed.
 TODO - rewrite all the following, giving some simple examples and
 referring to vignettes once we’ve finished those or Issues.
 
-# Audience and motivation
+## Audience and motivation
 
 The primary audience is stock assessment scientists who want to analyse
 environmental variables in the context of their stock assessment. The
@@ -194,7 +194,7 @@ This work is funded by a Competitive Science Research Fund grant from
 Fisheries and Oceans Canada. The pacea logo was expertly designed by
 Carley Colclough. TODO add contributors.
 
-# Notes for developers
+## Notes for developers
 
 TODO update
 

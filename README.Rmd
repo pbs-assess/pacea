@@ -12,6 +12,7 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
+#  cache=TRUE,  # want to try this
   fig.path = "man/figures/README-",
   out.width = "60%"
   )
@@ -44,7 +45,7 @@ best to wait as we are still editing help files, vignettes, code, etc.
 From 10th November we will document updates to data, new features, and any bug
 fixes on the NEWS page. We will provide a plan for updating of certain data sets.
 
-# What is in pacea?
+## What is in pacea?
 
 Currently, pacea contains:
 
@@ -82,7 +83,7 @@ Currently, pacea contains:
 
 Plotting and helper functions are provided, and demonstrated in vignettes.
 
-# Brief examples of some questions that can be quickly investigated
+## Brief examples of some questions that can be quickly investigated
 
 **How does this year's sea surface temperature (red curve) in North Hecate Strait compare to previous
 years, based on the buoy there?**
@@ -118,7 +119,7 @@ plot(harbour_seals)
 
 <!-- See the vignettes (TODO link to rendered versions once we push them) for -->
 
-# Installation
+## Installation
 
 To install the latest version:
 
@@ -143,7 +144,7 @@ and then try and install again. If you get a different error then contact Andy a
 
 TODO - rewrite all the following, giving some simple examples and referring to vignettes once we've finished those or Issues.
 
-# Audience and motivation
+## Audience and motivation
 
 The primary audience is stock assessment scientists who want to analyse environmental variables in the context of their stock assessment. The Fisheries Act requires management of fisheries to take into account "[the biology of the fish and the environmental conditions affecting the stock](https://laws-lois.justice.gc.ca/eng/acts/f-14/page-3.html#h-1175547)". Such an Ecosystem Approach to Fisheries Management requires data.
 
@@ -157,7 +158,7 @@ This work is funded by a Competitive Science Research Fund grant from Fisheries 
 The pacea logo was expertly designed by Carley Colclough. TODO add
 contributors.
 
-# Notes for developers
+## Notes for developers
 
 TODO update
 
