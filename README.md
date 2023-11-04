@@ -224,8 +224,16 @@ colleagues for the Gulf of St Lawrence.
 ## Acknowledgments
 
 This work is funded by a Competitive Science Research Fund grant from
-Fisheries and Oceans Canada. The pacea logo was expertly designed by
-Carley Colclough. TODO add contributors.
+Fisheries and Oceans Canada.
+
+We thank the following for contributing ideas, example code for ROMS
+output, model output, and/or helping with ideas and coding issues:
+
+Kelsey Flynn, Jessica Nephin, Strahan Tucker, Matt Grinnell, Lindsay
+Davidson, Sean Anderson, Philina English, and Chris Grandin.
+
+And a big thanks to Carley Colclough for expertly designing the pacea
+logo.
 
 ## Notes for developers
 

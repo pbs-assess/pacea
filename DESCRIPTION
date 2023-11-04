@@ -29,7 +29,23 @@ Authors@R: c(
     person(c("C.", "N."), "Rooper",
         email = "chris.rooper@dfo-mpo.gc.ca",
       	role = c("aut"),
-        comment = c(ORCID = "0000-0003-2315-1269")))
+        comment = c(ORCID = "0000-0003-2315-1269")),
+    person("Kelsey", "Flynn",
+        role = c("ctb")),
+    person("Jessica", "Nephin ",
+        role = c("ctb")),
+    person("Strahan", "Tucker",
+        role = c("ctb")),
+    person("Matt", "Grinnell ",
+        role = c("ctb")),
+    person("Lindsay", "Davidson ",
+        role = c("ctb")),
+    person("Sean", "Anderson",
+        role = c("ctb")),
+    person("Philina", "English",
+        role = c("ctb")),
+    person("Chris", "Grandin",
+        role = c("ctb")))
 URL: https://github.com/pbs-assess/pacea
 BugReports: https://github.com/pbs-assess/pacea/issues
 Maintainer: Andrew Edwards <andrew.edwards@dfo-mpo.gc.ca>

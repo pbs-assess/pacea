@@ -113,7 +113,7 @@ to_check_stamps <- rev(substring(as.character(to_check_dates), 1, 7))   # Latest
 #  figure out a simple way to check if a website exists, so need to do this
 #  manually, though will be fairly simple once we are checking this every month.
 #  So first check if latest month exists. Gave up trying to automate as
-#   RCurl::url.exists(sitename)  returnsed FALSE even with a sitename that exists.
+#   RCurl::url.exists(sitename)  returns FALSE even with a sitename that exists.
 
 i <- 1      # MAY NEED TO CHANGE THIS MANUALLY - error message below will tell
             # you when.
