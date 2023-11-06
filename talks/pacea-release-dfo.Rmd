@@ -1,9 +1,11 @@
 ---
-title: "Releasing pacea -- an R package of Pacific ecosystem information to help facilitate an ecosystem approach to fisheries management"
+title: "Introducing pacea"
+subtitle: "An R package of Pacific ecosystem information to help facilitate an ecosystem approach to fisheries management"
 author: "Andrew Edwards and Travis Tai **Andy will improve this slide!"
 output:
   beamer_presentation:
     theme: Singapore
+    colortheme: orchid
     # Second-level headings create new slide
     slide_level: 2
     toc: true
@@ -19,18 +21,29 @@ output:
 header-includes:
   \AtBeginSubsection{}
   \AtBeginSection{}
----
-
 classoption: "aspectratio=169"
 # This affects font sizes in figures also:
 fontsize: 12pt
-
 ---
 
 <!-- To build either run
    rmarkdown::render("pacea-release-dfo.Rmd")
  or click the knit button in RStudio -->
 
+<!-- trying different themes from https://mpetroff.net/files/beamer-theme-matrix/
+theme:
+Copenhagen - too much at bottom
+Frankfurt - shows progress bar at top (play with colours though), nothing at bottom.
+Luebeck - awful (lists sections vertically at the top)
+metropolis - too many borders
+Rochester - slide title is in top border, but that's really big
+Singapore - used for hake, slide title does take up a bit of room, looks good with lily
+
+colortheme:
+dolphin - black top bar for Frankfurt
+lily
+orchid
+-->
 
 ```{r, setup, include = FALSE}
 knitr::opts_chunk$set(
@@ -48,8 +61,8 @@ knitr::opts_chunk$set(
 # the talk. Have commented as it reloads each time, which isn't necessary.
 library(dplyr)
 library(tibble)
-options(pillar.print_max = 5)   # number of rows to show for a tibble
-        # pillar.print_min = 3)
+options(pillar.print_max = 5,   # number of rows to show for a tibble
+        pillar.print_min = 5)
 par("mai" = c(1.02, 0.82, 0.3, 0.42))   # default is 1.02 0.82 0.82 0.42
 ```
 

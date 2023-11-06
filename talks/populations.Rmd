@@ -12,15 +12,17 @@ to come. blah blah blah
 
 ## Hake biomass
 
-The biomass time series is saved as a `tibble` in `pacea`, as simply:
+The biomass time series is saved as a `tibble` object in `pacea`:
 ```{r hakebiomass}
 hake_biomass
+
 tail(hake_biomass)
 ```
 
 ## Hake biomass
 ```{r hakebiomasshelp, eval=FALSE}
 ?hake_biomass
+
 Pacific Hake annual spawning stock biomass (females only) as estimated
 by the 2023 stock assessment.
 
@@ -49,35 +51,27 @@ Format:
      median: median estimate of biomass, in millions of tonnes of
           female spawning biomass at the start of the year
 
-     high: high end (97.5th percentile) of the 95% credible interval
-          for biomass, units as for `median`
-
-Details:
-
-     See `?hake_recruitment` for further details and reference.
-
+     ...
 ```
 
 
 ## Hake biomass
 
+Objects have tailored plotting functions associated with them:
 ```{r hakebiomassplot}
 plot(hake_biomass)
 ```
 
-## Hake biomass
+## Hake recruitment
 
 ```{r hakerecuitmentplot}
 plot(hake_recruitment)
 ```
 
 
-## test
+## blah blah
 
-with the annual estimates given as median, low and high ends of the 95% credible
-intervals. Units are millions of tonnes of female spawning biomass at the start
-of the year, as documented in `?hake_biomass` which also refers to
-`?hake_recruitment` for full details and further background. For example, it is important to
+For example, it is important to
 realise that the assessment considers a coastwide stock off the west coast of
 Canada and the United States.
 
