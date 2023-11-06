@@ -1,0 +1,22 @@
+% To reduce gaps between code chunk and output
+% From Martin Schmelzer:
+% https://stackoverflow.com/questions/35734525/reduce-space-between-code-chunks-and-code-output-in-rmarkdown-beamer-presentatio
+
+% declare overall beamer theme to use as baseline
+% \usetheme{default}
+
+% make code-output smaller
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{fontsize=\tiny,commandchars=\\\{\}}
+
+% make console-output smaller:
+  \makeatletter
+\def\verbatim{\tiny\@verbatim \frenchspacing\@vobeyspaces \@xverbatim}
+\makeatother
+
+\setlength{\parskip}{0pt}
+
+\setlength{\OuterFrameSep}{-4pt}
+\makeatletter
+\preto{\@verbatim}{\topsep=-10pt \partopsep=-10pt }
+
+\makeatother

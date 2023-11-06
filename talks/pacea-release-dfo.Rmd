@@ -1,43 +1,84 @@
 ---
-title: "Fish Population Estimates"
-author: "Andrew Edwards"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Fish Population Estimates}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+title: "Releasing pacea -- an R package of Pacific ecosystem information to help facilitate an ecosystem approach to fisheries management"
+author: "Andrew Edwards and Travis Tai **Andy will improve this slide!"
+output:
+  beamer_presentation:
+    theme: Singapore
+    # Second-level headings create new slide
+    slide_level: 2
+    toc: true
+    # fig_height: 5
+    # fig_width: 8
+    keep_tex: yes
+    includes:
+      in_header: latex-topmatter.tex
+    # toc_depth: 1
+    # title_page_image: "../man/figures/logo.png"
+    # title_page_image_height_in: 1
+    # title_page_image_width_in: 2
+classoption: "aspectratio=169"
+# This affects font sizes in figures also:
+fontsize: 12pt
+
 ---
 
 <!-- To build either run
-   rmarkdown::render("fish_populations.Rmd")
+   rmarkdown::render("pacea-release-dfo.Rmd")
  or click the knit button in RStudio -->
 
 
-```{r, include = FALSE}
+```{r, setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  fig.width = 7,
-  fig.height = 6
+  comment = "",
+  global.par = TRUE,  # set par values to be global (once changed)
+  fig.width = 6,
+  fig.height = 4,
+  fig.align = "center",
+  out.width = "60%"
+  #out.height = 400
 )
+
+# load_all()    # Do this the first time and if update the package while writing
+# the talk. Have commented as it reloads each time, which isn't necessary.
+library(dplyr)
+library(tibble)
+options(pillar.print_max = 5)   # number of rows to show for a tibble
+        # pillar.print_min = 3)
+par("mai" = c(1.02, 0.82, 0.3, 0.42))   # default is 1.02 0.82 0.82 0.42
 ```
 
 ## Estimates of fish populations
 
-```{r setup}
-library(pacea)
-library(dplyr)
-```
-
-In pacea we include estimates of fish populations, including uncertainty, as calculated from recent
-stock assessments.
+General intro slide, then show code on next slide. In pacea we include estimates of fish populations, including uncertainty, as calculated from recent
+stock assessments (have general slide earlier)..
 
 Currently, we have Pacific Hake, a major component of the ecosystem, with more
-to come. The biomass time series is saved as a `tibble` in `pacea`, as simply:
+to come. blah blah blah
+
+## Hake biomass
+
+The biomass time series is saved as a `tibble` in `pacea`, as simply:
 ```{r hakebiomass}
 hake_biomass
 tail(hake_biomass)
 ```
+
+## Hake biomass
+
+```{r hakebiomassplot}
+plot(hake_biomass)
+```
+
+## Hake biomass
+
+```{r hakerecuitmentplot}
+plot(hake_recruitment)
+```
+
+
+## test
+
 with the annual estimates given as median, low and high ends of the 95% credible
 intervals. Units are millions of tonnes of female spawning biomass at the start
 of the year, as documented in `?hake_biomass` which also refers to
@@ -47,9 +88,7 @@ Canada and the United States.
 
 To plot the time series of estimated coastwide biomass,
 simply do
-```{r hakebiomassplot}
-plot(hake_biomass)
-```
+
 
 where the solid circles are the annual medians, with credible intervals given by
 the shaded regions (mostly reproducing Figure d in the latest assessment).
