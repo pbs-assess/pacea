@@ -58,3 +58,5 @@ data-raw/buoys/opp_info.Rds
 /man/figures/README-test.png
 /talks/pacea-release-dfo.tex
 /talks/pacea-release-dfo.pdf
+
+talks/pacea-release-dfo_files/*.*
