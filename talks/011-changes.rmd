@@ -1,0 +1,89 @@
+# Changes from `r last_assess_yr`
+## Changes from the `r last_assess_yr` assessment
+
+* Update Stock Synthesis to version `r ss_version`
+* Add new catch data for `r last_assess_yr` and update historical catches 
+* Add new weight-at-age data for `r last_assess_yr` and update
+  weight-at-age data
+* Add the `r last_assess_yr` acoustic survey biomass estimate and age data
+* Add the `r last_assess_yr` age-1 index estimate
+* Add new fishery age composition data for `r last_assess_yr` and historical
+  fishery age composition data
+* No changes to acoustic survey biomass estimates or age-1 index
+  estimates this year
+* All model runs in the assessment use MCMC
+
+## Bridging: Model Updates and Additions
+
+```{r bridge-biomass, fig.height = 4, out.height = "80%"}
+p <- list()
+p[[1]] <-
+  plot_rel_biomass(d_obj = d_obj_bridge_rel_biomass[[1]],
+                   ylim = c(0, 2.5),
+                   x_labs_mod = 10,
+                   wrap_y_label = TRUE,
+                   leg_pos = "none")
+p[[2]] <-
+  plot_recdevs(d_obj = d_obj_bridge_recdev[[1]],
+               leg_pos = "none",
+               x_labs_mod = 10,
+               line_width = 0.1)
+
+plot_grid(plotlist = p,
+          nrow = 1,
+          ncol = 2)
+```
+
+## Bridging: Model Updates and Additions (survey)
+
+```{r bridge-survey, fig.height = 4, out.height = "80%"}
+p <- list()
+p[[1]] <-
+  plot_survey_index_fits(d_obj = d_obj_bridge_age2_index[[1]],
+                         survey_type = "age2",
+                         rev_colors = FALSE,
+                         leg_pos = "none")
+
+p[[2]] <-
+  plot_survey_index_fits(d_obj = d_obj_bridge_age1_index[[1]],
+                         survey_type = "age1",
+                         xlim = c(1995, 2022),
+                         ylim = c(0, 11),
+                         y_breaks = seq(0, 11, by = 2),
+                         rev_colors = FALSE,
+                         leg_pos = "none")
+
+plot_grid(plotlist = p,
+          nrow = 1,
+          ncol = 2)
+```
+
+## Bridging: Summary
+
+\bsmall
+
+* Updating Stock Synthesis software has no effect on results. Relevant
+  changes include:
+  - Weight-at-age specified in first year of forecast, rather than
+    carried forward
+  - Report files for models using empirical weight-at-age for growth do
+    not supply output that uses growth parameters
+* Updating data previous to `r last_data_yr` had very little effect on the
+  stock trajectory
+  \pause
+* Adding `r last_data_yr` catch and weight-at-age data resulted in a slight
+  upward shift in current female spawning biomass, because the mean weights
+  in `r last_data_yr` were mostly above the recent 5-year average mean
+  weights (assumption before the addition of these data)
+* Adding the `r last_data_yr` survey biomass estimate and age compositions
+  leads to slightly more optimistic estimates of biomass for the last few
+  years and reduces uncertainty
+* The addition of the age-1 index resulted in a small increase in $B_0$,
+  an increase in relative spawning biomass from 2019--2022, and an
+  increase in the estimated size of the 2018 and 2020 cohorts
+* Adding `r last_assess_yr` fishery age composition data had little impact
+  on historical estimates, shifted recent recruitment estimates
+  (esp. 2019--2021), and increased estimates of 2022 (slightly) and 2023
+  (considerably) female spawning biomass.
+  
+\esmall
