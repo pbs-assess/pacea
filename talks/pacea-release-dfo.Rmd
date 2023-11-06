@@ -16,6 +16,11 @@ output:
     # title_page_image: "../man/figures/logo.png"
     # title_page_image_height_in: 1
     # title_page_image_width_in: 2
+header-includes:
+  \AtBeginSubsection{}
+  \AtBeginSection{}
+---
+
 classoption: "aspectratio=169"
 # This affects font sizes in figures also:
 fontsize: 12pt
@@ -48,112 +53,27 @@ options(pillar.print_max = 5)   # number of rows to show for a tibble
 par("mai" = c(1.02, 0.82, 0.3, 0.42))   # default is 1.02 0.82 0.82 0.42
 ```
 
-## Estimates of fish populations
 
-General intro slide, then show code on next slide. In pacea we include estimates of fish populations, including uncertainty, as calculated from recent
-stock assessments (have general slide earlier)..
 
-Currently, we have Pacific Hake, a major component of the ecosystem, with more
-to come. blah blah blah
+describe the data currently contained, demonstrate the plotting functions and how to access the data, and mention caveats, assumptions, and problems encountered (and solved, so you don't have to!) when wrangling certain data sets.
 
-## Hake biomass
-
-The biomass time series is saved as a `tibble` in `pacea`, as simply:
-```{r hakebiomass}
-hake_biomass
-tail(hake_biomass)
+```{r introduction, child = "introduction.Rmd"}
 ```
 
-## Hake biomass
-
-```{r hakebiomassplot}
-plot(hake_biomass)
+```{r dataoverview, child = "data-overview.Rmd"}
 ```
 
-## Hake biomass
-
-```{r hakerecuitmentplot}
-plot(hake_recruitment)
+```{r buoys, child = "buoys.Rmd"}
 ```
 
-
-## test
-
-with the annual estimates given as median, low and high ends of the 95% credible
-intervals. Units are millions of tonnes of female spawning biomass at the start
-of the year, as documented in `?hake_biomass` which also refers to
-`?hake_recruitment` for full details and further background. For example, it is important to
-realise that the assessment considers a coastwide stock off the west coast of
-Canada and the United States.
-
-To plot the time series of estimated coastwide biomass,
-simply do
-
-
-where the solid circles are the annual medians, with credible intervals given by
-the shaded regions (mostly reproducing Figure d in the latest assessment).
-
-Note that the `hake_biomass` object also has class `pacea_biomass`:
-```{r hakebiomassclass}
-class(hake_biomass)
-```
-such that the above command `plot(hake_biomass)` first looks to use our tailored function
-`plot.pacea_biomass()`, which gives the style of plot shown above. We use this
-approach for `hake_recruitment` and various other objects in `pacea`, to enable
-easy default plotting.
-
-The `hake_recruitment` object contains annual estimates of recruitment of age-0
-fish
-```{r hakerec}
-hake_recruitment
-tail(hake_recruitment)
-```
-for which values are billions of age-0 fish, and our default plot is
-```{r hakerecplot}
-plot(hake_recruitment)
+```{r indices, child = "indices.Rmd"}
 ```
 
-The dots represent the medians, with blue bars showing the 95% credible intervals.
-This reproduces Figure f in the latest stock assessment (without some extra
-details).
-
-Note that, as mentioned in `?hake_recruitment` the most recent few years are
-very uncertain as they are not informed by data. In particular, the final year
-represents recruitment at the start of the year but has no data to inform it,
-and so should definitely not be used for any analyses (we include it as it is
-shown in the stock assessment; it also essentially represents the prior distribution used for recruitment).
-
-The estimated uncertainty of recruitments is large, and so we also include
-scaled values that make it easier to compare years. The 2010 recruitment is the
-second largest in the time series (below only 1980's) and as such people have an
-intuition that it is large, and we can compare other years by looking at
-recruitment scaled by the 2010 recruitment:
-```{r hake2010}
-hake_recruitment_over_2010
-tail(hake_recruitment_over_2010)
-plot(hake_recruitment_over_2010)
+```{r populations, child = "populations.Rmd"}
 ```
 
-This shows the medians and 95% credible intervals (red lines) of the recruitment
-divided by that in 2010, which clearly shows that, for example, the 2014 is
-clearly smaller than the 2010 recruitment (highlighted by the green dashed
-line), which is not intuitive in the above `plot(hake_recruitment)` plot (see
-`?hake_recruitment_over_2010` for more details and motivation).
-
-This approach
-somewhat scales out some of the uncertainty in the absolute scale of $R_0$, the
-mean unfished equilibrium recruitment. This is similarly seen by instead scaling
-recruitments by $R_0$, as
-```{r hakeR0}
-hake_recruitment_over_R0
-tail(hake_recruitment_over_R0)
-plot(hake_recruitment_over_R0)
+```{r oisst, child = "oisst.Rmd"}
 ```
 
-Note that the Pacific Hake stock assessment is conducted annually at the start of each year,
-and these estimates will be updated in `pacea` probably around March. So
-estimates will change (particularly for the most recent years) as more data
-inform the stock assessment model.
-
-We anticipate adding assessment output for other species soon,
-so stay tuned.
+```{r bccm, child = "bccm.Rmd"}
+```

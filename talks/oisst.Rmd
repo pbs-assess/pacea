@@ -1,0 +1,23 @@
+# OISST
+
+## NOAA's Optimal Interpolation Sea Surface Temperature
+
+Intro text/background
+
+## Creates new slide
+
+The data are saved as a `tibble` in `pacea`:
+```{r oisstdata}
+hake_biomass
+```
+
+## Help file
+```{r oissthelp, eval=FALSE}
+?oisst_month
+```
+
+## New slide
+
+```{r oisstplot}
+plot(hake_biomass)
+```

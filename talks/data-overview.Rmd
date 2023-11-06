@@ -1,0 +1,3 @@
+# Data overview
+
+Copy summary from README, and say that we'll go through in turn.

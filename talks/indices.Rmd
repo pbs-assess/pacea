@@ -1,0 +1,24 @@
+# Indices
+
+## Climatic and oceanographic indices
+
+Intro text/background
+
+## Creates new slide
+
+The data are saved as a `tibble` in `pacea`:
+```{r indicesdata}
+hake_biomass
+```
+
+## Help file
+```{r indiceshelp, eval=FALSE}
+?oisst_month
+
+```
+
+## New slide
+
+```{r indicesplot}
+plot(hake_biomass)
+```

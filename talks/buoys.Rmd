@@ -1,0 +1,25 @@
+# Buoys
+
+## Buoys ...
+
+Intro text/background
+
+## Creates new slide
+
+The data are saved as a `tibble` in `pacea`:
+```{r buoysdata}
+hake_biomass
+```
+
+## Help file
+```{r buoyshelp, eval=FALSE}
+?oisst_month
+TODO paste help details here
+
+```
+
+## New slide
+
+```{r buoysplot}
+plot(hake_biomass)
+```

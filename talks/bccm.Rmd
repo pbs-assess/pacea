@@ -1,0 +1,25 @@
+# BCCM
+
+## British Columbia Continental Margin model
+
+Intro text/background
+
+## Creates new slide
+
+The data are saved as a `tibble` in `pacea`:
+```{r bccmdata}
+hake_biomass
+```
+
+## Help file
+```{r bccmhelp, eval = FALSE}
+?oisst_month
+
+<copy text into here>
+```
+
+## New slide
+
+```{r bccmplot}
+plot(hake_biomass)
+```
