@@ -61,8 +61,8 @@ knitr::opts_chunk$set(
 # the talk. Have commented as it reloads each time, which isn't necessary.
 library(dplyr)
 library(tibble)
-options(pillar.print_max = 5,   # number of rows to show for a tibble
-        pillar.print_min = 5)
+options(pillar.print_max = 6,   # number of rows to show for a tibble
+        pillar.print_min = 6)
 par("mai" = c(1.02, 0.82, 0.3, 0.42))   # default is 1.02 0.82 0.82 0.42
 ```
 
