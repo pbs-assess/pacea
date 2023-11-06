@@ -11,6 +11,9 @@ library(lubridate)
 library(sf)
 sf_use_s2(FALSE)
 
+library(devtools)
+load_all() # set working directors to 'github/pacea'
+
 #####
 # parameters
 
