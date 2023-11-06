@@ -1,15 +1,8 @@
-# name of the pdf file that is created: hake.pdf
-book_filename: "JTC-assessment"
+# name of the pdf file that is created: pacea-release-dfo.pdf
+book_filename: "pacea-release-dfo"
 rmd_files: ["000-launcher.rmd",
-            "../../../doc/001-load-packages.rmd",
-            "../../../doc/002-load-globals.rmd",
-            "../../../doc/003-load-models.rmd",
-            "../../../doc/004-load-project-variables.rmd",
             "010-outline.rmd",
             "011-changes.rmd",
-            "012-mcmc-diagnostics.rmd",
-            "013-fits-to-data.rmd",
-            "014-estimated-quantities.rmd",
             "../../../doc/999-blank.rmd"]
 # `delete_merged_file`: If false, the hake.Rmd file which was created by
 # bookdown during the build will be kept after the hake.pdf file is created
