@@ -181,11 +181,11 @@ bccm_primaryproduction <- function(update = FALSE, ask = interactive(), force = 
 
 #' Download all BCCM data
 #' 
-#' This function downloads all BCCM model data. 
+#' This function downloads all British Columbia continental margin (BCCM) model data for the BC Pacific region to local drive.
 #' 
 #' @details 
 #' 
-#' Use `bccm_data` To view the full list of available variables
+#' Use `bccm_data` To view the full list of available variables. See help files for specific variables for more details on BCCM data (e.g. `?bccm_surface_oxygen`).
 #' 
 #' CAUTION: The BCCM files are large and downloading all data may take a while.
 #'
