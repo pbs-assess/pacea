@@ -2,23 +2,152 @@
 
 ## Climatic and oceanographic indices
 
-Intro text/background
+Various climate and oceanographic indices are included in pacea, currently (TODO
+needs tweaking)
 
-## Creates new slide
+```{r indicestable, echo=FALSE}
 
-The data are saved as a `tibble` in `pacea`:
-```{r indicesdata}
-hake_biomass
+kableExtra::kable(pacea_indices, "latex")# %>%
+#  kableExtra::kable_styling(latex_options = c("striped")) #, "scale_down"))
 ```
 
-## Help file
-```{r indiceshelp, eval=FALSE}
-?oisst_month
+## Climatic and oceanographic indices
 
+For example, to see a plot of the Oceanic Niño Index (ONI) anomaly, simply type
+
+```{r oniplot}
+plot(oni)
 ```
 
-## New slide
+This shows the onset of El Niño (positive index) conditions in April 2023.
 
-```{r indicesplot}
-plot(hake_biomass)
+## Climatic and oceanographic indices
+
+The values are readily available for doing your own analyses:
+```{r oni}
+oni
+tail(oni)
 ```
+
+## Climatic and oceanographic indices
+
+Each climatic and oceanographic index is saved as a data
+object, and properly documented, described, and referenced in its help file, for example:
+```{r onihelp, eval = FALSE}
+?oni
+
+ONI - Oceanographic Niño Index
+
+Description:
+
+     The Oceanic Niño Index is a monthly index which is one measure of
+     the El Niño-Southern Oscillation.
+
+Usage:
+
+     oni
+
+Format:
+
+     A tibble also of class `pacea_index` with columns:
+
+     year: year of value
+
+     month: month (1 to 12) of value
+
+     val: absolute values of three-month averages (preceding, current,
+          and next month), deg C; note that recent values may change in
+          subsequent updates - see details
+
+     anom: anomalies based on 30-year base periods that are updated
+          every 5 years, deg C; note that recent values may change in
+          subsequent updates - see details
+```
+
+## Climatic and oceanographic indices
+
+Continuing the help...
+```{r onihelp2, eval = FALSE}
+     The Oceanic Niño Index (ONI) is a 3-month running mean of sea
+     surface temperature (SST) anomalies in the Niño 3.4 region (5 deg
+     N to 5 deg S, 120 deg W to 170 deg W) plotted on the center month.
+     The SST anomalies are calculated based on 30-year base periods
+     that are updated every 5 years, which accounts for global warming
+     and some of the decadal-scale SST variability (as seen in the
+     Pacific Decadal Oscillation index). The ONI is provided by the
+     NOAA’s National Weather Service National Centers for Environmental
+     Prediction CPC:
+     http://www.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ensoyears.shtml
+
+     ...
+
+          Because of the high frequency filter applied to the ERSSTv5 data,
+     ONI values may change up to two months after the initial "real
+     time" value is posted. Therefore, the most recent ONI values
+     should be considered an estimate.
+```
+
+## Climatic and oceanographic indices
+
+So for some analyses you may want to restrict values to a specified time period
+(for which values should not change in future `pacea` updates), for example
+
+```{r onilocal}
+oni_fix <- dplyr::filter(oni,
+                         year < 2023 | year == 2023 & month < 3)
+tail(oni_fix)       # Should always end with February 2023
+```
+
+## Further plotting options and styles
+
+Each index has a default plotting style (which you can override). For `oni` it
+shows the monthly anomalies as colour-code bars:
+
+```{r oniplot2}
+plot(oni)
+```
+
+## Further plotting options and styles
+
+Another option is as a black line with filled-in colouring:
+
+```{r oniplot3}
+plot(oni,
+     style = "red_blue")
+```
+
+## Further plotting options and styles
+
+To see `oni` as an annual (not monthly index):
+```{r oniannual}
+plot(oni,
+     smooth_over_year = TRUE,
+     lwd = 6)
+```
+
+## Further plotting options and styles
+
+And say you want to see if specific events coincide with El Niño (based on a
+true story, see vignette for details):
+```{r onievent}
+plot(oni,
+     event_years = c(1996, 2003, 2004, 2006, 2007, 2008, 2009, 2010, 2014, 2016, 2017, 2019),
+     xlim = c(lubridate::dmy(01011995),
+              lubridate::dmy(01012024)),
+     lwd = 2)
+```
+
+## Technical aside regarding `plot()`
+
+The object `oni` has the class `pacea_index`:
+```{r oniclass}
+class(oni)
+```
+
+which ensures that the `plot(oni)`
+command above
+automatically uses our specialised function `plot.pacea_index(oni)` that gives
+the red and blue colouring, tickmarks, and axis labelling.
+
+So see `?plot.pacea_index` for further options. Similarly, check the `class` of
+other objects saved in `pacea`.
