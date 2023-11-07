@@ -1,17 +1,15 @@
 # Populations
 
-## Estimates of fish and seal populations
+## Estimates of animal populations
 
-In `pacea` we include estimates of populations, including uncertainty, as
+In `pacea` we include estimates of populations, with measures of uncertainty, as
 calculated from recent stock assessments.
 
 Currently, we have estimates of:
 
-  \
+- Pacific Hake (the coastwide stock off Canada and United States)
 
-- Pacific Hake (coastwide stock off Canada and United States)
-
-- Harbour Seals (seven regions in BC waters)
+- Pacific Harbour Seals (most abundant pinniped species in the Northeast Pacific)
 
 - Pacific Herring (coming soon)
 
@@ -73,4 +71,29 @@ Estimates of annual recruitment (exclude recent years for any analyses since not
 greatly informed by data; see `?hake_recruitment`):
 ```{r hakerecuitmentplot}
 plot(hake_recruitment)
+```
+
+## Pacific Harbour Seals
+
+Estimated abundances for seven regions (and coastwide) were calculated by DFO
+(2022; SAR 2022/034), and included here:
+```{r seals}
+harbour_seals
+
+tail(harbour_seals)
+```
+
+## Pacific Harbour Seals
+
+Estimates for each region and coastwide, reproducing Figure 3 of DFO (2022):
+```{r sealplot}
+plot(harbour_seals)
+```
+
+## Pacific Harbour Seals
+
+Or just plot estimates for a single region:
+```{r sealplot2}
+plot(harbour_seals,
+     region = "SOG")
 ```
