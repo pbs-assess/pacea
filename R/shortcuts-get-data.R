@@ -1,7 +1,9 @@
 #' BCCM environmental variable data 
 #' 
 #' @description 
-#' Loading and/or downloading British Columbia continental margin (BCCM) model data for the BC Pacific region to local drive.
+#' Loading and/or downloading British Columbia continental margin (BCCM) model data for the BC Pacific region to local drive. 
+#' 
+#' To download all BCCM data, use the function `bccm_all_variables()`. See help page for details (`?bccm_all_variables`).
 #' 
 #' @details
 #' 
