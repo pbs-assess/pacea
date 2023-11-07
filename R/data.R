@@ -899,9 +899,7 @@
 #' Simple features objects of NOAA's Optimal Interpolation SST
 #' \describe{
 #'   \item{oisst_7day}{7-day mean sea surface temperature (deg C)}
-#'   \item{oisst_7dayclim}{7-day mean climatology (1991-2020) for sea surface temperature (deg C)}
 #'   \item{oisst_month}{Monthly mean sea surface temperature in (deg C}
-#'   \item{oisst_monthclim}{Monthly climatology (1991-2020) for sea surface temperature (deg C)}
 #' }
 #'
 #' @details
@@ -927,7 +925,6 @@
 #' @examples
 #' \dontrun{
 #' head(oisst_7day)
-#' head(oisst_7dayclim)
 #' }
 #'
 #' @source https://www.ncei.noaa.gov/products/optimum-interpolation-sst
