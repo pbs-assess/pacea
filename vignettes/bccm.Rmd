@@ -44,63 +44,7 @@ library(sf)
 library(ggplot2)
 ```
 
-## Spatial resolution of the bccm results in pacea - original but edited, see reordered one below TODO
-
-Model results have been processed for `pacea` to be saved on an inshore 2km x 2km grid and
-an offshore 6km x 6km grid, within the Canadian Exclusive Economic Zone
-(EEZ). We briefly explain this before showing the BCCM variables available.
-
-The areas for the two grids are the polygon data objects `inshore_poly` and
-`offshore_poly`, and the combined area is the object `bccm_eez_poly`. These
-objects use the 'NAD83/BC Albers' projection. The polygons are also `sf` (simple
-feature) objects, which means that they have spatial and non-spatial
-attributes. If you do not know much about `sf` objects then do not worry; the
-template code explained in this vignette should be enought to allow you to plot
-what you are interested in.
-
-Let's view the combined area `bccm_eez_poly` object and plot all three objects:
-```{r Polygons}
-bccm_eez_poly  # this tells you that the co-ordinate reference systm (CRS)is NAD
-               # 83/ BC Albers
-
-plot(bccm_eez_poly, border = "black")
-plot(inshore_poly, col = "green", add = TRUE)
-plot(offshore_poly, col = "blue", add = TRUE)
-```
-
-Obviously, these will be more informative in relation to the BC coastline and Exclusive Economic
-Zone (EEZ), which are saved as `bc_coast` and `bc_eez` objects, which we can
-view and plot:
-```{r}
-bc_coast
-bc_eez
-
-ggplot() +
-  geom_sf(data = bccm_eez_poly, col = "black", lwd = 2) +
-  geom_sf(data = inshore_poly, col = NA, fill = "green") +
-  geom_sf(data = offshore_poly, col = NA, fill = "blue") +
-  geom_sf(data = bc_eez, col = "black", fill = NA, lty = 2) +
-  geom_sf(data = bc_coast)
-
-```
-
-Note that the `bc_coast` and `bc_eez` objects have the 'WGS 84' CRS, unlike the
-earlier three objects that use 'NAD 83'. Fortunately, `ggplot()` recognizes
-these differences and will reproject the layers to match the first layer. It
-also provides the axes units in degrees, regardless of projection. Adding layers
-with different projections using the base `plot()` function would not work.
-
-The mixed grid (2km x 2km and 6km x 6km) of cells can also be viewed, though the cells
-may not be clearly visible if the resolution of the plot is too low
-
-```{r, fig.width = 7}
-plot(grid26)
-```
-
-All data objects in `pacea` have help files associated with them, viewed with,
-for example, `?bccm_eez_poly`.
-
-## Spatial resolution of the bccm results in pacea - reordered version TODO (keep this or first one)
+## Spatial resolution of the bccm results in pacea
 
 First, `pacea` contains the objects `bc_coast` and `bc_eez`, to show the
 coastline and Canadian Exclusive Economic Zone (EEZ) off British Columbia. These
@@ -629,16 +573,16 @@ The function will provide the summary statistics (mean, median, sd, n) across th
 # use pdata from above and subset only one column
 pdata_areamean <- pdata[,1]
 
-# area mean 
+# area mean
 area_mean(pdata_areamean)
 ```
 
 To see where the 200m isobath line, it can be plotted along with the BC coast and EEZ shapefile.
 
 ```{r}
-ggplot() + 
+ggplot() +
   geom_sf(data = bc_eez, linetype = 2, fill = NA) +
-  geom_sf(data = bc_coast) + 
+  geom_sf(data = bc_coast) +
   geom_sf(data = isobath_200m, col = "red")
 ```
 
