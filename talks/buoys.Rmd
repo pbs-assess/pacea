@@ -1,8 +1,20 @@
 # Buoys
 
-## Buoys ...
+## Sea surface temperature data from buoys
 
-Intro text/background
+Data from buoys `r nrow(buoy_metadata)` maintained by DFO/ECCC (Environment and Climate Change Canada)
+is processed and made available. Andrea Hilborn (IOS) maintains
+https://github.com/IOS-OSD-DPG/Pacific_SST_Monitoring
+which is updated weekly to
+show recent SST from various sources for the Northeast Pacific (and anomalies
+and marine heatwave information).
+
+```{r andreapage, echo=FALSE, out.width = "80%"}
+knitr::include_graphics(paste0(here::here(),
+                               "/inst/andrea-github.png"))
+```
+
+## Sea surface temperature data from buoys
 
 ```{r buoysmap, echo=FALSE, out.width = "50%"}
 knitr::include_graphics(paste0(here::here(),

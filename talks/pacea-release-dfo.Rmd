@@ -24,6 +24,7 @@ header-includes:
 classoption: "aspectratio=169"
 # This affects font sizes in figures also:
 fontsize: 12pt
+urlcolor: blue
 ---
 
 <!-- To build either run
@@ -64,6 +65,17 @@ library(tibble)
 options(pillar.print_max = 6,   # number of rows to show for a tibble
         pillar.print_min = 6)
 par("mai" = c(1.02, 0.82, 0.3, 0.42))   # default is 1.02 0.82 0.82 0.42
+
+# https://bookdown.org/yihui/rmarkdown-cookbook/font-color.html
+# `r colorize("hello", "blue")`
+colorize <- function(x, color){
+  if(knitr::is_latex_output()) {
+    sprintf("\\textcolor{%s}{%s}", color, x)
+  } else if(knitr::is_html_output()) {
+    sprintf("<span style='color: %s;'>%s</span>", color,
+      x)
+  } else x
+}
 ```
 
 
