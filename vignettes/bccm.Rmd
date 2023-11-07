@@ -110,7 +110,7 @@ is only needed once as the files get cached locally on your computer.
 The list of variables of the BCCM results available can be viewed from the list
 `bccm_data`. BCCM results can be accessed using placeholder functions, named as in
 `bccm_data`, that download the data to a local cache folder - this directory can
-be identified using `pacea_cache()`.
+be identified using `pacea_cache()`. For example, if one wanted the BCCM surface temperature data, they would use the `bccm_surface_temperature()` function to download it.
 
 View data function help files for more information on bccm results (e.g. `?bccm_bottom_oxygen`)
 
@@ -159,6 +159,23 @@ dataframe objects.
 ```{r}
 class(pdata)
 ```
+
+### *Downloading all BCCM data*
+
+Users can also choose to download all variables at once using `bccm_all_variables()`. Then users can use the placeholder functions to call data into the environment.
+
+NOTE: this will take several minutes to download all data layers. 
+
+```{r BCCM all variables, eval=FALSE}
+# download all variables
+bccm_all_variables()
+
+# call variable data into environment
+bccm_surface_temperature()
+```
+
+
+
 
 ## Updating BCCM data
 

@@ -899,7 +899,7 @@
 #' Simple features objects of NOAA's Optimal Interpolation SST
 #' \describe{
 #'   \item{oisst_7day}{7-day mean sea surface temperature (deg C)}
-#'   \item{oisst_month}{Monthly mean sea surface temperature in (deg C}
+#'   \item{oisst_month}{Monthly mean sea surface temperature in (deg C)}
 #' }
 #'
 #' @details
