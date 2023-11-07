@@ -3,3 +3,23 @@
 ## Backgound and motivation
 
 Copy things from existing powerpoint.
+
+## Guidelines for users
+
+Read the README!!
+
+Check the NEWS!!
+
+We have built comprehensive vignettes and help files for each type of data object in `pacea`.
+
+Please go through them as this will be how to really understand the details.
+
+For any simple questions just contact us. For detailed questions or bug reports
+please post an `Issue` on GitHub and a minimum working example:
+
+ - often helps you figure out the answer
+ - using `Issues` allow you to first check if we are already working on it
+ - allows others to see (and maybe help answer) questions being asked
+
+We will describe updates to `pacea` in the NEWS, such as updating certain data
+sets and adding new ones.
