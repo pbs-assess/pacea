@@ -59,5 +59,9 @@ data-raw/buoys/opp_info.Rds
 /talks/pacea-release-dfo.tex
 /talks/pacea-release-dfo.pdf
 
-talks/pacea-release-dfo_files/*.*
-talks/pacea-release-dfo_files/*.*
+talks/pacea-release-dfo_files/
+
+data-raw/herring/
+data-raw/lighthouses/BC_Lightstations_and_Other_Sample_Sites_V2.csv
+data-raw/lighthouses/Data_-_Active_Sites_New.zip
+data-raw/moorings/
