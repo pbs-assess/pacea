@@ -9,12 +9,12 @@ library(ggplot2)
 theme_set(theme_bw())
 # library(rnaturalearthdata)
 # library(rnaturalearthhires)
-library(rnaturalearth)
+# library(rnaturalearth)
 # library(lubridate)
 # library(stringr)
 
-world <- ne_countries(scale = 10,
-                      returnclass = "sf")#, country = c("Canada")
+# world <- ne_countries(scale = 10,
+#                      returnclass = "sf")#, country = c("Canada")
 
 # Use pacea buoy_metadata
 buoy_plot <- dplyr::select(buoy_metadata,
@@ -56,9 +56,8 @@ g <- ggplot() +
                            size = 2.5) + #, nudge_x = 1, nudge_y = -0.1
   theme(legend.position = "none")
 
-ggsave("buoy_map_andy.png",
+ggsave(paste0(here::here(), "/man/figures/buoys_map.png"),
        units = "in",
        width = 4,
        height = 4,
        scale = 1.9)
-TODO name of buoy, save this, include in talk and buoy vignette

@@ -4,6 +4,14 @@
 
 Intro text/background
 
+```{r buoysmap, echo=FALSE, out.width = "50%"}
+knitr::include_graphics(paste0(here::here(),
+                               "/man/figures/buoys_map.png"))
+```
+
+
+
+
 ## Creates new slide
 
 The data are saved as a `tibble` in `pacea`:
