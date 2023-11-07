@@ -2,13 +2,23 @@
 
 ## NOAA's Optimal Interpolation Sea Surface Temperature
 
-Intro text/background
+OISST - long term gridded climate data record 
+- 1/4° longitude x latitude
+- Obervations from satellites, ships, buoys, Argo floats
+- Interpolated to fill gaps
+- Clipped to Canada's Pacific EEZ
+- 925 gridded cells
 
-## Creates new slide
+2 data products: weekly and monthly mean SST (`oisst_7day` and `oisst_month`)
 
-The data are saved as a `tibble` in `pacea`:
+https://www.ncei.noaa.gov/products/optimum-interpolation-sst
+R package `erddap`
+
+## OISST - monthly mean
+
+The data are saved as a `sf` (simple feature) `tibble` object in `pacea`:
 ```{r oisstdata}
-hake_biomass
+oisst_month
 ```
 
 ## Help file
@@ -16,8 +26,15 @@ hake_biomass
 ?oisst_month
 ```
 
-## New slide
+## Built in plots - default
 
 ```{r oisstplot}
-plot(hake_biomass)
+plot(oisst_month)
 ```
+
+## Built in plots - select years and months
+
+```{r oisstplot custom}
+plot(oisst_month, months.plot = c("April", "June"), years.plot = c(2021:2023))
+```
+
