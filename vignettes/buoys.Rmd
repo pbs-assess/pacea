@@ -31,7 +31,8 @@ library(tibble)  # Else prints all of a tibble
 library(ggplot2)
 ```
 
-In pacea we include daily average sea surface temperature (SST) from 19 buoys in
+In pacea we include daily average sea surface temperature (SST) calculated from
+measurement from `r nrow(buoy_metadata)` buoys in
 Canadian Pacific waters, yielding over 200,000
 values. Data are from Environment and Climate Change Canada, and Fisheries and
 Oceans Canada. The earliest data are from September 1987, and 14 buoys were still providing data as of May 2023.
