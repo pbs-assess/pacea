@@ -7,6 +7,8 @@ https://github.com/IOS-OSD-DPG/Pacific_SST_Monitoring
 which is updated weekly to show recent SST from various sources for the Northeast Pacific (and anomalies
 and marine heatwave information).
 
+  \
+
 ```{r andreapage, echo=FALSE, out.width = "80%"}
 knitr::include_graphics(paste0(here::here(),
                                "/inst/andrea-github.png"))
@@ -95,4 +97,7 @@ Format:
 We have written vignettes for each type of data. Viewable directly on GitHub
 site (see the README).
 
-HERE - paste screenshot in
+```{r buoysvignette, echo=FALSE, out.width = "60%"}
+knitr::include_graphics(paste0(here::here(),
+                               "/inst/buoys-vignette-screenshot.png"))
+```
