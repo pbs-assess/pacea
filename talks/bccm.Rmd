@@ -2,18 +2,33 @@
 
 ## British Columbia Continental Margin (BCCM) model
 Physical biogeochemical oceanographic model 
+
 - Regional Ocean Modelling Systen (ROMS)
-- curvilinear grid at 3km x 3km resolution
-- interpolated to custom grid
-  - 2km inshore
-  - 6km offshore
+
+- Curvilinear grid at 3km x 3km resolution
+
+- Interpolated to regular grid
+
+- Clipped to Canada's Pacific EEZ
+
 
 Data provided by Angelica Peña at the Institute of Ocean Sciences (Fisheries and
 Oceans Canada).
 
+
 Peña et al., 2019 - Deep-Sea Research II
 
 ## Nearest neighbour linear interpolation
+
+Curvilinear --> regular grid
+
+- Inshore (2 x 2km) and offshore (6 x 6km) resolutions
+
+- Nearest neighbour interpolation 
+
+  - Identified 
+
+
 
 ## List of available layers
 ```{r bccm_data}
@@ -34,5 +49,5 @@ The data are saved as a `sf` (simple feature) object in `pacea`:
 ## New slide
 
 ```{r bccmplot}
-plot()
+# plot()
 ```
