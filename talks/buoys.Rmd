@@ -29,8 +29,6 @@ Extensive data processing to get daily mean SST:
 
 - Resolution is every 10 minutes or
 
-\pause
-
 - TODO update when finalise processing
 
 
@@ -39,19 +37,62 @@ Extensive data processing to get daily mean SST:
 The data are saved as a `tibble` in `pacea`:
 ```{r buoysdata}
 buoy_sst
-
+```
+\pause
+```{r buoysdata2}
 tail(buoy_sst)
 ```
 
-## Help file
-```{r buoyshelp, eval=FALSE}
-?oisst_month
-TODO paste help details here
+## Sea surface temperature data from buoys
 
-```
-
-## New slide
-
+Plot data from a single buoy for all years, the default is for buoy C46146: TODO
+maybe change default to C46183
 ```{r buoysplot}
-plot(hake_biomass)
+plot(buoy_sst)
 ```
+
+## Sea surface temperature data from buoys
+
+Easy to look at values for any buoy
+```{r buoysplot2}
+plot(buoy_sst,
+     stn_id = "C46185")
+```
+
+## Help file for every object
+```{r buoyshelp, eval=FALSE}
+?buoy_sst
+
+Daily average sea surface temperatures for 19 buoys (yielding over
+200,000 values) calculated with data from Environment and Climate
+Change Canada (ECCC) and DFO.
+
+Description:
+
+     A tibble of daily average calculations of sea surface temperature
+     in coastal Canadian Pacific waters. The earliest data are from
+     September 1987, and 14 buoys were still providing data as of May
+     2023. See the example code below to see the start and end dates
+     for each buoy.
+
+Usage:
+
+     buoy_sst
+
+Format:
+
+     A tibble with columns:
+
+     date: date (of class `Date`) used to calculate the `sst`, based on
+          UTC -8 hours (i.e. Pacific Standard Time, not changing due to
+          daylight savings)
+
+    ...
+```
+
+## Vignettes for each type of data
+
+We have written vignettes for each type of data. Viewable directly on GitHub
+site (see the README).
+
+HERE - paste screenshot in
