@@ -84,7 +84,7 @@ Currently, pacea contains:
 - 9 climatic and oceanographic indices, such as the Pacific Decadal Oscillation
    and those related to El Niño.
 
-- estimates of abundances of Harbour Seals and Pacific Hake.
+- estimates of abundances for Harbour Seals and Pacific Hake.
 
 Plotting and helper functions are provided, and demonstrated in the detailed vignettes. All
 data and model outputs are fully documented and referenced.

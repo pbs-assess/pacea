@@ -41,40 +41,40 @@ NEWS page. We will provide a plan for updating of certain data sets.
 
 Currently, pacea contains:
 
-- 201,426 calculations of daily sea surface temperature based on data
-  from 19 buoys.
+-   201,426 calculations of daily sea surface temperature based on data
+    from 19 buoys.
 
-- outputs from the spatial British Columbia continental margin (BCCM)
-  model, the coupled physical-biogeochemical model by Peña et
-  al. (2019). Variables are for 40,580 spatial cells across Canada’s
-  Pacific Exclusive Economic Zone, and are given as 27 years of monthly
-  means (from 1993 to 2019). The variables are:
+-   outputs from the spatial British Columbia continental margin (BCCM)
+    model, the coupled physical-biogeochemical model by Peña et
+    al. (2019). Variables are for 40,580 spatial cells across Canada’s
+    Pacific Exclusive Economic Zone, and are given as 27 years of
+    monthly means (from 1993 to 2019). The variables are:
 
-  - dissolved oxygen concentration
-  - pH
-  - salinity
-  - temperature
-  - depth-integrated phytoplankton
-  - depth-integrated primary production.
+    -   dissolved oxygen concentration
+    -   pH
+    -   salinity
+    -   temperature
+    -   depth-integrated phytoplankton
+    -   depth-integrated primary production.
 
-  For applicable variables these are given for
+    For applicable variables these are given for
 
-  - sea surface
-  - 0-40 m integration
-  - 40-100 m integration
-  - 100 m to the sea bottom
-  - sea bottom.
+    -   sea surface
+    -   0-40 m integration
+    -   40-100 m integration
+    -   100 m to the sea bottom
+    -   sea bottom.
 
-- NOAA’s spatial Optimum Interpolation Sea Surface Temperature (OISST)
-  record, that incorporates observations from different platforms
-  (satellites, ships, buoys, and Argo floats):
+-   NOAA’s spatial Optimum Interpolation Sea Surface Temperature (OISST)
+    record, that incorporates observations from different platforms
+    (satellites, ships, buoys, and Argo floats):
 
-  - provided as weekly and monthly means from Sep 1981 to Sep 2023.
+    -   provided as weekly and monthly means from Sep 1981 to Jun 2023.
 
-- 9 climatic and oceanographic indices, such as the Pacific Decadal
-  Oscillation and those related to El Niño.
+-   9 climatic and oceanographic indices, such as the Pacific Decadal
+    Oscillation and those related to El Niño.
 
-- estimates of abundances of Harbour Seals and Pacific Hake.
+-   estimates of abundances for Harbour Seals and Pacific Hake.
 
 Plotting and helper functions are provided, and demonstrated in the
 detailed vignettes. All data and model outputs are fully documented and
@@ -97,8 +97,7 @@ plot(buoy_sst,
      stn_id = "C46183")
 ```
 
-<img src="man/figures/README-north-hecate-temp.png"
-style="width:80.0%" />
+<img src="man/figures/README-north-hecate-temp.png" style="width:80.0%" />
 
 **Are we entering a phase of El Niño, based on the Oceanic Niño Index?
 (If the last bars are red, then ‘yes’)**
