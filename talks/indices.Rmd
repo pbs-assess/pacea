@@ -2,13 +2,12 @@
 
 ## Climatic and oceanographic indices
 
-Various climate and oceanographic indices are included in pacea, currently (TODO
-needs tweaking)
+Various climate and oceanographic indices are currently included in pacea:
 
 ```{r indicestable, echo=FALSE}
 
-kableExtra::kable(pacea_indices, "latex")# %>%
-#  kableExtra::kable_styling(latex_options = c("striped")) #, "scale_down"))
+kableExtra::kable(pacea_indices, "latex", booktabs = TRUE) %>%
+  kableExtra::kable_styling(latex_options = c("scale_down", "striped"))
 ```
 
 ## Climatic and oceanographic indices
@@ -81,9 +80,9 @@ Continuing the help...
 
      ...
 
-          Because of the high frequency filter applied to the ERSSTv5 data,
-     ONI values may change up to two months after the initial "real
-     time" value is posted. Therefore, the most recent ONI values
+         Because of the high frequency filter applied to the ERSSTv5 data,
+     `ONI values may change up to two months after the initial real
+     time value is posted`. Therefore, the most recent ONI values
      should be considered an estimate.
 ```
 
@@ -91,6 +90,8 @@ Continuing the help...
 
 So for some analyses you may want to restrict values to a specified time period
 (for which values should not change in future `pacea` updates), for example
+
+  \
 
 ```{r onilocal}
 oni_fix <- dplyr::filter(oni,
@@ -128,7 +129,7 @@ plot(oni,
 ## Further plotting options and styles
 
 And say you want to see if specific events coincide with El Niño (based on a
-true story, see vignette for details):
+true story, see help for details):
 ```{r onievent}
 plot(oni,
      event_years = c(1996, 2003, 2004, 2006, 2007, 2008, 2009, 2010, 2014, 2016, 2017, 2019),
@@ -139,15 +140,17 @@ plot(oni,
 
 ## Technical aside regarding `plot()`
 
-The object `oni` has the class `pacea_index`:
+The object `oni` has the class `pacea_index`:  \
+
 ```{r oniclass}
 class(oni)
 ```
+  \
+which ensures that `plot(oni)`
+automatically uses our specialised function `plot.pacea_index(oni)`, giving
+the red and blue colours, tickmarks, axis labelling, etc.
 
-which ensures that the `plot(oni)`
-command above
-automatically uses our specialised function `plot.pacea_index(oni)` that gives
-the red and blue colouring, tickmarks, and axis labelling.
+  \
 
 So see `?plot.pacea_index` for further options. Similarly, check the `class` of
 other objects saved in `pacea`.

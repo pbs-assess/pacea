@@ -21,6 +21,9 @@ output:
 header-includes:
   \AtBeginSubsection{}
   \AtBeginSection{}
+  \usepackage{colortbl}
+  \usepackage{booktabs}
+  \usepackage{multirow}
 classoption: "aspectratio=169"
 # This affects font sizes in figures also:
 fontsize: 12pt
@@ -62,6 +65,8 @@ knitr::opts_chunk$set(
 # the talk. Have commented as it reloads each time, which isn't necessary.
 library(dplyr)
 library(tibble)
+library(kableExtra)
+
 options(pillar.print_max = 6,   # number of rows to show for a tibble
         pillar.print_min = 6)
 par("mai" = c(1.02, 0.82, 0.3, 0.42))   # default is 1.02 0.82 0.82 0.42
