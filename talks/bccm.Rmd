@@ -1,19 +1,32 @@
 # BCCM
 
-## British Columbia Continental Margin model
+## British Columbia Continental Margin (BCCM) model
+Physical biogeochemical oceanographic model 
+- Regional Ocean Modelling Systen (ROMS)
+- curvilinear grid at 3km x 3km resolution
+- interpolated to custom grid
+  - 2km inshore
+  - 6km offshore
 
-Intro text/background
+Data provided by Angelica Peña at the Institute of Ocean Sciences (Fisheries and
+Oceans Canada).
 
-## Creates new slide
+Peña et al., 2019 - Deep-Sea Research II
 
-The data are saved as a `tibble` in `pacea`:
-```{r bccmdata}
-hake_biomass
+## Nearest neighbour linear interpolation
+
+## List of available layers
+```{r bccm_data}
+bccm_data
 ```
+
+## Downloading data to local system
+The data are saved as a `sf` (simple feature) object in `pacea`:
+
 
 ## Help file
 ```{r bccmhelp, eval = FALSE}
-?oisst_month
+?bccm_surface_oxygen
 
 <copy text into here>
 ```
@@ -21,5 +34,5 @@ hake_biomass
 ## New slide
 
 ```{r bccmplot}
-plot(hake_biomass)
+plot()
 ```
