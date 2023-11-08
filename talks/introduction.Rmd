@@ -1,8 +1,40 @@
-# Intro
+# Introduction
 
 ## Backgound and motivation
 
 Copy things from existing powerpoint.
+
+## ideas
+
+describe the data currently contained, demonstrate the plotting functions and how to access the data, and mention caveats, assumptions, and problems encountered (and solved, so you don't have to!) when wrangling certain data sets.
+
+
+
+##
+```{r motivation1, echo=FALSE, out.width = "100%"}
+knitr::include_graphics(paste0(here::here(),
+                               "/talks/talks-manual-figures/motivation-1.png"))
+```
+
+##
+```{r motivation2, echo=FALSE, out.width = "100%"}
+knitr::include_graphics(paste0(here::here(),
+                               "/talks/talks-manual-figures/motivation-2.png"))
+```
+
+## Motivation (based on a true story)
+
+A search for sea surface temperature yields an overwhelming number (341) of choices:
+
+```{r motivation4, echo=FALSE, out.width = "90%"}
+knitr::include_graphics(paste0(here::here(),
+                               "/talks/talks-manual-figures/motivation3.png"))
+```
+
+Likely requires extensive data wrangling to be usable, which usually takes way,
+way, longer than anticipated.
+
+So the SST analysis did not happen.
 
 ## Guidelines for users
 

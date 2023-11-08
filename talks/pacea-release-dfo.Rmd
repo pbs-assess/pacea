@@ -91,10 +91,6 @@ knitr::include_graphics(paste0(here::here(),
                                "/talks/talks-manual-figures/pacea-release-title-slide.png"))
 ```
 
-## hello
-
-describe the data currently contained, demonstrate the plotting functions and how to access the data, and mention caveats, assumptions, and problems encountered (and solved, so you don't have to!) when wrangling certain data sets.
-
 
 ```{r introduction, child = "introduction.Rmd"}
 ```
