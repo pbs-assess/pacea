@@ -6,35 +6,85 @@ library(dplyr)
 ```
 
 ## NOAA's Optimal Interpolation Sea Surface Temperature
+\pause
 OISST - long term gridded climate data record 
 
 - 1/4° longitude x latitude
 
-- Obervations from satellites, ships, buoys, Argo floats
-
 - Interpolated to fill gaps
 
-- Clipped to Canada's Pacific EEZ
+- Canada's Pacific EEZ
 
 - 925 gridded cells
 
+- September, 1981 to (relatively) present
+  - Updated ~monthly
 
-2 data products: weekly and monthly mean SST (`oisst_7day` and `oisst_month`)
+\
+2 data products: weekly and monthly mean SST 
 
+- `oisst_7day` and `oisst_month`
 
-https://www.ncei.noaa.gov/products/optimum-interpolation-sst
-
-R package `erddap`
+\
+\footnotesize
+R `erddap` - https://www.ncei.noaa.gov/products/optimum-interpolation-sst 
+\normalsize
 
 ## OISST - monthly mean
 The data are saved as a `sf` (simple feature) `tibble` object in `pacea`:
-```{r oisstdata}
+
+```{r oisstdata, eval=FALSE}
 oisst_month
+```
+
+```{r oisstdata2, eval=FALSE}
+Simple feature collection with 467125 features and 7 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: -138.625 ymin: 46.625 xmax: -123.125 ymax: 54.625
+Geodetic CRS:  WGS 84
+# A tibble: 467,125 x 8
+   year month   sst sst_sd sst_n start_date end_date  
+* <dbl> <dbl> <dbl>  <dbl> <int> <date>     <date>    
+1  1981     9  16.4  0.830    30 1981-09-01 1981-09-30
+2  1981    10  14.3  0.838    31 1981-10-01 1981-10-31
+3  1981    11  12.7  1.38     30 1981-11-01 1981-11-30
+4  1981    12  10.2  0.549    31 1981-12-01 1981-12-31
+5  1981     9  16.4  1.05     30 1981-09-01 1981-09-30
+6  1981    10  14.2  0.697    31 1981-10-01 1981-10-31
+# i 467,119 more rows
+# i 1 more variable: geometry <POINT [B0]>
+# i Use `print(n = ...)` to see more rows
 ```
 
 ## Help file
 ```{r oissthelp, eval=FALSE}
 ?oisst_month
+```
+
+```{r oissthelp2, eval=FALSE}
+Description
+  Simple features objects of NOAAs Optimal Interpolation SST
+
+oisst_7day
+  7-day mean sea surface temperature (deg C)
+
+oisst_month
+  Monthly mean sea surface temperature in (deg C)
+
+Usage
+  oisst_7day
+  oisst_month
+
+Format
+  year    Year
+
+  week    Calendar week
+
+  month   Calendar month
+
+  sst     Mean sea surface temperature, SST (deg C)
+...
 ```
 
 ## Built in plots - default
@@ -46,4 +96,3 @@ plot(oisst_month)
 ```{r oisstplot custom}
 plot(oisst_month, months.plot = c("April", "June"), years.plot = c(2021:2023))
 ```
-

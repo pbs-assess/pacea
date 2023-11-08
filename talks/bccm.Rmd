@@ -1,6 +1,7 @@
 # BCCM
 
 ## British Columbia Continental Margin (BCCM) model
+\pause
 Physical biogeochemical oceanographic model 
 
 - Regional Ocean Modelling Systen (ROMS)
@@ -11,43 +12,276 @@ Physical biogeochemical oceanographic model
 
 - Clipped to Canada's Pacific EEZ
 
-
+\
 Data provided by Angelica Peña at the Institute of Ocean Sciences (Fisheries and
 Oceans Canada).
 
+\
+\footnotesize
+Peña, M.A., Fine, I. and Callendar, W. 2019. Interannual variability in primary production and shelf-offshore transport of nutrients along the northeast Pacific Ocean margin. Deep-Sea Research II, doi:10.1016/j.dsr2.2019.104637.
+\normalsize
 
-Peña et al., 2019 - Deep-Sea Research II
 
 ## Nearest neighbour linear interpolation
 
 Curvilinear --> regular grid
 
-- Inshore (2 x 2km) and offshore (6 x 6km) resolutions
+- Inshore (2 x 2km) and offshore (6 x 6km)
 
 - Nearest neighbour interpolation 
 
-  - Identified 
+  - Performace = RMSE error 
+  
+- 40,480 cells 
 
+- Monthly from 1993-2019
 
 
 ## List of available layers
-```{r bccm_data}
+bccm_data for available variables
+```{r bccm_data list}
 bccm_data
 ```
 
-## Downloading data to local system
-The data are saved as a `sf` (simple feature) object in `pacea`:
+## Downloading data locally
+The data are saved as a `sf` (simple feature) in a separate GitHub repository `pacea-data`.
+
+\
+There are built in functions to download specific variables:
+```{r bccmdataDLprompt, eval=FALSE}
+bccm_avg100mtoBot_ph()
+
+pacea would like to download and store these data in the directory:
+C:\Users\TAIT\AppData\Local/pacea/Cache
+Is that okay?
+1: Yes
+2: No
+
+Selection: 
+```
+
+```{r bccm data head, eval=FALSE}
+Simple feature collection with 33642 features and 324 fields
+Geometry type: POLYGON
+Dimension:     XY
+Bounding box:  xmin: 164671.6 ymin: 163875 xmax: 1097612 ymax: 1103653
+Projected CRS: NAD83 / BC Albers
+# A tibble: 33,642 × 325
+  `1993_1` `1993_2` `1993_3` `1993_4` ...                       geometry
+     <dbl>    <dbl>    <dbl>    <dbl> ...                  <POLYGON [m]>
+1     7.83     7.87     7.88     7.90 ... ((575612.5 1103653, 577612.5 ~
+2     7.83     7.87     7.88     7.90 ... ((577612.5 1103653, 579612.5 ~
+3     7.83     7.87     7.88     7.90 ... ((579612.5 1103653, 581612.5 ~
+4     7.83     7.87     7.88     7.89 ... ((581612.5 1103653, 583612.5 ~
+5     7.79     7.82     7.84     7.82 ... ((619612.5 1103653, 621612.5 ~
+6     7.79     7.82     7.83     7.82 ... ((621612.5 1103653, 623612.5 ~
+# i 33,636 more rows
+# i 320 more variables: ...
+```
+
+## Downloading data locally
+\
+Or all variables (warning: will take several minutes):
+```{r bccm_all, eval=FALSE}
+bccm_all_variables()
+
+Downloading all BCCM data may take many minutes. Files will be downloaded to pacea_cache directory:
+C:\Users\TAIT\AppData\Local/pacea/Cache
+Would you like to continue?
+1: Yes
+2: No
+
+Selection: 
+```
 
 
 ## Help file
 ```{r bccmhelp, eval = FALSE}
 ?bccm_surface_oxygen
-
-<copy text into here>
 ```
 
-## New slide
+```{r bccmhelp2, eval = FALSE}
+BCCM environmental variable data
+
+Description
+  Loading and/or downloading British Columbia continental margin (BCCM) model data for the BC Pacific region to local drive.
+
+  To download all BCCM data, use the function 'bccm_all_variables()'. See help page for details ('?bccm_all_variables').
+
+Usage
+  bccm_bottom_oxygen(update = FALSE, ask = interactive(), force = FALSE)
+
+  bccm_bottom_ph(update = FALSE, ask = interactive(), force = FALSE)
+
+  bccm_bottom_salinity(update = FALSE, ask = interactive(), force = FALSE)
+  ...
+  
+Arguments
+  update	  Logical. Would you like to check for a newer version of the layer?
+
+  ask	      Logical. Should the user be asked before downloading the data to local cache? Defaults to the value of interactive().
+
+  force	    Logical. Should download of data be forced? Overrides 'ask' argument if TRUE.
+
+Format
+  A simple features dataframe.
+...
+```
+
+## Built in plotting
 
 ```{r bccmplot}
-# plot()
+plot(bccm_surface_temperature(), months.plot = c("April", "july"), years.plot = c(2013, 2016, 2019))
 ```
+
+## Built in plotting
+
+```{r bccmplot2}
+plot(bccm_surface_ph())
+```
+
+## Extras - Climatology function
+
+Built in functions to calculate 30-year climatology
+
+```{r calc_climhelp, eval=FALSE}
+?calc_clim
+```
+
+```{r calc_climhelp2, eval=FALSE}
+Description
+  Function for calculating climatology of a pacea data object.
+
+Usage
+calc_clim(
+  data,
+  clim_years = c(1991:2020),
+  clim_time = "month",
+  time_period_return = "all"
+)
+
+Arguments
+  data	               pacea data object: BCCM, OISST, buoy_sst data only
+
+  clim_years	         climatology period years
+
+  clim_time	           time units (e.g. month) to summarize climatologies
+
+  time_period_return	 vector of value(s) for the specific time units to estimate climatologies (e.g. '4' for week 4 or April). Set to equal 'all' for all time units.
+...
+```
+
+## Extras - Climatology function
+
+Output with each climatology time unit (e.g. week, month)
+```{r calc_clim, eval=FALSE}
+calc_clim(bccm_surface_temperature())
+```
+
+```{r calc_clim2, eval=FALSE}
+Simple feature collection with 486960 features and 4 fields
+Geometry type: POLYGON
+Dimension:     XY
+Bounding box:  xmin: 164671.6 ymin: 163875 xmax: 1097612 ymax: 1103653
+Projected CRS: NAD83 / BC Albers
+# A tibble: 486,960 x 5
+  month clim_value clim_sd clim_n                  geometry
+  <dbl>      <dbl>   <dbl>  <int>             <POLYGON [m]>
+1     1       5.80   0.721     27 ((575612.5 1103653, 5776~
+2     2       5.47   0.610     27 ((575612.5 1103653, 5776~
+3     3       5.64   0.627     27 ((575612.5 1103653, 5776~
+4     4       6.61   0.623     27 ((575612.5 1103653, 5776~
+5     5       8.49   0.732     27 ((575612.5 1103653, 5776~
+6     6      10.5    0.662     27 ((575612.5 1103653, 5776~
+# i 486,954 more rows
+# i Use `print(n = ...)` to see more rows
+```
+\
+And we can also use this with the OISST and buoy data
+```{r calc_climother, eval=FALSE}
+calc_clim(oisst_7day)
+calc_clim(buoy_sst)
+```
+
+## Extras - Anomaly function
+
+Built in functions to calculate anomaly to the 30 year climatology
+
+```{r calc_anomhelp, eval=FALSE}
+?calc_anom
+```
+
+```{r calc_anomhelp2, eval=FALSE}
+Description
+  Function for calculating climatology of a pacea data object.
+
+Usage
+calc_anom(
+  data,
+  clim_years = c(1991:2020),
+  clim_time = "month",
+  time_period_return = "all",
+  years_return
+)
+
+Arguments
+  data	              pacea data object: BCCM, OISST, buoy_sst data only
+  
+  clim_year	          climatology period years
+
+  clim_time	          time units (e.g. month) to summarize climatologies
+
+  time_period_return	vector of value(s) for the specific time units to estimate climatologies (e.g. '4' for week 4 or April). Set to equal 'all' for all time units.
+
+  years_return	      vector of value(s) to return the years of interest. Defaults to all years in input data
+...
+```
+
+
+
+## Extras - Anomaly function
+
+Specify year(s) and time period (e.g. week, month) to return - otherwise all.
+```{r calc_anom, eval=FALSE}
+(anom.dat <- calc_anom(bccm_surface_temperature(), time_period_return = "April", years_return = c(2010, 2015)))
+```
+
+```{r calc_anom2, eval=FALSE}
+Simple feature collection with 40580 features and 2 fields
+Geometry type: POLYGON
+Dimension:     XY
+Bounding box:  xmin: 164671.6 ymin: 163875 xmax: 1097612 ymax: 1103653
+Projected CRS: NAD83 / BC Albers
+# A tibble: 40,580 x 3
+  `2010_4` `2015_4`                                                                       geometry
+     <dbl>    <dbl>                                                                  <POLYGON [m]>
+1    0.114     1.09 ((575612.5 1103653, 577612.5 1103653, 577612.5 1101653, 575612.5 1101653, 575~
+2    0.124     1.08 ((577612.5 1103653, 579612.5 1103653, 579612.5 1101653, 577612.5 1101653, 577~
+3    0.150     1.07 ((579612.5 1103653, 581612.5 1103653, 581612.5 1101653, 579612.5 1101653, 579~
+4    0.204     1.08 ((581612.5 1103653, 583612.5 1103653, 583612.5 1101653, 581612.5 1101653, 581~
+5    0.204     1.07 ((583612.5 1103653, 585612.5 1103653, 585612.5 1101653, 583612.5 1101653, 583~
+6    0.244     1.08 ((585612.5 1103653, 587612.5 1103653, 587612.5 1101653, 585612.5 1101653, 585~
+# i 40,574 more rows
+# i Use `print(n = ...)` to see more rows
+```
+
+## Extras - Anomaly plot
+
+```{r anom_plot, warning=FALSE}
+plot(anom.dat, months.plot = "April", years.plot = c(2010, 2015))
+```
+
+## Extras - other tidbits in vignettes
+
+Geospatial functions in vignettes
+
+- `area_mean()` estimates inshore and offshore spatial mean (200m isobath)
+
+- Masking/clipping specific areas (e.g. fishing regions of interest)
+
+- Various other data visualisation examples
+
+
+
+
+
