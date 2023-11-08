@@ -1,29 +1,30 @@
 ---
 title: "Introducing pacea"
 subtitle: "An R package of Pacific ecosystem information to help facilitate an ecosystem approach to fisheries management"
-author: "Andrew Edwards and Travis Tai **Andy will improve this slide!"
+author: "Andrew Edwards and Travis Tai"
 output:
   beamer_presentation:
     theme: Singapore
     colortheme: orchid
     # Second-level headings create new slide
     slide_level: 2
-    toc: true
+    toc: false
     # fig_height: 5
     # fig_width: 8
     keep_tex: yes
     includes:
       in_header: latex-topmatter.tex
     # toc_depth: 1
-    # title_page_image: "../man/figures/logo.png"
-    # title_page_image_height_in: 1
-    # title_page_image_width_in: 2
+    #  title_page_image: "../man/figures/logo.png"
+    #  title_page_image_height_in: 1
+    #  title_page_image_width_in: 2
 header-includes:
-  \AtBeginSubsection{}
-  \AtBeginSection{}
-  \usepackage{colortbl}
-  \usepackage{booktabs}
-  \usepackage{multirow}
+  - \titlegraphic{\includegraphics[width = 1cm]{"../man/figures/logo.png"}}
+  - \AtBeginSubsection{}
+  - \AtBeginSection{}
+  - \usepackage{colortbl}
+  - \usepackage{booktabs}
+  - \usepackage{multirow}
 classoption: "aspectratio=169"
 # This affects font sizes in figures also:
 fontsize: 12pt
@@ -32,7 +33,9 @@ urlcolor: blue
 
 <!-- To build either run
    rmarkdown::render("pacea-release-dfo.Rmd")
- or click the knit button in RStudio -->
+ or click the knit button in RStudio
+ Note the first slide below creates the title slide (on page 2), from a
+   powerpoint slide saved as .png -->
 
 <!-- trying different themes from https://mpetroff.net/files/beamer-theme-matrix/
 theme:
@@ -83,9 +86,15 @@ colorize <- function(x, color){
 }
 ```
 
+```{r coverpage, echo=FALSE, out.width = "100%"}
+knitr::include_graphics(paste0(here::here(),
+                               "/talks/talks-manual-figures/pacea-release-title-slide.png"))
+```
 
+## hello
 
 describe the data currently contained, demonstrate the plotting functions and how to access the data, and mention caveats, assumptions, and problems encountered (and solved, so you don't have to!) when wrangling certain data sets.
+
 
 ```{r introduction, child = "introduction.Rmd"}
 ```
