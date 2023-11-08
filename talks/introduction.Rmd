@@ -1,8 +1,91 @@
 # Introduction
 
-## Backgound and motivation
+## Acknowledgments
 
-Copy things from existing powerpoint.
+- Co-authors: Joe Watson, Angelica Peña, Andrea Hilborn, Charles Hannah, and Chris
+Rooper.
+
+- Kelsey Flynn, Jessica Nephin, Lindsay Davidson, Strahan Tucker, Brianna Wright, Patrick
+Thompson, Matt Grinnell, Sean Anderson, Philina English, Chris Grandin, and others for earlier feedback at the planning stage.
+
+- Carley Colclough for designing the logo.
+
+- DFO's Competitive Science Research Fund for funding (project 21-FS-03-13).
+
+## Motivation
+
+- Revised Fisheries Act: “... the Minister shall take into account the environmental conditions affecting a fish stock."
+
+- `r colorize("Yet <50\\% of DFO’s stock assessments currently use environmental data.", "blue")`
+
+- Only 28% of assessments in Pacific Region use environmental data.
+
+- `r colorize("Leading cause of not using environmental data is availability of the data.", "red")`
+
+  \
+
+\footnotesize
+
+Kulka et al. (2022). An Accounting of Integration of Environmental Variables in Fishery Stock Assessments in Canada. Can. Tech. Rep. Fish. Aquat. Sci. 3473: viii + 79 p.
+https://publications.gc.ca/collections/collection_2022/mpo-dfo/Fs97-6-3473-eng.pdf
+
+\normalsize
+
+## Motivation
+
+- Outputs from a BC physical biogeochemical model have been shared by Angelica Peña.
+
+- But still requires extensive coding to convert results from netCDF files into R.
+
+- Open Data is great, but can be hard to create raw data into usable information.
+
+- Hence, the `pacea` R package, motivated by Dan Duplisea's `GSLea` package for the Gulf of St. Lawrence.
+
+- Primary audience is DFO stock assessment scientists, but usable by anyone (need minimal working knowledge of R).
+
+  \
+
+\footnotesize
+
+Duplisea et al. (2020). gslea: the Gulf of St Lawrence ecosystem
+approach data matrix R-package. R package version 0.1 https://github.com/duplisea/gslea
+
+\normalsize
+
+## Why an R package?
+
+- R is the programming language most widely used by stock assessment scientists.
+
+- An R package is the standard way to share code (and data).
+
+- Easy installation:
+
+\textcolor{red}{\texttt{remotes::install\_github("pbs-assess/pacea")}}
+
+
+- Ensures proper documentation of data objects and functions (helps users).
+
+- Include vignettes which walk users through various features.
+
+- All data (except one type) is saved within the package, no further downloading
+  required.
+
+## Why an R package on GitHub?
+
+- Can host freely on GitHub -- code is completely open source.
+
+- Standard way to collaborate on code.
+
+```{r whyR, echo=FALSE, out.width="40%"}
+knitr::include_graphics(paste0(here::here(),
+                               "/talks/talks-manual-figures/github-screenshot-small.png"))
+```
+
+- 'Passing' badge: ensures package can build in R.
+
+- 'codecov' is the amount of the code that is covered by unit tests, which help weed
+  out bugs.
+
 
 ## ideas
 

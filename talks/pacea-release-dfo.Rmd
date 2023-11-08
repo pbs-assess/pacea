@@ -52,6 +52,20 @@ lily
 orchid
 -->
 
+<!-- Font size options, put any of these before text or chunk, then put
+     \normalsize afterwards to continue
+\tiny
+\scriptsize
+\footnotesize
+\small
+\normalsize
+\large
+\Large
+\LARGE
+\huge
+\Huge
+-->
+
 ```{r, setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -89,6 +103,13 @@ colorize <- function(x, color){
 ```{r coverpage, echo=FALSE, out.width = "100%"}
 knitr::include_graphics(paste0(here::here(),
                                "/talks/talks-manual-figures/pacea-release-title-slide.png"))
+```
+
+##
+
+```{r coverpage2, echo=FALSE, out.width = "100%"}
+knitr::include_graphics(paste0(here::here(),
+                               "/talks/talks-manual-figures/pacea-release-title-slide.pdf"))
 ```
 
 
