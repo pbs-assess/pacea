@@ -1,0 +1,58 @@
+# Summary
+
+## Commitments from package authors
+
+We will:
+
+- \tiny (try to) \normalsize not break the package, by working on branches on
+  GitHub before merging.
+
+- ensure any improvements are back compatible.
+
+- update the NEWS as we add/update data and make improvements.
+
+- update the following every two months as the raw data get updated:
+  - climatic and oceanographic indices
+  - buoy sst
+  - OISST
+
+- update other data as appropriate:
+  - hake assessment output: February each year
+  - herring assessment output: when SAR published each year
+  - harbour seals: next time assessment is updated
+  - bccm model output: in early 2024 maybe run model into 2020 (boundary
+    conditions come from a global model currently only available to Jan 2021)
+
+## Guidelines for users
+
+Please:
+
+ - read the README!!
+
+ - check the help files and vignettes
+
+ - check the NEWS (for updates to data, useful additions, new data, etc.)
+
+ - understand the limitations of the data
+
+ - any problems, make a minimum working example (usually makes you figure it out yourself)
+   - check the `Issues` on GitHub in case someone else has asked or we are
+     already working on it
+   - just ask us for simple questions; for more detailed questions or bug reports post
+     a new `Issue` (allows others to see, and maybe answer, your question)
+
+## Guidelines for users and feedback
+
+ - cite `pacea` and the original sources for any data you use
+
+ - let us know of any applications (so we understand the uptake and how much
+   effort to devote to maintaining it).
+
+ - problems, suggestions, uses TODO HERE
+
+```{r citation, eval=FALSE}
+r citation("pacea")
+Edwards AM, Tai TC, Watson J, Peña MA, Hilborn A, Hannah CG, Rooper CN
+(2023). "pacea: An R package of Pacific ecosystem information to  help facilitate an ecosystem approach to fisheries management."
+  https://github.com/pbs-assess/pacea.
+```

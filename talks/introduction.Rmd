@@ -2,13 +2,13 @@
 
 ## Acknowledgments
 
-- Co-authors: Joe Watson, Angelica Peña, Andrea Hilborn, Charles Hannah, and Chris
-Rooper.
+- `r colorize("Co-authors: Joe Watson, Angelica Peña, Andrea Hilborn, Charles
+  Hannah, and Chris Rooper.", "blue")`
 
-- Kelsey Flynn, Jessica Nephin, Lindsay Davidson, Strahan Tucker, Brianna Wright, Patrick
-Thompson, Matt Grinnell, Sean Anderson, Philina English, Chris Grandin, and others for earlier feedback at the planning stage.
+- Kelsey Flynn, Jessica Nephin, Lindsay Davidson, Strahan Tucker,
+  Brianna Wright, Patrick Thompson, Matt Grinnell, Sean Anderson, Philina English, Chris Grandin, and others for earlier feedback at the planning stage.
 
-- Carley Colclough for designing the logo.
+- `r colorize("Carley Colclough for designing the logo.", "blue")`
 
 - DFO's Competitive Science Research Fund for funding (project 21-FS-03-13).
 
@@ -37,11 +37,13 @@ https://publications.gc.ca/collections/collection_2022/mpo-dfo/Fs97-6-3473-eng.p
 
 - But still requires extensive coding to convert results from netCDF files into R.
 
-- Open Data is great, but can be hard to create raw data into usable information.
+- Open Data is great, but can be hard to create raw data into
+  `r colorize("usable information", "red")`.
 
-- Hence, the `pacea` R package, motivated by Dan Duplisea's `GSLea` package for the Gulf of St. Lawrence.
+- Hence, the `pacea` R package, motivated by Dan Duplisea's `gslea` package for the Gulf of St. Lawrence.
 
-- Primary audience is DFO stock assessment scientists, but usable by anyone (need minimal working knowledge of R).
+- Primary audience is DFO stock assessment scientists, but usable by anyone
+  (with a minimal working knowledge of R).
 
   \
 
@@ -72,9 +74,11 @@ approach data matrix R-package. R package version 0.1 https://github.com/duplise
 
 ## Why an R package on GitHub?
 
-- Can host freely on GitHub -- code is completely open source.
+- Can host freely on GitHub
 
 - Standard way to collaborate on code.
+
+- Code is completely open source: transparent, traceable, and transferable.
 
 ```{r whyR, echo=FALSE, out.width="40%"}
 knitr::include_graphics(paste0(here::here(),
@@ -118,27 +122,6 @@ Likely requires extensive data wrangling to be usable, which usually takes way,
 way, longer than anticipated.
 
 So the SST analysis did not happen.
-
-## Guidelines for users
-
-Read the README!!
-
-Check the NEWS!!
-
-We have built comprehensive vignettes and help files for each type of data object in `pacea`.
-
-Please go through them as this will be how to really understand the details.
-
-For any simple questions just contact us. For detailed questions or bug reports
-please post an `Issue` on GitHub and a minimum working example:
-
- - often helps you figure out the answer
- - using `Issues` allow you to first check if we are already working on it
- - allows others to see (and maybe help answer) questions being asked
-
-We will describe updates to `pacea` in the NEWS, such as updating certain data
-sets and adding new ones.
-
 
 ## `pacea` objects
 
