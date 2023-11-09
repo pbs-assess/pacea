@@ -49,6 +49,13 @@ You last locally installed pacea on 2023-11-01 which is 8 days ago.
 
 Compare that with the dates of the latest commits at https://github.com/pbs-assess/pacea/commits/main
 ```
+
+```{r installedscreenshot, echo=FALSE, out.width="30%"}
+knitr::include_graphics(paste0(here::here(),
+                               "/talks/talks-manual-figures/github-commits.png"))
+```
+
+
 ## Guidelines for users
 
  - any problems, make a minimum working example (usually makes you figure it out yourself)

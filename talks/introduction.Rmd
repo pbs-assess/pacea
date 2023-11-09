@@ -6,7 +6,8 @@
   Hannah, and Chris Rooper.", "blue")`
 
 - Kelsey Flynn, Jessica Nephin, Lindsay Davidson, Strahan Tucker,
-  Brianna Wright, Patrick Thompson, Matt Grinnell, Sean Anderson, Philina English, Chris Grandin, and others for earlier feedback at the planning stage.
+  Brianna Wright, Patrick Thompson, Matt Grinnell, Sean Anderson, Philina
+  English, Chris Grandin, Jennifer Boldt, and others.
 
 - `r colorize("Carley Colclough for designing the logo.", "blue")`
 

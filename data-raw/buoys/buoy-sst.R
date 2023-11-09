@@ -7,6 +7,9 @@
 #  nothing for 2023, but Andrea's plot did), so switching
 #  that. So some of the 170,000 type numbers may bump up a lot with this change.
 
+# 2023-11-09: See #26. Taking out the 5degC cut-off as overkill, so having just the
+# 'at least one record every two hours' and 'at least 10 two-hour records per
+# day' criteria for calculating daily means. AND redownloading data.
 
 # Run line-by-line while developing. Can source to update data, check that
 #  redownload_data = TRUE.
@@ -95,6 +98,7 @@ dfo_data       # 3.666 million rows when removing pre-1991 . Every few minutes h
                # Now removing 414 is.na(time). Strange - with_tz kept 414 in,
                # that I think were removed when using posixct. Dates seem fine
                # so keeping with with_tz.
+               # 9/11/2023 update: 3.797 million rows
 
 summary(dfo_data)   # Earliest is 1987, so not adding tons of data, yet not really worth
                     # excluding 1987-1991 for our purposes (Andrea did since
@@ -144,6 +148,11 @@ dfo_daily_mean_no_qc <- group_by(dfo_two_hourly_mean,
 #  1091    898    775   1260   1935   1224   1427   3461   2852   4168   9761
 #    12
 #144083
+# table(dfo_daily_mean_no_qc$num_two_hourly_in_day) as of 2023-11-09 data (download)
+#     1      2      3      4      5      6      7      8      9     10     11
+#  1091    899    778   1262   1936   1226   1432   3472   2863   4190   9818
+#    12
+#144630
 
 num_two_hour_intervals_required <- 10  # Number of two-hour intervals in a day
                                        # that must have sst values in order to
@@ -160,7 +169,10 @@ dfo_daily_mean <- dfo_daily_mean_enough_two_hours %>%
          stn_id,
          sst)                # reorder columns
 
+dfo_daily_mean
 # 158,012 rows up to 2023-08-23
+# 158,638            2023-11-09
+
 # Before doing two-hour quality control had less, not sure how many (can test by
 #  changing num_two_hour_intervals_required)
 
@@ -453,6 +465,7 @@ filter(dfo_opp_ranges, dfo_ends_last == TRUE)
 # case they come online again. After two-hour correction above for DFO, looks
 # like end dates may be off by 1, but conclusion still holds. Think that's now
 # fixed with the use of lubridate::date().
+# 2023-11-09 - opp are all later now (and only two by 1 day, several 5).
 
 # So, want DFO data first, then add on OPP data after as either
 #  (i) they are both 2-11 months ago, which is presumably something failing) - 3 buoys
@@ -622,16 +635,21 @@ pull(opp_daily_range, date)[1]
 
 
 
-# opp_daily_range gives 10.8 for C46304, for first day (and still does with keeping only 100
+# opp_daily_range gives 10.8 for C46304 [doesn't seem to now], for first day (and still does with keeping only 100
 # for qa). And many other large values. Look into
 # the fine-scale data: (at IOS we figured out the sensor was probably turned on
 # while still on the deck). Deal with after doing daily calculations with the
 # two-hour criteria, here work out the day-stn_id combinations to not use:
+
+# Lots of the following plots and comments were based on excluding > 5, now doing 9.8 to just have
+# one excluded (and not break the code).
+opp_exclude_daily_range_large_than <- 9.8      #  exclude days with larger daily
+                                        #  ranges than this (degC).
 opp_exclude_large_daily_range <- filter(opp_daily_range,
-                                        sst_abs_range > 5) %>%   # exclude larger values
+                                        sst_abs_range > opp_exclude_daily_range_large_than) %>%
   select(-c("sst_abs_range")) %>%
   cbind("large_daily" = TRUE)
-# Only 104 values with cutoff at 5. Then use later to exclude these data-stn_id
+# Only 104 values with cutoff at 5, but see Andrea's analyses in #26. Then use later to exclude these data-stn_id
 # combinations. But 72 are 46303 (South Georgia Strait):
 opp_exclude_large_daily_range %>% as.data.frame() %>% summary()
 
@@ -759,7 +777,6 @@ table(opp_daily_mean_no_qc$num_two_hourly_in_day)
 #    1     2     3     4     5     6     7     8     9    10    11    12
 #  147   125   105    94    90    71    66    74    88   124   292 10358
 
-
 opp_daily_mean_enough_two_hours <- opp_daily_mean_no_qc %>%
   filter(num_two_hourly_in_day >= num_two_hour_intervals_required)
 
@@ -881,9 +898,9 @@ opp_daily_mean_to_use <- bind_rows(filter(opp_daily_mean,
                                           date >= switch_dfo_to_opp))
 
 # Join together, filtering by the switch-over day, then fill in missing-sst dates with NAs, so plotting gives gaps
-buoy_sst = full_join(filter(dfo_daily_mean,
-                            date < switch_dfo_to_opp),
-                     opp_daily_mean_to_use) %>%
+buoy_sst_new = full_join(filter(dfo_daily_mean,
+                                date < switch_dfo_to_opp),
+                         opp_daily_mean_to_use) %>%
   group_by(stn_id) %>%
   tidyr::complete(date = seq(from = min(date),
                              to = max(date),
@@ -896,8 +913,9 @@ buoy_sst = full_join(filter(dfo_daily_mean,
                         # change the column order though, hence need relocate.
 
 class(buoy_sst) <- c("pacea_buoy",
-                     class(buoy_sst))
+                     class(buoy_sst_new))
 
+buoy_sst_new # 2023-11-09: 202,927
 buoy_sst     # 201,435 with same data as 28 August 2023, but having done the
              #  two-hour quality control on all the data. So only actually lose
              #  206 daily means, which seems fine and makes sense..
@@ -913,10 +931,17 @@ buoy_sst     # 201,435 with same data as 28 August 2023, but having done the
              # 201,426 after using lubridate::date()
              #  opp_exclude_large_daily_range %>% filter(date > switch_dfo_to_opp) %>% nrow()  # is 56 now
 
+# Decide if changing them
+
+buoy_sst_new
+buoy_sst
+
+stop("Do some thinking before updating.")  # Could add in code like for indices
+
+buoy_sst <- buoy_sst_new
+
 usethis::use_data(buoy_sst,
                   overwrite = TRUE)
-
-
 
 # Andrea example code (off top of head) for looking at flags:
 # sstdata %>%
