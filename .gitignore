@@ -56,10 +56,11 @@ data-raw/buoys/opp_info.Rds
 /data-raw/hex-sticker/el-nino.png
 /data-raw/hex-sticker/pacea-logos-1.pdf
 /man/figures/README-test.png
-/talks/pacea-release-dfo.tex
-/talks/pacea-release-dfo.pdf
+/talks/pacea-release-talk.tex
+/talks/pacea-release-talk.pdf
 
-talks/pacea-release-dfo_files/
+
+talks/pacea-release-talk_files/
 
 data-raw/herring/
 data-raw/lighthouses/BC_Lightstations_and_Other_Sample_Sites_V2.csv
