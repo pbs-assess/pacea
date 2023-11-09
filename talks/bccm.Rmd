@@ -17,7 +17,7 @@ Data provided by Angelica Peña at the Institute of Ocean Sciences (Fisheries an
 Oceans Canada).
 
 \
-\footnotesize
+\scriptsize
 Peña, M.A., Fine, I. and Callendar, W. 2019. Interannual variability in primary production and shelf-offshore transport of nutrients along the northeast Pacific Ocean margin. Deep-Sea Research II, doi:10.1016/j.dsr2.2019.104637.
 \normalsize
 
@@ -32,9 +32,9 @@ Curvilinear --> regular grid
 
   - Performace = RMSE error 
   
-- 40,480 cells 
+- `r colorize("40,480 cells", "red")`
 
-- Monthly from 1993-2019
+- `r colorize("Monthly from 1993-2019", "red")`
 
 
 ## List of available layers
@@ -242,8 +242,8 @@ Arguments
 ## Extras -- anomaly function
 
 Specify year(s) and time period (e.g. week, month) to return - otherwise all.
-```{r calc_anom, eval=FALSE}
-(anom.dat <- calc_anom(bccm_surface_temperature(), time_period_return = "April", years_return = c(2010, 2015)))
+```{r calc_anom, warning=FALSE}
+anom.dat <- calc_anom(bccm_surface_temperature(), time_period_return = "April", years_return = c(2010, 2015))
 ```
 
 ```{r calc_anom2, eval=FALSE}
