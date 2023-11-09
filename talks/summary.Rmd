@@ -61,7 +61,7 @@ Please:
         compared to previous years
 
     - Chris Rooper: looking at Pacific Saury process errors from a stock assessment
- using the environmental covariates. ``It made my life easier today."
+ using the indices (PDO etc.). ``It made my life easier today."
 
 \begin{center}
 \emph{We wrangle the data so you don't have to}\\
