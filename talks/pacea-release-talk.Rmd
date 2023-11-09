@@ -105,14 +105,6 @@ knitr::include_graphics(paste0(here::here(),
                                "/talks/talks-manual-figures/pacea-release-title-slide.png"))
 ```
 
-##
-
-```{r coverpage2, echo=FALSE, out.width = "100%"}
-knitr::include_graphics(paste0(here::here(),
-                               "/talks/talks-manual-figures/pacea-release-title-slide.pdf"))  # TODO remove one or other
-```
-
-
 ```{r introduction, child = "introduction.Rmd"}
 ```
 

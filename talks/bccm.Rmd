@@ -17,7 +17,7 @@ Model output provided by Angelica Peña at the Institute of Ocean Sciences (Fish
 Oceans Canada).
 
 \
-\footnotes
+\footnotesize
 Peña, M.A., Fine, I. and Callendar, W. 2019. Interannual variability in primary production and shelf-offshore transport of nutrients along the northeast Pacific Ocean margin. Deep-Sea Research II, doi:10.1016/j.dsr2.2019.104637.
 \normalsize
 
