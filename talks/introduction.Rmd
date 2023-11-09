@@ -74,7 +74,7 @@ approach data matrix R-package. R package version 0.1 https://github.com/duplise
 
 ## Why an R package on GitHub?
 
-- Can host freely on GitHub
+- Can host freely on GitHub.
 
 - Standard way to collaborate on code.
 
@@ -89,13 +89,6 @@ knitr::include_graphics(paste0(here::here(),
 
 - 'codecov' is the amount of the code that is covered by unit tests, which help weed
   out bugs.
-
-
-## ideas
-
-describe the data currently contained, demonstrate the plotting functions and how to access the data, and mention caveats, assumptions, and problems encountered (and solved, so you don't have to!) when wrangling certain data sets.
-
-
 
 ##
 ```{r motivation1, echo=FALSE, out.width = "100%"}
@@ -137,4 +130,4 @@ Currently, pacea contains:
 - 9 climatic and oceanographic indices, such as the Pacific Decadal Oscillation
    and those related to El Niño
 
-- estimates of abundances for Harbour Seals and Pacific Hake.
+- estimates of abundances for Harbour Seals and Pacific Hake

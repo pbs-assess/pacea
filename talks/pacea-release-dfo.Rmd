@@ -116,9 +116,6 @@ knitr::include_graphics(paste0(here::here(),
 ```{r introduction, child = "introduction.Rmd"}
 ```
 
-```{r dataoverview, child = "data-overview.Rmd"}
-```
-
 ```{r buoys, child = "buoys.Rmd"}
 ```
 

@@ -16,12 +16,16 @@ We will:
   - buoy sst
   - OISST
 
+## Commitments from package authors
+
 - update other data as appropriate:
   - hake assessment output: February each year
-  - herring assessment output: when SAR published each year
   - harbour seals: next time assessment is updated
-  - bccm model output: in early 2024 maybe run model into 2020 (boundary
-    conditions come from a global model currently only available to Jan 2021)
+  - herring assessment output: when SAR published each year
+  - BCCM model output: in early 2024 the model may be run into 2020 (boundary
+    conditions come from a global model currently only available to Jan 2021).
+    - note that BCCM is a research model (not an operational model) so updates
+      depend on projects and access to High Performance Computing.
 
 ## Guidelines for users
 
@@ -35,22 +39,34 @@ Please:
 
  - understand the limitations of the data
 
+## Guidelines for users
+
  - any problems, make a minimum working example (usually makes you figure it out yourself)
    - check the `Issues` on GitHub in case someone else has asked or we are
      already working on it
-   - just ask us for simple questions; for more detailed questions or bug reports post
+
+   - simple quick question just ask us
+
+   - more detailed questions or bug reports post
      a new `Issue` (allows others to see, and maybe answer, your question)
 
-## Guidelines for users and feedback
+## Guidelines for users
 
  - cite `pacea` and the original sources for any data you use
 
  - let us know of any applications (so we understand the uptake and how much
-   effort to devote to maintaining it).
+   effort to devote to maintaining it)
 
- - problems, suggestions, uses TODO HERE
+   - you could be out on a survey and wondering how warm the water is
+        compared to previous years
 
-  \
+    - Chris Rooper: looking at Pacific Saury process errors from a stock assessment
+ using the environmental covariates. ``It made my life easier today."
+
+\begin{center}
+\emph{We wrangle the data so you don't have to}\\
+\includegraphics[width = 1cm]{"../man/figures/logo.png"}
+\end{center}
 
 ```{r citation, eval=FALSE}
 citation("pacea")
