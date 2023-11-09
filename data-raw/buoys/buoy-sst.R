@@ -912,8 +912,8 @@ buoy_sst_new = full_join(filter(dfo_daily_mean,
                         # NA is default; grouping fills in the stn_ids. Did
                         # change the column order though, hence need relocate.
 
-class(buoy_sst) <- c("pacea_buoy",
-                     class(buoy_sst_new))
+class(buoy_sst_new) <- c("pacea_buoy",
+                         class(buoy_sst_new))
 
 buoy_sst_new # 2023-11-09: 202,927
 buoy_sst     # 201,435 with same data as 28 August 2023, but having done the

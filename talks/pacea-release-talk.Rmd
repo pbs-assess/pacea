@@ -32,7 +32,7 @@ urlcolor: blue
 ---
 
 <!-- To build either run
-   rmarkdown::render("pacea-release-dfo.Rmd")
+   rmarkdown::render("pacea-release-talk.Rmd")
  or click the knit button in RStudio
  Note the first slide below creates the title slide (on page 2), from a
    powerpoint slide saved as .png -->
