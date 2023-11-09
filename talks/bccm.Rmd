@@ -44,7 +44,7 @@ bccm_data
 ```
 
 ## Downloading data locally
-The data are saved as a `sf` (simple feature) in a separate GitHub repository `pacea-data`.
+The data are saved as a `sf` (simple feature) in a separate GitHub repository `pacea-data` (https://github.com/pbs-assess/pacea-data).
 
 \
 There are built in functions to download specific variables:
@@ -81,7 +81,7 @@ Projected CRS: NAD83 / BC Albers
 
 ## Downloading data locally
 \
-Or all variables (warning: will take several minutes):
+Or all variables (will take several minutes):
 ```{r bccm_all, eval=FALSE}
 bccm_all_variables()
 
@@ -140,7 +140,7 @@ plot(bccm_surface_temperature(), months.plot = c("April", "july"), years.plot = 
 plot(bccm_surface_ph())
 ```
 
-## Extras - Climatology function
+## Extras -- climatology function
 
 Built in functions to calculate 30-year climatology
 
@@ -171,7 +171,7 @@ Arguments
 ...
 ```
 
-## Extras - Climatology function
+## Extras -- climatology function
 
 Output with each climatology time unit (e.g. week, month)
 ```{r calc_clim, eval=FALSE}
@@ -203,7 +203,7 @@ calc_clim(oisst_7day)
 calc_clim(buoy_sst)
 ```
 
-## Extras - Anomaly function
+## Extras -- anomaly function
 
 Built in functions to calculate anomaly to the 30 year climatology
 
@@ -239,7 +239,7 @@ Arguments
 
 
 
-## Extras - Anomaly function
+## Extras -- anomaly function
 
 Specify year(s) and time period (e.g. week, month) to return - otherwise all.
 ```{r calc_anom, eval=FALSE}
@@ -265,13 +265,13 @@ Projected CRS: NAD83 / BC Albers
 # i Use `print(n = ...)` to see more rows
 ```
 
-## Extras - Anomaly plot
+## Extras -- anomaly plot
 
 ```{r anom_plot, warning=FALSE}
 plot(anom.dat, months.plot = "April", years.plot = c(2010, 2015))
 ```
 
-## Extras - other tidbits in vignettes
+## Extras -- other tidbits in vignettes
 
 Geospatial functions in vignettes
 
