@@ -7,7 +7,7 @@ library(dplyr)
 
 ## NOAA's Optimal Interpolation Sea Surface Temperature
 \pause
-OISST - long term gridded climate data record 
+OISST - long term gridded climate data record
 
 - 1/4° longitude x latitude
 
@@ -21,13 +21,13 @@ OISST - long term gridded climate data record
   - Updated ~monthly
 
 \
-2 data products: weekly and monthly mean SST 
+2 data products: weekly and monthly mean SST
 
 - `oisst_7day` and `oisst_month`
 
 \
-\tiny
-R `erddap` - https://www.ncei.noaa.gov/products/optimum-interpolation-sst 
+\footnotesize
+R `erddap` - https://www.ncei.noaa.gov/products/optimum-interpolation-sst
 
 Huang, B., C. Liu, V. Banzon, E. Freeman, G. Graham, B. Hankins, T. Smith, and H. Zhang, 2021: Improvements of the Daily Optimum Interpolation Sea Surface Temperature (DOISST) Version 2.1. J. Climate, 34, 2923–2939, https://doi.org/10.1175/JCLI-D-20-0166.1.
 \normalsize
@@ -46,8 +46,8 @@ Dimension:     XY
 Bounding box:  xmin: -138.625 ymin: 46.625 xmax: -123.125 ymax: 54.625
 Geodetic CRS:  WGS 84
 # A tibble: 467,125 x 8
-   year month   sst sst_sd sst_n start_date end_date  
-* <dbl> <dbl> <dbl>  <dbl> <int> <date>     <date>    
+   year month   sst sst_sd sst_n start_date end_date
+* <dbl> <dbl> <dbl>  <dbl> <int> <date>     <date>
 1  1981     9  16.4  0.830    30 1981-09-01 1981-09-30
 2  1981    10  14.3  0.838    31 1981-10-01 1981-10-31
 3  1981    11  12.7  1.38     30 1981-11-01 1981-11-30

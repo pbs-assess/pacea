@@ -2,7 +2,7 @@
 
 ## British Columbia Continental Margin (BCCM) model
 \pause
-Physical biogeochemical oceanographic model 
+Physical biogeochemical oceanographic model
 
 - Regional Ocean Modelling Systen (ROMS)
 
@@ -13,11 +13,11 @@ Physical biogeochemical oceanographic model
 - Clipped to Canada's Pacific EEZ
 
 \
-Data provided by Angelica Peña at the Institute of Ocean Sciences (Fisheries and
+Model output provided by Angelica Peña at the Institute of Ocean Sciences (Fisheries and
 Oceans Canada).
 
 \
-\scriptsize
+\footnotes
 Peña, M.A., Fine, I. and Callendar, W. 2019. Interannual variability in primary production and shelf-offshore transport of nutrients along the northeast Pacific Ocean margin. Deep-Sea Research II, doi:10.1016/j.dsr2.2019.104637.
 \normalsize
 
@@ -28,10 +28,10 @@ Curvilinear --> regular grid
 
 - Inshore (2 x 2km) and offshore (6 x 6km)
 
-- Nearest neighbour interpolation 
+- Nearest neighbour interpolation
 
-  - Performace = RMSE error 
-  
+  - Performace = RMSE error
+
 - `r colorize("40,480 cells", "red")`
 
 - `r colorize("Monthly from 1993-2019", "red")`
@@ -57,7 +57,7 @@ Is that okay?
 1: Yes
 2: No
 
-Selection: 
+Selection:
 ```
 
 ```{r bccm data head, eval=FALSE}
@@ -91,7 +91,7 @@ Would you like to continue?
 1: Yes
 2: No
 
-Selection: 
+Selection:
 ```
 
 
@@ -115,7 +115,7 @@ Usage
 
   bccm_bottom_salinity(update = FALSE, ask = interactive(), force = FALSE)
   ...
-  
+
 Arguments
   update	  Logical. Would you like to check for a newer version of the layer?
 
@@ -226,7 +226,7 @@ calc_anom(
 
 Arguments
   data	              pacea data object: BCCM, OISST, buoy_sst data only
-  
+
   clim_year	          climatology period years
 
   clim_time	          time units (e.g. month) to summarize climatologies
@@ -241,12 +241,16 @@ Arguments
 
 ## Extras -- anomaly function
 
-Specify year(s) and time period (e.g. week, month) to return - otherwise all.
-```{r calc_anom, warning=FALSE}
-anom.dat <- calc_anom(bccm_surface_temperature(), time_period_return = "April", years_return = c(2010, 2015))
+```{r calc_anom3, echo = FALSE, warning = FALSE}
+if(!exists("anom_dat")){
+  anom_dat <- calc_anom(bccm_surface_temperature(), time_period_return = "April", years_return = c(2010, 2015))
+}
 ```
 
-```{r calc_anom2, eval=FALSE}
+Specify year(s) and time period (e.g. week, month) to return -- otherwise all.
+```{r calc_anom, eval = FALSE}
+anom_dat <- calc_anom(bccm_surface_temperature(), time_period_return = "April", years_return = c(2010, 2015))
+
 Simple feature collection with 40580 features and 2 fields
 Geometry type: POLYGON
 Dimension:     XY
@@ -268,7 +272,7 @@ Projected CRS: NAD83 / BC Albers
 ## Extras -- anomaly plot
 
 ```{r anom_plot, warning=FALSE}
-plot(anom.dat, months.plot = "April", years.plot = c(2010, 2015))
+plot(anom_dat, months.plot = "April", years.plot = c(2010, 2015))
 ```
 
 ## Extras -- other tidbits in vignettes
@@ -280,8 +284,3 @@ Geospatial functions in vignettes
 - Masking/clipping specific areas (e.g. fishing regions of interest)
 
 - Various other data visualisation examples
-
-
-
-
-
