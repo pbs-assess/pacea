@@ -41,6 +41,16 @@ Please:
 
 ## Guidelines for users
 
+To check when you last installed `pacea`
+```{r installed, eval=FALSE}
+pacea_installed()
+
+You last locally installed pacea on 2023-11-01 which is 8 days ago.
+
+Compare that with the dates of the latest commits at https://github.com/pbs-assess/pacea/commits/main
+```
+## Guidelines for users
+
  - any problems, make a minimum working example (usually makes you figure it out yourself)
    - check the `Issues` on GitHub in case someone else has asked or we are
      already working on it
