@@ -1,7 +1,7 @@
 Package: pacea
 Type: Package
 Title: An R package of Pacific ecosystem information to help facilitate an ecosystem approach to fisheries management
-Version: 0.1.0
+Version: 1.0.0
 Authors@R: c(
     person(c("A.", "M."), "Edwards",
         email = "andrew.edwards@dfo-mpo.gc.ca",
