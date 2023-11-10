@@ -9,8 +9,8 @@ vignette: >
 ---
 
 <!-- To build either run
-   rmarkdown::render("indices.Rmd")
- or click the knit button in RStudio -->
+rmarkdown::render("indices.Rmd")
+or click the knit button in RStudio -->
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(

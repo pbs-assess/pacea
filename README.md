@@ -19,9 +19,10 @@ coverage](https://codecov.io/gh/pbs-assess/pacea/branch/main/graph/badge.svg)](h
 
 An R package of Pacific ecosystem information to help facilitate an
 ecosystem approach to fisheries management.
-<center>
+
+<p style="text-align: center;">
 <I>We wrangle the data so you don’t have to</I>
-</center>
+</p>
 
 <br>
 
@@ -168,10 +169,12 @@ oni
 
 ## Vignettes
 
-See the vignettes for more detailed explanations of the data sets and
-functionality:
+For more detailed explanations of the data sets and functionality see
+the vignettes, which are already rendered here:
 
-TODO - link to rendered versions once we push them) for
+-   [indices.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/indices.html)
+    Details of climatic and oceanographic indices anad associated
+    plotting functions.
 
 ## Installation
 
