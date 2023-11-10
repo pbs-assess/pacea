@@ -10,8 +10,8 @@ date: "Last rendered on `r format(Sys.time(), '%d %B, %Y')`"
 ---
 
 <!-- To build either run
-   rmarkdown::render("buoys.Rmd")
- or click the knit button in RStudio -->
+rmarkdown::render("buoys.Rmd")
+or click the knit button in RStudio -->
 
 
 ```{r, include = FALSE}
@@ -32,10 +32,10 @@ library(tibble)  # Else prints all of a tibble
 library(ggplot2)
 ```
 
-In pacea we include daily average sea surface temperature (SST) calculated from
+In pacea we include daily average sea surface temperature (SST) that we have calculated from
 measurement from `r nrow(buoy_metadata)` buoys in
-Canadian Pacific waters, yielding over 200,000
-values. Data are from Environment and Climate Change Canada, and Fisheries and
+Canadian Pacific waters, yielding over 200,000 daily means.
+Data are from Environment and Climate Change Canada, and Fisheries and
 Oceans Canada. The earliest data are from September 1987, and 14 buoys were still providing data as of May 2023.
 
 Metadata for the buoys is given by
@@ -50,19 +50,28 @@ are
 buoy_metadata$name
 ```
 
-The locations of the buoys are shown at
+The locations of the buoys are given by
+
+```{r buoysmap, echo=FALSE, out.width = "90%"}
+knitr::include_graphics(paste0(here::here(),
+                               "/man/figures/buoys_map.png"))
+```
+
+(built with code in data-raw/buoys/buoys-map.R), and also
+shown at
 https://github.com/IOS-OSD-DPG/Pacific_SST_Monitoring#eccc-buoy-data .
 
-Some of the data are also plotted there, by Andrea Hilborn,
+Some of the recent data are also plotted on that website, by Andrea Hilborn,
 Charles Hannah and Lu Guan, which is automatically updated roughly every
-week (so look there for a quick glance at recent conditions). For pacea we have,
+week (so look there for a quick glance at recent conditions). For `pacea` we have,
 with Andrea, adapted some of that code to include the data and create plotting
 functions in our package.
 
-The wrangling of data is taken care of within pacea, and includes using
+The wrangling of data is taken care of within `pacea`, and includes using
 protocols to remove certain flagged data, dealing with timezones and pesky
 daylight savings time changes, and averaging over a day (the original raw data are even
-higher resolution).
+higher resolution). We are still refining this to remove outliers -- this has to
+be somewhat manual.
 
 The sst value are saved in a tibble, which also has class `pacea_buoy`
 ```{r buoysst}
@@ -84,15 +93,15 @@ buoy_ranges <- buoy_sst %>%
 buoy_ranges
 ```
 
-Plot data from a single buoy for all years, the default is for buoy C46146:
+Plot data from a single buoy for all years, the default is for buoy C46205:
 ```{r plot}
 plot(buoy_sst)
 ```
 
 The red lines gives the current year. Since `buoy_sst` has class `pacea_buoy`,
-`plot(buoy_sst)` function calls our tailored `plot.pacea_buoy()` function. This
-buoy seems to have stopped relaying data in May 2023 -- if it has since
-continued you will see the red line continuing (if you're building it in 2023) in the above plot.
+`plot(buoy_sst)` function calls our tailored `plot.pacea_buoy()` function.
+The gap in the red line at the start of the year indicates missing data (or days
+that get excluded due to our protocols).
 
 To see data from each buoy in turn:
 ```{r multiloop}
@@ -102,7 +111,7 @@ for(i in 1:nrow(buoy_metadata)){
 }
 ```
 
-We will probably adapt Andrea Hilborn's code (saved below in the .Rmd) to produce a panel plot of all buoys at
+We might adapt Andrea Hilborn's code (saved below in the .Rmd) to produce a panel plot of all buoys at
 once, to give a figure resembling that at
 https://github.com/IOS-OSD-DPG/Pacific_SST_Monitoring/blob/main/figures/current/Daily_mean_buoy_overview_2023.png. But
 for pacea users the individual buoys are probably sufficient.
