@@ -18,3 +18,4 @@ R/plot-buoy-sst*.R
 
 notes/*
 ^README\.Rmd$
+vignettes/

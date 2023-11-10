@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Optimal Interoplation Sea Surface Temperature (OISST)
 
-The optimal interpolation sea surface temperature can be downloaded from NOAA's (National Oceanic and Atmospheric Administration) ERDDAP data server website: 'https://coastwatch.pfeg.noaa.gov/erddap/files/' (Huang et al., 2021). The quality-checked data ranges from 1981/09/01 to about 2 weeks before present - more recent data (only 2-day lag) is available but is only preliminary and has yet to be checked for quality.
+The optimal interpolation sea surface temperature were obtained from NOAA's (National Oceanic and Atmospheric Administration) ERDDAP data server website: 'https://coastwatch.pfeg.noaa.gov/erddap/files/' (Huang et al., 2021). The quality-checked data ranges from 1981/09/01 to about 2 weeks before present - more recent data (only 2-day lag) is available but is only preliminary and has yet to be checked for quality.
 
 The details of the data as described by NOAA: "The NOAA 1/4° Daily Optimum Interpolation Sea Surface Temperature (OISST) is a long term Climate Data Record that incorporates observations from different platforms (satellites, ships, buoys and Argo floats) into a regular global grid. The dataset is interpolated to fill gaps on the grid and create a spatially complete map of sea surface temperature. Satellite and ship observations are referenced to buoys to compensate for platform differences and sensor biases."
 
@@ -30,16 +30,15 @@ See `?oisst_7day` for the name of OISST data products and more information in th
 There are plans to update the data monthly, therefore, users will have access to data up to the previous month from the current month. Let's explore the OISST data in 'pacea'.
 
 ```{r packages}
-# run this if pacea has not been installed
-#remotes::install_github("pbs-assess/pacea")
-
 library(pacea)
 library(dplyr)
 library(sf)
 library(ggplot2)
 ```
 
-The OISST data loaded in the installation of the `pacea` package. In addition to the mean temperature value (weekly or monthly mean) for each grid cell, there are also other statistical measures, such as the standard deviation, number of observations, and the value for the 90th percentile. There is also a start- and end-date column that indicates the temporal period for which the mean is calculated from.
+The OISST data are saved in `pacea`. In addition to the mean temperature value
+(weekly or monthly mean) for each grid cell, there are also other statistical
+measures, such as the standard deviation and number of observations. There is also a start- and end-date column that indicates the temporal period for which the mean is calculated from.
 
 ```{r}
 oisst_7day
@@ -47,13 +46,12 @@ oisst_7day
 oisst_month
 ```
 
-
 ## Plotting OISST data
 
 We have built a generic plot function for OISST data, which uses `ggplot2` functions to create multipanel geospatial figures. Let's use the monthly OISST data.
 
 ```{r}
-# the defaulT is to provide the current or most recent data available
+# the default is to provide the current or most recent data available
 plot(oisst_month)
 ```
 
