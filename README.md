@@ -212,7 +212,7 @@ an Issue or contact
 
 We plan to continually enhance `pacea` by updating current data sets and
 adding new ones, as well as adding functionality. To explain these, we
-will document them by date in the [NEWS](NEWS.Md).
+will document them by date in the [NEWS](NEWS.md).
 
 We plan to update the indices, buoy temperatures, and OISST values on
 the 20th of every month (or soon after), which should capture updates to
