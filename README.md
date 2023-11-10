@@ -169,8 +169,17 @@ For more detailed explanations of the data sets and functionality see
 the vignettes, which are already rendered here:
 
 -   [indices.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/indices.html)
-    Details of climatic and oceanographic indices anad associated
+    Climatic and oceanographic indices and associated plotting
+    functions.
+-   [buoys.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/buoys.html)
+    Calculated daily mean sea surface temperatures and associated
     plotting functions.
+-   [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
+    Estimates of animal populations and associated plotting functions.
+-   [oisst.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/oisst.html)
+    OISST data and calculations and associated plotting functions.
+-   [bccm.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm.html)
+    BCCM model results, calculations, and associated plotting functions.
 
 ## Installation
 
