@@ -11,7 +11,8 @@ We will:
 
 - update the NEWS as we add/update data and make improvements.
 
-- update the following every two months as the raw data get updated:
+- ideally update the following `r colorize("on the 16th of every month (or next-ish
+  working day)", "red")` to get the latest raw data:
   - climatic and oceanographic indices
   - buoy sst
   - OISST

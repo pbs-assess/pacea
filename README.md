@@ -181,6 +181,10 @@ the vignettes, which are already rendered here:
 -   [bccm.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm.html)
     BCCM model results, calculations, and associated plotting functions.
 
+The presentaion where we introduced `pacea` is available [here as
+.pdf](talks/pacea-release-talk.pdf); the code to build it is [here as
+.Rmd](talks/pacea-release-talk.Rmd).
+
 ## Installation
 
 Okay, if you’re convinced this package might be useful for you, then to
@@ -209,6 +213,10 @@ an Issue or contact
 We plan to continually enhance `pacea` by updating current data sets and
 adding new ones, as well as adding functionality. To explain these, we
 will document them by date in the [NEWS](NEWS.Md).
+
+We plan to update the indices, buoy temperatures, and OISST values on
+the 16th of every month (or next working day-ish), which should capture
+updates to those data.
 
 To check what date you installed `pacea` locally on your machine, we
 have the helper command:
