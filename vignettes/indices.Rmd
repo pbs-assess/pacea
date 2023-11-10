@@ -6,6 +6,7 @@ vignette: >
   %\VignetteIndexEntry{Climatic and Oceanographic Indices}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+date: "Last rendered on `r format(Sys.time(), '%d %B, %Y')`"
 ---
 
 <!-- To build either run

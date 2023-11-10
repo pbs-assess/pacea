@@ -20,11 +20,7 @@ coverage](https://codecov.io/gh/pbs-assess/pacea/branch/main/graph/badge.svg)](h
 An R package of Pacific ecosystem information to help facilitate an
 ecosystem approach to fisheries management.
 
-<p style="text-align: center;">
-<I>We wrangle the data so you don’t have to</I>
-</p>
-
-<br>
+*We wrangle the data so you don’t have to*
 
 pacea stands for PACific Ecosystem Approach.
 
