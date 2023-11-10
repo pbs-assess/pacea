@@ -27,11 +27,17 @@ knitr::include_graphics(paste0(here::here(),
 
 ## Sea surface temperature data from buoys
 
-Extensive data processing to get daily mean SST:
+Extensive data processing to calculate daily mean SST:
 
-- Resolution is every 10 minutes or
+- Resolution is every 10 minutes or every hour
 
-- TODO update when finalise processing
+- Require a measurement every 2 hours
+
+- Require $\geq 10$ 2-hour measurements every day
+
+- Switch from DFO data stream to ECCC data stream when appropriate
+
+- Still working on fixing a few outliers in the high-resolution data (hard to automate)
 
 
 ## Sea surface temperature data from buoys
@@ -47,8 +53,7 @@ tail(buoy_sst)
 
 ## Sea surface temperature data from buoys
 
-Plot data from a single buoy for all years, the default is for buoy C46146: TODO
-maybe change default to C46183
+Plot data from a single buoy for all years, the default is for buoy C46205:
 ```{r buoysplot}
 plot(buoy_sst)
 ```

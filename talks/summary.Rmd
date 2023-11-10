@@ -81,8 +81,8 @@ knitr::include_graphics(paste0(here::here(),
  using the indices (PDO etc.). ``It made my life easier today."
 
 \begin{center}
-\emph{We wrangle the data so you don't have to}\\
-\includegraphics[width = 1cm]{"../man/figures/logo.png"}
+\includegraphics[width = 1cm]{"../man/figures/logo.png"}\\
+\emph{We wrangle the data so you don't have to}
 \end{center}
 
 ```{r citation, eval=FALSE}

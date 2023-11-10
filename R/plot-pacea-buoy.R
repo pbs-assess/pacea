@@ -6,8 +6,8 @@
 ##'
 ##' @param obj buoy SST data, of class `pacea_buoy_sst`
 ##' @param stn_id single station to plot, as given by
-##'   `stn_id` column in `buoy_metadata`. Default is station C46146 (Halibut
-##'   Bank in the Strait of Georgia).
+##'   `stn_id` column in `buoy_metadata`. Default is station C46205 (West Dixon
+##'   Entrance, north of Haida Gwaii)
 ##' @param years vector of given years to plot. If left as NULL then plots all
 ##'   available years.
 ##' @param year_highlight numeric of the year to highlight; defaults to current year.
@@ -20,7 +20,7 @@
 ##' plot(buoy_sst, stn_id = "C46185")
 ##' }
 plot.pacea_buoy <- function(obj,
-                            stn_id = "C46146",
+                            stn_id = "C46205",
                             years = NULL,
                             year_highlight = lubridate::year(lubridate::today())
                             ){
@@ -52,7 +52,7 @@ plot.pacea_buoy <- function(obj,
 ##' @param title text string for title of plot; defaults to `stn_id` followed by
 ##'   the buoy's name (e.g. C46146 Halibut Bank), like Andrea Hilborn has.
 ##' @return ggplot object of the plot
-##' @importFrom ggplot2 ggplot aes geom_line theme_bw theme element_text element_rect labs scale_colour_viridis_c ylab 
+##' @importFrom ggplot2 ggplot aes geom_line theme_bw theme element_text element_rect labs scale_colour_viridis_c ylab
 ##' @export
 ##' @author Andrew Edwards
 ##' @examples

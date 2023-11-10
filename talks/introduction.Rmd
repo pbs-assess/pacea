@@ -38,8 +38,8 @@ https://publications.gc.ca/collections/collection_2022/mpo-dfo/Fs97-6-3473-eng.p
 
 - But still requires extensive coding to convert results from netCDF files into R.
 
-- Open Data is great, but can be hard to create raw data into
-  `r colorize("usable information", "red")`.
+- Open Data is great, but can be hard to
+  `r colorize("convert raw data into usable information", "red")`.
 
 - Hence, the `pacea` R package, motivated by Dan Duplisea's `gslea` package for the Gulf of St. Lawrence.
 
@@ -75,7 +75,7 @@ approach data matrix R-package. R package version 0.1 https://github.com/duplise
 
 ## Why an R package on GitHub?
 
-- Can host freely on GitHub.
+- Can host freely on GitHub: https://github.com/pbs-assess/pacea
 
 - Standard way to collaborate on code.
 

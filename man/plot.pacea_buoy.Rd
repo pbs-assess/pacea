@@ -6,7 +6,7 @@
 \usage{
 \method{plot}{pacea_buoy}(
   obj,
-  stn_id = "C46146",
+  stn_id = "C46205",
   years = NULL,
   year_highlight = lubridate::year(lubridate::today())
 )
@@ -15,8 +15,8 @@
 \item{obj}{buoy SST data, of class `pacea_buoy_sst`}
 
 \item{stn_id}{single station to plot, as given by
-`stn_id` column in `buoy_metadata`. Default is station C46146 (Halibut
-Bank in the Strait of Georgia).}
+`stn_id` column in `buoy_metadata`. Default is station C46205 (West Dixon
+Entrance, north of Haida Gwaii)}
 
 \item{years}{vector of given years to plot. If left as NULL then plots all
 available years.}
