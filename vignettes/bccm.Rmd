@@ -6,6 +6,7 @@ vignette: >
   %\VignetteIndexEntry{BCCM Results}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+date: "Last rendered on `r format(Sys.time(), '%d %B, %Y')`"
 ---
 
 <!-- To build either run
@@ -164,7 +165,7 @@ class(pdata)
 
 Users can also choose to download all variables at once using `bccm_all_variables()`. Then users can use the placeholder functions to call data into the environment.
 
-NOTE: this will take several minutes to download all data layers. 
+NOTE: this will take several minutes to download all data layers.
 
 ```{r BCCM all variables, eval=FALSE}
 # download all variables

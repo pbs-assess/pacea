@@ -1,8 +1,8 @@
 ---
 title: "NOAA OI SST - Intro and wrangling"
 author: "Travis Tai"
-date: "2023-08-14"
 output: html_document
+date: "Last rendered on `r format(Sys.time(), '%d %B, %Y')`"
 ---
 
 ```{r setup, include=FALSE}
@@ -19,7 +19,7 @@ More details on the OISST data can be found here: 'https://www.ncei.noaa.gov/pro
 
 ## OISST data in `pacea`
 
-The OISST data were downloaded using the `rerddap` package, then wrangled similarly to what is found on this GitHub repository: 'https://github.com/IOS-OSD-DPG/Pacific_SST_Monitoring#oisst'. 
+The OISST data were downloaded using the `rerddap` package, then wrangled similarly to what is found on this GitHub repository: 'https://github.com/IOS-OSD-DPG/Pacific_SST_Monitoring#oisst'.
 
 This GitHub repository, by Andrea Hilborn, Charles Hannah and Lu Guan, is automatically updated approximately every week, which includes up-to-date 7-day SST means, anomalies, and recent marine heatwave status - among other data visualization products. Visit their GitHub page for a glance at recent conditions. We have adapted the code by Andrea Hilborn (found in their GitHub repository) to include the data in `pacea`.
 
@@ -81,7 +81,7 @@ plot(oisst_7day, weeks.plot = lubridate::week(my.date), years.plot = c(1983, 200
 
 ## Wrangling OISST data
 
-### Masking data with shapefile 
+### Masking data with shapefile
 (adated from example vignette with BCCM data)
 
 We can select an area of interest by masking the data with another `sf` shapefile, such as for a fishing region using indexing syntax. Below is an example using coordinates from DFO fish area 126.
@@ -89,14 +89,14 @@ We can select an area of interest by masking the data with another `sf` shapefil
 ```{r create sf polygon}
 # coordinates for polygon (i.e. fishing area 126)
 crds <- list(matrix(c(-127.1506, -128.2331, -129.3492, -127.9167, -127.1847, -126.8200, -127.1506,
-                      49.85766, 49.00000, 48.99991, 50.11915, 50.40183, 50.24466, 49.85766), 
+                      49.85766, 49.00000, 48.99991, 50.11915, 50.40183, 50.24466, 49.85766),
                     ncol = 2))
 
 # create polygon object with lat-lon WGS 84 projection (4326)
-a126 <- st_sfc(st_polygon(crds), crs = 4326) %>% 
-  st_as_sf() 
+a126 <- st_sfc(st_polygon(crds), crs = 4326) %>%
+  st_as_sf()
 
-# mask OISST data by indexing sf object with area 126 shapefile 
+# mask OISST data by indexing sf object with area 126 shapefile
 reg.dat <- oisst_month[a126, ]
 
 # reduction in number of data points after subsetting the region
@@ -118,8 +118,8 @@ reg.dat %>%
   bind_cols(st_coordinates(reg.dat)) %>% # get coordinates out for plotting with geom_tile
   filter(year %in% c(1982, 2002, 2022),  # filter out months and years
          month %in% c(4, 9)) %>%
-  ggplot() + 
-  geom_tile(aes(x = X, y= Y, fill = sst)) + 
+  ggplot() +
+  geom_tile(aes(x = X, y= Y, fill = sst)) +
   scale_fill_gradientn(colours = c("blue", "grey", "red"), name = attributes(oisst_month)$units) +
   facet_grid(month~year) +
   geom_sf(data = bc_coast)
@@ -128,14 +128,14 @@ reg.dat %>%
 ### Extract data using coordinates
 (adated from example vignette with BCCM data)
 
-We can extract the spatial data using coordinates of interest. However, because the OISST are coordinates, we must use the `st_nearest_point()` function to find the data which are closest to our coordinates of interest. 
+We can extract the spatial data using coordinates of interest. However, because the OISST are coordinates, we must use the `st_nearest_point()` function to find the data which are closest to our coordinates of interest.
 
 We'll use the location of data buoys. There is a list of buoys and locations in this pacakge, named as object: `buoy_metadata`.
 
 ```{r}
 buoy_metadata
 
-# Let's use the La Perouse Bank location 
+# Let's use the La Perouse Bank location
 lat <- buoy_metadata$latitude[which(buoy_metadata$name == "La Perouse Bank")]
 lon <- buoy_metadata$longitude[which(buoy_metadata$name == "La Perouse Bank")]
 
@@ -158,7 +158,7 @@ Now we can plot the time series for the data we've extracted
 ```{r}
 sub.dat %>%
   mutate(year = as.factor(year)) %>%  # set year to a factor so each line is plotted separately
-  ggplot() + 
+  ggplot() +
   geom_line(aes(x = month, y = sst, col = year)) +
   scale_y_continuous(name = attributes(oisst_month)$units)
 ```
@@ -179,7 +179,7 @@ sub.dat %>%
   mutate(year = as.factor(year)) %>%
   ggplot() +
   geom_ribbon(data = sum.dat, aes(x = month, ymin = q05, ymax = q95), fill = "grey") +
-  geom_line(aes(x = month, y = sst), col = "red") + 
+  geom_line(aes(x = month, y = sst), col = "red") +
   geom_line(data = sum.dat, aes(x = month, y = median_val), col = "black", linewidth = 1) +
   scale_y_continuous(name = attributes(oisst_month)$units)
 ```

@@ -1,11 +1,12 @@
 ---
-title: "Fish Population Estimates"
+title: "Population Estimates"
 author: "Andrew Edwards"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Fish Population Estimates}
+  %\VignetteIndexEntry{Population Estimates}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+date: "Last rendered on `r format(Sys.time(), '%d %B, %Y')`"
 ---
 
 <!-- To build either run
@@ -22,18 +23,22 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Estimates of fish populations
+## Estimates of animal populations
 
 ```{r setup}
 library(pacea)
 library(dplyr)
 ```
 
-In pacea we include estimates of fish populations, including uncertainty, as calculated from recent
+In pacea we include estimates of populations, including uncertainty, as calculated from recent
 stock assessments.
 
-Currently, we have Pacific Hake, a major component of the ecosystem, with more
-to come. The biomass time series is saved as a `tibble` in `pacea`, as simply:
+Currently, we have Pacific Hake, a major component of the ecosystem, and Pacific Harbour Seal, the most
+abundant pinniped species in the Northeast Pacific.
+
+## Pacific Hake
+
+The hake biomass time series is saved as a `tibble` in `pacea`, as simply:
 ```{r hakebiomass}
 hake_biomass
 tail(hake_biomass)
@@ -112,9 +117,35 @@ plot(hake_recruitment_over_R0)
 ```
 
 Note that the Pacific Hake stock assessment is conducted annually at the start of each year,
-and these estimates will be updated in `pacea` probably around March. So
+and these estimates will be updated in `pacea` probably around February. So
 estimates will change (particularly for the most recent years) as more data
 inform the stock assessment model.
 
-We anticipate adding assessment output for other species soon,
-so stay tuned.
+## Pacific Harbour Seals
+
+Estimated abundances for seven regions (and coastwide) were calculated by DFO
+(2022; SAR 2022/034), and included in `pacea` as:
+```{r seals}
+harbour_seals
+
+tail(harbour_seals)
+```
+Estimates are for each region and for the coastwide population, reproducing Figure 3 of DFO (2022):
+
+```{r sealplot}
+plot(harbour_seals)
+```
+
+Or just plot estimates for a single region:
+```{r sealplot2}
+plot(harbour_seals,
+     region = "SOG")
+```
+
+For full details and reference see
+```{r sealhelp, eval = FALSE}
+?harbour_seals
+```
+
+We anticipate adding assessment output for other species soon, so stay tuned
+(check the NEWS).
