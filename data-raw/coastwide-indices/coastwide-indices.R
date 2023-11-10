@@ -14,7 +14,7 @@
 #  format!
 #  Add the new index to the  pacea_index object at the end of this file.
 
-# Can prob delete: TODO
+# Can prob delete:
 #
 #  Adapted from original code supplied by Chris Rooper.
 #
@@ -79,8 +79,8 @@ if(check_index_changed(oni, oni_new)){
   # Check previous values haven't changed, but for oni we expect the last two
   #  months of anomaly to get updated (and maybe one month of value)
   par(mfrow=c(2,1))
-  plot(oni)
-  plot(oni_new)
+  plot(oni, main = "Currently in pacea")
+  plot(oni_new, main = "Updated")
 
   expect_equal(oni[1:(nrow(oni) - 2), ],
                oni_new[1:(nrow(oni) - 2), ]) # See note at top if this fails
@@ -99,8 +99,8 @@ if(check_index_changed(oni, oni_new)){
 
 stop("You need to manually update i in the next bit.")
 
-last_npi_monthly <- "2023-04"   # WILL GET UPDATED MANUALLY SOMETIMES - error
-                                #  message later will tell you when.
+last_npi_monthly <- "2023-04"   # Can update this manually every so often, to
+                                # not check if older files exist.
 
 # Create potential new months (note that the filenames do not seem to get
 #  updated every month)
@@ -115,11 +115,29 @@ to_check_stamps <- rev(substring(as.character(to_check_dates), 1, 7))   # Latest
 #  So first check if latest month exists. Gave up trying to automate as
 #   RCurl::url.exists(sitename)  returns FALSE even with a sitename that exists.
 
-i <- 1      # MAY NEED TO CHANGE THIS MANUALLY - error message below will tell
-            # you when.
+check_exists <- list()
+monthly_file_exists <- logical(length(to_check_stamps))   # Sets them all to FALSE
+for(i in 1:length(to_check_stamps)){
+  check_exists[[i]] <- httr::GET(paste0("https://climatedataguide.ucar.edu/sites/default/files/",
+                                   to_check_stamps[i],
+                                   "/npindex_monthly.txt"))
+  if(check_exists[[i]]$status_code == 200){
+    monthly_file_exists[i] = TRUE}
+}
+
+monthly_file_exists
+# check_exists
+# Updating 2023-09-11, they haven't actually been updated every month:
+# to_check_stamps
+# "2023-11" "2023-10" "2023-09" "2023-08" "2023-07" "2023-06" "2023-05" "2023-04"
+# monthly_file_exists
+# FALSE     TRUE      FALSE     FALSE     FALSE     FALSE     FALSE     TRUE
+
+# Then pick the first one - not fully automated yet, as will fail if none are
+# TRUE (just getting data updated before releasing package). TODO make more automated.
 
 sitename <- paste0("https://climatedataguide.ucar.edu/sites/default/files/",
-                   to_check_stamps[i],
+                   to_check_stamps[which(monthly_file_exists)[1]],
                    "/npindex_monthly.txt")
 
 download.file(sitename,
@@ -130,13 +148,13 @@ download.file(sitename,
 # See next error message for instructions (no need to keep running it once you
 #  understand it)
 
-stop(paste("If download.file just gave an error then increase i <- 1 to 2, then 3 etc. if happens again, up to",
-           length(to_check_stamps),
-           "which should be same as the latest one saved; repeat above code from i.",
-           "For the first i for which download.file does NOT error then, to set up for the next future update, replace last_npi_monthly above with
-            to_check_stamps[i] which if you have i correct is", to_check_stamps[i],
-           "and set i <- 1 again in code. Then keep calm and carry on through this file.",
-           sep = "\n"))
+## stop(paste("If download.file just gave an error then increase i <- 1 to 2, then 3 etc. if happens again, up to",
+##            length(to_check_stamps),
+##            "which should be same as the latest one saved; repeat above code from i.",
+##            "For the first i for which download.file does NOT error then, to set up for the next future update, replace last_npi_monthly above with
+##             to_check_stamps[i] which if you have i correct is", to_check_stamps[i],
+##            "and set i <- 1 again in code. Then keep calm and carry on through this file.",
+##            sep = "\n"))
 
 npi_monthly_new <- readr::read_table("npi_monthly.txt",
                                      col_names = c("yearmonth", "value"),
@@ -160,6 +178,10 @@ class(npi_monthly_new) <- c("pacea_index",
 attr(npi_monthly_new, "axis_name") <- "North Pacific Index"
 
 check_index_changed(npi_monthly, npi_monthly_new)
+# 2023-11-09 this came out FALSE, even though had changed. Think because it
+# contained NA's but they get removed in the comparison. Need to update function
+# TODO, for now just skip the if here and force the rewrite (since values are
+# clearly updated)
 
 if(check_index_changed(npi_monthly, npi_monthly_new)){
   expect_equal(npi_monthly,
@@ -180,10 +202,7 @@ if(check_index_changed(npi_monthly, npi_monthly_new)){
 #  includes data from 2023), so not sure about their naming convention. Doing a
 # similar manual checking to that above for npi_monthly.
 
-stop("You need to manually update j in the next bit.")
-
-last_npi_annual <- "2023-04"   # WILL GET UPDATED MANUALLY SOMETIMES - error
-                                #  message later will tell you when.
+last_npi_annual <- "2023-04"   # Will get updated manually sometimes.
 
 # Create potential new months (note that the filenames do not seem to get
 #  updated every month); note these replace the ones used above
@@ -199,15 +218,39 @@ to_check_stamps <- rev(substring(as.character(to_check_dates), 1, 7))   # Latest
 #  So first check if latest month exists. Gave up trying to automate as
 #   RCurl::url.exists(sitename)  returnsed FALSE even with a sitename that exists.
 
-j <- 1      # MAY NEED TO CHANGE THIS MANUALLY - error message below will tell
-            # you when.
+# Going to see if each file exists, and then take the latest one. Could not
+#  figure out a simple way to check if a website exists, so need to do this
+#  manually, though will be fairly simple once we are checking this every month.
+#  So first check if latest month exists. Gave up trying to automate as
+#   RCurl::url.exists(sitename)  returns FALSE even with a sitename that exists.
 
+check_exists <- list()
+monthly_file_exists <- logical(length(to_check_stamps))   # Sets them all to FALSE
+for(i in 1:length(to_check_stamps)){
+  check_exists[[i]] <- httr::GET(paste0("https://climatedataguide.ucar.edu/sites/default/files/",
+                                   to_check_stamps[i],
+                                   "/npindex_ndjfm.txt"))
+  if(check_exists[[i]]$status_code == 200){
+    monthly_file_exists[i] = TRUE}
+}
+
+monthly_file_exists
+# check_exists TODO update
+# Updating 2023-09-11, they haven't actually been updated at all:
+# to_check_stamps
+# "2023-11" "2023-10" "2023-09" "2023-08" "2023-07" "2023-06" "2023-05" "2023-04"
+# monthly_file_exists
+# FALSE     FALSE     FALSE     FALSE     FALSE     FALSE     FALSE     TRUE
+
+# Then pick the first one - not fully automated yet, as will fail if none are
+# TRUE (just getting data updated before releasing package). TODO make more automated.
+# Presumably it will be the same in this case so not need updating.
 sitename <- paste0("https://climatedataguide.ucar.edu/sites/default/files/",
-                   to_check_stamps[j],
+                   to_check_stamps[which(monthly_file_exists)[1]],
                    "/npindex_ndjfm.txt")
 
 sitename_anomaly <- paste0("https://climatedataguide.ucar.edu/sites/default/files/",
-                   to_check_stamps[j],
+                   to_check_stamps[which(monthly_file_exists)[1]],
                    "/npindex_anom_ndjfm.txt")
 
 download.file(sitename,
@@ -215,13 +258,13 @@ download.file(sitename,
               mode = "wb",
               quiet = FALSE)
 
-stop(paste("If download.file just gave an error then increase j <- 1 to 2, then 3 etc. if happens again, up to",
-           length(to_check_stamps),
-           "which should be same as the latest one saved; repeat above code from j.",
-           "For the first j for which download.file does NOT error then, to set up for the next future update, replace last_npi_annual above with
-            to_check_stamps[j] which if you have j correct is", to_check_stamps[j],
-           "and set j <- 1 again in code. Then keep calm and carry on through this file.",
-           sep = "\n"))
+## stop(paste("If download.file just gave an error then increase j <- 1 to 2, then 3 etc. if happens again, up to",
+##            length(to_check_stamps),
+##            "which should be same as the latest one saved; repeat above code from j.",
+##            "For the first j for which download.file does NOT error then, to set up for the next future update, replace last_npi_annual above with
+##             to_check_stamps[j] which if you have j correct is", to_check_stamps[j],
+##            "and set j <- 1 again in code. Then keep calm and carry on through this file.",
+##            sep = "\n"))
 
 npi_annual_val_new <- readr::read_table("npi_annual_val.txt",
                                         col_names = c("year", "value"),
@@ -302,6 +345,13 @@ if(check_index_changed(pdo, pdo_new)){
                pdo_new[1:nrow(pdo) - 1, ]) # See note at top if fails. Final
                                         # value seems to get updated (the final March
                                         # 2023 value did when updating in August 2023).
+  pdo %>% tail()
+  pdo_new %>% tail()
+
+  par(mfrow = c(2,1))
+  plot(pdo, main = "Currently in pacea")
+  plot(pdo_new, main = "Updated")
+
   pdo <- pdo_new
   usethis::use_data(pdo,
                     overwrite = TRUE)
@@ -365,9 +415,16 @@ attr(soi_new, "axis_name") <- "Southern Oscillation Index"
 
 check_index_changed(soi, soi_new)
 
+soi %>% tail()
+soi_new %>% tail()
+
 if(check_index_changed(soi, soi_new)){
   expect_equal(soi,
                soi_new[1:nrow(soi), ])  # See note at top if this fails
+  par(mfrow = c(2,1))
+  plot(soi, main = "Currently in pacea")
+  plot(soi_new, main = "Updated")
+
   soi <- soi_new
   usethis::use_data(soi,
                     overwrite = TRUE)
@@ -405,8 +462,14 @@ class(npgo_new) <- c("pacea_index",
 attr(npgo_new, "axis_name") <- "North Pacific Gyre Oscillation"
 
 check_index_changed(npgo, npgo_new)
+tail(npgo)
+tail(npgo_new)
 
 if(check_index_changed(npgo, npgo_new)){
+  par(mfrow = c(2,1))
+  plot(npgo, main = "Currently in pacea")
+  plot(npgo_new, main = "Updated")
+
   npgo <- npgo_new
   usethis::use_data(npgo,
                     overwrite = TRUE)
@@ -454,11 +517,17 @@ class(mei_new) <- c("pacea_index",
 attr(mei_new, "axis_name") <- "Multivariate ENSO Index"
 
 check_index_changed(mei, mei_new)
+tail(mei)
+tail(mei_new)
 
 if(check_index_changed(mei,
                        mei_new)){
   expect_equal(mei,
                mei_new[1:nrow(mei), ])  # See note at top if this fails
+  par(mfrow = c(2,1))
+  plot(mei, main = "Currently in pacea")
+  plot(mei_new, main = "Updated")
+
   mei <- mei_new
   usethis::use_data(mei,
                     overwrite = TRUE)
@@ -508,11 +577,17 @@ class(ao_new) <- c("pacea_index",
 
 attr(ao_new, "axis_name") <- "Arctic Oscillation"
 
+tail(ao)
+tail(ao_new)
+
 check_index_changed(ao, ao_new)
 if(check_index_changed(ao, ao_new)){
   expect_equal(ao,
                ao_new[1:nrow(ao), ]) # See note at top if fails. Not tested
                                         # this one yet so it may fail if final
+  par(mfrow = c(2,1))
+  plot(ao, main = "Currently in pacea")
+  plot(ao_new, main = "Updated")
                                         # value gets revised; if so tweak here.
   ao <- ao_new
   usethis::use_data(ao,
