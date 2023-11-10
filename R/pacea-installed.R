@@ -17,5 +17,5 @@ pacea_installed <- function(){
   last_installed_days_ago <- as.numeric(lubridate::today() - last_installed)
   writeLines(paste0("You last locally installed pacea on ", last_installed, " which is ",
          last_installed_days_ago,
-         " days ago.\nCompare that with the dates of the latest commits at https://github.com/pbs-assess/pacea/commits/main"))
+         " days ago.\nCompare that with the updates in the NEWS file (and you can also check dates of the latest commits at https://github.com/pbs-assess/pacea/commits/main)"))
 }

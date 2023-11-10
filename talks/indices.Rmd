@@ -96,7 +96,7 @@ So for some analyses you may want to restrict values to a specified time period
 ```{r onilocal}
 oni_fix <- dplyr::filter(oni,
                          year < 2023 | year == 2023 & month < 3)
-tail(oni_fix)       # Should always end with February 2023
+tail(oni_fix)       # Will always end with February 2023
 ```
 
 ## Further plotting options and styles

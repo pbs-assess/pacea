@@ -17,7 +17,8 @@ knitr::include_graphics(paste0(here::here(),
 ## Sea surface temperature data from buoys
 
 Data from `r nrow(buoy_metadata)` buoys maintained by DFO/ECCC (Environment and
-Climate Change Canada).
+Climate Change Canada), hosted through CIOOS (Canadian Integrated Ocean
+Observing System).
 
 
 ```{r buoysmap, echo=FALSE, out.width = "50%"}
@@ -31,9 +32,11 @@ Extensive data processing to calculate daily mean SST:
 
 - Resolution is every 10 minutes or every hour
 
-- Require a measurement every 2 hours
+- Come with quality control flags (mostly)
 
-- Require $\geq 10$ 2-hour measurements every day
+- We decided a daily mean calculations requires:
+  - at least one measurement every 2 hours
+  - $\geq 10$ 2-hour measurements every day
 
 - Switch from DFO data stream to ECCC data stream when appropriate
 

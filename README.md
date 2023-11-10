@@ -215,8 +215,8 @@ adding new ones, as well as adding functionality. To explain these, we
 will document them by date in the [NEWS](NEWS.Md).
 
 We plan to update the indices, buoy temperatures, and OISST values on
-the 16th of every month (or next working day-ish), which should capture
-updates to those data.
+the 20th of every month (or soon after), which should capture updates to
+those data.
 
 To check what date you installed `pacea` locally on your machine, we
 have the helper command:

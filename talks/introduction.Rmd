@@ -27,21 +27,48 @@
 
 \footnotesize
 
-Kulka et al. (2022). An Accounting of Integration of Environmental Variables in Fishery Stock Assessments in Canada. Can. Tech. Rep. Fish. Aquat. Sci. 3473: viii + 79 p.
+Kulka DW, Thompson S, Cogliati K, Olmstead M, Austin D, Pepin D. (2022). An Accounting of Integration of Environmental Variables in Fishery Stock Assessments in Canada. Can. Tech. Rep. Fish. Aquat. Sci. 3473: viii + 79 p.
 https://publications.gc.ca/collections/collection_2022/mpo-dfo/Fs97-6-3473-eng.pdf
 
 \normalsize
 
+##
+```{r motivation1, echo=FALSE, out.width = "100%"}
+knitr::include_graphics(paste0(here::here(),
+                               "/talks/talks-manual-figures/motivation-1.png"))
+```
+
+##
+```{r motivation2, echo=FALSE, out.width = "100%"}
+knitr::include_graphics(paste0(here::here(),
+                               "/talks/talks-manual-figures/motivation-2.png"))
+```
+
+## Motivation (based on a true story)
+
+A search for sea surface temperature yields an overwhelming number (341) of choices:
+
+```{r motivation4, echo=FALSE, out.width = "90%"}
+knitr::include_graphics(paste0(here::here(),
+                               "/talks/talks-manual-figures/motivation3.png"))
+```
+
+Likely requires extensive data wrangling to be usable, which usually takes way,
+way, longer than anticipated.
+
+So the SST analysis did not happen.
+
 ## Motivation
+
+- Motivated by Dan Duplisea's `gslea` package for the Gulf of St. Lawrence.
 
 - Outputs from a BC physical biogeochemical model have been shared by Angelica Peña.
 
-- But still requires extensive coding to convert results from netCDF files into R.
+- But the netCDF format may be unfamiliar to non-oceanographers --
+  we take care of the wrangling into R
 
 - Open Data is great, but can be hard to
   `r colorize("convert raw data into usable information", "red")`.
-
-- Hence, the `pacea` R package, motivated by Dan Duplisea's `gslea` package for the Gulf of St. Lawrence.
 
 - Primary audience is DFO stock assessment scientists, but usable by anyone
   (with a minimal working knowledge of R).
@@ -90,32 +117,6 @@ knitr::include_graphics(paste0(here::here(),
 
 - 'codecov' is the amount of the code that is covered by unit tests, which help weed
   out bugs.
-
-##
-```{r motivation1, echo=FALSE, out.width = "100%"}
-knitr::include_graphics(paste0(here::here(),
-                               "/talks/talks-manual-figures/motivation-1.png"))
-```
-
-##
-```{r motivation2, echo=FALSE, out.width = "100%"}
-knitr::include_graphics(paste0(here::here(),
-                               "/talks/talks-manual-figures/motivation-2.png"))
-```
-
-## Motivation (based on a true story)
-
-A search for sea surface temperature yields an overwhelming number (341) of choices:
-
-```{r motivation4, echo=FALSE, out.width = "90%"}
-knitr::include_graphics(paste0(here::here(),
-                               "/talks/talks-manual-figures/motivation3.png"))
-```
-
-Likely requires extensive data wrangling to be usable, which usually takes way,
-way, longer than anticipated.
-
-So the SST analysis did not happen.
 
 ## `pacea` objects
 

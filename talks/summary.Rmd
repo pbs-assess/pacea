@@ -11,8 +11,7 @@ We will:
 
 - update the NEWS as we add/update data and make improvements.
 
-- ideally update the following `r colorize("on the 16th of every month (or next-ish
-  working day)", "red")` to get the latest raw data:
+- ideally update the following `r colorize("on the 20th of every month (or soon after)", "red")` to get the latest raw data:
   - climatic and oceanographic indices
   - buoy sst
   - OISST
@@ -28,7 +27,7 @@ We will:
     - note that BCCM is a research model (not an operational model) so updates
       depend on projects and access to High Performance Computing.
 
-## Guidelines for users
+## Recommended guidelines for users
 
 Please:
 
@@ -40,7 +39,7 @@ Please:
 
  - understand the limitations of the data
 
-## Guidelines for users
+## Recommended guidelines for users
 
 To check when you last installed `pacea`
 ```{r installed, eval=FALSE}
@@ -48,7 +47,8 @@ pacea_installed()
 
 You last locally installed pacea on 2023-11-01 which is 8 days ago.
 
-Compare that with the dates of the latest commits at https://github.com/pbs-assess/pacea/commits/main
+Compare that with the updates in the NEWS file (and you can also check dates of the latest commits at
+https://github.com/pbs-assess/pacea/commits/main)
 ```
 
 ```{r installedscreenshot, echo=FALSE, out.width="30%"}
@@ -57,7 +57,7 @@ knitr::include_graphics(paste0(here::here(),
 ```
 
 
-## Guidelines for users
+## Recommended guidelines for users
 
  - any problems, make a minimum working example (usually makes you figure it out yourself)
    - check the `Issues` on GitHub in case someone else has asked or we are
@@ -68,7 +68,7 @@ knitr::include_graphics(paste0(here::here(),
    - more detailed questions or bug reports post
      a new `Issue` (allows others to see, and maybe answer, your question)
 
-## Guidelines for users
+## Recommended guidelines for users
 
  - cite `pacea` and the original sources for any data you use
 
