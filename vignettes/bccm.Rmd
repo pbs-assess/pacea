@@ -10,8 +10,8 @@ date: "Last rendered on `r format(Sys.time(), '%d %B, %Y')`"
 ---
 
 <!-- To build either run
-   rmarkdown::render("bccm.Rmd")
- or click the knit button in RStudio -->
+rmarkdown::render("bccm.Rmd")
+or click the knit button in RStudio -->
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
@@ -33,7 +33,10 @@ provided by Angelica Peña at the Institute of Ocean Sciences (Fisheries and
 Oceans Canada). For model details see Peña et al. (2019), which
 should be cited if you use the results.
 
-The results are available are TODO get from README, Travis has updated it.
+The results are too big to be data objects in `pacea`, but are easily
+downloadable from https://github.com/pbs-assess/pacea-data and cached locally on
+your computer, as demonstrated below. The user does not need to deal with that
+website, `pacea` functions take care of accessing it.
 
 This vignette describes the BCCM results that are available in `pacea`, and
 how to use and plot them for your own analyses.
@@ -118,10 +121,16 @@ View data function help files for more information on bccm results (e.g. `?bccm_
 ```{r BCCM}
 # list available BCCM data
 bccm_data
+```
 
+```{r cache, eval=FALSE}
 # local cache folder
 pacea_cache()
+"C:\\Users\\<your-windows-username>\\AppData\\Local/pacea/Cache"
+# On linux and Macs this will look different.
+```
 
+```{r download}
 # download data to cache folder and name object; `force = TRUE` to skip user prompt
 pdata <- bccm_surface_temperature(force = TRUE)
 ```
@@ -129,8 +138,9 @@ pdata <- bccm_surface_temperature(force = TRUE)
 If `force = FALSE`, the user will be prompted on whether to download the data to
 the cache folder.
 
-Once the data has been downloaded into the cache folder, the placeholder
-function will simply load the data into the current workspace.
+Once the data have been downloaded into the cache folder, the placeholder
+function will simply load the data into the current workspace (and not
+redownload it from the `pacea-data` repository).
 
 ```{r}
 dim(pdata)
@@ -175,9 +185,6 @@ bccm_all_variables()
 bccm_surface_temperature()
 ```
 
-
-
-
 ## Updating BCCM data
 
 When you download BCCM data, the most recent version of the data will be
@@ -193,7 +200,8 @@ pdata <- bccm_surface_temperature(update = TRUE)
 
 If there is an update available, you will be prompted on whether to download the
 data and replace the older version you have in the pacea cache directory. If
-declined, the current version of the data will be loaded to the workspace.
+declined, the current version of the data will be loaded to the workspace. Also
+keep an eye on the [NEWS](https://github.com/pbs-assess/pacea/blob/main/NEWS.md) file on GitHub.
 
 ## BCCM visualization
 
@@ -259,10 +267,10 @@ tdat <- pdata %>%
   dplyr::select(all_of(ym))
 
 # convert to long format
-sub.dat <- pacea_long(tdat)
+sub_dat <- pacea_long(tdat)
 
 # plot selected years and month
-p1 <- ggplot(data = sub.dat) +
+p1 <- ggplot(data = sub_dat) +
   geom_sf(aes(fill = value), col = NA) +
   facet_grid(month~year)
 
@@ -321,18 +329,18 @@ a126 <- st_sfc(st_polygon(crds), crs = 4326) %>%
   st_transform(crs = 3005)
 
 # mask data by indexing sf object with area 126 shapefile
-reg.dat <- sub.dat[a126, ]
+reg_dat <- sub_dat[a126, ]
 
 # reduction in number of data points after subsetting the region
-dim(sub.dat)
-dim(reg.dat)
+dim(sub_dat)
+dim(reg_dat)
 ```
 
 The data went from 123,864 rows to 4,821 rows, which is a much smaller region.
 
 ```{r}
 # plot panel of data
-reg.p1 <- ggplot(data = reg.dat) +
+reg.p1 <- ggplot(data = reg_dat) +
   geom_sf(aes(fill = value), col = NA) +
   facet_grid(month~year) +
   scale_fill_gradientn(colours = c("blue", "grey", "red"), name = attributes(pdata)$units)
@@ -390,9 +398,9 @@ tdat <- pdata %>%
   dplyr::select(all_of(ym))
 
 # this will replace convert the geometry column from a polygon to a point, with the centroid of the gridded cell
-centroid.dat <- tdat %>% st_centroid()
+centroid_dat <- tdat %>% st_centroid()
 
-head(centroid.dat)
+head(centroid_dat)
 ```
 
 Notice that the geometry column are now `POINT`, instead of `POLYGON`. This is
@@ -414,7 +422,7 @@ tdat <- pdata %>%
   dplyr::select(all_of(ym))
 
 # Find mean value for each time period of interest - mean of columns
-sub.dat <- pacea_long(tdat)
+sub_dat <- pacea_long(tdat)
 ```
 
 ### Extract data using coordinates
@@ -439,14 +447,14 @@ sf_LP <- st_as_sf(coords_LP, coords = c("x", "y"), crs = "EPSG: 4326") %>% st_tr
 sf_LP
 
 # extract cells for which coordinates fall into and wrangle to long format for plotting
-point.dat <- pdata[sf_LP,] %>%
+point_dat <- pdata[sf_LP,] %>%
   pacea_long()
 ```
 
 We can plot the time series to look at seasonal trends at this location.
 
 ```{r}
-point.dat %>%
+point_dat %>%
   mutate(year = as.factor(year)) %>%  # set year to a factor so each line is plotted separately
   ggplot() +
   geom_line(aes(x = month, y = value, col = year)) +
@@ -456,7 +464,7 @@ point.dat %>%
 Any trends are difficult to see, so let's revise the colour scheme
 
 ```{r}
-point.dat  %>%
+point_dat  %>%
   mutate(year = as.factor(year)) %>%
   ggplot() +
   geom_line(aes(x = month, y = value, col = as.factor(year))) +
@@ -468,19 +476,19 @@ Still no clear visual pattern. Let's look at the past 10 years compared to the t
 
 ```{r}
 # calculate summary statistics (median, sd, 0.05 and 0.95 probabilities)
-sum.dat <- point.dat %>%
+sum_dat <- point_dat %>%
   group_by(month) %>%
   summarise(median_val = median(value, na.rm = TRUE),
             sd_val = sd(value, na.rm = TRUE),
             q05 = quantile(value, probs = 0.05, na.rm = TRUE),
             q95 = quantile(value, probs = 0.95, na.rm = TRUE))
 
-point.dat %>%
+point_dat %>%
   filter(year >= 2010) %>%
   mutate(year = as.factor(year)) %>%
   ggplot() +
   geom_line(aes(x = month, y = value, col = as.factor(year))) +
-  geom_line(data = sum.dat, aes(x = month, y = median_val), col = "black", linewidth = 2) +
+  geom_line(data = sum_dat, aes(x = month, y = median_val), col = "black", linewidth = 2) +
   scale_color_manual(values = colorRampPalette(c("blue", "green", "yellow"))(10), name = "year") +
   scale_y_continuous(name = attributes(pdata)$units)
 ```
@@ -493,13 +501,13 @@ year to plot. Let's plot 2014, when "The Blob" was around in the Pacific
 
 ```{r}
 # plot to view seasonal trends across years
-point.dat %>%
+point_dat %>%
   filter(year == 2014) %>%
   ggplot() +
   geom_line(aes(x = month, y = value), col = "red") +
-  geom_line(data = sum.dat, aes(x = month, y = median_val), col = "black") +
-  geom_line(data = sum.dat, aes(x = month, y = q05), col = "grey", linetype = 2) +
-  geom_line(data = sum.dat, aes(x = month, y = q95), col = "grey", linetype = 2)
+  geom_line(data = sum_dat, aes(x = month, y = median_val), col = "black") +
+  geom_line(data = sum_dat, aes(x = month, y = q05), col = "grey", linetype = 2) +
+  geom_line(data = sum_dat, aes(x = month, y = q95), col = "grey", linetype = 2)
 ```
 
 While not the warmest during the 1993-2019 period in the summer months, it was
@@ -578,7 +586,7 @@ We have also incorporated the ability to add climatological data to the plot, wh
 plot(anom_sst_sub,
      months.plot = c("Apr", "Sep"),
      years.plot = c(2010, 2019),
-     clim.dat = clim_sst_sub)
+     clim_dat = clim_sst_sub)
 ```
 
 ### Estimate mean (median, sd, etc.) across entire spatial area
