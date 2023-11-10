@@ -15,9 +15,9 @@ OISST - long term gridded climate data record
 
 - Canada's Pacific EEZ
 
-- 925 gridded cells
+- `r colorize("925 gridded cells", "red")`
 
-- September, 1981 to (relatively) present
+- `r colorize("September, 1981 to (relatively) present", "red")`
   - Updated ~monthly
 
 \
