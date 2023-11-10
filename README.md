@@ -19,29 +19,25 @@ coverage](https://codecov.io/gh/pbs-assess/pacea/branch/main/graph/badge.svg)](h
 
 An R package of Pacific ecosystem information to help facilitate an
 ecosystem approach to fisheries management.
+<center>
+<I>We wrangle the data so you don’t have to</I>
+</center>
 
-*We wrangle the data so you don’t have to*
+<br>
 
 pacea stands for PACific Ecosystem Approach.
 
 pacea is a R package containing a variety of data sets and model output.
 We wrangle the data sets behind the scenes to get them into usable
 formats in R, and provide helpful plotting functions. All data sets
-include documentation regarding the original authors, who should be
-cited and consulted as appropriate.
-
-**NOTE:** pacea will be released on 10th November 2023, and we are still
-developing and editing it before then. So while you can download it
-before then, it might be best to wait as we are still editing help
-files, vignettes, code, etc. (and code will change). From 10th November
-we will document updates to data, new features, and any bug fixes on the
-NEWS page. We will provide a plan for updating of certain data sets.
+include documentation regarding the original sources and authors, who
+should be cited and consulted as appropriate.
 
 ## What is in pacea?
 
 Currently, pacea contains:
 
--   201,426 calculations of daily sea surface temperature based on data
+-   202,927 calculations of daily sea surface temperature based on data
     from 19 buoys.
 
 -   outputs from the spatial British Columbia continental margin (BCCM)
@@ -69,12 +65,13 @@ Currently, pacea contains:
     record, that incorporates observations from different platforms
     (satellites, ships, buoys, and Argo floats):
 
-    -   provided as weekly and monthly means from Sep 1981 to Jun 2023.
+    -   provided as weekly and monthly means from Sep 1981 to Sep 2023.
 
 -   9 climatic and oceanographic indices, such as the Pacific Decadal
     Oscillation and those related to El Niño.
 
--   estimates of abundances for Harbour Seals and Pacific Hake.
+-   estimates of abundances for Harbour Seals and Pacific Hake (with
+    Pacific Herring coming soon).
 
 Plotting and helper functions are provided, and demonstrated in the
 detailed vignettes. All data and model outputs are fully documented and
@@ -153,7 +150,7 @@ example:
 
 ``` r
 oni
-#> # A tibble: 884 × 4
+#> # A tibble: 885 × 4
 #>     year month value anomaly
 #>    <dbl> <dbl> <dbl>   <dbl>
 #>  1  1950     1  24.7   -1.53
@@ -166,14 +163,20 @@ oni
 #>  8  1950     8  26.0   -0.42
 #>  9  1950     9  25.8   -0.39
 #> 10  1950    10  25.6   -0.44
-#> # ℹ 874 more rows
+#> # ℹ 875 more rows
 ```
 
-<!-- See the vignettes (TODO link to rendered versions once we push them) for -->
+## Vignettes
+
+See the vignettes for more detailed explanations of the data sets and
+functionality:
+
+TODO - link to rendered versions once we push them) for
 
 ## Installation
 
-To install the latest version:
+Okay, if you’re convinced this package might be useful for you, then to
+install the latest version just:
 
     install.packages("remotes")    # If you do not already have the "remotes" package
 
@@ -188,24 +191,40 @@ network). Try
 
     options(timeout = 1200)
 
-and then try and install again. If you get a different error then
-contact Andy and Travis for help. If the R-CMD-check badge above does
-not say ‘passing’ in green, then just try again later as we’ve broken
-something and are probably trying to fix it. (Once we officially release
-pacea then we will ensure the installation always works - we’ll work on
-another GitHub branch). You can try the option `build_vignettes = TRUE`
-if you like and look at the vignettes the usual way. Once we finalise
-the vignettes we will provide the `html` version on GitHub to be easily
-viewed.
+and then try and install again. If you get a different error then post
+an Issue or contact
+<a href="mailto:andrew.edwards@dfo-mpo.gc.ca">Andy</a> or
+<a href="mailto:travis.tai@dfo-mpo.gc.ca">Travis</a> for help.
 
-</details>
+## Updates
+
+We plan to continually enhance `pacea` by updating current data sets and
+adding new ones, as well as adding functionality. To explain these, we
+will document them by date in the [NEWS](NEWS.Md).
+
+To check what date you installed `pacea` locally on your machine, we
+have the helper command:
+
+``` r
+pacea_installed()
+
+You last locally installed pacea on 2023-11-01 which is 8 days ago.
+
+Compare that with the dates of the latest commits at https://github.com/pbs-assess/pacea/commits/main
+```
+
+The commits tell you when we last changed something, while the
+[NEWS](NEWS.Md) will give a more concise summary of changes by date.
+Then you may wish to update `pacea` by running
+`remotes::install_github("pbs-assess/pacea")` again.
 
 ## Audience and motivation
 
 The primary audience is stock assessment scientists who want to analyse
-environmental variables in the context of their stock assessment. The
-Fisheries Act requires management of fisheries to take into account
-“[the biology of the fish and the environmental conditions affecting the
+environmental variables in the context of their stock assessment (but we
+anticipate other interested users). The Fisheries Act requires
+management of fisheries to take into account “[the biology of the fish
+and the environmental conditions affecting the
 stock](https://laws-lois.justice.gc.ca/eng/acts/f-14/page-3.html#h-1175547)”.
 Such an Ecosystem Approach to Fisheries Management requires data.
 
@@ -224,30 +243,26 @@ colleagues for the Gulf of St Lawrence.
 ## Acknowledgments
 
 This work is funded by a Competitive Science Research Fund grant from
-Fisheries and Oceans Canada.
+Fisheries and Oceans Canada (project 21-FS-03-13).
 
 We thank the following for contributing ideas, example code for ROMS
 output, model output, and/or helping with ideas and coding issues:
 
-Kelsey Flynn, Jessica Nephin, Strahan Tucker, Matt Grinnell, Lindsay
-Davidson, Sean Anderson, Philina English, and Chris Grandin.
+-   Kelsey Flynn, Jessica Nephin, Lindsay Davidson, Strahan Tucker,
+    Brianna Wright, Patrick Thompson, Matt Grinnell, Sean Anderson,
+    Philina English, Chris Grandin, Jennifer Boldt, and others.
 
 And a big thanks to Carley Colclough for expertly designing the pacea
 logo.
 
 ## Notes for developers
 
-TODO update
-
 Edit and render the README.Rmd file, not the README.Md file. If you add
 any new figures then commit and push them (they will be in
 man/figures/README-<chunk-name>) so they show up on the GitHub README.
-Always render the .Rmd so that it and the rendered .Md stay in sync.
-
-There is the option (haven’t looked into yet) of using GitHub Actions to
-re-render `README.Rmd` every time you push. An example workflow can be
-found here: <https://github.com/r-lib/actions/tree/v1/examples>. But,
-it’s generally best to check things locally first before pushing.
+Always render the .Rmd so that it and the rendered .Md stay in sync (see
+<https://github.com/pbs-assess/pacea/issues/44#issuecomment-1793235838>
+for how to have Git check that README.Md is newer than README.Rmd).
 
 Every data set is built using code in the `raw-data/` directory, with
 documentation in `R/data.R`. Document everything!
@@ -260,16 +275,12 @@ functions.
 
 Citation information is in inst/CITATION, so if you update DESCRIPTION
 file (e.g. add an author) then update that also, and may want to change
-info at the start of this file.
+the info at the start of this file.
 
 Logo included by running `use_logo("inst/pacea-logo-from-carley.png")`.
 The .png was expertly designed by Carley Colclough. There is also
 `inst/pacea-logo-for-printing.jpg` for printing purposes.
 
-<details open>
-<summary>
-Collapsible heading
-</summary>
-This text should be open and can be hidden. Prob best to just do TOC at
-top. TODO remove if not going to use.
-</details>
+We will add details of how to work on your own branch before merging
+into the main branch, such that the main version is always installable,
+and guidelines for adding to the [NEWS](NEWS.Md).

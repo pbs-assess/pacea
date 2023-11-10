@@ -1,3 +1,3 @@
-# pacea 0.1.0
+# pacea 1.0.0
 
-* Initial CRAN submission.
+* 2023-11-10 Launch day.
