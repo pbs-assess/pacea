@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,327,53
+/pbs-assess/pacea/issues,72,6
+/pbs-assess/pacea/commits/main,34,2
+/pbs-assess/pacea/tree/main/data,26,4
+/pbs-assess/pacea/tree/main/data-raw,24,3
+/pbs-assess/pacea/issues/44,23,4
+/pbs-assess/pacea/tree/main/talks,23,2
+/pbs-assess/pacea/tree/main/.github/workflows,18,1
+/pbs-assess/pacea/tree/main/vignettes,17,3
+/pbs-assess/pacea/issues/45,13,4
