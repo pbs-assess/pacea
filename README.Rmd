@@ -295,29 +295,35 @@ And a big thanks to Carley Colclough for expertly designing the pacea logo.
 
 ## Notes for developers
 
-Edit and render the README.Rmd file, not the README.Md file. If you add any new
+1. Please work on your own development branch to ensure that the main branch is
+never broken (so users can always download the package). See below for details
+on branching.
+
+1. Edit and render the README.Rmd file, not the README.Md file. If you add any new
 figures then commit and push them (they will be in
 man/figures/README-<chunk-name>) so they show up on the GitHub README. Always
 render the .Rmd so that it and the rendered .Md stay in sync (see
 https://github.com/pbs-assess/pacea/issues/44#issuecomment-1793235838 for how to
 have Git check that README.Md is newer than README.Rmd).
 
-Every data set is built using code in the `raw-data/` directory, with
+1. Every data set is built using code in the `raw-data/` directory, with
 documentation in `R/data.R`. Document everything!
 
-If you add new functions please add tests as well so we retain good code
+1. If you add new functions please add tests as well so we retain good code
 coverage (as indicated in the badge at the top of the README on GitHub).
 
-Use the standard `lower_case_and_underscores` for naming
+1. Use the standard `lower_case_and_underscores` for naming
 variables and functions.
 
-Citation information is in inst/CITATION, so if you update DESCRIPTION file
+1. Citation information is in inst/CITATION, so if you update DESCRIPTION file
 (e.g. add an author) then update that also, and may want to change the info at the
 start of this file.
 
-Logo included by running `use_logo("inst/pacea-logo-from-carley.png")`. The .png was
+1. Logo included by running `use_logo("inst/pacea-logo-from-carley.png")`. The .png was
 expertly designed by Carley Colclough. There is also `inst/pacea-logo-for-printing.jpg`
 for printing purposes.
+
+### Branching
 
 We will add details of how to work on your own branch before merging into the
 main branch, such that the main version is always installable, and guidelines
