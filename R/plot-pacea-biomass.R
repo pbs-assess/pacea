@@ -107,3 +107,4 @@ plot.pacea_biomass <- function(obj,
                 y_tick_end = ceiling(par("usr")[4]),
                 x_tick_extra_years = x_tick_extra_years,
                 start_decade_ticks = start_decade_ticks)
+}
