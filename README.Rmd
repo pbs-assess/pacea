@@ -355,10 +355,18 @@ Once you have your branch set up then the workflow is:
  - `git merge main`
 
 3. Do some new commits in your branch and push them in the usual way.
-GitHub Actions will work on your branch. TODO verify this:  from the badge code at the top of this file, and the adding of
-the branch in the .yaml, it looks like the R-CMD-CHECK badge
-might check all branches, and so may well fail for an error on the main
-branch.
+GitHub Actions will work on your branch.
+
+So from a quick test, the `R-CMD-check`
+badge only refers to the main branch, which is great as it should never show as
+failing because we should only be breaking
+things on own branch. Always having the green passing badge should inspire
+consumer confidence. On
+GitHub you can select your branch and see the tickmark, which will tell you if
+the build has failed (or if your changes have caused the code coverage to
+decline), and you'll probably get an automatic email also, just to drive home
+the message. So the badges on the README on your branch still relate to the
+main branch.
 
 You can click on the codecov badge on GitHub, and then on the codecov page you
 can select your branch. There are ways to check code coverage locally, but Andy
