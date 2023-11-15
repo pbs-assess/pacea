@@ -348,23 +348,10 @@ Once you have your branch set up then the workflow is:
     branches, and so may well fail for an error on the main branch.
 
 You can click on the codecov badge on GitHub, and then on the codecov
-page you can select your branch. To check code coverage locally (but
-these all seem to take a while - bit easier to push and let GitHub check
-so you can carry on working locally), you can do:
-
--   `detach("package:pacea", unload = TRUE)` to unload package first
--   `covr::package_coverage(type = "tests", quiet = FALSE)`
-
-or
-
--   `devtools::test_coverage()`
-
-or to get full details do this and open the file
-
--   `covr::report(file = file.path(here::here(), "coverage-report.html"))`
-
-But simpler just to push to GitHub. Andy had to quit running these,
-which quit R.
+page you can select your branch. There are ways to check code coverage
+locally, but Andy found these all take a long time (and it’s easier to
+push and let GitHub check the coverage). See commit 6c872da for the
+commands Andy tried (now deleting to keep this README file cleaner).
 
 4.  When you are happy with your changes and ready to merge them into
     the main branch, you need to
