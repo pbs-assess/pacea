@@ -97,7 +97,8 @@ if(check_index_changed(oni, oni_new)){
 # values. There is no 2023-02 to 2023-04 (as of 2023-04) , presumably just need
 # to check that last one then later ones.
 
-# last_npi_monthly is saved as a data object in the package.
+# last_npi_monthly is saved as a data object in the package; the month of the
+# last downloaded npi monthly file.
 
 # Create potential new months (note that the filenames do not seem to get
 #  updated every month)
