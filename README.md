@@ -1,12 +1,16 @@
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-<!-- build_readme() will build this when developing, but installs pacea from -->
-<!-- scratch (and it might not be the local version) so it's much quicker to do -->
-<!-- rmarkdown::render("README.Rmd")
-      which also builds an .html that can be -->
-<!-- viewed locally (and isn't pushed to GitHub)  -->
-<!-- Figures - to update a figure, manually run the piece of code that makes -->
-<!-- the .png file. See notes below (and Issue #44). -->
+<!--
+README.md is generated from README.Rmd. Please edit that file. Build with
+
+load_all()
+rmarkdown::render("README.Rmd")
+
+which builds the .html that can be viewed locally (and isn't pushed to GitHub;
+GitHub uses README.md to make the page you see on GitHub.
+
+Figures - to update a figure, manually run the piece of code that makes
+the .png file. See notes below (and Issue #44).
+-->
 
 # pacea <img src="man/figures/logo.png" align="right" height="138" />
 
@@ -182,9 +186,11 @@ the vignettes, which are already rendered here:
 -   [bccm.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm.html)
     BCCM model results, calculations, and associated plotting functions.
 
-The presentaion where we introduced `pacea` is available [here as
-.pdf](talks/pacea-release-talk.pdf); the code to build it is [here as
-.Rmd](talks/pacea-release-talk.Rmd).
+The presentations where we introduced `pacea` are available as .pdf.
+[Here is the DFO version (10th November
+2023)](talks/pacea-release-talk-dfo.pdf) and [here is the UVic Ecostats
+version (21st November 2023)](talks/pacea-release-talk-uvic.pdf). The
+code to build them is [here as .Rmd](talks/pacea-release-talk.Rmd).
 
 ## Installation
 

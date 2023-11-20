@@ -13,6 +13,33 @@
 
 - DFO's Competitive Science Research Fund for funding (project 21-FS-03-13).
 
+## What is a stock assessment?
+
+- Collect data from surveys and commercial fisheries, including ages of fish
+- Use to inform statistical population models to estimate historical biomass
+- Use models to provide advice to fisheries managers
+
+Pacific Hake assessment from 2023, estimate the historical population size:
+
+```{r hake intro, echo=FALSE}
+plot(hake_biomass,
+     y_max = 3.5)
+```
+
+## What is a stock assessment?
+
+Advice often in the form of 'decision tables' that indicate probabilities of future events given
+different catches:
+
+| Catch (t) in 2023 | Probability spawning biomass declines from 2023 to 2024 | Probability spawning biomass in 2024 falls below 40% of unfished biomass |
+| ----------------: | ------------------------------------------------------: | -----------------------------------------------------------------------: |
+| 0 | 50% | 2% |
+| 180,000 | 72% | 3% |
+| 225,000 | 75% | 3% |
+| 320,000 | 78% | 3% |
+| 430,000 | 85% | 5% |
+
+
 ## Motivation
 
 - Revised Fisheries Act: “... the Minister shall take into account the environmental conditions affecting a fish stock."
