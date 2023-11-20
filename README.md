@@ -39,7 +39,7 @@ should be cited and consulted as appropriate.
 
 Currently, pacea contains:
 
--   202,927 calculations of daily sea surface temperature based on data
+-   203,092 calculations of daily sea surface temperature based on data
     from 19 buoys.
 
 -   outputs from the spatial British Columbia continental margin (BCCM)

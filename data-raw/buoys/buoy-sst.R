@@ -23,7 +23,7 @@ library(lubridate)
 # library(tibble)
 # library(ggplot2)
 
-redownload_data = FALSE         # FALSE while developing, TRUE to update.
+redownload_data = TRUE         # FALSE while developing, TRUE to update.
 
 # CIOOS flags for the DFO MEDS record, flags to include:
 
