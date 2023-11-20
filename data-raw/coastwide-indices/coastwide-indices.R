@@ -4,8 +4,9 @@
 # To update - run through line-by-line. Some of the checks to do with checking
 #  older values of an index with the newly-downloaded older values may fail,
 #  because recent values may sometimes be tweaked. But test failing will force a
-#  manual check - if historical values have changed greatly, this should be
-#  mentioned in the NEWS.
+#  manual check.
+# NEWS - update it with mention of updated data, and note if any historical
+#  values have changed greatly.
 
 # To add a new index - check the saved .txt files below to see which one
 #  most closely matches the new one and use the code here as a
@@ -94,13 +95,9 @@ if(check_index_changed(oni, oni_new)){
 # NPI monthly
 # The website has 2023-01 in it for date-year, so check later ones for updated
 # values. There is no 2023-02 to 2023-04 (as of 2023-04) , presumably just need
-# to check that last one then later ones. Tried writing code to automate this
-# but proved fiddly, and once we update every month shouldn't have to check too many.
+# to check that last one then later ones.
 
-stop("You need to manually update i in the next bit.")
-
-last_npi_monthly <- "2023-04"   # Can update this manually every so often, to
-                                # not check if older files exist.
+# last_npi_monthly is saved as a data object in the package.
 
 # Create potential new months (note that the filenames do not seem to get
 #  updated every month)
@@ -109,100 +106,104 @@ today <- lubridate::today()
 to_check_dates <- seq(last, today, "1 month")
 to_check_stamps <- rev(substring(as.character(to_check_dates), 1, 7))   # Latest first
 
-# Going to see if each file exists, and then take the latest one. Could not
-#  figure out a simple way to check if a website exists, so need to do this
-#  manually, though will be fairly simple once we are checking this every month.
-#  So first check if latest month exists. Gave up trying to automate as
-#   RCurl::url.exists(sitename)  returns FALSE even with a sitename that exists.
+# Going to see if each file exists, and then take the latest one.
 
 check_exists <- list()
 monthly_file_exists <- logical(length(to_check_stamps))   # Sets them all to FALSE
 for(i in 1:length(to_check_stamps)){
   check_exists[[i]] <- httr::GET(paste0("https://climatedataguide.ucar.edu/sites/default/files/",
-                                   to_check_stamps[i],
-                                   "/npindex_monthly.txt"))
+                                        to_check_stamps[i],
+                                        "/npindex_monthly.txt"))
   if(check_exists[[i]]$status_code == 200){
     monthly_file_exists[i] = TRUE}
 }
 
 monthly_file_exists
-# check_exists
+
+expect_true(monthly_file_exists[length(monthly_file_exists)],
+            label = "Seems like previous last file does not exist online;
+                    assumed it always would, so dig into.")
+
 # Updating 2023-09-11, they haven't actually been updated every month:
 # to_check_stamps
 # "2023-11" "2023-10" "2023-09" "2023-08" "2023-07" "2023-06" "2023-05" "2023-04"
 # monthly_file_exists
 # FALSE     TRUE      FALSE     FALSE     FALSE     FALSE     FALSE     TRUE
 
-# Then pick the first one - not fully automated yet, as will fail if none are
-# TRUE (just getting data updated before releasing package). TODO make more automated.
+# Then pick the first one. Should always have one TRUE, even if it's only the
+# last in the vector, corresponding to the earliest month.
 
-sitename <- paste0("https://climatedataguide.ucar.edu/sites/default/files/",
-                   to_check_stamps[which(monthly_file_exists)[1]],
-                   "/npindex_monthly.txt")
+# If there is a TRUE newer than the final position in the vector (which should
+# always be TRUE since we got that data last time), then update:
+sum(monthly_file_exists)
+if(sum(monthly_file_exists) > 1){
+  last_npi_monthly_new <- to_check_stamps[which(monthly_file_exists)[1]]
+  sitename <- paste0("https://climatedataguide.ucar.edu/sites/default/files/",
+                     last_npi_monthly_new,
+                     "/npindex_monthly.txt")
 
-download.file(sitename,
-              destfile = "npi_monthly.txt",
-              mode = "wb",
-              quiet = FALSE)   # If errors see instructions:
+  download.file(sitename,
+                destfile = "npi_monthly.txt",
+                mode = "wb",
+                quiet = FALSE)
 
-# See next error message for instructions (no need to keep running it once you
-#  understand it)
-
-## stop(paste("If download.file just gave an error then increase i <- 1 to 2, then 3 etc. if happens again, up to",
-##            length(to_check_stamps),
-##            "which should be same as the latest one saved; repeat above code from i.",
-##            "For the first i for which download.file does NOT error then, to set up for the next future update, replace last_npi_monthly above with
-##             to_check_stamps[i] which if you have i correct is", to_check_stamps[i],
-##            "and set i <- 1 again in code. Then keep calm and carry on through this file.",
-##            sep = "\n"))
-
-npi_monthly_new <- readr::read_table("npi_monthly.txt",
-                                     col_names = c("yearmonth", "value"),
-                                     skip = 1,
-                                     na = "-999.00")    # December 1944, need to
+  npi_monthly_new <- readr::read_table("npi_monthly.txt",
+                                       col_names = c("yearmonth", "value"),
+                                       skip = 1,
+                                       na = "-999.00")    # December 1944, need to
                                                         #  keep in
 
-stopifnot(npi_monthly_new[1,1] == 189901)    # Check still starts in 1899.
+  stopifnot(npi_monthly_new[1,1] == 189901)    # Check still starts in 1899.
 
-npi_monthly_new$month <- as.numeric(substr(npi_monthly_new$yearmonth, 5, 6))
-npi_monthly_new$year  <- as.numeric(substr(npi_monthly_new$yearmonth, 1, 4))
+  npi_monthly_new$month <- as.numeric(substr(npi_monthly_new$yearmonth, 5, 6))
+  npi_monthly_new$year  <- as.numeric(substr(npi_monthly_new$yearmonth, 1, 4))
 
-npi_monthly_new <- dplyr::select(npi_monthly_new,
-                                 year,
-                                 month,
-                                 value)
+  npi_monthly_new <- dplyr::select(npi_monthly_new,
+                                   year,
+                                   month,
+                                   value)
 
-class(npi_monthly_new) <- c("pacea_index",
-                    class(npi_monthly_new))
+  class(npi_monthly_new) <- c("pacea_index",
+                              class(npi_monthly_new))
 
-attr(npi_monthly_new, "axis_name") <- "North Pacific Index"
+  attr(npi_monthly_new, "axis_name") <- "North Pacific Index"
 
-check_index_changed(npi_monthly, npi_monthly_new)
-# 2023-11-09 this came out FALSE, even though had changed. Think because it
-# contained NA's but they get removed in the comparison. Need to update function
-# TODO, for now just skip the if here and force the rewrite (since values are
-# clearly updated)
+  check_index_changed(npi_monthly, npi_monthly_new)
+  # Not so sure about this, may have already updated when running and this
+  # comment isn't actually correct, but keeping for reference:
+  #  2023-11-09 this came out FALSE, even though had changed. Think because it
+  # contained NA's but they get removed in the comparison. Need to update function
+  # for now just skip the if here and force the rewrite (since values are
+  # clearly updated).
 
-if(check_index_changed(npi_monthly, npi_monthly_new)){
-  expect_equal(npi_monthly,
-               npi_monthly_new[1:nrow(npi_monthly), ]) # See note at top if fails.
+  if(!check_index_changed(npi_monthly, npi_monthly_new)){
+    stop("This shouldn't happen, maybe just remove this next check as now in a bigger loop")
+  }
 
-  npi_monthly <- npi_monthly_new
-  usethis::use_data(npi_monthly,
-                    overwrite = TRUE)
-  plot(npi_monthly,
-       value = "value",
-       style = "plain")  # plain not a thing yet, just
-                         # not red-blue. Could add in average
-                         # value so can show colours
+  if(check_index_changed(npi_monthly, npi_monthly_new)){
+    expect_equal(npi_monthly,
+                 npi_monthly_new[1:nrow(npi_monthly), ]) # See note at top if fails.
+
+    npi_monthly <- npi_monthly_new
+    usethis::use_data(npi_monthly,
+                      overwrite = TRUE)
+    plot(npi_monthly,
+         value = "value",
+         style = "plain")  # plain not a thing yet, just
+                           # not red-blue. Could add in average
+                           # value so can show colours
+  }
+  last_npi_monthly <- last_npi_monthly_new
+  usethis::use_data(last_npi_monthly,
+                    overwrite = TRUE)  # Update with new latest filename
 }
+
 
 # NPI annual
 # This website has 2022-10 in it but includes value for 2022 (which by definition
-#  includes data from 2023), so not sure about their naming convention. Doing a
-# similar manual checking to that above for npi_monthly.
-
-last_npi_annual <- "2023-04"   # Will get updated manually sometimes.
+#  includes data from 2023), so not sure about their naming convention. Doing
+#  similar checking of websites to that above for npi_monthly; not repeating all
+#  the explanatory comments.
 
 # Create potential new months (note that the filenames do not seem to get
 #  updated every month); note these replace the ones used above
@@ -212,17 +213,8 @@ to_check_dates <- seq(last, today, "1 month")
 to_check_stamps <- rev(substring(as.character(to_check_dates), 1, 7))   # Latest first
 
 # Going to check if the file with latest month exists, and work backwards to ensure
-#  getting the latest. Could not
-#  figure out a simple way to check if a website exists, so need to do this
-#  manually, though will be fairly simple once we are checking this every month.
-#  So first check if latest month exists. Gave up trying to automate as
-#   RCurl::url.exists(sitename)  returnsed FALSE even with a sitename that exists.
-
-# Going to see if each file exists, and then take the latest one. Could not
-#  figure out a simple way to check if a website exists, so need to do this
-#  manually, though will be fairly simple once we are checking this every month.
-#  So first check if latest month exists. Gave up trying to automate as
-#   RCurl::url.exists(sitename)  returns FALSE even with a sitename that exists.
+#  getting the latest. Same approach as for monthly, could make into a function,
+#  but useful to go through line by line.
 
 check_exists <- list()
 monthly_file_exists <- logical(length(to_check_stamps))   # Sets them all to FALSE
@@ -235,78 +227,83 @@ for(i in 1:length(to_check_stamps)){
 }
 
 monthly_file_exists
-# check_exists TODO update
+
+expect_true(monthly_file_exists[length(monthly_file_exists)],
+            label = "Seems like previous last file does not exist online;
+                    assumed it always would, so dig into.")
+
 # Updating 2023-09-11, they haven't actually been updated at all:
 # to_check_stamps
 # "2023-11" "2023-10" "2023-09" "2023-08" "2023-07" "2023-06" "2023-05" "2023-04"
 # monthly_file_exists
 # FALSE     FALSE     FALSE     FALSE     FALSE     FALSE     FALSE     TRUE
 
-# Then pick the first one - not fully automated yet, as will fail if none are
-# TRUE (just getting data updated before releasing package). TODO make more automated.
-# Presumably it will be the same in this case so not need updating.
-sitename <- paste0("https://climatedataguide.ucar.edu/sites/default/files/",
-                   to_check_stamps[which(monthly_file_exists)[1]],
-                   "/npindex_ndjfm.txt")
+sum(monthly_file_exists)
+if(sum(monthly_file_exists) > 1){
+  last_npi_annual_new <- to_check_stamps[which(monthly_file_exists)[1]]
+  sitename <- paste0("https://climatedataguide.ucar.edu/sites/default/files/",
+                     last_npi_annual_new,
+                     "/npindex_ndjfm.txt")
 
-sitename_anomaly <- paste0("https://climatedataguide.ucar.edu/sites/default/files/",
-                   to_check_stamps[which(monthly_file_exists)[1]],
-                   "/npindex_anom_ndjfm.txt")
+  sitename_anomaly <- paste0("https://climatedataguide.ucar.edu/sites/default/files/",
+                             last_npi_annual_new,
+                             "/npindex_anom_ndjfm.txt")
 
-download.file(sitename,
-              destfile = "npi_annual_val.txt",
-              mode = "wb",
-              quiet = FALSE)
+  download.file(sitename,
+                destfile = "npi_annual_val.txt",
+                mode = "wb",
+                quiet = FALSE)
 
-## stop(paste("If download.file just gave an error then increase j <- 1 to 2, then 3 etc. if happens again, up to",
-##            length(to_check_stamps),
-##            "which should be same as the latest one saved; repeat above code from j.",
-##            "For the first j for which download.file does NOT error then, to set up for the next future update, replace last_npi_annual above with
-##             to_check_stamps[j] which if you have j correct is", to_check_stamps[j],
-##            "and set j <- 1 again in code. Then keep calm and carry on through this file.",
-##            sep = "\n"))
+  npi_annual_val_new <- readr::read_table("npi_annual_val.txt",
+                                          col_names = c("year", "value"),
+                                          skip = 1,
+                                          na = "-999.00")    # 1899 (since no 1898 data)
 
-npi_annual_val_new <- readr::read_table("npi_annual_val.txt",
-                                        col_names = c("year", "value"),
-                                        skip = 1,
-                                        na = "-999.00")    # 1899 (since no 1898 data)
+  stopifnot(npi_annual_val_new[1,1] == 1899)    # Check still starts in 1899.
 
-stopifnot(npi_annual_val_new[1,1] == 1899)    # Check still starts in 1899.
+  # Presumably the anomaly file will also exist, if this fails then do some
+  # detective work.
 
-# Presumably the anomaly file will also exist, if this fails then do some
-# detective work.
+  download.file(sitename_anomaly,
+                destfile = "npi_annual_anom.txt",
+                mode = "wb",
+                quiet = FALSE)
 
-download.file(sitename_anomaly,
-              destfile = "npi_annual_anom.txt",
-              mode = "wb",
-              quiet = FALSE)
+  npi_annual_anom_new <- readr::read_table("npi_annual_anom.txt",
+                                           col_names = c("year", "anomaly"),
+                                           skip = 1,
+                                           na = "-999.00")    # 1899 (since no 1898 data)
 
-npi_annual_anom_new <- readr::read_table("npi_annual_anom.txt",
-                                         col_names = c("year", "anomaly"),
-                                         skip = 1,
-                                         na = "-999.00")    # 1899 (since no 1898 data)
+  stopifnot(npi_annual_anom_new[1,1] == 1899)    # Check still starts in 1899.
 
-stopifnot(npi_annual_anom_new[1,1] == 1899)    # Check still starts in 1899.
+  npi_annual_new <- dplyr::left_join(npi_annual_val_new,
+                                     npi_annual_anom_new,
+                                     by = "year")
 
-npi_annual_new <- dplyr::left_join(npi_annual_val_new,
-                                   npi_annual_anom_new,
-                                   by = "year")
+  class(npi_annual_new) <- c("pacea_index",
+                             class(npi_annual_new))
 
-class(npi_annual_new) <- c("pacea_index",
-                           class(npi_annual_new))
+  attr(npi_annual_new, "axis_name") <- "North Pacific Index"
 
-attr(npi_annual_new, "axis_name") <- "North Pacific Index"
+  check_index_changed(npi_annual, npi_annual_new)
 
-check_index_changed(npi_annual, npi_annual_new)
+  if(!check_index_changed(npi_annual, npi_annual_new)){
+    stop("This shouldn't happen, maybe just remove this next check as now in a bigger loop")
+  }
 
-if(check_index_changed(npi_annual, npi_annual_new)){
-  expect_equal(npi_annual,
-               npi_annual_new[1:nrow(npi_annual), ]) # See note at top if fails.
+  if(check_index_changed(npi_annual, npi_annual_new)){
+    expect_equal(npi_annual,
+                 npi_annual_new[1:nrow(npi_annual), ]) # See note at top if fails.
 
-  npi_annual <- npi_annual_new
-  usethis::use_data(npi_annual,
-                    overwrite = TRUE)
-  plot(npi_annual)
+    npi_annual <- npi_annual_new
+    usethis::use_data(npi_annual,
+                      overwrite = TRUE)
+    plot(npi_annual)
+  }
+
+  last_npi_annual <- last_npi_annual_new
+  usethis::use_data(last_npi_annual,
+                    overwrite = TRUE)  # Update with new latest filename
 }
 
 # PDO
@@ -631,6 +628,8 @@ if(FALSE){      # Change to TRUE if we want to update, though it'd probably be
 # pacea_indices - saving data frame of all indices and ranges to easily see, and
 #  automatically include in vignette. Ordering by start year (did with arrange
 #  then redoing myself for ease of adding things in).
+# Can skip this if nothing above has changed at all, and only really needed when
+#  end year changes. Git doesn't detect changes though if nothing has actually changed.
 
 pacea_indices <-
   dplyr::tribble(
@@ -648,6 +647,7 @@ pacea_indices <-
 
 # if(pacea_indices_new != pacea_indices){   # couldn't figure out, or using expect_equal
 #  pacea_indices <- pacea_indices_new
+
 usethis::use_data(pacea_indices,
                    overwrite = TRUE)
 pacea_indices

@@ -16,8 +16,8 @@
 ## What is a stock assessment?
 
 - Collect data from surveys and commercial fisheries, including ages of fish
-- Use to inform statistical population models to estimate historical biomass
-- Use models to provide advice to fisheries managers
+- Data inform statistical population models to estimate historical biomass
+- Models provide advice to fisheries managers
 
 Pacific Hake assessment from 2023, estimate the historical population size:
 
