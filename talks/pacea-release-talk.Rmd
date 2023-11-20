@@ -32,10 +32,18 @@ urlcolor: blue
 ---
 
 <!-- To build either run
-   rmarkdown::render("pacea-release-talk.Rmd")
- or click the knit button in RStudio
- Note the first slide below creates the title slide (on page 2), from a
-   powerpoint slide saved as .png -->
+rmarkdown::render("pacea-release-talk.Rmd")
+
+or click the knit button in RStudio
+
+Note the first slide below creates the title slide (on page 2), from a
+   powerpoint slide saved as .png.
+
+When talk is finished save the .pdf with a new name
+(e.g. pacea-release-talk-dfo.pdf, pacea-release-talk-uvic.pdf) and commit the
+.pdf, so we can just keep the single set of .Rmd code. Also link the pdf talk
+from README.Rmd.
+-->
 
 <!-- trying different themes from https://mpetroff.net/files/beamer-theme-matrix/
 theme:
