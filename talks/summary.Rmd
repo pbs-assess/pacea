@@ -63,7 +63,7 @@ knitr::include_graphics(paste0(here::here(),
    - check the `Issues` on GitHub in case someone else has asked or we are
      already working on it
 
-   - simple quick question just ask us
+   - simple quick question just ask us (email, or Andy is on EcoStats Slack channel)
 
    - more detailed questions or bug reports post
      a new `Issue` (allows others to see, and maybe answer, your question)
@@ -90,6 +90,6 @@ knitr::include_graphics(paste0(here::here(),
 citation("pacea")
 
 Edwards AM, Tai TC, Watson J, Peña MA, Hilborn A, Hannah CG, Rooper CN
-(2023). "pacea: An R package of Pacific ecosystem information to  help facilitate an ecosystem approach to fisheries management."
+(2023). "pacea: An R package of Pacific ecosystem information to help facilitate an ecosystem approach to fisheries management."
   https://github.com/pbs-assess/pacea.
 ```
