@@ -31,7 +31,10 @@ fontsize: 12pt
 urlcolor: blue
 ---
 
-<!-- To build either run
+<!-- To build:
+
+load_all()      # as necessary, then
+
 rmarkdown::render("pacea-release-talk.Rmd")
 
 or click the knit button in RStudio
@@ -110,7 +113,7 @@ colorize <- function(x, color){
 
 ```{r coverpage, echo=FALSE, out.width = "100%"}
 knitr::include_graphics(paste0(here::here(),
-                               "/talks/talks-manual-figures/pacea-release-title-slide.png"))
+                               "/talks/talks-manual-figures/pacea-release-title-slide-uvic.png"))
 ```
 
 ```{r introduction, child = "introduction.Rmd"}
