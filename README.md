@@ -2,7 +2,8 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- build_readme() will build this when developing, but installs pacea from -->
 <!-- scratch (and it might not be the local version) so it's much quicker to do -->
-<!-- rmarkdown::render("README.Rmd"), which also builds an .html that can be -->
+<!-- rmarkdown::render("README.Rmd")
+      which also builds an .html that can be -->
 <!-- viewed locally (and isn't pushed to GitHub)  -->
 <!-- Figures - to update a figure, manually run the piece of code that makes -->
 <!-- the .png file. See notes below (and Issue #44). -->
@@ -397,7 +398,7 @@ If that does merge in some new commits then you should
 5.  Now you are ready to merge your changes into the main branch, so
     that people will get them when they install/update `pacea`:
 
--   `git co main`
+-   `git checkout main`
 -   `git merge dev-andy`
 -   `git push`
 
