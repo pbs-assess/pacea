@@ -36,8 +36,27 @@ Curvilinear --> regular grid
 
 - `r colorize("Monthly from 1993-2019", "red")`
 
+## Available variables
 
-## List of available layers
+The variables are:
+
+   - dissolved oxygen concentration
+   - pH
+   - salinity
+   - temperature
+   - depth-integrated phytoplankton
+   - depth-integrated primary production.
+
+For applicable variables these are given for
+
+   - sea surface
+   - 0-40 m integration
+   - 40-100 m integration
+   - 100 m to the sea bottom
+   - sea bottom.
+
+
+## List of available variables
 bccm_data for available variables
 ```{r bccm_data list}
 bccm_data

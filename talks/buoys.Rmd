@@ -34,7 +34,7 @@ Extensive data processing to calculate daily mean SST:
 
 - Come with quality control flags (mostly)
 
-- We decided a daily mean calculations requires:
+- We decided that for a daily mean we require:
   - at least one measurement every 2 hours
   - $\geq 10$ 2-hour measurements every day
 
