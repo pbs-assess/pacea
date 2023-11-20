@@ -399,7 +399,7 @@ If that does merge in some new commits then you should
     that people will get them when they install/update `pacea`:
 
 -   `git checkout main`
--   `git merge dev-andy`
+-   `git merge dev-yourname`
 -   `git push`
 
 And you are done! If you want, we have some aliases (such as `git co`

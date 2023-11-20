@@ -409,7 +409,7 @@ step will not have added any new code.
 5. Now you are ready to merge your changes into the main branch, so that people
 will get them when they install/update `pacea`:
  - `git checkout main`
- - `git merge dev-andy`
+ - `git merge dev-yourname`
  - `git push`
 
 And you are done!
