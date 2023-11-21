@@ -1,5 +1,7 @@
 # Adapting from Andrea Hilborn's
 #  https://github.com/IOS-OSD-DPG/Pacific_SST_Monitoring/blob/main/scripts/POI_latlon.R
+# Metadata of buoys, location, names etc., that shouldn't really need changing,
+#  but can be updated here if needed.
 
 library(dplyr)
 

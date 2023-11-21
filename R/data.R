@@ -153,6 +153,27 @@
 ##' @source Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
 "npi_annual"
 
+
+##' Year-month stamp of last downloaded `npi_monthly` file; not needed by users.
+##'
+##' Used in `data-raw/coastwide-indices/coastwide-indices.R` because each updated index is given a
+##' new website address.
+##'
+##' @format character string
+##' @author Andrew Edwards
+##' @source Generated and used in `data-raw/coastwide-indices/coastwide-indices.R`.
+"last_npi_monthly"
+
+##' Year-month stamp of last downloaded `npi_annual` file; not needed by users.
+##'
+##' Used in `data-raw/coastwide-indices/coastwide-indices.R` because each updated index is given a
+##' new website address.
+##'
+##' @format character string
+##' @author Andrew Edwards
+##' @source Generated and used in `data-raw/coastwide-indices/coastwide-indices.R`.
+"last_npi_annual"
+
 ##' PDO -- Pacific Decadal Oscillation
 ##'
 ##' The Pacific Decadal Oscillation is a monthly index which is a long-lived El
