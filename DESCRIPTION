@@ -5,7 +5,7 @@ Version: 1.0.0
 Authors@R: c(
     person(c("A.", "M."), "Edwards",
         email = "andrew.edwards@dfo-mpo.gc.ca",
-	role = c("aut", "cre"),
+	      role = c("aut", "cre"),
         comment = c(ORCID = "0000-0003-2749-8198")),
     person(c("T.", "C."), "Tai",
         email = "travis.tai@dfo-mpo.gc.ca",
@@ -45,7 +45,8 @@ Authors@R: c(
     person("Philina", "English",
         role = c("ctb")),
     person("Chris", "Grandin",
-        role = c("ctb")))
+        role = c("ctb"),
+        comment = c(ORCID = "0000-0002-6746-3486")))
 URL: https://github.com/pbs-assess/pacea
 BugReports: https://github.com/pbs-assess/pacea/issues
 Maintainer: Andrew Edwards <andrew.edwards@dfo-mpo.gc.ca>
