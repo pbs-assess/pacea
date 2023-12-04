@@ -62,4 +62,8 @@ If they were to be ordered top to bottom, then the above order would be good (as
 # printing), and this makes (copies?) one in man/figures/logo.png and gives code
 # to add to README.Rmd:
 
-use_logo("inst/pacea-logo-from-carley.png")
+ifelse(lubridate::today() %>% lubridate::month() == 12,
+       logo_file <- paste0(here::here(), "/inst/pacea-logo-from-carley-3.png"),
+       logo_file <- paste0(here::here(), "/inst/pacea-logo-from-carley.png"))
+
+use_logo(logo_file)

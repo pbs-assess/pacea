@@ -5,7 +5,7 @@ Version: 1.0.0
 Authors@R: c(
     person(c("A.", "M."), "Edwards",
         email = "andrew.edwards@dfo-mpo.gc.ca",
-	      role = c("aut", "cre"),
+        role = c("aut", "cre"),
         comment = c(ORCID = "0000-0003-2749-8198")),
     person(c("T.", "C."), "Tai",
         email = "travis.tai@dfo-mpo.gc.ca",
@@ -46,11 +46,13 @@ Authors@R: c(
         role = c("ctb")),
     person("Chris", "Grandin",
         role = c("ctb"),
-        comment = c(ORCID = "0000-0002-6746-3486")))
+        comment = c(ORCID = "0000-0002-6746-3486")),
+    person("Jennifer", "Boldt",
+        role = c("ctb")))
 URL: https://github.com/pbs-assess/pacea
 BugReports: https://github.com/pbs-assess/pacea/issues
 Maintainer: Andrew Edwards <andrew.edwards@dfo-mpo.gc.ca>
-Description: TODO
+Description: Contains a variety of data sets and model output. We wrangle the data sets behind the scenes to get them into usable formats in R, and provide helpful plotting functions. All data sets include documentation regarding the original sources and authors, who should be cited and consulted as appropriate.
 DOI: TODO
 License: MIT + file LICENSE
 Encoding: UTF-8

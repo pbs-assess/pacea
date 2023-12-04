@@ -5,8 +5,8 @@ README.md is generated from README.Rmd. Please edit that file. Build with
 load_all()
 rmarkdown::render("README.Rmd")
 
-which builds the .html that can be viewed locally (and isn't pushed to GitHub;
-GitHub uses README.md to make the page you see on GitHub.
+which builds the .html that can be viewed locally (but isn't pushed to GitHub;
+GitHub uses README.md to make the page you see on GitHub).
 
 Figures - to update a figure, manually run the piece of code that makes
 the .png file. See notes below (and Issue #44).
@@ -347,6 +347,8 @@ Once you have your branch set up then the workflow is:
 
 -   `git checkout dev-yourname`
 -   `git merge main`
+-   for magit users (probably just Andy), this is just `b b` and `m m`
+    (it recommends arguments)
 
 3.  Do some new commits in your branch and push them in the usual way.
     GitHub Actions will work on your branch.
