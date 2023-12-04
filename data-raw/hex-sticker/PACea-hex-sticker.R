@@ -66,4 +66,5 @@ ifelse(lubridate::today() %>% lubridate::month() == 12,
        logo_file <- paste0(here::here(), "/inst/pacea-logo-from-carley-3.png"),
        logo_file <- paste0(here::here(), "/inst/pacea-logo-from-carley.png"))
 
-use_logo(logo_file)
+use_logo(logo_file,
+         geometry = "1057x1220")
