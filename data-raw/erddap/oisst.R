@@ -12,6 +12,7 @@ library(sf)
 sf_use_s2(FALSE)
 
 library(devtools)
+setwd("C:/github/pacea")
 load_all() # set working directors to 'github/pacea'
 
 #####
