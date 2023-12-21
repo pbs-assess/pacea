@@ -26,6 +26,12 @@ combines both oceanic and atmospheric variables, to an assessment of ENSO in
 in a single index.
 }
 \details{
+NOTE: on NOAA's PSL website given below it was noted that there was an
+issue with one of the data sources for calculating the MEI and the values
+were therefore recalculated on 13th Dec 2023. These are now used in `pacea`, and means
+that `mei` in versions of `pacea` installed before 21st Dec 2023 will have
+the old incorrect values. The whole time series looks to have been affected.
+
 The bi-monthly Multivariate ENSO index (MEI.v2) is the time series of the
 leading combined Empirical Orthogonal Function (EOF) of five different
 variables:

@@ -119,6 +119,7 @@ for(i in 1:length(to_check_stamps)){
     monthly_file_exists[i] = TRUE}
 }
 
+to_check_stamps
 monthly_file_exists
 
 expect_true(monthly_file_exists[length(monthly_file_exists)],
@@ -227,6 +228,7 @@ for(i in 1:length(to_check_stamps)){
     monthly_file_exists[i] = TRUE}
 }
 
+to_check_stamps
 monthly_file_exists
 
 expect_true(monthly_file_exists[length(monthly_file_exists)],
@@ -353,7 +355,6 @@ if(check_index_changed(pdo, pdo_new)){
   pdo <- pdo_new
   usethis::use_data(pdo,
                     overwrite = TRUE)
-  plot(pdo)
 }
 
 #SOI
@@ -426,7 +427,6 @@ if(check_index_changed(soi, soi_new)){
   soi <- soi_new
   usethis::use_data(soi,
                     overwrite = TRUE)
-  plot(soi)
 }
 
 
@@ -515,13 +515,15 @@ class(mei_new) <- c("pacea_index",
 attr(mei_new, "axis_name") <- "Multivariate ENSO Index"
 
 check_index_changed(mei, mei_new)
+
 tail(mei)
 tail(mei_new)
+# cbind(mei, anomaly_new = mei_new$anomaly[-(length(mei_new))]) %>% tail()
 
 if(check_index_changed(mei,
                        mei_new)){
   expect_equal(mei,
-               mei_new[1:nrow(mei), ])  # See note at top if this fails
+               mei_new[1:nrow(mei), ])  # See note at top of file if this fails
   par(mfrow = c(2,1))
   plot(mei, main = "Currently in pacea")
   plot(mei_new, main = "Updated")
@@ -529,7 +531,6 @@ if(check_index_changed(mei,
   mei <- mei_new
   usethis::use_data(mei,
                     overwrite = TRUE)
-  plot(mei)
 }
 
 # AO - Arctic Oscillation
@@ -590,7 +591,6 @@ if(check_index_changed(ao, ao_new)){
   ao <- ao_new
   usethis::use_data(ao,
                     overwrite = TRUE)
-  plot(ao)
 }
 
 # ALPI - not updated since 2015, see ?alpi. So no need to keep running this each
