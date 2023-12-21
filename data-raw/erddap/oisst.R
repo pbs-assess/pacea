@@ -12,8 +12,10 @@ library(sf)
 sf_use_s2(FALSE)
 
 library(devtools)
-setwd("C:/github/pacea")
-load_all() # set working directors to 'github/pacea'
+
+setwd(here::here())
+
+load_all()
 
 #####
 # parameters
@@ -25,7 +27,7 @@ eez_ext <- st_bbox(bc_eez)
 latlim = eez_ext[c(2,4)]
 lonlim = eez_ext[c(1,3)]
 
-# date 
+# date
 date_init <- "01-01"
 date_fin <- "12-31"
 timechar <- "T12:00:00Z"
@@ -42,28 +44,28 @@ for(i in 1981:(lubridate::year(Sys.Date()))){
   start_date <- paste0(i, "-", date_init, timechar)
   end_date <- paste0(i, "-", date_fin, timechar)
   timelim <- c(start_date, end_date)
-  
+
   # data starts on 1981-09-01
   if(i==1981){
     start_date <- paste0(i, "-", "09-01", timechar)
     timelim <- c(start_date, end_date)
   }
-  
+
   # get data for current year up to 2 months before present
   if(i==2023){
     month <- lubridate::month(Sys.Date()) - 1
     end_date <- paste0(as.Date(paste0(i, "-", month, "-01")) - 1, timechar)
     timelim <- c(start_date, end_date)
   }
-  
-  sstdata <- griddap(sstInfo, latitude = latlim, longitude = lonlim, 
+
+  sstdata <- griddap(sstInfo, latitude = latlim, longitude = lonlim,
                      time = timelim)
-  sstdata_7day <- sstdata$data %>% 
+  sstdata_7day <- sstdata$data %>%
     filter(!is.na(sst)) %>%
     mutate(date = as.Date(time),
            year = lubridate::year(date),
            week = lubridate::week(date)) %>%
-    group_by(latitude, longitude, year, week) %>% 
+    group_by(latitude, longitude, year, week) %>%
     summarise(tsst = mean(sst, na.rm = TRUE),
               sst_sd = sd(sst, na.rm = TRUE),
               sst_n = sum(!is.na(sst)),
@@ -71,16 +73,16 @@ for(i in 1981:(lubridate::year(Sys.Date()))){
               end_date = max(as.Date(time))) %>%
     ungroup() %>%
     rename(sst = tsst)
-  
+
   sstdata_7day_sf <- st_as_sf(sstdata_7day, coords = c("longitude", "latitude")) %>%
     st_set_crs("EPSG: 4326")
-  
+
   # mask with eez boundary
   tdat <- sstdata_7day_sf[bc_eez,]
-  
+
   # write to output file.
   out.dat <- out.dat %>% rbind(tdat)
-  
+
 }
 
 # rename output and save data
@@ -101,28 +103,28 @@ for(i in 1981:(lubridate::year(Sys.Date()))){
   start_date <- paste0(i, "-", date_init, timechar)
   end_date <- paste0(i, "-", date_fin, timechar)
   timelim <- c(start_date, end_date)
-  
+
   # data starts on 1981-09-01
   if(i==1981){
     start_date <- paste0(i, "-", "09-01", timechar)
     timelim <- c(start_date, end_date)
   }
-  
+
   # get data for current year up to 2 months before present
   if(i==2023){
     month <- lubridate::month(Sys.Date()) - 1
     end_date <- paste0(as.Date(paste0(i, "-", month, "-01")) - 1, timechar)
     timelim <- c(start_date, end_date)
   }
-  
-  sstdata <- griddap(sstInfo, latitude = latlim, longitude = lonlim, 
+
+  sstdata <- griddap(sstInfo, latitude = latlim, longitude = lonlim,
                      time = timelim)
-  sstdata_month <- sstdata$data %>% 
+  sstdata_month <- sstdata$data %>%
     filter(!is.na(sst)) %>%
     mutate(date = as.Date(time),
            year = lubridate::year(date),
            month = lubridate::month(date)) %>%
-    group_by(latitude, longitude, year, month) %>% 
+    group_by(latitude, longitude, year, month) %>%
     summarise(tsst = mean(sst, na.rm = TRUE),
               sst_sd = sd(sst, na.rm = TRUE),
               sst_n = sum(!is.na(sst)),
@@ -130,16 +132,16 @@ for(i in 1981:(lubridate::year(Sys.Date()))){
               end_date = max(as.Date(time))) %>%
     ungroup() %>%
     rename(sst = tsst)
-  
+
   sstdata_month_sf <- st_as_sf(sstdata_month, coords = c("longitude", "latitude")) %>%
     st_set_crs("EPSG: 4326")
-  
+
   # mask with eez boundary
   tdat <- sstdata_month_sf[bc_eez,]
-  
+
   # write to output file.
   out.dat <- out.dat %>% rbind(tdat)
-  
+
 }
 
 # rename output and save data
@@ -153,35 +155,32 @@ use_data(oisst_month, compress = "xz", overwrite = TRUE)
 
 # 7day
 tdat <- oisst_7day
-oisst_7dayclim <- tdat %>% 
-  filter(year %in% 1991:2020) %>% 
-  group_by(week, geometry) %>% 
+oisst_7dayclim <- tdat %>%
+  filter(year %in% 1991:2020) %>%
+  group_by(week, geometry) %>%
   summarise(tsst = mean(sst, na.rm = TRUE),
             sst_sd = sd(sst, na.rm = TRUE),
-            sst_n = sum(!is.na(sst_n))) %>% 
+            sst_n = sum(!is.na(sst_n))) %>%
   ungroup() %>%
   rename(sst = tsst) %>%
-  relocate(geometry, .after = last_col()) 
+  relocate(geometry, .after = last_col())
 
 str(oisst_7dayclim)
 class(oisst_7dayclim) <- c("pacea_oi", class(oisst_7dayclim))
 use_data(oisst_7dayclim, compress = "xz", overwrite = TRUE)
- 
+
 # month
 tdat <- oisst_month
-oisst_monthclim <- tdat %>% 
-  filter(year %in% 1991:2020) %>% 
-  group_by(month, geometry) %>% 
+oisst_monthclim <- tdat %>%
+  filter(year %in% 1991:2020) %>%
+  group_by(month, geometry) %>%
   summarise(tsst = mean(sst, na.rm = TRUE),
             sst_sd = sd(sst, na.rm = TRUE),
-            sst_n = sum(!is.na(sst_n))) %>% 
+            sst_n = sum(!is.na(sst_n))) %>%
   ungroup() %>%
   rename(sst = tsst) %>%
-  relocate(geometry, .after = last_col()) 
+  relocate(geometry, .after = last_col())
 
 str(oisst_monthclim)
 class(oisst_monthclim) <- c("pacea_oi", class(oisst_monthclim))
 use_data(oisst_monthclim, compress = "xz", overwrite = TRUE)
-
-
-
