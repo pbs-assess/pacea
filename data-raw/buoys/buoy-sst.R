@@ -933,10 +933,13 @@ buoy_sst     # 201,435 with same data as 28 August 2023, but having done the
 
 # Decide if changing them
 
-buoy_sst_new
-buoy_sst
+buoy_sst_new %>% tail()
+buoy_sst %>% tail()
 
-stop("Do some thinking before updating.")  # Could add in code like for indices
+summary(buoy_sst_new)
+summary(buoy_sst)
+
+stop("Do some quick thinking before updating.")  # Could add in code like for indices
 
 buoy_sst <- buoy_sst_new
 
