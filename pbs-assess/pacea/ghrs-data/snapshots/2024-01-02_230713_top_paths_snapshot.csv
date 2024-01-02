@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,23,7
+/pbs-assess/pacea/commits/main,13,1
+/pbs-assess/pacea/blob/main/README.md,6,2
+/pbs-assess/pacea/commit/a58b23d395e23e499675641af501d019bffb334f,5,3
+/pbs-assess/PACea,3,3
+/pbs-assess/pacea/issues,3,1
+/pbs-assess/pacea/issues/1,3,1
+/pbs-assess/pacea/tree/main/data-raw/erddap,3,1
+/pbs-assess/pacea/blob/main/data/bc_eez.rda,2,1
+/pbs-assess/pacea/blob/main/data-raw/erddap/oisst.R,2,1
