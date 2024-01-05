@@ -287,8 +287,8 @@ This work is strongly motivated by, and based on, the [GSLea](https://github.com
 
 If you use `pacea` in your work then please cite it as
 
-Edwards AM, Tai TC, Watson J, Peña MA, Hilborn A, Hannah CG, Rooper
-  CN (2023). "pacea: An R package of Pacific ecosystem information to
+Edwards A.M., Tai T.C., Watson J., Peña M.A., Hilborn A., Hannah C.G., and Rooper
+  C.N. (2023). "pacea: An R package of Pacific ecosystem information to
   help facilitate an ecosystem approach to fisheries management."
   <https://github.com/pbs-assess/pacea>.
 

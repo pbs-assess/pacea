@@ -268,10 +268,10 @@ colleagues for the Gulf of St Lawrence.
 
 If you use `pacea` in your work then please cite it as
 
-Edwards AM, Tai TC, Watson J, Peña MA, Hilborn A, Hannah CG, Rooper CN
-(2023). “pacea: An R package of Pacific ecosystem information to help
-facilitate an ecosystem approach to fisheries management.”
-<https://github.com/pbs-assess/pacea>.
+Edwards A.M., Tai T.C., Watson J., Peña M.A., Hilborn A., Hannah C.G.,
+and Rooper C.N. (2023). “pacea: An R package of Pacific ecosystem
+information to help facilitate an ecosystem approach to fisheries
+management.” <https://github.com/pbs-assess/pacea>.
 
 You may wish to add the date you installed it (using
 `pacea_installed()`). Use `citation("pacea")` to get a version for LaTeX
