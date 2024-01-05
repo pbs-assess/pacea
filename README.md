@@ -264,6 +264,22 @@ This work is strongly motivated by, and based on, the
 [GSLea](https://github.com/duplisea/gslea) R package by Dan Duplisea and
 colleagues for the Gulf of St Lawrence.
 
+## Citation
+
+If you use `pacea` in your work then please cite it as
+
+Edwards AM, Tai TC, Watson J, Peña MA, Hilborn A, Hannah CG, Rooper CN
+(2023). “pacea: An R package of Pacific ecosystem information to help
+facilitate an ecosystem approach to fisheries management.”
+<https://github.com/pbs-assess/pacea>.
+
+You may wish to add the date you installed it (using
+`pacea_installed()`). Use `citation("pacea")` to get a version for LaTeX
+and R Markdown bibliographies.
+
+Also let us know of any applications. This will help us devote effort
+into maintaining `pacea`.
+
 ## Acknowledgments
 
 This work is funded by a Competitive Science Research Fund grant from
@@ -304,8 +320,8 @@ logo.
     and functions.
 
 6.  Citation information is in inst/CITATION, so if you update
-    DESCRIPTION file (e.g. add an author) then update that also, and may
-    want to change the info at the start of this file.
+    DESCRIPTION file (e.g. add an author) then update that also and
+    update the citation info above.
 
 7.  Logo included by running
     `use_logo("inst/pacea-logo-from-carley.png")`. The .png was expertly
