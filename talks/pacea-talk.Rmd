@@ -1,0 +1,138 @@
+---
+title: "Introducing pacea"
+subtitle: "An R package of Pacific ecosystem information to help facilitate an ecosystem approach to fisheries management"
+author: "Andrew Edwards and Travis Tai"
+output:
+  beamer_presentation:
+    theme: Singapore
+    colortheme: orchid
+    # Second-level headings create new slide
+    slide_level: 2
+    toc: false
+    # fig_height: 5
+    # fig_width: 8
+    keep_tex: yes
+    includes:
+      in_header: latex-topmatter.tex
+    # toc_depth: 1
+    #  title_page_image: "../man/figures/logo.png"
+    #  title_page_image_height_in: 1
+    #  title_page_image_width_in: 2
+header-includes:
+  - \titlegraphic{\includegraphics[width = 1cm]{"../man/figures/logo.png"}}
+  - \AtBeginSubsection{}
+  - \AtBeginSection{}
+  - \usepackage{colortbl}
+  - \usepackage{booktabs}
+  - \usepackage{multirow}
+classoption: "aspectratio=169"
+# This affects font sizes in figures also:
+fontsize: 12pt
+urlcolor: blue
+---
+
+<!-- To build:
+
+load_all()      # as necessary, then
+
+rmarkdown::render("pacea-release-talk.Rmd")
+
+or click the knit button in RStudio
+
+Note the first slide below creates the title slide (on page 2), from a
+   powerpoint slide saved as .png.
+
+When talk is finished save the .pdf with a new name
+(e.g. pacea-release-talk-dfo.pdf, pacea-release-talk-uvic.pdf) and commit the
+.pdf, so we can just keep the single set of .Rmd code. Also link the pdf talk
+from README.Rmd.
+-->
+
+<!-- trying different themes from https://mpetroff.net/files/beamer-theme-matrix/
+theme:
+Copenhagen - too much at bottom
+Frankfurt - shows progress bar at top (play with colours though), nothing at bottom.
+Luebeck - awful (lists sections vertically at the top)
+metropolis - too many borders
+Rochester - slide title is in top border, but that's really big
+Singapore - used for hake, slide title does take up a bit of room, looks good with lily
+
+colortheme:
+dolphin - black top bar for Frankfurt
+lily
+orchid
+-->
+
+<!-- Font size options, put any of these before text or chunk, then put
+     \normalsize afterwards to continue
+\tiny
+\scriptsize
+\footnotesize
+\small
+\normalsize
+\large
+\Large
+\LARGE
+\huge
+\Huge
+-->
+
+```{r, setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "",
+  global.par = TRUE,  # set par values to be global (once changed)
+  fig.width = 6,
+  fig.height = 4,
+  fig.align = "center",
+  out.width = "60%"
+  #out.height = 400
+)
+
+# load_all()    # Do this the first time and if update the package while writing
+# the talk. Have commented as it reloads each time, which isn't necessary.
+library(dplyr)
+library(tibble)
+library(kableExtra)
+
+options(pillar.print_max = 6,   # number of rows to show for a tibble
+        pillar.print_min = 6)
+par("mai" = c(1.02, 0.82, 0.3, 0.42))   # default is 1.02 0.82 0.82 0.42
+
+# https://bookdown.org/yihui/rmarkdown-cookbook/font-color.html . For example:
+# `r colorize("hello", "blue")`
+colorize <- function(x, color){
+  if(knitr::is_latex_output()) {
+    sprintf("\\textcolor{%s}{%s}", color, x)
+  } else if(knitr::is_html_output()) {
+    sprintf("<span style='color: %s;'>%s</span>", color,
+      x)
+  } else x
+}
+```
+
+```{r coverpage, echo=FALSE, out.width = "100%"}
+knitr::include_graphics(paste0(here::here(),
+                               "/talks/talks-manual-figures/pacea-release-title-slide-uvic.png"))
+```
+
+```{r introduction, child = "introduction.Rmd"}
+```
+
+```{r buoys, child = "buoys.Rmd"}
+```
+
+```{r indices, child = "indices.Rmd"}
+```
+
+```{r populations, child = "populations.Rmd"}
+```
+
+```{r oisst, child = "oisst.Rmd"}
+```
+
+```{r bccm, child = "bccm.Rmd"}
+```
+
+```{r summary, child = "summary.Rmd"}
+```
