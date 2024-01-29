@@ -99,6 +99,7 @@ dfo_data       # 3.666 million rows when removing pre-1991 . Every few minutes h
                # that I think were removed when using posixct. Dates seem fine
                # so keeping with with_tz.
                # 9/11/2023 update: 3.797 million rows
+               # 29/1/2024 update: 3.811 million rows
 
 summary(dfo_data)   # Earliest is 1987, so not adding tons of data, yet not really worth
                     # excluding 1987-1991 for our purposes (Andrea did since
