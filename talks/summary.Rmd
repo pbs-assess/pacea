@@ -63,7 +63,7 @@ knitr::include_graphics(paste0(here::here(),
    - check the `Issues` on GitHub in case someone else has asked or we are
      already working on it
 
-   - simple quick question just ask us (email, or Andy is on EcoStats Slack channel)
+   - simple quick question just ask us
 
    - more detailed questions or bug reports post
      a new `Issue` (allows others to see, and maybe answer, your question)

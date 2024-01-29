@@ -1,7 +1,7 @@
 # BCCM
 
 ## British Columbia Continental Margin (BCCM) model
-\pause
+
 Physical biogeochemical oceanographic model
 
 - Regional Ocean Modelling Systen (ROMS)
@@ -113,13 +113,14 @@ Would you like to continue?
 Selection:
 ```
 
-
+```{asis, echo = long_talk}
 ## Help file
-```{r bccmhelp, eval = FALSE}
+```
+```{r bccmhelp, eval = FALSE, echo = long_talk}
 ?bccm_surface_oxygen
 ```
 
-```{r bccmhelp2, eval = FALSE}
+```{r bccmhelp2, eval = FALSE, echo = long_talk}
 BCCM environmental variable data
 
 Description
@@ -257,17 +258,19 @@ Arguments
 ```
 
 
-
+```{asis, echo = long_talk}
 ## Extras -- anomaly function
-
+```
 ```{r calc_anom3, echo = FALSE, warning = FALSE}
 if(!exists("anom_dat")){
   anom_dat <- calc_anom(bccm_surface_temperature(), time_period_return = "April", years_return = c(2010, 2015))
 }
 ```
 
+```{asis, echo = long_talk}
 Specify year(s) and time period (e.g. week, month) to return -- otherwise all.
-```{r calc_anom, eval = FALSE}
+```
+```{r calc_anom, eval = FALSE, echo = long_talk}
 anom_dat <- calc_anom(bccm_surface_temperature(), time_period_return = "April", years_return = c(2010, 2015))
 
 Simple feature collection with 40580 features and 2 fields

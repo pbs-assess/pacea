@@ -13,6 +13,7 @@
 
 - DFO's Competitive Science Research Fund for funding (project 21-FS-03-13).
 
+```{asis, echo = long_talk}
 ## What is a stock assessment?
 
 - Collect data from surveys and commercial fisheries, including ages of fish
@@ -20,12 +21,14 @@
 - Models provide advice to fisheries managers
 
 Pacific Hake assessment from 2023, estimate the historical population size:
+```
 
-```{r hake intro, echo=FALSE}
+```{r hakeintro, echo = FALSE, eval = long_talk}
 plot(hake_biomass,
      y_max = 3.5)
 ```
 
+```{asis, echo=long_talk}
 ## What is a stock assessment?
 
 Advice often in the form of 'decision tables' that indicate probabilities of future events given
@@ -38,7 +41,7 @@ different catches:
 | 225,000 | 75% | 3% |
 | 320,000 | 78% | 3% |
 | 430,000 | 85% | 5% |
-
+```
 
 ## Motivation
 

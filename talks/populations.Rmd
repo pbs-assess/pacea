@@ -21,9 +21,10 @@ hake_biomass
 
 tail(hake_biomass)
 ```
-
+```{asis, echo = long_talk}
 ## Hake biomass
-```{r hakebiomasshelp, eval=FALSE}
+```
+```{r hakebiomasshelp, eval=FALSE, echo=long_talk}
 ?hake_biomass
 
 Pacific Hake annual spawning stock biomass (females only) as estimated
@@ -90,10 +91,12 @@ Estimates for each region and coastwide, reproducing Figure 3 of DFO (2022):
 plot(harbour_seals)
 ```
 
+```{asis, echo = long_talk}
 ## Pacific Harbour Seals
 
 Or just plot estimates for a single region:
-```{r sealplot2}
+```
+```{r sealplot2, echo = long_talk, eval = long_talk}
 plot(harbour_seals,
      region = "SOG")
 ```

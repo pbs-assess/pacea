@@ -78,6 +78,12 @@ orchid
 -->
 
 ```{r, setup, include = FALSE}
+long_talk <- TRUE     # if FALSE then chunks with eval=long_talk will not be
+                      # evaluated, as we are writing a shorter version. This
+                      # should build, if not just use commit 9f5f209, which has
+                      # no long_talk options. From now on we are only
+                      # maintaining pacea-talk.Rmd.
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "",

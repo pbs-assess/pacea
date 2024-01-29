@@ -1,5 +1,5 @@
 ---
-title: "Introducing pacea"
+title: "pacea:"
 subtitle: "An R package of Pacific ecosystem information to help facilitate an ecosystem approach to fisheries management"
 author: "Andrew Edwards and Travis Tai"
 output:
@@ -35,7 +35,7 @@ urlcolor: blue
 
 load_all()      # as necessary, then
 
-rmarkdown::render("pacea-release-talk.Rmd")
+rmarkdown::render("pacea-talk.Rmd")
 
 or click the knit button in RStudio
 
@@ -78,6 +78,9 @@ orchid
 -->
 
 ```{r, setup, include = FALSE}
+long_talk <- FALSE    # if FALSE then chunks with eval=long_talk will not be
+                      # evaluated, as we are writing a shorter version
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "",

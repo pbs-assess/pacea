@@ -28,11 +28,14 @@ oni
 tail(oni)
 ```
 
+```{asis, echo = long_talk}
 ## Climatic and oceanographic indices
 
 Each climatic and oceanographic index is saved as a data
-object, and properly documented, described, and referenced in its help file, for example:
-```{r onihelp, eval = FALSE}
+object, and properly documented, described, and referenced in its help file, for
+example:
+```
+```{r onihelp, eval = FALSE, echo = long_talk}
 ?oni
 
 ONI - Oceanographic Niño Index
@@ -62,11 +65,12 @@ Format:
           every 5 years, deg C; note that recent values may change in
           subsequent updates - see details
 ```
-
+```{asis, echo = long_talk}
 ## Climatic and oceanographic indices
 
 Continuing the help...
-```{r onihelp2, eval = FALSE}
+```
+```{r onihelp2, eval = FALSE, echo = long_talk}
      The Oceanic Niño Index (ONI) is a 3-month running mean of sea
      surface temperature (SST) anomalies in the Niño 3.4 region (5 deg
      N to 5 deg S, 120 deg W to 170 deg W) plotted on the center month.
@@ -86,14 +90,15 @@ Continuing the help...
      should be considered an estimate.
 ```
 
+```{asis, echo = long_talk}
 ## Climatic and oceanographic indices
 
 So for some analyses you may want to restrict values to a specified time period
 (for which values should not change in future `pacea` updates), for example
 
   \
-
-```{r onilocal}
+```
+```{r onilocal, eval = long_talk, echo = long_talk}
 oni_fix <- dplyr::filter(oni,
                          year < 2023 | year == 2023 & month < 3)
 tail(oni_fix)       # Will always end with February 2023
@@ -138,13 +143,17 @@ plot(oni,
      lwd = 2)
 ```
 
+```{asis, echo = long_talk}
 ## Technical aside regarding `plot()`
 
 The object `oni` has the class `pacea_index`:  \
+```
 
-```{r oniclass}
+```{asis, eval = long_talk, echo = long_talk}
 class(oni)
 ```
+
+```{asis, echo = long_talk}
   \
 which ensures that `plot(oni)`
 automatically uses our specialised function `plot.pacea_index(oni)`, giving
@@ -154,3 +163,4 @@ the red and blue colours, tickmarks, axis labelling, etc.
 
 So see `?plot.pacea_index` for further options. Similarly, check the `class` of
 other objects saved in `pacea`.
+```
