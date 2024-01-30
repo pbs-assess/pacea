@@ -342,9 +342,16 @@ check_index_changed(pdo, pdo_new)
 
 if(check_index_changed(pdo, pdo_new)){
   expect_equal(pdo[1:(nrow(pdo) - 1), ],
-               pdo_new[1:nrow(pdo) - 1, ]) # See note at top if fails. Final
+               pdo_new[1:(nrow(pdo) - 1), ],
+               tolerance = 0.03) # See note at top if fails. Final
                                         # value seems to get updated (the final March
-                                        # 2023 value did when updating in August 2023).
+                                        # 2023 value did when updating in August
+                                        # 2023). Though Jan 2024 quite a few
+                                        # values changed (more than just the
+                                        # last five months, earliest was nov
+                                        # 1025. SS introduced the
+                                        # tolerance setting.
+
   pdo %>% tail()
   pdo_new %>% tail()
 
