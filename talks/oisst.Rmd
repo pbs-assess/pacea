@@ -93,5 +93,5 @@ plot(oisst_month)
 
 ## Built in plots -- select years and months
 ```{r oisstplot custom}
-plot(oisst_month, months.plot = c("April", "June"), years.plot = c(2021:2023))
+plot(oisst_month, months.plot = c("April", "June"), years.plot = c(2021:2022))
 ```

@@ -159,16 +159,17 @@ plot(bccm_surface_temperature(), months.plot = c("April", "july"), years.plot = 
 ```{r bccmplot2}
 plot(bccm_surface_ph())
 ```
-
+```{asis, echo = long_talk}
 ## Extras -- climatology function
 
 Built in functions to calculate 30-year climatology
+```
 
-```{r calc_climhelp, eval=FALSE}
+```{r calc_climhelp, eval=FALSE, echo = long_talk}
 ?calc_clim
 ```
 
-```{r calc_climhelp2, eval=FALSE}
+```{r calc_climhelp2, eval=FALSE, echo = long_talk}
 Description
   Function for calculating climatology of a pacea data object.
 
@@ -191,14 +192,16 @@ Arguments
 ...
 ```
 
+```{asis, echo = long_talk}
 ## Extras -- climatology function
 
 Output with each climatology time unit (e.g. week, month)
-```{r calc_clim, eval=FALSE}
+```
+```{r calc_clim, eval = FALSE, echo = long_talk}
 calc_clim(bccm_surface_temperature())
 ```
 
-```{r calc_clim2, eval=FALSE}
+```{r calc_clim2, eval = FALSE, echo = long_talk}
 Simple feature collection with 486960 features and 4 fields
 Geometry type: POLYGON
 Dimension:     XY
@@ -216,22 +219,26 @@ Projected CRS: NAD83 / BC Albers
 # i 486,954 more rows
 # i Use `print(n = ...)` to see more rows
 ```
+
+```{asis, echo = long_talk}
 \
 And we can also use this with the OISST and buoy data
-```{r calc_climother, eval=FALSE}
+```
+```{r calc_climother, eval=FALSE, echo=long_talk}
 calc_clim(oisst_7day)
 calc_clim(buoy_sst)
 ```
 
+```{asis, echo = long_talk}
 ## Extras -- anomaly function
 
 Built in functions to calculate anomaly to the 30 year climatology
-
-```{r calc_anomhelp, eval=FALSE}
+```
+```{r calc_anomhelp, eval=FALSE, echo=long_talk}
 ?calc_anom
 ```
 
-```{r calc_anomhelp2, eval=FALSE}
+```{r calc_anomhelp2, eval=FALSE, echo=long_talk}
 Description
   Function for calculating climatology of a pacea data object.
 
@@ -297,6 +304,7 @@ Projected CRS: NAD83 / BC Albers
 plot(anom_dat, months.plot = "April", years.plot = c(2010, 2015))
 ```
 
+```{asis, echo = long_talk}
 ## Extras -- other tidbits in vignettes
 
 Geospatial functions in vignettes
@@ -306,3 +314,4 @@ Geospatial functions in vignettes
 - Masking/clipping specific areas (e.g. fishing regions of interest)
 
 - Various other data visualisation examples
+```

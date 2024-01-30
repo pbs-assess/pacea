@@ -1,5 +1,6 @@
 # Buoys
 
+```{asis, echo = long_talk}
 ## Sea surface temperature
 
 Andrea Hilborn (IOS) maintains
@@ -8,11 +9,12 @@ which is updated weekly to show recent SST from various sources for the Northeas
 and marine heatwave information).
 
   \
-
-```{r andreapage, echo=FALSE, out.width = "80%"}
+```
+```{r andreapage, echo=FALSE, out.width = "80%", eval = long_talk}
 knitr::include_graphics(paste0(here::here(),
                                "/inst/andrea-github.png"))
 ```
+
 
 ## Sea surface temperature data from buoys
 
@@ -20,12 +22,12 @@ Data from `r nrow(buoy_metadata)` buoys maintained by DFO/ECCC (Environment and
 Climate Change Canada), hosted through CIOOS (Canadian Integrated Ocean
 Observing System).
 
-
 ```{r buoysmap, echo=FALSE, out.width = "50%"}
 knitr::include_graphics(paste0(here::here(),
                                "/man/figures/buoys_map.png"))
 ```
 
+```{asis, echo = long_talk}
 ## Sea surface temperature data from buoys
 
 Extensive data processing to calculate daily mean SST:
@@ -41,7 +43,7 @@ Extensive data processing to calculate daily mean SST:
 - Switch from DFO data stream to ECCC data stream when appropriate
 
 - Still working on fixing a few outliers in the high-resolution data (hard to automate)
-
+```
 
 ## Sea surface temperature data from buoys
 

@@ -39,6 +39,7 @@ Please:
 
  - understand the limitations of the data
 
+```{asis, echo = long_talk}
 ## Recommended guidelines for users
 
 To check when you last installed `pacea`
@@ -51,12 +52,12 @@ Compare that with the updates in the NEWS file (and you can also check dates of 
 https://github.com/pbs-assess/pacea/commits/main)
 ```
 
-```{r installedscreenshot, echo=FALSE, out.width="30%"}
+```{r installedscreenshot, echo=FALSE, out.width="30%", eval = long_talk}
 knitr::include_graphics(paste0(here::here(),
                                "/talks/talks-manual-figures/github-commits.png"))
 ```
 
-
+```{asis, echo = long_talk}
 ## Recommended guidelines for users
 
  - any problems, make a minimum working example (usually makes you figure it out yourself)
@@ -67,6 +68,7 @@ knitr::include_graphics(paste0(here::here(),
 
    - more detailed questions or bug reports post
      a new `Issue` (allows others to see, and maybe answer, your question)
+```
 
 ## Recommended guidelines for users
 

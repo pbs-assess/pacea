@@ -125,7 +125,7 @@ approach data matrix R-package. R package version 0.1 https://github.com/duplise
 
 - Ensures proper documentation of data objects and functions (helps users).
 
-- Include vignettes which walk users through various features.
+- Include vignettes that walk users through various features.
 
 - All data (except one type) is saved within the package, no further downloading
   required.

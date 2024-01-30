@@ -1,6 +1,6 @@
 ---
-title: "pacea:"
-subtitle: "An R package of Pacific ecosystem information to help facilitate an ecosystem approach to fisheries management"
+title: "pacea"
+subtitle: "an R package of Pacific ecosystem information to help facilitate an ecosystem approach to fisheries management"
 author: "Andrew Edwards and Travis Tai"
 output:
   beamer_presentation:
@@ -116,7 +116,7 @@ colorize <- function(x, color){
 
 ```{r coverpage, echo=FALSE, out.width = "100%"}
 knitr::include_graphics(paste0(here::here(),
-                               "/talks/talks-manual-figures/pacea-release-title-slide-uvic.png"))
+                               "/talks/talks-manual-figures/pacea-title-slide-sidney.png"))
 ```
 
 ```{r introduction, child = "introduction.Rmd"}
