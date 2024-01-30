@@ -13,7 +13,8 @@ sf_use_s2(FALSE)
 
 library(devtools)
 
-setwd(here::here())
+# set working directory from current path script
+setwd(paste0(dirname(rstudioapi::getSourceEditorContext()$path), "/../../"))
 
 load_all()
 
@@ -37,7 +38,7 @@ sstInfo <- info("ncdcOisst21Agg_LonPM180", url = "https://coastwatch.pfeg.noaa.g
 
 
 #####
-# 7 day mean sst from 1981 to 1 month before present month
+# 7 day mean sst from 1981 to previous month before present month
 out.dat <- data.frame()
 
 for(i in 1981:(lubridate::year(Sys.Date()))){
@@ -50,13 +51,19 @@ for(i in 1981:(lubridate::year(Sys.Date()))){
     start_date <- paste0(i, "-", "09-01", timechar)
     timelim <- c(start_date, end_date)
   }
-
-  # get data for current year up to 2 months before present
-  if(i==2023){
-    month <- lubridate::month(Sys.Date()) - 1
-    end_date <- paste0(as.Date(paste0(i, "-", month, "-01")) - 1, timechar)
-    timelim <- c(start_date, end_date)
-  }
+  
+  # get data for current year up to the previous month before present (data have 2 week time lag) - midmonth update will be sufficient for previous months data
+  # if current date is at start of year:
+  if(i==lubridate::year(Sys.Date())){
+    if(lubridate::month(Sys.Date()) > 1){
+      month <- lubridate::month(Sys.Date() - 30)
+      
+      end_date <- paste0(as.Date(paste0(i, "-", month, "-01")) - 1, timechar)
+      timelim <- c(start_date, end_date)
+    } else {
+      next()
+    }
+  } 
 
   sstdata <- griddap(sstInfo, latitude = latlim, longitude = lonlim,
                      time = timelim)
@@ -96,7 +103,7 @@ use_data(oisst_7day, compress = "xz", overwrite = TRUE)
 
 
 #####
-# monthly mean sst from 1981 to 2 month before present month
+# monthly mean sst from 1981 to previous month before present month
 out.dat <- data.frame()
 
 for(i in 1981:(lubridate::year(Sys.Date()))){
@@ -110,13 +117,19 @@ for(i in 1981:(lubridate::year(Sys.Date()))){
     timelim <- c(start_date, end_date)
   }
 
-  # get data for current year up to 2 months before present
-  if(i==2023){
-    month <- lubridate::month(Sys.Date()) - 1
-    end_date <- paste0(as.Date(paste0(i, "-", month, "-01")) - 1, timechar)
-    timelim <- c(start_date, end_date)
-  }
-
+  # get data for current year up to the previous month before present (data have 2 week time lag) - midmonth update will be sufficient for previous months data
+  # if current date is at start of year:
+  if(i==lubridate::year(Sys.Date())){
+    if(lubridate::month(Sys.Date()) > 1){
+      month <- lubridate::month(Sys.Date() - 30)
+      
+      end_date <- paste0(as.Date(paste0(i, "-", month, "-01")) - 1, timechar)
+      timelim <- c(start_date, end_date)
+    } else {
+      next()
+    }
+  } 
+  
   sstdata <- griddap(sstInfo, latitude = latlim, longitude = lonlim,
                      time = timelim)
   sstdata_month <- sstdata$data %>%
@@ -150,37 +163,3 @@ class(oisst_month) <- c("pacea_oi", class(oisst_month))
 attr(oisst_month, "units") <- "Temperature (\u00B0C)"
 use_data(oisst_month, compress = "xz", overwrite = TRUE)
 
-
-# 30-year climatology 1991-2020 - use data already downloaded and processed
-
-# 7day
-tdat <- oisst_7day
-oisst_7dayclim <- tdat %>%
-  filter(year %in% 1991:2020) %>%
-  group_by(week, geometry) %>%
-  summarise(tsst = mean(sst, na.rm = TRUE),
-            sst_sd = sd(sst, na.rm = TRUE),
-            sst_n = sum(!is.na(sst_n))) %>%
-  ungroup() %>%
-  rename(sst = tsst) %>%
-  relocate(geometry, .after = last_col())
-
-str(oisst_7dayclim)
-class(oisst_7dayclim) <- c("pacea_oi", class(oisst_7dayclim))
-use_data(oisst_7dayclim, compress = "xz", overwrite = TRUE)
-
-# month
-tdat <- oisst_month
-oisst_monthclim <- tdat %>%
-  filter(year %in% 1991:2020) %>%
-  group_by(month, geometry) %>%
-  summarise(tsst = mean(sst, na.rm = TRUE),
-            sst_sd = sd(sst, na.rm = TRUE),
-            sst_n = sum(!is.na(sst_n))) %>%
-  ungroup() %>%
-  rename(sst = tsst) %>%
-  relocate(geometry, .after = last_col())
-
-str(oisst_monthclim)
-class(oisst_monthclim) <- c("pacea_oi", class(oisst_monthclim))
-use_data(oisst_monthclim, compress = "xz", overwrite = TRUE)
