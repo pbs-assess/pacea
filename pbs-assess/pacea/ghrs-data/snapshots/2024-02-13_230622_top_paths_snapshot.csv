@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,18,9
+/pbs-assess/PACea,15,9
+/pbs-assess/pacea/tree/main/vignettes,11,3
+/pbs-assess/pacea/tree/main/data-raw/roms,8,1
+/pbs-assess/pacea/tree/main/data-raw,6,2
+/pbs-assess/pacea/blob/main/data-raw/roms/roms-data-interpolation.R,4,1
+/pbs-assess/pacea/commits/main,4,1
+/pbs-assess/pacea/tree/main/data-raw/coastline,4,1
+/pbs-assess/pacea/tree/main/R,4,1
+/pbs-assess/pacea/blob/main/man/figures/README-oisst.png,3,1
