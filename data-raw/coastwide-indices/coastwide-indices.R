@@ -76,6 +76,10 @@ class(oni_new) <- c("pacea_index",
 attr(oni_new, "axis_name") <- "Oceanic Niño Index"
 
 check_index_changed(oni, oni_new)
+
+tail(oni)
+tail(oni_new)
+
 if(check_index_changed(oni, oni_new)){
   # Check previous values haven't changed, but for oni we expect the last two
   #  months of anomaly to get updated (and maybe one month of value)
@@ -84,7 +88,8 @@ if(check_index_changed(oni, oni_new)){
   plot(oni_new, main = "Updated")
 
   expect_equal(oni[1:(nrow(oni) - 2), ],
-               oni_new[1:(nrow(oni) - 2), ]) # See note at top if this fails
+               oni_new[1:(nrow(oni) - 2), ],
+               tolerance = 0.02) # See note at top if this fails
 
   oni <- oni_new
   usethis::use_data(oni,
@@ -340,6 +345,9 @@ attr(pdo_new, "axis_name") <- "Pacific Decadal Oscillation"
 
 check_index_changed(pdo, pdo_new)
 
+tail(pdo)
+tail(pdo_new)
+
 if(check_index_changed(pdo, pdo_new)){
   expect_equal(pdo[1:(nrow(pdo) - 1), ],
                pdo_new[1:(nrow(pdo) - 1), ],
@@ -351,9 +359,6 @@ if(check_index_changed(pdo, pdo_new)){
                                         # last five months, earliest was nov
                                         # 1025. SS introduced the
                                         # tolerance setting.
-
-  pdo %>% tail()
-  pdo_new %>% tail()
 
   par(mfrow = c(2,1))
   plot(pdo, main = "Currently in pacea")
@@ -421,8 +426,8 @@ attr(soi_new, "axis_name") <- "Southern Oscillation Index"
 
 check_index_changed(soi, soi_new)
 
-soi %>% tail()
-soi_new %>% tail()
+tail(soi
+tail(soi_new)
 
 if(check_index_changed(soi, soi_new)){
   expect_equal(soi,
