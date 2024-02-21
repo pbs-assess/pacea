@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,18,9
+/pbs-assess/PACea,11,10
+/pbs-assess/pacea/tree/main/data-raw,6,1
+/pbs-assess/pacea/issues,3,2
+/pbs-assess/pacea/tree/main/data-raw/coastwide-indices,3,1
+/pbs-assess/pacea/tree/main/data-raw/erddap,3,1
+/pbs-assess/pacea/tree/main/data-raw/grids,3,1
+/pbs-assess/pacea/graphs/contributors,2,2
+/pbs-assess/pacea/blob/main/data-raw/erddap/oisst.R,2,1
+/pbs-assess/pacea/blob/main/data-raw/grids/READgrids.txt,2,1
