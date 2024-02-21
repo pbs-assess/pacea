@@ -173,6 +173,7 @@ dfo_daily_mean <- dfo_daily_mean_enough_two_hours %>%
 dfo_daily_mean
 # 158,012 rows up to 2023-08-23
 # 158,638            2023-11-09
+# 159,407            2023-02-17  # max(dfo_daily_mean$date)
 
 # Before doing two-hour quality control had less, not sure how many (can test by
 #  changing num_two_hour_intervals_required)
@@ -521,6 +522,7 @@ sort(opp_data_full_range$end_date)   # Now this gives 18 buoys.
 max(opp_data_full_range$end_date)
 # "2023-08-28 09:00:00 -08"
 # So latest measurements were just over an hour before I downloaded them!
+# 2024-02-20 it was 10 minutes ago!
 
 # For all buoys (in above, commenting out: # filter(wmo_synop_id %in% c("46303",
 #"46304")) %>%), though these now include all Canadian probably. Can look into
