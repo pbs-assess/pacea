@@ -38,7 +38,7 @@ approach to fisheries management.
 
 *We wrangle the data so you don't have to*
 
-pacea stands for PACific Ecosystem Approach.
+pacea stands for PACific Ecosystem Approach, and is pronounced 'pac-ee-a', with pac as in Pacific.
 
 pacea is a R package containing a variety of data
 sets and model output. We wrangle the data sets behind the scenes to get them into usable formats
