@@ -45,22 +45,28 @@ DATA_7DAY <- TRUE
 if(!DL_ALL_DATA){
   print("Updating data...")
   
-  # oisst_7day
-  oisst_7day_orig <- oisst_7day
-  
   # current date
   date_current <- Sys.Date()
   year_current <- lubridate::year(date_current)
   month_current <- lubridate::month(date_current)
   
-  # set start date from latest date in oisst_7day data
+  # oisst_7day
+  oisst_7day_orig <- oisst_7day
+  
+  # set start date from start of year of latest date in oisst_7day data
+  # this ensures that each calendar week is calculated correctly
   timechar <- "T12:00:00Z"
   data_enddate <- max(oisst_7day_orig$end_date)
-  start_date <- paste0(data_enddate + 1, timechar)
+  #start_date <- paste0(data_enddate + 1, timechar)
+  start_date <- paste0(year_current,"-01-01", timechar)
   
   # set end date, and time limit
   end_date <- paste0(as.Date(paste0(year_current, "-", month_current, "-01")) - 1, timechar)
   timelim <- c(start_date, end_date)
+  
+  # remove current year data from oisst data
+  oisst_7day_orig <- oisst_7day_orig %>% 
+    filter(year != year_current)
   
   # ERRDAP datat: 14 day lag; 0.25 degree grid
   sstInfo <- info("ncdcOisst21Agg_LonPM180", url = "https://coastwatch.pfeg.noaa.gov/erddap/")
@@ -92,22 +98,34 @@ if(!DL_ALL_DATA){
     sstdata_7day_sf <- sstdata_7day_sf[bc_eez,]
     
     # add to original file
-    oisst_7day_new <- oisst_7day_orig %>% rbind(tdat)
+    oisst_7day_new <- oisst_7day_orig %>% rbind(sstdata_7day_sf)
     
-    # rename output and save data
-    oisst_7day <- oisst_7day_new
-    class(oisst_7day) <- c("pacea_oi", class(oisst_7day))
-    attr(oisst_7day, "units") <- "Temperature (\u00B0C)"
-    use_data(oisst_7day, compress = "xz", overwrite = TRUE)
+    # check duplicates
+    dups <- oisst_7day_new %>%
+      select(year, week, geometry) %>%
+      duplicated()
     
-    print("oisst_7day finished")
+    # write out new data
+    if(sum(dups) == 0){
+      # rename output and save data
+      oisst_7day <- oisst_7day_new
+      class(oisst_7day) <- c("pacea_oi", class(oisst_7day))
+      attr(oisst_7day, "units") <- "Temperature (\u00B0C)"
+      use_data(oisst_7day, compress = "xz", overwrite = TRUE)
+      
+      print("oisst_7day finished")
+    } else {
+      stop("Duplicated rows (year:week:geometry) in oisst_7day_new")
+    }
   }
   
   
   ##########
   # month data
   if(DATA_MONTH){
-    oisst_month_orig <- oisst_month
+    # remove current year data from oisst data
+    oisst_month_orig <- oisst_month %>% 
+      filter(year != year_current)
     
     # monthly means
     sstdata_month <- sstdata$data %>%
@@ -131,15 +149,25 @@ if(!DL_ALL_DATA){
     sstdata_month_sf <- sstdata_month_sf[bc_eez,]
     
     # add to original file
-    oisst_month_new <- oisst_month_orig %>% rbind(tdat)
+    oisst_month_new <- oisst_month_orig %>% rbind(sstdata_month_sf)
     
-    # rename output and save data
-    oisst_month <- oisst_month_new
-    class(oisst_month) <- c("pacea_oi", class(oisst_month))
-    attr(oisst_month, "units") <- "Temperature (\u00B0C)"
-    use_data(oisst_month, compress = "xz", overwrite = TRUE)
+    # check duplicates
+    dups <- oisst_month_new %>%
+      select(year, month, geometry) %>%
+      duplicated()
     
-    print("oisst_month finished")
+    # write out new data
+    if(sum(dups) == 0){
+      # rename output and save data
+      oisst_month <- oisst_month_new
+      class(oisst_month) <- c("pacea_oi", class(oisst_month))
+      attr(oisst_month, "units") <- "Temperature (\u00B0C)"
+      use_data(oisst_month, compress = "xz", overwrite = TRUE)
+      
+      print("oisst_month finished")
+    } else {
+      stop("Duplicated rows (year:month:geometry) in oisst_month_new")
+    }
   }
 }
 
