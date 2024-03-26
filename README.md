@@ -98,8 +98,8 @@ plot(buoy_sst)    # Buoy C46205 is plotted by default
 
 <img src="man/figures/README-north-hecate-temp.png" style="width:80.0%" />
 
-**Are we entering a phase of El Niño, based on the Oceanic Niño Index?
-(If the last bars are red, then ‘yes’)**
+**Are we experiencing a phase of El Niño, based on the Oceanic Niño
+Index? (If the last bars are red and above 0.5, then ‘yes’)**
 
 ``` r
 plot(oni)

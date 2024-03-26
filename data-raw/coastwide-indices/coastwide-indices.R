@@ -426,7 +426,7 @@ attr(soi_new, "axis_name") <- "Southern Oscillation Index"
 
 check_index_changed(soi, soi_new)
 
-tail(soi
+tail(soi)
 tail(soi_new)
 
 if(check_index_changed(soi, soi_new)){
