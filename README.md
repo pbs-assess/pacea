@@ -40,7 +40,7 @@ should be cited and consulted as appropriate.
 
 Currently, pacea contains:
 
--   204,373 calculations of daily sea surface temperature based on data
+-   204,828 calculations of daily sea surface temperature based on data
     from 19 buoys.
 
 -   outputs from the spatial British Columbia continental margin (BCCM)
@@ -68,7 +68,7 @@ Currently, pacea contains:
     record, that incorporates observations from different platforms
     (satellites, ships, buoys, and Argo floats):
 
-    -   provided as weekly and monthly means from Sep 1981 to Dec 2023.
+    -   provided as weekly and monthly means from Sep 1981 to Feb 2024.
 
 -   9 climatic and oceanographic indices, such as the Pacific Decadal
     Oscillation and those related to El Niño.
@@ -88,14 +88,12 @@ the northeast Pacific Ocean margin. Deep-Sea Research II,
 
 ## Brief examples of some questions that can be quickly investigated
 
-**How does 2023’s sea surface temperature (red curve) in North Hecate
-Strait compare to previous years, based on the buoy there?**
+**How does this year’s sea surface temperature (red curve) in West Dixon
+Entrance compare to previous years, based on the buoy there?**
 <!-- Run this png code manually (as not evaluated here) to update the figure -->
 
 ``` r
-plot(buoy_sst,
-     stn_id = "C46183",
-     year_highlight = 2023)
+plot(buoy_sst)    # Buoy C46205 is plotted by default
 ```
 
 <img src="man/figures/README-north-hecate-temp.png" style="width:80.0%" />

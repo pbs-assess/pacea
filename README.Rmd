@@ -94,23 +94,20 @@ https://www.sciencedirect.com/science/article/pii/S0967064519300220
 
 ## Brief examples of some questions that can be quickly investigated
 
-**How does 2023's sea surface temperature (red curve) in North Hecate Strait compare to previous
+**How does this year's sea surface temperature (red curve) in West Dixon Entrance compare to previous
 years, based on the buoy there?**
 <!-- Run this png code manually (as not evaluated here) to update the figure -->
 ```{r northhecatetempmakefig, eval = FALSE, echo = FALSE}
-png(paste0(here::here(), "/man/figures/README-north-hecate-temp.png"),
+png(paste0(here::here(), "/man/figures/README-north-hecate-temp.png"), # keeping
+                                    # filename even though have changed buoy
     width = 670,   # 670 matches size from running from a chunk
     height = 480)
-plot(buoy_sst,
-     stn_id = "C46183",
-     year_highlight = 2023)
+plot(buoy_sst) # stn_id = "C46183")
 dev.off()
 ```
 
 ```{r northhecatetemp, eval = FALSE}
-plot(buoy_sst,
-     stn_id = "C46183",
-     year_highlight = 2023)
+plot(buoy_sst)    # Buoy C46205 is plotted by default
 ```
 
 ![](man/figures/README-north-hecate-temp.png){width=80%}
