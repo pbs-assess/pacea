@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,21,11
+/pbs-assess/pacea/tree/main/data,16,4
+/pbs-assess/pacea/tree/main/R,11,3
+/pbs-assess/pacea/blob/main/README.Rmd,8,1
+/pbs-assess/PACea,7,5
+/pbs-assess/pacea/tree/main,6,2
+/pbs-assess/pacea/tree/main/data/older-data,5,2
+/pbs-assess/pacea/blob/main/vignettes/bccm.Rmd,4,2
+/pbs-assess/pacea/blob/main/data-raw/buoys/buoys-map.R,4,1
+/pbs-assess/pacea/blob/main/data/buoy_sst.rda,3,1
