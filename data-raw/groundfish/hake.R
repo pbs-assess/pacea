@@ -3,11 +3,33 @@
 
 load_all()
 
+# TODO - update when finalised.
 # Get the .rda files from Andy running
 #  hake-assessment/sandbox/andy/pacea-save/pacea-save.R
 #  after 2023 hake assessment, gets file directly from that directory.
 #  For future assessments will maybe convert that to
 #  a function. Check with Andy or Chris Grandin.
+
+# One-time code to save original data objects from 2023 assessments as
+# _2023. Before then adding _2024 and hake_recruitment etc. being the 2024
+# values (by default).
+hake_recruitment_2023 <- hake_recruitment
+hake_recruitment_over_2010_2023 <- hake_recruitment_over_2010
+hake_recruitment_over_R0_2023 <- hake_recruitment_over_R0
+hake_biomass_2023 <- hake_biomass
+
+usethis::use_data(hake_recruitment_2023,
+                  overwrite = TRUE)
+
+usethis::use_data(hake_recruitment_over_2010_2023,
+                  overwrite = TRUE)
+
+usethis::use_data(hake_recruitment_over_R0_2023,
+                  overwrite = TRUE)
+
+usethis::use_data(hake_biomass_2023,
+                  overwrite = TRUE)
+
 
 # Recruitment
 
