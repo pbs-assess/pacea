@@ -2,6 +2,8 @@ ideas/
 lib/
 
 *.html
+*.docx
+
 .Rproj.user
 
 /data-raw/coastwide-indices/ENSO_MEI.txt
@@ -36,6 +38,8 @@ lib/
 /data-raw/coastwide-indices/*.txt
 /data-raw/groundfish/hake_recruitment_new.rda
 /data-raw/groundfish/hake_biomass_new.rda
+/data-raw/groundfish/hake-2024/*.rds
+
 /data-raw/dummy.txt
 
 /data-raw/pacific_marine_habitat_classes/*
@@ -49,6 +53,9 @@ data-raw/buoys/opp_info.Rds
 
 /data-raw/groundfish/hake-recruitment-over-2010.csv
 /data-raw/groundfish/hake-recruitment.csv
+
+/data-raw/zooplankton/*.xlsx
+
 /data-raw/mammals/harbour-seals/N_region_data_request_June_2023.csv
 /data-raw/mammals/harbour-seals/pred_all_regions.csv
 /data-raw/mammals/harbour-seals/SAR_harbour seal 2019.pdf
@@ -64,6 +71,7 @@ talks/pacea-release-talk_files/
 talks/pacea-talk_files/
 talks/pacea-talk.pdf
 talks/pacea-talk.tex
+talks/uvicEdwards11.ppt
 
 data-raw/herring/
 data-raw/lighthouses/BC_Lightstations_and_Other_Sample_Sites_V2.csv
@@ -71,3 +79,4 @@ data-raw/lighthouses/Data_-_Active_Sites_New.zip
 data-raw/moorings/
 data-raw/misc/snow.zip
 /talks/pacea-release-talk-attendance.txt
+/data-raw/buoys/buoy-sst-mar.R
