@@ -1,45 +1,49 @@
 # Outputs from the hake stock assessment. Run code line-by-line and check plots.
+# Change assess_yr each year, the rest is automated.
+# hake_recruitment will become the latest assessment results, and
+#  hake_recruitment_2023 retains the 2023 assessment results, this is then ongoing for
+#  each year. So hake_recruitment_<assess_yr> = hake_recruitment.
 #  See ?hake for details.
 
 load_all()
+assess_yr <- 2024       # Year of the hake assessment; update each year
 
-# TODO - update when finalised.
-# Get the .rda files from Andy running
-#  hake-assessment/sandbox/andy/pacea-save/pacea-save.R
-#  after 2023 hake assessment, gets file directly from that directory.
-#  For future assessments will maybe convert that to
-#  a function. Check with Andy or Chris Grandin.
+# The hake-2024/*.rds files are built automatically from (Andy or Chris Grandin)
+#  running `pacea_save()` in the hake-assessment repo after having just built the document.
+# pacea-save() automatically creates the hake-<assess_yr> directory here if it doesn't exist,
+#  and puts the files into it, all named with assess_yr.
 
-# One-time code to save original data objects from 2023 assessments as
-# _2023. Before then adding _2024 and hake_recruitment etc. being the 2024
-# values (by default).
-hake_recruitment_2023 <- hake_recruitment
-hake_recruitment_over_2010_2023 <- hake_recruitment_over_2010
-hake_recruitment_over_R0_2023 <- hake_recruitment_over_R0
-hake_biomass_2023 <- hake_biomass
+# One-time code used to save original data objects from 2023 assessments as
+#  _2023. Before then adding _2024 and hake_recruitment etc. being the 2024
+#  values (by default):
+# hake_recruitment_2023 <- hake_recruitment
+# hake_recruitment_over_2010_2023 <- hake_recruitment_over_2010
+# hake_recruitment_over_R0_2023 <- hake_recruitment_over_R0
+# hake_biomass_2023 <- hake_biomass
 
-usethis::use_data(hake_recruitment_2023,
-                  overwrite = TRUE)
+## usethis::use_data(hake_recruitment_2023,
+##                   overwrite = TRUE)
 
-usethis::use_data(hake_recruitment_over_2010_2023,
-                  overwrite = TRUE)
+## usethis::use_data(hake_recruitment_over_2010_2023,
+##                   overwrite = TRUE)
 
-usethis::use_data(hake_recruitment_over_R0_2023,
-                  overwrite = TRUE)
+## usethis::use_data(hake_recruitment_over_R0_2023,
+##                   overwrite = TRUE)
 
-usethis::use_data(hake_biomass_2023,
-                  overwrite = TRUE)
+## usethis::use_data(hake_biomass_2023,
+##                   overwrite = TRUE)
 
 
 # Recruitment
+hake_dir <- paste0(here::here(),
+                   "/data-raw/groundfish/hake-",
+                   assess_yr,
+                   "/")
 
-# Comment this out if you have copied the .rda files to the local directory
-#  (you need to first run the code in the hake directory shown below), and
-#  uncomment the second line
-hake_dir <- paste0(here::here(), "/../hake-assessment/sandbox/andy/pacea-save/")
-# hake_dir <- getwd()
-
-load(paste0(hake_dir, "hake_recruitment_new.rda"))
+hake_recruitment_new <- readRDS(paste0(hake_dir,
+                                       "hake_recruitment_",
+                                       assess_yr,
+                                       ".rds"))
 
 class(hake_recruitment_new) <- c("pacea_recruitment",
                                  class(hake_recruitment_new))
@@ -47,35 +51,34 @@ class(hake_recruitment_new) <- c("pacea_recruitment",
 attr(hake_recruitment_new, "axis_name") <-
   "Pacific Hake recruitment (billions of age-0 fish)"
 
+# Keep if statement so okay to run multiple times
+check_index_changed(hake_recruitment,
+                    hake_recruitment_new)
+
 if(check_index_changed(hake_recruitment,
                        hake_recruitment_new)){
+
   hake_recruitment <- hake_recruitment_new
+
+  assign(paste0("hake_recruitment_", assess_yr),
+         hake_recruitment_new)
+
   usethis::use_data(hake_recruitment,
                     overwrite = TRUE)
+
+  create_data_hake(paste0("hake_recruitment_", assess_yr),
+                   paste0("hake_recruitment_", assess_yr))
+
   plot(hake_recruitment)
 }
 
-# Spawning biomass
-
-load(paste0(hake_dir, "hake_biomass_new.rda"))
-
-class(hake_biomass_new) <- c("pacea_biomass",
-                             class(hake_biomass_new))
-
-attr(hake_biomass_new, "axis_name") <-
-  "Pacific Hake spawning biomass (million t)"
-
-if(check_index_changed(hake_biomass,
-                       hake_biomass_new)){
-  hake_biomass <- hake_biomass_new
-  usethis::use_data(hake_biomass,
-                    overwrite = TRUE)
-  plot(hake_biomass, value = "val", style = "plain")
-}
 
 # Recruitment scaled by 2010 value
 
-load(paste0(hake_dir, "hake_recruitment_over_2010_new.rda"))
+hake_recruitment_over_2010_new <- readRDS(paste0(hake_dir,
+                                                 "hake_recruitment_over_2010_",
+                                                 assess_yr,
+                                                 ".rds"))
 
 class(hake_recruitment_over_2010_new) <- c("pacea_recruitment",
                                            class(hake_recruitment_over_2010_new))
@@ -83,30 +86,89 @@ class(hake_recruitment_over_2010_new) <- c("pacea_recruitment",
 attr(hake_recruitment_over_2010_new, "axis_name") <-
   "Age-0 Pacific Hake recruitment relative to that in 2010"
 
+# Keep if statement so okay to run multiple times
+check_index_changed(hake_recruitment_over_2010,
+                    hake_recruitment_over_2010_new)
+
 if(check_index_changed(hake_recruitment_over_2010,
                        hake_recruitment_over_2010_new)){
   hake_recruitment_over_2010 <- hake_recruitment_over_2010_new
+
+  assign(paste0("hake_recruitment_over_2010_", assess_yr),
+         hake_recruitment_over_2010_new)
+
   usethis::use_data(hake_recruitment_over_2010,
                     overwrite = TRUE)
+
+  create_data_hake(paste0("hake_recruitment_over_2010_", assess_yr),
+                   paste0("hake_recruitment_over_2010_", assess_yr))
+
   plot(hake_recruitment_over_2010)
-  }
 }
 
-# Recruitment scaled by R0:
 
-load(paste0(hake_dir, "hake_recruitment_over_R0_new.rda"))
+# Recruitment scaled by R0
+
+hake_recruitment_over_R0_new <- readRDS(paste0(hake_dir,
+                                               "hake_recruitment_over_R0_",
+                                               assess_yr,
+                                               ".rds"))
 
 class(hake_recruitment_over_R0_new) <- c("pacea_recruitment",
-                                           class(hake_recruitment_over_R0_new))
+                                         class(hake_recruitment_over_R0_new))
 
 attr(hake_recruitment_over_R0_new, "axis_name") <-
   "Age-0 Pacific Hake recruitment relative to unfished equilibrium recruitment"
 
+# Keep if statement so okay to run multiple times
+check_index_changed(hake_recruitment_over_R0,
+                    hake_recruitment_over_R0_new)
+
 if(check_index_changed(hake_recruitment_over_R0,
                        hake_recruitment_over_R0_new)){
   hake_recruitment_over_R0 <- hake_recruitment_over_R0_new
+
+  assign(paste0("hake_recruitment_over_R0_", assess_yr),
+         hake_recruitment_over_R0_new)
+
   usethis::use_data(hake_recruitment_over_R0,
                     overwrite = TRUE)
+
+  create_data_hake(paste0("hake_recruitment_over_R0_", assess_yr),
+                   paste0("hake_recruitment_over_R0_", assess_yr))
+
   plot(hake_recruitment_over_R0)
-  }
+}
+
+# Spawning biomass
+
+hake_biomass_new <- readRDS(paste0(hake_dir,
+                                   "hake_biomass_",
+                                   assess_yr,
+                                   ".rds"))
+
+class(hake_biomass_new) <- c("pacea_biomass",
+                             class(hake_biomass_new))
+
+attr(hake_biomass_new, "axis_name") <-
+  "Pacific Hake spawning biomass (million t)"
+
+# Keep if statement so okay to run multiple times
+check_index_changed(hake_biomass,
+                    hake_biomass_new)
+
+if(check_index_changed(hake_biomass,
+                       hake_biomass_new)){
+  hake_biomass <- hake_biomass_new
+
+  assign(paste0("hake_biomass_", assess_yr),
+         hake_biomass_new)
+
+  usethis::use_data(hake_biomass,
+                    overwrite = TRUE)
+
+  create_data_hake(paste0("hake_biomass_", assess_yr),
+                   paste0("hake_biomass_", assess_yr))
+
+  plot(hake_biomass)
 }
