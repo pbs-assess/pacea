@@ -67,7 +67,7 @@ if(check_index_changed(hake_recruitment,
                     overwrite = TRUE)
 
   create_data_hake(paste0("hake_recruitment_", assess_yr),
-                   paste0("hake_recruitment_", assess_yr))
+                   get(paste0("hake_recruitment_", assess_yr)))
 
   plot(hake_recruitment)
 }
@@ -101,7 +101,7 @@ if(check_index_changed(hake_recruitment_over_2010,
                     overwrite = TRUE)
 
   create_data_hake(paste0("hake_recruitment_over_2010_", assess_yr),
-                   paste0("hake_recruitment_over_2010_", assess_yr))
+                   get(paste0("hake_recruitment_over_2010_", assess_yr)))
 
   plot(hake_recruitment_over_2010)
 }
@@ -135,7 +135,7 @@ if(check_index_changed(hake_recruitment_over_R0,
                     overwrite = TRUE)
 
   create_data_hake(paste0("hake_recruitment_over_R0_", assess_yr),
-                   paste0("hake_recruitment_over_R0_", assess_yr))
+                   get(paste0("hake_recruitment_over_R0_", assess_yr)))
 
   plot(hake_recruitment_over_R0)
 }
@@ -168,7 +168,7 @@ if(check_index_changed(hake_biomass,
                     overwrite = TRUE)
 
   create_data_hake(paste0("hake_biomass_", assess_yr),
-                   paste0("hake_biomass_", assess_yr))
+                   get(paste0("hake_biomass_", assess_yr)))
 
   plot(hake_biomass)
 }
