@@ -69,7 +69,8 @@ Imports:
     rappdirs,
     sf (>= 1.0.10),
     stats,
-    tidyr
+    tidyr,
+    usethis
 RoxygenNote: 7.2.3
 Remotes: github::pbs-assess/gfiphc
 Suggests:
@@ -97,6 +98,7 @@ Suggests:
     testthat (>= 3.0.0),
     terra,
     gstat,
-    methods
+    methods,
+    here
 VignetteBuilder: knitr
 Config/testthat/edition: 3
