@@ -3,8 +3,8 @@
 \docType{data}
 \name{hake_recruitment}
 \alias{hake_recruitment}
-\title{Pacific Hake annual age-0 recruitments as estimated by the 2023 stock
-assessment.}
+\title{Pacific Hake annual age-0 recruitments as estimated by the most recent
+(2024) stock assessment.}
 \format{
 A tibble also of class `pacea_recruitment` with columns:
 \describe{
@@ -18,8 +18,7 @@ A tibble also of class `pacea_recruitment` with columns:
 }
 \source{
 Generated from Andy running (in the hake repository)
-  `hake-assessment/sandbox/andy/pacea-save/pacea-save.R` and then here
-  `data-raw/groundfish/hake.R`.
+  `pacea_save()` and then here `data-raw/groundfish/hake.R`.
 }
 \usage{
 hake_recruitment
@@ -60,7 +59,20 @@ they are not based on data. Exactly how many years are affected can depend
 upon the timing of the assessment relative to the most recent biannual
 survey.
 
-Results are from the most recent stock assessment:
+Historical estimates of recruitment and biomass will change from stock assessment to stock
+assessment, and so we use `hake_recruitment` to represent
+the results from the most recent assessment (currently 2024), and also save
+`hake_recruitment_2024` and `hake_recruitment_2023` for the results from
+the 2024 and 2023 assessments (the 2023 results were the first ones included
+in `pacea`). This is so that you can always refer to a specific set of
+assessment results (rather than have your analyses change because you have
+updated `pacea` and we have replaced `hake_recruitment` with results from a
+new assessment). The same holds for the other hake objects, namely
+`hake_biomass`, `hake_recruitment_over_2010`, and
+`hake_recruitment_over_R0`; i.e. each is also saved with the assessment year
+appended.
+
+The 2023 assessment is:
 
 Berger, A.M., C.J. Grandin, K.F. Johnson and A.M. Edwards. 2023. Status of
 the Pacific Hake (whiting) stock in U.S. and Canadian waters in
@@ -68,6 +80,15 @@ the Pacific Hake (whiting) stock in U.S. and Canadian waters in
 Pacific Hake/Whiting Agreement, National Marine Fisheries Service and
 Fisheries and Oceans Canada. 208 p.
 https://media.fisheries.noaa.gov/2023-02/2023-hake-assessment-post-srg_web.pdf
+
+The 2024 assessment is:
+
+Grandin, C.J., K.F. Johnson, A.M. Edwards and A.M. Berger. 2024. Status of
+the Pacific Hake (whiting) stock in U.S. and Canadian waters in
+2024. Prepared by the Joint Technical Committee of the U.S. and Canada
+Pacific Hake/Whiting Agreement, National Marine Fisheries Service and
+Fisheries and Oceans Canada. 246 p.
+https://media.fisheries.noaa.gov/2024-02/hake-assessment-2024.pdf
 }
 \examples{
 \dontrun{

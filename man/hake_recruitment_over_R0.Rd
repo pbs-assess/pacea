@@ -3,8 +3,10 @@
 \docType{data}
 \name{hake_recruitment_over_R0}
 \alias{hake_recruitment_over_R0}
+\alias{hake_recruitment_over_R0_2023}
+\alias{hake_recruitment_over_R0_2024}
 \title{Pacific Hake annual age-0 recruitments divided by unfished
-equilibrium recruitment, as estimated by the 2023 stock assessment.}
+equilibrium recruitment, as estimated by the most recent stock assessment.}
 \format{
 A tibble also of class `pacea_recruitment` with columns:
 \describe{
@@ -15,14 +17,21 @@ A tibble also of class `pacea_recruitment` with columns:
   \item{high:}{high end (97.5th percentile) of the 95\% credible interval for
   the scaled recruitment, unitless}
  }
+
+An object of class \code{pacea_recruitment} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 58 rows and 4 columns.
+
+An object of class \code{pacea_recruitment} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 59 rows and 4 columns.
 }
 \source{
 Generated from Andy running (in the hake repository)
-  `hake-assessment/sandbox/andy/pacea-save/pacea-save.R` and then here
-  `data-raw/groundfish/hake.R`.
+  `pacea_save()` and then here `data-raw/groundfish/hake.R`.
 }
 \usage{
 hake_recruitment_over_R0
+
+hake_recruitment_over_R0_2023
+
+hake_recruitment_over_R0_2024
 }
 \description{
 This is calculated to improve understanding when comparing recruitments
@@ -30,7 +39,9 @@ between years, and somewhat scales out the uncertainty in the unfished
 equilibrium recruitment ($R_0$).
 }
 \details{
-See `?hake_recruitment_over_2010` and `?hake_recruitment` for further details and reference regarding hake.
+See `?hake_recruitment_over_2010` and `?hake_recruitment` for further
+details and reference regarding hake, and explanations of
+`hake_recruitment_over_R0_2023` etc.
 }
 \examples{
 \dontrun{

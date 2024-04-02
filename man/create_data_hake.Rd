@@ -27,7 +27,7 @@ Usually you have to create a variable first, and then call
 In data-raw/groundfish/hake.R see these lines (which allow `assess_yr` to
   part of the data object, which `use_data()` does not):
  create_data_hake(paste0("hake_recruitment_", assess_yr),
-                  paste0("hake_recruitment_", assess_yr))
+                  get(paste0("hake_recruitment_", assess_yr)))
 }
 }
 \author{

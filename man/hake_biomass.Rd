@@ -3,8 +3,10 @@
 \docType{data}
 \name{hake_biomass}
 \alias{hake_biomass}
-\title{Pacific Hake annual spawning stock biomass (females only) as estimated by the 2023 stock
-assessment.}
+\alias{hake_biomass_2023}
+\alias{hake_biomass_2024}
+\title{Pacific Hake annual spawning stock biomass (females only) as estimated by
+the most recent (2024) stock assessment.}
 \format{
 A tibble also of class `pacea_biomass` with columns:
 \describe{
@@ -17,14 +19,21 @@ A tibble also of class `pacea_biomass` with columns:
   \item{high:}{high end (97.5th percentile) of the 95\% credible interval for
   biomass, units as for `median`}
  }
+
+An object of class \code{pacea_biomass} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 58 rows and 4 columns.
+
+An object of class \code{pacea_biomass} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 59 rows and 4 columns.
 }
 \source{
 Generated from Andy running (in the hake repository)
-  `hake-assessment/sandbox/andy/pacea-save/pacea-save.R` and then here
-  `data-raw/groundfish/hake.R`.
+  `pacea_save()` and then here `data-raw/groundfish/hake.R`.
 }
 \usage{
 hake_biomass
+
+hake_biomass_2023
+
+hake_biomass_2024
 }
 \description{
 The Pacific Hake stock is managed and assessed through an Agreement between
@@ -33,7 +42,8 @@ recent joint stock assessment, and, importantly, are for the coastwide stock
 from California to British Columbia.
 }
 \details{
-See `?hake_recruitment` for further details and reference.
+See `?hake_recruitment` for further details and references, and explanations
+of `hake_biomass_2024` and `hake_biomass_2023`.
 }
 \examples{
 \dontrun{

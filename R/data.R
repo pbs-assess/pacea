@@ -644,8 +644,7 @@
 ##' }
 ##' @author Andrew Edwards
 ##' @source Generated from Andy running (in the hake repository)
-##'   `hake-assessment/sandbox/andy/pacea-save/pacea-save.R` and then here
-##'   `data-raw/groundfish/hake.R`.
+##'   `pacea_save()` and then here `data-raw/groundfish/hake.R`.
 "hake_recruitment"
 
 ##' Pacific Hake annual spawning stock biomass (females only) as estimated by
@@ -678,15 +677,14 @@
 ##' }
 ##' @author Andrew Edwards
 ##' @source Generated from Andy running (in the hake repository)
-##'   `hake-assessment/sandbox/andy/pacea-save/pacea-save.R` and then here
-##'   `data-raw/groundfish/hake.R`.
+##'   `pacea_save()` and then here `data-raw/groundfish/hake.R`.
 "hake_biomass"
 
 ##' @rdname hake_biomass
-"hake_biomass_2023
+"hake_biomass_2023"
 
 ##' @rdname hake_biomass
-"hake_biomass_2024
+"hake_biomass_2024"
 
 ##' Pacific Hake annual age-0 recruitments divided by recruitments in 2010, as
 ##' estimated by the most recent stock assessment.
@@ -726,8 +724,7 @@
 ##' }
 ##' @author Andrew Edwards
 ##' @source Generated from Andy running (in the hake repository)
-##'   `hake-assessment/sandbox/andy/pacea-save/pacea-save.R` and then here
-##'   `data-raw/groundfish/hake.R`.
+##'   `pacea_save()` and then here `data-raw/groundfish/hake.R`.
 "hake_recruitment_over_2010"
 
 ##' @rdname hake_recruitment_over_2010
@@ -766,15 +763,14 @@
 ##' }
 ##' @author Andrew Edwards
 ##' @source Generated from Andy running (in the hake repository)
-##'   `hake-assessment/sandbox/andy/pacea-save/pacea-save.R` and then here
-##'   `data-raw/groundfish/hake.R`.
+##'   `pacea_save()` and then here `data-raw/groundfish/hake.R`.
 "hake_recruitment_over_R0"
 
 ##' @rdname hake_recruitment_over_R0
 "hake_recruitment_over_R0_2023"
 
-##' @rdname hake_recruitment_over_2010
-"hake_recruitment_over_$0_2024"
+##' @rdname hake_recruitment_over_R0
+"hake_recruitment_over_R0_2024"
 
 
 #' BC coastline
