@@ -647,6 +647,12 @@
 ##'   `pacea_save()` and then here `data-raw/groundfish/hake.R`.
 "hake_recruitment"
 
+##' @rdname hake_recruitment
+"hake_recruitment_2023"
+
+##' @rdname hake_recruitment
+"hake_recruitment_2024"
+
 ##' Pacific Hake annual spawning stock biomass (females only) as estimated by
 ##' the most recent (2024) stock assessment.
 ##'

@@ -3,6 +3,8 @@
 \docType{data}
 \name{hake_recruitment}
 \alias{hake_recruitment}
+\alias{hake_recruitment_2023}
+\alias{hake_recruitment_2024}
 \title{Pacific Hake annual age-0 recruitments as estimated by the most recent
 (2024) stock assessment.}
 \format{
@@ -15,6 +17,10 @@ A tibble also of class `pacea_recruitment` with columns:
   \item{high:}{high end (97.5th percentile) of the 95\% credible interval for
   recruitment, billions of age-0 fish}
  }
+
+An object of class \code{pacea_recruitment} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 58 rows and 4 columns.
+
+An object of class \code{pacea_recruitment} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 59 rows and 4 columns.
 }
 \source{
 Generated from Andy running (in the hake repository)
@@ -22,6 +28,10 @@ Generated from Andy running (in the hake repository)
 }
 \usage{
 hake_recruitment
+
+hake_recruitment_2023
+
+hake_recruitment_2024
 }
 \description{
 The Pacific Hake stock is managed and assessed through an Agreement between
