@@ -46,12 +46,14 @@ in R, and provide helpful plotting functions. All data sets include
 documentation regarding the original sources and authors, who should be cited
 and consulted as appropriate.
 
+Please continue reading through this README file, and see the vignettes to get you started.
+
 ## What is in pacea?
 
 Currently, pacea contains:
 
  - `r format(nrow(buoy_sst), big.mark = ",")` calculations of daily sea surface
-   temperature based on data from `r nrow(buoy_metadata)` buoys.
+   temperature based on data from `r nrow(buoy_metadata)` buoys. **Updated monthly.**
 
  - outputs from the spatial British Columbia continental margin (BCCM) model, the coupled
    physical-biogeochemical model by Peña et al. (2019). Variables are for 40,580 spatial cells across Canada's Pacific
@@ -75,10 +77,10 @@ Currently, pacea contains:
      ships, buoys, and Argo floats):
    - provided as weekly and monthly means from `r paste(lubridate::month(min(oisst_month$start_date), label = TRUE),
      lubridate::year(min(oisst_month$start_date)))` to `r paste(lubridate::month(max(oisst_month$start_date), label = TRUE),
-     lubridate::year(max(oisst_month$start_date)))`.
+     lubridate::year(max(oisst_month$start_date)))`. **Updated monthly.**
 
 - 9 climatic and oceanographic indices, such as the Pacific Decadal Oscillation
-   and those related to El Niño.
+   and those related to El Niño. **Updated monthly.**
 
 - estimates of abundances for Harbour Seals and Pacific Hake (with Pacific
   Herring coming soon).
@@ -91,6 +93,19 @@ primary production and shelf-offshore transport of nutrients along the northeast
 Pacific Ocean margin. Deep-Sea Research II, doi:10.1016/j.dsr2.2019.104637.
 https://www.sciencedirect.com/science/article/pii/S0967064519300220
 
+
+## What's new (since the original release)?
+
+The values highlighed above with **Updated monthly** have been updated each
+month since the release of pacea, as documented in the [NEWS](NEWS.md), which it
+is advisable to check when you update your pacea installation (see below). Since the initial release we have
+also:
+
+- updated the estimates of Pacific Hake abundance and recruitment with values
+  from the 2024 assessment (retaining the original estimates from the 2023
+  assessments for reproducibility); see the
+  [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
+  vignette.
 
 ## Brief examples of some questions that can be quickly investigated
 

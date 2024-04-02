@@ -36,12 +36,15 @@ formats in R, and provide helpful plotting functions. All data sets
 include documentation regarding the original sources and authors, who
 should be cited and consulted as appropriate.
 
+Please continue reading through this README file, and see the vignettes
+to get you started.
+
 ## What is in pacea?
 
 Currently, pacea contains:
 
 -   204,828 calculations of daily sea surface temperature based on data
-    from 19 buoys.
+    from 19 buoys. **Updated monthly.**
 
 -   outputs from the spatial British Columbia continental margin (BCCM)
     model, the coupled physical-biogeochemical model by Peña et
@@ -69,9 +72,10 @@ Currently, pacea contains:
     (satellites, ships, buoys, and Argo floats):
 
     -   provided as weekly and monthly means from Sep 1981 to Feb 2024.
+        **Updated monthly.**
 
 -   9 climatic and oceanographic indices, such as the Pacific Decadal
-    Oscillation and those related to El Niño.
+    Oscillation and those related to El Niño. **Updated monthly.**
 
 -   estimates of abundances for Harbour Seals and Pacific Hake (with
     Pacific Herring coming soon).
@@ -85,6 +89,19 @@ in primary production and shelf-offshore transport of nutrients along
 the northeast Pacific Ocean margin. Deep-Sea Research II,
 <doi:10.1016/j.dsr2.2019.104637>.
 <https://www.sciencedirect.com/science/article/pii/S0967064519300220>
+
+## What’s new (since the original release)?
+
+The values highlighed above with **Updated monthly** have been updated
+each month since the release of pacea, as documented in the
+[NEWS](NEWS.md), which it is advisable to check when you update your
+pacea installation (see below). Since the initial release we have also:
+
+-   updated the estimates of Pacific Hake abundance and recruitment with
+    values from the 2024 assessment (retaining the original estimates
+    from the 2023 assessments for reproducibility); see the
+    [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
+    vignette.
 
 ## Brief examples of some questions that can be quickly investigated
 
@@ -152,7 +169,7 @@ example:
 
 ``` r
 oni
-#> # A tibble: 888 × 4
+#> # A tibble: 889 × 4
 #>     year month value anomaly
 #>    <dbl> <dbl> <dbl>   <dbl>
 #>  1  1950     1  24.7   -1.53
@@ -165,7 +182,7 @@ oni
 #>  8  1950     8  26.0   -0.42
 #>  9  1950     9  25.8   -0.39
 #> 10  1950    10  25.6   -0.44
-#> # ℹ 878 more rows
+#> # ℹ 879 more rows
 ```
 
 ## Vignettes
