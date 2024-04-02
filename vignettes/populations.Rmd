@@ -10,7 +10,7 @@ date: "Last rendered on `r format(Sys.time(), '%d %B, %Y')`"
 ---
 
 <!-- To build either run
-   rmarkdown::render("fish_populations.Rmd")
+rmarkdown::render("populations.Rmd")
  or click the knit button in RStudio -->
 
 
@@ -35,6 +35,11 @@ stock assessments.
 
 Currently, we have Pacific Hake, a major component of the ecosystem, and Pacific Harbour Seal, the most
 abundant pinniped species in the Northeast Pacific.
+
+NEW (since original release of pacea): we have updated the Pacific Hake
+estimates with those from the 2024 assessment, but retained the 2023
+assessment's estimates within the package (as `hake_biomass_2023` etc.). See
+below and the help files for more details.
 
 ## Pacific Hake
 
@@ -116,10 +121,44 @@ tail(hake_recruitment_over_R0)
 plot(hake_recruitment_over_R0)
 ```
 
+### Updates due to new stock assessments
+
 Note that the Pacific Hake stock assessment is conducted annually at the start of each year,
-and these estimates will be updated in `pacea` probably around February. So
+and these estimates will be updated in `pacea` by April each year. So
 estimates will change (particularly for the most recent years) as more data
-inform the stock assessment model.
+inform the stock assessment model. So `hake_biomass`, `hake_recruitment`
+etc. will be based on the most recent stock assessment (see
+`?hake_recruitment`).
+
+To ensure that estimates from previous assessments are
+still available in `pacea` (so you can ensure fully repeatable analyses that do
+not change when `pacea` is updated with the new estimates), we also save each
+assessment's estimates with the year appended; for example, `hake_biomass_2023`
+and `hake_biomass_2024` for the spawning biomass estimates from the 2023 and
+2024 assessments. Similarly, we also save `hake_recruitment_2023`,
+`hake_recruitment_2024`, `hake_recruitment_over_2010_2023`,
+`hake_recruitment_over_2010_2024`, `hake_recruitment_over_R0_2023`, and
+`hake_recruitment_over_R0_2024`, plus later years once they become
+available. See `?hake_recruitment` for details and references. The above
+examples will work on all these objects, for example, the values and plot shown
+in the previous code chunk, but based on the 2023 assessment results, are:
+```{r hakeR02023}
+hake_recruitment_over_R0_2023
+tail(hake_recruitment_over_R0_2023)
+plot(hake_recruitment_over_R0_2023)
+```
+
+Note how `hake_recruitment_over_R0_2023` contains no estimate for the 2024
+recruitment, but `hake_recruitment` does (although it is not actually informed
+by data, so should not be used in any analysis). And see how the (highly
+uncertain) 2020 and 2021
+recruitment estimates changed somewhat from 2023 assessment to the 2024
+assessment, due to updated data:
+`{r hake2020}
+filter(hake_recruitment_2023, year %in% c(2020, 2021))
+filter(hake_recruitment_2024, year %in% c(2020, 2021))
+```
+See page 13 of the 2024 assessment document for explanation.
 
 ## Pacific Harbour Seals
 
