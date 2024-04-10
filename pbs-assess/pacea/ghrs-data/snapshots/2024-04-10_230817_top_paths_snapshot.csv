@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,46,10
+/pbs-assess/pacea/issues,15,1
+/pbs-assess/pacea/issues/53,9,2
+/pbs-assess/pacea/commits/dev-andy,9,1
+/pbs-assess/pacea/tree/dev-andy,8,1
+/pbs-assess/pacea/tree/main/talks,7,2
+/pbs-assess/pacea/tree/dev-andy/data,6,1
+/pbs-assess/pacea/tree/main/data-raw,6,1
+/pbs-assess/pacea/blob/main/talks/pacea-talk.Rmd,4,2
+/pbs-assess/pacea/actions/workflows/R-CMD-check.yaml,4,1
