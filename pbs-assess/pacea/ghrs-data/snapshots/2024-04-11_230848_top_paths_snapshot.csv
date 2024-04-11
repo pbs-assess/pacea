@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,47,11
+/pbs-assess/pacea/issues,14,1
+/pbs-assess/pacea/commits/dev-andy,9,1
+/pbs-assess/pacea/tree/dev-andy,8,1
+/pbs-assess/pacea/issues/53,7,2
+/pbs-assess/pacea/tree/main/talks,7,2
+/pbs-assess/pacea/blob/main/talks/pacea-talk.Rmd,4,2
+/pbs-assess/pacea/actions/workflows/R-CMD-check.yaml,4,1
+/pbs-assess/pacea/blob/main/README.Rmd,4,1
+/pbs-assess/pacea/blob/main/talks/pacea-release-talk-uvic.pdf,4,1
