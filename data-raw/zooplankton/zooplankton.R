@@ -3,6 +3,7 @@
 #  tibble, give it a pacea_zooplankton class, and then have a plotting function
 #  where you specify one of the species groups, and make that into a pacea_index
 #  class so we can just use plot.pacea_index().
+# Also creates zooplankton_axis_names to automatically give an axis name.
 
 # 2024_Feb-zoop df_anomalies_deepSoG_forRpacea_1996-2021baseline.xlsx - from
 # Kelly on 4/3/24.
@@ -21,67 +22,91 @@ raw_orig <-
 # Kelly's classifications, just making lower case and with underscores for
 # consistency. Can give full definitions in the help file.
 
-raw_rename <- select(raw_orig,
-                     year,
-                     num_samples = n.samples,
-                     vol_filtered = vol.filt,
-                     total_biomass = TotalBiomass,
-                     amphipod_gammarid = AmphiGam,
-                     amphipod_hyperiid = AmphiHyp,
-                     benthic_larvae = BenthicLarv,
-                     calanoid_copepods_large = CalCops.larg,
-                     calanoid_copepods_medium = CalCops.med,
-                     calanoid_copepods_small = CalCops.smal,
-                     cephalopoda = Cephalopoda,
-                     chaetognatha = Chaetognatha,
-                     cladocera = Cladocera,
-                     ctenophora = Ctenophora,
-                     euphausiids = Euphs,
-                     fish = Fish,
-                     larvacea = Larvacea,
-                     medusae = Medusae,
-                     mysids = Mysids,
-                     natantia = Natantia,
-                     non_calanoid_copeopods = NonCalCops,
-                     ostracoda = Ostracoda,
-                     other = Other,
-                     pelagic_polychaeta = PolychaetPelagic,
-                     pteropods = Pteropods,
-                     repantia = Repantia,
-                     scyphozoa = Scyphozoa,
-                     siphonophorae = Siphonophorae)
+# If re-order these at all (there should not be a reason, these are all alphabetical), then have to re-order zooplankton_axis_names below
+zooplankton_new <- select(raw_orig,
+                          year,
+                          number_samples = n.samples,
+                          volume_filtered = vol.filt,
+                          total_biomass = TotalBiomass,
+                          amphipods_gammarid = AmphiGam,
+                          amphipods_hyperiid = AmphiHyp,
+                          benthic_larvae = BenthicLarv,
+                          calanoid_copepods_large = CalCops.larg,
+                          calanoid_copepods_medium = CalCops.med,
+                          calanoid_copepods_small = CalCops.smal,
+                          cephalopoda = Cephalopoda,
+                          chaetognatha = Chaetognatha,
+                          cladocera = Cladocera,
+                          ctenophora = Ctenophora,
+                          euphausiids = Euphs,
+                          fish = Fish,
+                          larvacea = Larvacea,
+                          medusae = Medusae,
+                          mysids = Mysids,
+                          natantia = Natantia,
+                          non_calanoid_copeopods = NonCalCops,
+                          ostracoda = Ostracoda,
+                          other = Other,
+                          pelagic_polychaeta = PolychaetPelagic,
+                          pteropods = Pteropods,
+                          repantia = Repantia,
+                          scyphozoa = Scyphozoa,
+                          siphonophorae = Siphonophorae)
 
+class(zooplankton_new) <- c("pacea_zooplankton",
+                            class(zooplankton_new))
 
+plot(zooplankton_new)
+tail(zooplankton_new)
+tail(zooplankton)     # what's currently in pacea. Will know if we're updating
+                      # data, so no need to check automatically like for oni etc.
 
-stop()
-# might need some of this:
-colnames(oni_new)<-c("month",
-                     "year",
-                     "value",
-                     "anomaly")
+# for 2025 update, do a check to see whether historic values have changed, and
+#  do a plot to compare them if so. See oni example in
+#  data-raw/coastwide-indices/coastwide-indices.R
 
-class(oni_new) <- c("pacea_index",
-                    class(oni_new))
+# Check that axis names are still consistent; if fail then manually change
+#  zooplankton_axis_names definition below
+expect_equal(names(zooplankton_new),
+             c("year",
+               "number_samples",
+               "volume_filtered",
+               pull(zooplankton_axis_names,
+                    name)))
 
-attr(oni_new, "axis_name") <- "Oceanic Niño Index"
+# Axis names, based on 2024/2024_biomass_definitions.csv.
+zooplankton_axis_names_new <- tibble(
+  species_group_name = names(zooplankton_new)[-c(1, 2, 3)],
+  axis_name = c("Total biomass",
+                "Gammarid amphipods",
+                "Hyperiid amphipods",
+                "Benthic larvae",
+                "Calanoid copepods (large)",
+                "Calanoid copepods (medium)",
+                "Calanoid copepods (small)",
+                "Cephalopoda",
+                "Chaetognatha",
+                "Cladocera",
+                "Ctenophora",
+                "Euphausiids",
+                "Larval fish",
+                "Larvacea",
+                "Medusae",
+                "Mysids",
+                "Natantia",
+                "Non-calanoid copeopods",
+                "Ostracoda",
+                "Other taxa",
+                "Pelagic polychaeta",
+                "Pteropods",
+                "Repantia",
+                "Scyphozoa",
+                "Siphonophorae"))
 
-check_index_changed(oni, oni_new)
+zooplankton <- zooplankton_new
+usethis::use_data(zooplankton,
+                  overwrite = TRUE)
 
-tail(oni)
-tail(oni_new)
-
-if(check_index_changed(oni, oni_new)){
-  # Check previous values haven't changed, but for oni we expect the last two
-  #  months of anomaly to get updated (and maybe one month of value)
-  par(mfrow=c(2,1))
-  plot(oni, main = "Currently in pacea")
-  plot(oni_new, main = "Updated")
-
-  expect_equal(oni[1:(nrow(oni) - 2), ],
-               oni_new[1:(nrow(oni) - 2), ],
-               tolerance = 0.02) # See note at top if this fails
-
-  oni <- oni_new
-  usethis::use_data(oni,
-                    overwrite = TRUE)
-}
+zooplankton_axis_names <- zooplankton_axis_names_new
+usethis::use_data(zooplankton_axis_names,
+                  overwrite = TRUE)
