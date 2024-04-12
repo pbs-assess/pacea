@@ -170,6 +170,15 @@ plot(harbour_seals)
 
 <img src="man/figures/README-harbour-seals.png" style="width:80.0%" />
 
+**How has zooplankton biomass in the Strait of Georgia changed since
+1996?**
+
+``` r
+plot(zooplankton_sog)
+```
+
+<img src="man/figures/README-zooplankton.png" style="width:80.0%" />
+
 You can view and analyse all these data sets in the usual way in R. For
 example:
 

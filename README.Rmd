@@ -218,6 +218,21 @@ plot(harbour_seals)
 
 ![](man/figures/README-harbour-seals.png){width=80%}
 
+**How has zooplankton biomass in the Strait of Georgia changed since 1996?**
+```{r zooplanktonmakefig, eval = FALSE, echo = FALSE}
+png(paste0(here::here(), "/man/figures/README-zooplankton.png"),
+    width = 670,   # 670 matches size from running from a chunk
+    height = 480)
+plot(zooplankton_sog)
+dev.off()
+```
+
+```{r zooplanktonplot, eval = FALSE}
+plot(zooplankton_sog)
+```
+
+![](man/figures/README-zooplankton.png){width=80%}
+
 You can view and analyse all these data sets in the usual way in R. For example:
 ```{r onivalues}
 oni
