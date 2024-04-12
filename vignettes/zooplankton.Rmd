@@ -1,0 +1,165 @@
+---
+title: "Zooplankton anomalies in the Strait of Georgia"
+author: "Andrew Edwards"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Zooplankton anomalies in the Strait of Georgia}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+date: "Last rendered on `r format(Sys.time(), '%d %B, %Y')`"
+---
+
+<!-- To build either run
+rmarkdown::render("zooplankton.Rmd")
+ or click the knit button in RStudio -->
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 6
+)
+```
+
+## Zooplankton anomalies in the Strait of Georgia
+
+```{r setup}
+library(pacea)
+library(dplyr)
+```
+
+Pacea now includes anomalies of zooplankton biomass in the Strait of Georgia,
+BC, provided by Kelly Young (Institute of Ocean Sciences, DFO). These update the calculations
+presented by Perry et al. (2021) and in the annual State of the Pacific Ocean
+report (Young et al., 2023); see `?zooplankton` for full details and
+latest citations. Here we explain what is included, and update the figures presented
+by Perry et al. (2021) for total biomass and 20 species groups.
+
+The data are stored as a `tibble` in `pacea`, as simply:
+```{r zoo}
+zooplankton_sog
+```
+with the final years being
+```{r zoofinal}
+tail(zooplankton_sog)
+```
+The first three columns are `year` (the year of the calculated anomalies),
+`number_samples` (total number of samples used for the annual anomalies), and
+`volume_filtered` (total volume of water filtered for all tows, in m$^3$). The
+`number_samples` column matches the `Total` column in Table 3 of Perry et al. (2021),
+though only up to 2013; from 2014-2018 the numbers here are higher due to further
+samples being processed. Data from 2019 onwards were not available for the
+Perry at al. (2021) study.
+
+The remaining columns correspond to anomalies for `total_biomass` (the total
+biomass of all zooplankton) or various species groups, given as annual anomalies
+in units of $\log10~\mbox{g m}^{-2}$. See `?zooplankton_sog` for more details,
+and Perry et al. (2021) for the full calculations. (As ever in `pacea`, please
+read through the help files for any data objects you are using).
+
+The full available species
+groups (plus the first three columns) are:
+```{r zoonames}
+names(zooplankton_sog)
+```
+The descriptions are fairly self explanatory, and are explained in more detail in Perry et
+al. (2021).
+
+`pacea` has a built-in plotting function, so users can simply plot the total
+biomass (the default) with
+```{r zooplot}
+plot(zooplankton_sog)
+```
+where the bars are automatically coloured red/blue for positive/negative
+anomalies. The plot defaults to showing the total biomass anomaly, and so
+updates Figure 2D of Perry et al. (2021), which included data only to 2018. Note
+that anomalies are now calculated compared to a climatology for the full time
+series (Young et al. 2023), whereas Perry et al. (2021) used the years 1996-2010
+for their climatology, and extra historical samples have been processed (see
+`?zooplankton_sog`).  Hence, numbers can differ when comparing new plots to
+older ones.
+
+So, to plot one of the other species groups (`total_biomass` is the default, and
+so was plotted above):
+```{r zooplot2}
+plot(zooplankton_sog,
+     species_group = "cladocera")
+```
+
+Supplementary Figure S1 of Perry et al. (2021) showed the anomalies for 20
+species groups (almost all those in our data). We produce an updated version
+here, arranging the plots in the same way as Perry et al. (2021) for ease of
+comparison. For simplicity we have included a column `in_perry_fig_s1` in the
+data object `zooplankton_sog_axis_names`, which we an use to filter the required
+species names.
+```{r zooplot3}
+sp_groups <- filter(zooplankton_sog_axis_names,
+                    in_perry_fig_s1)$species_group_name
+lwd_val <- 7      # Thickness of the bars, tweak depending on output
+```
+Now plot in three panels:
+```{r zooplot4, fig.height = 14}
+par(mfrow = c(4, 2))
+for(i in 1:8){
+  plot(zooplankton_sog,
+       species_group = sp_groups[i],
+       lwd = lwd_val)
+}
+```
+
+```{r zooplot5, fig.height = 14}
+par(mfrow = c(4, 2))
+for(i in 9:16){
+  plot(zooplankton_sog,
+       species_group = sp_groups[i],
+       lwd = lwd_val)
+}
+```
+
+```{r zooplot6, fig.height = 7}
+par(mfrow = c(2, 2))
+for(i in 17:20){
+  plot(zooplankton_sog,
+       species_group = sp_groups[i],
+       lwd = lwd_val)
+}
+```
+
+All species groups show positive anomalies in recent years, continuing the
+pattern shown in Figure S1 of Perry et al. (2021). The only group in that figure
+that ended with a negative anomaly (in 2018) was Chaetognatha; the run of negative
+anomalies from 2016-2018 show up here, but are followed ever since by positive anomalies.
+
+The remaining species groups not shown (including Total biomass, even
+though it was already shown above), are:
+```{r zooplot7, fig.height = 10.5}
+sp_groups_not <- filter(zooplankton_sog_axis_names,
+                        !in_perry_fig_s1)$species_group_name
+par(mfrow = c(3, 2))
+for(i in 1:5){
+  plot(zooplankton_sog,
+       species_group = sp_groups_not[i],
+       lwd = lwd_val)
+}
+```
+These also show recent positive anomalies, except for Scyphozoa.
+
+## Technial notes
+
+Note that the `zooplankton_sog` object has class `pacea_zooplankton`:
+```{r hakebiomassclass}
+class(hake_biomass)
+```
+such that the above command `plot(zooplankton_sog)` first looks to use our tailored function
+`plot.pacea_zooplankton()`, which in turn calls `plot.pacea_index()`, to give
+the style of plot shown above. The `lwd` argument may need to be tailored to
+control the widths of the bars, as in the final plots here, depending on how big your plot is (see
+`?plot.pacea_zooplankton`).
+
+Also note how the y-axis labels are automatically created with sensible text, including
+the anomaly units. Users should not need to worry too much, but this
+is done internally by `plot.pacea_zooplankton()`; see example in
+`?zooplankton_sog_axis_names` to adapt one of the existing ones, or just define
+your own and specify it as the usual `ylab` argument.
