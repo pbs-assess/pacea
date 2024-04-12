@@ -80,6 +80,9 @@ Currently, pacea contains:
 -   estimates of abundances for Harbour Seals and Pacific Hake (with
     Pacific Herring coming soon).
 
+-   zooplankton biomass anomalies in the Strait of Georgia, for 25
+    species groups, from 1996 onwards.
+
 Plotting and helper functions are provided, and demonstrated in the
 detailed vignettes. All data and model outputs are fully documented and
 referenced.
@@ -102,6 +105,9 @@ pacea installation (see below). Since the initial release we have also:
     from the 2023 assessments for reproducibility); see the
     [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
     vignette.
+
+-   added zooplankton biomass anomalies for the Strait of Georgia, with
+    a new vignette (see below).
 
 ## Brief examples of some questions that can be quickly investigated
 
@@ -202,6 +208,9 @@ the vignettes, which are already rendered here:
     OISST data and calculations and associated plotting functions.
 -   [bccm.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm.html)
     BCCM model results, calculations, and associated plotting functions.
+-   [zooplankton.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/zooplankton.html)
+    Zooplankton anomalies for the Strait of Georgia, calculations, and
+    associated plotting functions.
 
 The presentations where we introduced `pacea` are available as .pdf.
 [Here is the DFO version (10th November

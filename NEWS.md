@@ -5,6 +5,9 @@ Developers: for some general tips for writing good bullets see https://style.tid
 
 ## Updates by date
 
+* 2024-04-12 New time series: zooplankton biomass anomalies for the Strait of Georgia,
+  includes new functions and vignette.
+
 * 2024-04-02 Update hake variables with those from 2024 assessment; save 2023
   assessment values as `hake_recruitment_2023` etc.; see the updated help files
   and Populations vignette.
