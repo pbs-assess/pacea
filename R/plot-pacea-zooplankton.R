@@ -15,7 +15,7 @@
 ##'   `?zooplankton_sog`, currently the only zooplankton data in pacea).
 ##' @param species_group which column of `obj` to plot, either `total_biomass`
 ##'   (the default) or one of the 24 species groups described in `?zooplankton_sog`.
-##' @param xlab x-axis label, defaults to `Date`
+##' @param xlab x-axis label, defaults to `Year`
 ##' @param ylab y-axis label, if `NULL` (the default) then automatically selects
 ##'   the `axis_name` corresponding to `species_group` in the object
 ##'   `zooplankton_sog_axis_names`. User can also just provide their own label.
@@ -39,7 +39,7 @@
 ##' }
 plot.pacea_zooplankton <- function(obj,
                              species_group = "total_biomass",
-                             xlab = "Date",
+                             xlab = "Year",
                              ylab = NULL,
                              lwd = 15,
                              mgp_val = c(2.5, 1, 0),
@@ -61,6 +61,7 @@ plot.pacea_zooplankton <- function(obj,
   }
 
   plot.pacea_index(obj_to_plot,
+                   xlab = xlab,
                    ylab = ylab,
                    lwd = lwd,
                    ...)

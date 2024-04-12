@@ -7,7 +7,7 @@
 \method{plot}{pacea_zooplankton}(
   obj,
   species_group = "total_biomass",
-  xlab = "Date",
+  xlab = "Year",
   ylab = NULL,
   lwd = 15,
   mgp_val = c(2.5, 1, 0),
@@ -23,7 +23,7 @@ giving `year`, `num_samples` (number of samples), `volume_filtered`,
 \item{species_group}{which column of `obj` to plot, either `total_biomass`
 (the default) or one of the 24 species groups described in `?zooplankton_sog`.}
 
-\item{xlab}{x-axis label, defaults to `Date`}
+\item{xlab}{x-axis label, defaults to `Year`}
 
 \item{ylab}{y-axis label, if `NULL` (the default) then automatically selects
 the `axis_name` corresponding to `species_group` in the object
