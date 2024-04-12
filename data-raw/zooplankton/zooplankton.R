@@ -103,7 +103,10 @@ zooplankton_sog_axis_names_new <- tibble(
                 expression(paste(plain(Pteropods) * " " * plain(anomaly) * ", " * log[10] * " " * g * " " * m^-2)),
                 expression(paste(plain(Repantia) * " " * plain(anomaly) * ", " * log[10] * " " * g * " " * m^-2)),
                 expression(paste(plain(Scyphozoa) * " " * plain(anomaly) * ", " * log[10] * " " * g * " " * m^-2)),
-                expression(paste(plain(Siphonophorae) * " " * plain(anomaly) * ", " * log[10] * " " * g * " " * m^-2))))
+                expression(paste(plain(Siphonophorae) * " " * plain(anomaly) * ", " * log[10] * " " * g * " " * m^-2))),
+  in_perry_fig_s1 = c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE,
+                      TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE,
+                      TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, TRUE))
 
 zooplankton_sog <- zooplankton_sog_new
 usethis::use_data(zooplankton_sog,

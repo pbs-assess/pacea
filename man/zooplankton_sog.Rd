@@ -7,12 +7,12 @@
 \format{
 A tibble also of class `pacea_zooplankton` with the following
   columns, where `total_biomass` onwards represents the annual anomaly of
-  the specified species group in \eqn{\mbox{g m}^{-2}}:
+  the specified species group in \eqn{\log10 \mbox{g m}^{-2}}:
 \describe{
   \item{year:}{year of the calculated anomalies}
   \item{number_samples:}{total number of samples used for the annual
-anomalies; this matches the Total column in Table 3 of Perry et al. (2021),
-up to 2013; from 2014-2018 the numbers here are higher due to further
+anomalies; this matches the `Total` column in Table 3 of Perry et al. (2021),
+though only up to 2013; from 2014-2018 the numbers here are higher due to further
 samples being processed. Data from 2019 onwards were not available for the
 Perry at al. (2021) study.}
   \item{volume_filtered:}{total volume of water filtered for all tows,

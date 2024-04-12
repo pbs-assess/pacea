@@ -12,6 +12,8 @@ A tibble with columns:
   \item{axis_name :}{an expression to give a correct y label for the plots
   (not just the `species_group_name` shorthand),
   including getting the units (with superscripts) correct}
+  \item{in_perry_fig_s1:}{logical whether or not the species group is in the
+  20 figures shown in Figures S1 of Perry et al. (2021); see the zooplankton vignette.}
  }
 }
 \source{
