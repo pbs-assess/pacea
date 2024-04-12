@@ -1118,7 +1118,6 @@
 
 ##' Zooplankton anomalies in the Strait of Georgia
 ##'
-#'
 ##' Biomass anomalies of zooplankton biomass from 1996 onwards for the deep
 ##' waters, defined as
 ##' bottom depths greater than 50 m, of the central and northern Strait of
@@ -1211,3 +1210,44 @@
 ##' @source Anomalies calculated and provided by Kelly Young, then wrangled and imported using
 ##'   `data-raw/zooplankton/zooplankton.R`
 "zooplankton_sog"
+
+##' Zooplankton anomalies in the Strait of Georgia -- long names for y-axis labels
+##'
+##' For automated plotting of columns of `zooplankton_sog`,
+##' `zooplankton_sog_axis_names` contains expressions that correctly format to
+##' give the y-axis label. Gets automatically used by
+##' `plot.zooplankton_index()`, which gets automatically called by
+##' `plot(zooplankton_sog)`. Should not really be needed by user. To see the
+##' expressions used for the axis names, type
+##' `zooplankton_sog_axis_names$axis_name`. Then to adapt one, find the
+##' appropriate one and adapt that as necessary for `ylab`, see examples and
+##' zooplankton vignette.
+##'
+##' @format A tibble with columns:
+##' \describe{
+##'   \item{species_group_name:}{the available values for `species_group_name`,
+##'   as given by the columns of `zooplankton_sog` from `total_biomass` onwards}
+##'   \item{axis_name :}{an expression to give a correct y label for the plots
+##'   (not just the `species_group_name` shorthand),
+##'   including getting the units (with superscripts) correct}
+##'  }
+##'
+##' @examples
+##' \dontrun{
+##' # Not really needed by user, gets used to automate the y-axis name, eg:
+##' plot(zooplankton_sog, species_group = "cladocera")
+##' # To see them all:
+##' zooplankton_sog_axis_names$axis_name
+##' # Then adapt the relevant one and, enclosing it in `expression()`, use as an
+##' #  argument for `ylab` when making your plot. For example, cladocera one is:
+##' # paste(plain(Cladocera) * " " * plain(anomaly) * ", " * log[10] *
+##'      " " * g * " " * m^-2)
+##' # Can manually adapt that to do:
+##' plot(zooplankton_sog, species_group = "cladocera",
+##'   ylab = expression(plain(Anomaly) * " " * plain(of) * " " * plain(Cladocera) * ", " * log[10] *
+##'      " " * g * " " * m^-2))
+##' }
+##' @author Andrew Edwards
+##' @source Created, based on Kelly Young's descriptions, in
+##'   `data-raw/zooplankton/zooplankton.R`
+"zooplankton_sog_axis_names"
