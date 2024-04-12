@@ -10,25 +10,31 @@
   xlab = "Date",
   ylab = NULL,
   lwd = 15,
+  mgp_val = c(2.5, 1, 0),
   ...
 )
 }
 \arguments{
 \item{obj}{a `pacea_zooplankton` object, which is a tibble with columns
 giving `year`, `num_samples` (number of samples), `volume_filtered`,
-`total_biomass`, and then 24 species groups of zooplankton (see `?zooplankton`).}
+`total_biomass`, and then 24 species groups of zooplankton (see
+`?zooplankton_sog`, currently the only zooplankton data in pacea).}
 
 \item{species_group}{which column of `obj` to plot, either `total_biomass`
-(the default) or one of the 24 species groups described in `?zooplankton`.}
+(the default) or one of the 24 species groups described in `?zooplankton_sog`.}
 
 \item{xlab}{x-axis label, defaults to `Date`}
 
-\item{ylab}{y-axis label, if `NULL` (the default` then automatically selects
+\item{ylab}{y-axis label, if `NULL` (the default) then automatically selects
 the `axis_name` corresponding to `species_group` in the object
-`zooplankton_axis_names`. User can also just provide their own label.}
+`zooplankton_sog_axis_names`. User can also just provide their own label.}
 
 \item{lwd}{line thickness to plot the anomalies, defaults to 15 since these
-are annual; likely needs tweaking depending on the size of the final figure.}
+are annual; likely needs tweaking depending on the size of the final
+figure.}
+
+\item{mgp_val}{mgp value for `par()`, first value is slightly less than the
+default to fit the superscripts in okay. Resets to existing value after plotting.}
 
 \item{...}{optional arguments passed onto `plot.pacea_index()` and
 `plot()`. Note that the x-axis is constructed using a lubridate `date`
@@ -39,24 +45,19 @@ plot of the time series to the current device (returns nothing)
 }
 \description{
 Temporal plot for one of the columns of a pacea zooplankton
-(`pacea_zooplankton`) object, as defined in `?zooplankton`. The specified
+(`pacea_zooplankton`) object, as defined in `?zooplankton_sog`. The specified
 `species_group` gets passed onto `plot.pacea_index()` as the anomaly to be
-plotted, as do any options specified here for display style, adding in
-times of other events, etc. See examples and vignette, as well as the
+plotted, and yields a correctly automated y-axis label (that can be user-specified if
+desired). Other options specified here also get passed onto
+`plot.pacea_index()` and `plot()`, such as for display style, adding in
+times of other events, etc. See examples and zooplankton vignette, as well as the
 climatic and oceanographic indices vignette.
 }
 \examples{
 \dontrun{
-plot(oni)
-plot(oni,
-     xlim = c(lubridate::dmy(01011950),
-     lubridate::dmy(01012040))) # to expand x-axis
-plot(npi_monthly,
-     value = "value")
-plot(oni,
-     event_years = bluntnose_caught_years,
-     xlim = c(lubridate::dmy(01011995), lubridate::dmy(01012024)),
-     lwd = 2)
+# Also see zooplankton vignette
+plot(zooplankton_sog)    # Default is total_biomass, calls plot.pacea_zooplankton()
+plot(zooplankton_sog, species_group = "cladocera")  # y-axis name is automated
 }
 }
 \author{
