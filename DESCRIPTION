@@ -48,6 +48,8 @@ Authors@R: c(
         role = c("ctb"),
         comment = c(ORCID = "0000-0002-6746-3486")),
     person("Jennifer", "Boldt",
+        role = c("ctb")),
+    person("Kelly", "Young",
         role = c("ctb")))
 URL: https://github.com/pbs-assess/pacea
 BugReports: https://github.com/pbs-assess/pacea/issues

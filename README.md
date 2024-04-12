@@ -325,7 +325,8 @@ output, model output, and/or helping with ideas and coding issues:
 
 -   Kelsey Flynn, Jessica Nephin, Lindsay Davidson, Strahan Tucker,
     Brianna Wright, Patrick Thompson, Matt Grinnell, Sean Anderson,
-    Philina English, Chris Grandin, Jennifer Boldt, and others.
+    Philina English, Chris Grandin, Jennifer Boldt, Kelly Young, and
+    others.
 
 And a big thanks to Carley Colclough for expertly designing the pacea
 logo.
