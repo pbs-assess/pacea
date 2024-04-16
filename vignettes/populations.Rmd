@@ -154,7 +154,7 @@ by data, so should not be used in any analysis). And see how the (highly
 uncertain) 2020 and 2021
 recruitment estimates changed somewhat from 2023 assessment to the 2024
 assessment, due to updated data:
-`{r hake2020}
+```{r hake2020}
 filter(hake_recruitment_2023, year %in% c(2020, 2021))
 filter(hake_recruitment_2024, year %in% c(2020, 2021))
 ```
@@ -163,7 +163,7 @@ See page 13 of the 2024 assessment document for explanation.
 ## Pacific Harbour Seals
 
 Estimated abundances for seven regions (and coastwide) were calculated by DFO
-(2022; SAR 2022/034), and included in `pacea` as:
+(2022; SAR 2022/034), and are included in `pacea` as:
 ```{r seals}
 harbour_seals
 
@@ -187,4 +187,5 @@ For full details and reference see
 ```
 
 We anticipate adding assessment output for other species soon, so stay tuned
-(check the NEWS).
+(check the NEWS). For zooplankton anomalies see the new zooplankton vignette:
+[zooplankton.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/zooplankton.html).
