@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,55,11
+/pbs-assess/pacea/tree/main,17,2
+/pbs-assess/pacea/tree/main/talks,12,1
+/pbs-assess/pacea/issues,9,1
+/pbs-assess/pacea/commits/main,8,1
+/pbs-assess/pacea/blob/main/talks/pacea-release-talk-uvic.pdf,6,1
+/pbs-assess/pacea/blob/main/talks/pacea-release-talk-dfo.pdf,5,1
+/pbs-assess/pacea/tree/main/R,4,2
+/pbs-assess/pacea/blob/main/README.Rmd,4,1
+/pbs-assess/pacea/blob/main/tests/testthat/test-plot-time-series.R,4,1
