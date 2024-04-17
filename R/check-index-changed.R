@@ -6,6 +6,9 @@
 ##' @param old original object (of class `pacea_index`, `pacea_recruitment` or
 ##'   `pacea_biomass`) saved in pacea
 ##' @param new newly downloaded and wrangled object (must also be one of the above classes)
+##' @param alpi logical if checking the `alpi` object, as comparing axis name
+##'   does not work because it is convoluted. See
+##'   `data-raw/coastwide-indices/alpi-update.R` for use.
 ##' @return logical if the object has changed (and we would then want to resave it)
 ##' @export
 ##' @author Andrew Edwards
@@ -15,7 +18,9 @@
 ##' # see data-raw/groundfish/data.R
 ##' # see data-raw/coastwide-indices/coastwide-indices.R
 ##' }
-check_index_changed <- function(old, new){
+check_index_changed <- function(old,
+                                new,
+                                alpi = FALSE){
   stopifnot(class(old)[1] %in% c("pacea_index",
                                  "pacea_recruitment",
                                  "pacea_biomass"))
@@ -34,7 +39,10 @@ check_index_changed <- function(old, new){
 
   if(nrow(old) != nrow(new) |
      ncol(old) != ncol(new) |
-     attr(old, "axis_name") != attr(new, "axis_name")) {
+     # Attribute comparison does not work for ALPI:
+     ifelse(alpi,
+            FALSE,
+            attr(old, "axis_name") != attr(new, "axis_name"))) {
        index_changed = TRUE} else {
     # Dimensions are the same so check values:
   if(!(all(old == new, na.rm = TRUE)) |

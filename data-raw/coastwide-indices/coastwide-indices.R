@@ -607,6 +607,9 @@ if(check_index_changed(ao, ao_new)){
 
 # ALPI - not updated since 2015, see ?alpi. So no need to keep running this each
 #  month.
+# UPDATE - using Chris's calculated values to get it to 2022, have not automated
+#  his/Maria's code yet. See alpi-update.R.
+
 if(FALSE){      # Change to TRUE if we want to update, though it'd probably be
                 #  done some other way anyway
   download.file("https://api-proxy.edh.azure.cloud.dfo-mpo.gc.ca/catalogue/records/4bb821ce-bef7-46d3-95d2-064065f1bda4/attachments/alpi_1900_2015_en.csv",

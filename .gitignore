@@ -12,6 +12,11 @@ lib/
 /data-raw/coastwide-indices/PDO.dat
 /data-raw/coastwide-indices/SOI.dat
 
+data-raw/coastwide-indices/alpi-surry/alpi-from-chris-later.R
+data-raw/coastwide-indices/alpi-surry/alpi-values-from-chris-orig.txt
+data-raw/coastwide-indices/alpi-surry/alpi-values-from-chris.txt
+data-raw/coastwide-indices/alpi-update.png
+
 /data-raw/roms/Roms_bcc42_mon_2008to2011_sst.nc
 /data-raw/roms/bcc42_era5glo12r4_mon1993to2019_botTSO.nc
 /data-raw/roms/bcc42_era5glo12r4_mon1993to2019_surTSO.nc
