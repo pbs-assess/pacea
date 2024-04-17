@@ -19,7 +19,8 @@ are \eqn{10^6 \mbox{km}^2}.}
 }
 }
 \source{
-Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
+Generated from running
+  `data-raw/coastwide-indices/coastwide-indices.R` and then (once) `data-raw/coastwide-indices/alpi-update.R`
 }
 \usage{
 alpi
@@ -36,7 +37,9 @@ Low strengthens in winter, and weakens the following spring; however the relativ
 greatly from year to year. The Aleutian Low affects the intensity of winter
 storms and the direction of atmospheric circulation off the west coast of
 North America, since the size and position of the Aleutian Low determines
-the relative waviness of the westerlies.
+the relative waviness of the westerlies. It was mentioned several times at
+the 2024 State of the Pacific Ocean meeting, prompting us to update it in
+pacea (it was previously only available to 2015).
 
 A relatively weak and northward
 positioned Aleutian Low results in a direct westerly flow in the atmosphere
@@ -50,11 +53,13 @@ anomaly from a long-term mean area (1950-1997) from a gridded sea surface pressu
 obtained from the National Center of Atmospheric Research (Surry and King 2015).
 Positive ALPI values indicate an intense Aleutian Low relative to the long-term mean.
 
-Note that ALPI is currently only available up to 2015, as calculated by
-Surry and King (2015). If desired the documented R code provided by Surry and King
-(2015) could be updated (and incorporated into pacea) to enable annual
-updating of ALPI. Some of the spatial R packages used have since been
-replaced by newer ones, so updating the code would likely be doable but a bit of work.
+Chris Rooper used the documented R code provided by Surry and King
+(2015) to calculate values from 2016 to 2022, and these are now included in
+pacea. The code could will be incorporated into pacea at some point (see progress
+at https://github.com/pbs-assess/pacea/issues/54), but Chris thinks the
+websites that the data come from have changed, so this might still be a bit
+of work. Some of the spatial R packages used have since been
+replaced by newer ones, which may also take a bit of time.
 
 Much of the above is adapted from:
 

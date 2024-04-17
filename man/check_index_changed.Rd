@@ -4,13 +4,17 @@
 \alias{check_index_changed}
 \title{Check if a newly downloaded pacea object has changed from one currently in pacea}
 \usage{
-check_index_changed(old, new)
+check_index_changed(old, new, alpi = FALSE)
 }
 \arguments{
 \item{old}{original object (of class `pacea_index`, `pacea_recruitment` or
 `pacea_biomass`) saved in pacea}
 
 \item{new}{newly downloaded and wrangled object (must also be one of the above classes)}
+
+\item{alpi}{logical if checking the `alpi` object, as comparing axis name
+does not work because it is convoluted. See
+`data-raw/coastwide-indices/alpi-update.R` for use.}
 }
 \value{
 logical if the object has changed (and we would then want to resave it)

@@ -21,9 +21,7 @@ Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
 pacea_indices
 }
 \description{
-The Aleutian Low Pressure Index (ALPI) has been used to describe
-decadal-scale changes in North Pacific climate-ocean conditions and is linked
-to patterns in marine productivity.
+Summary of climatic and oceanographic indices in pacea
 }
 \examples{
 \dontrun{
