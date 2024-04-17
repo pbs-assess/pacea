@@ -113,6 +113,11 @@ also:
 - added zooplankton biomass anomalies for the Strait of Georgia, with a new
   vignette (see below).
 
+- extended calculations of the Aleutian Low Pressure Index (ALPI) up to 2022;
+  they were originally only available to 2015. The Aleutian Low was mentioned in
+  several talks at the 2024 State of the Pacific Ocean meeting, motivating us to
+  update the values here.
+
 ## Brief examples of some questions that can be quickly investigated
 
 **How does this year's sea surface temperature (red curve) in West Dixon Entrance compare to previous
@@ -238,10 +243,19 @@ You can view and analyse all these data sets in the usual way in R. For example:
 oni
 ```
 
+**What climatic and oceanographic indices are currently available, and over what
+years?**
+
+```{r indicestable}
+knitr::kable(pacea_indices)
+```
+
 ## Vignettes
 
 For more detailed explanations of the data sets and functionality see the
-vignettes, which are already rendered here:
+vignettes, which are already rendered here (note that we do not automatically
+update them when the data in pacea are updated, so if you run them locally you
+may get more up-to-date values):
 
 * [indices.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/indices.html)
   Climatic and oceanographic indices and associated plotting functions.

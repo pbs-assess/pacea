@@ -109,6 +109,11 @@ pacea installation (see below). Since the initial release we have also:
 -   added zooplankton biomass anomalies for the Strait of Georgia, with
     a new vignette (see below).
 
+-   extended calculations of the Aleutian Low Pressure Index (ALPI) up
+    to 2022; they were originally only available to 2015. The Aleutian
+    Low was mentioned in several talks at the 2024 State of the Pacific
+    Ocean meeting, motivating us to update the values here.
+
 ## Brief examples of some questions that can be quickly investigated
 
 **How does this year’s sea surface temperature (red curve) in West Dixon
@@ -200,10 +205,31 @@ oni
 #> # ℹ 879 more rows
 ```
 
+**What climatic and oceanographic indices are currently available, and
+over what years?**
+
+``` r
+knitr::kable(pacea_indices)
+```
+
+| Object      | Description                                     | Resolution | Start year | End year |
+|:------------|:------------------------------------------------|:-----------|-----------:|---------:|
+| pdo         | Pacific Decadal Oscillation                     | monthly    |       1854 |     2024 |
+| npi_monthly | North Pacific Index (monthly)                   | monthly    |       1899 |     2023 |
+| npi_annual  | North Pacific Index (annual)                    | annual     |       1899 |     2023 |
+| alpi        | Aleutian Low Pressure Index                     | annual     |       1900 |     2022 |
+| oni         | Oceanic Niño Index                              | monthly    |       1950 |     2024 |
+| npgo        | North Pacific Gyre Oscillation                  | monthly    |       1950 |     2024 |
+| ao          | Arctic Oscillation                              | monthly    |       1950 |     2024 |
+| soi         | Southern Oscillation Index                      | monthly    |       1951 |     2024 |
+| mei         | Multivariate El Niño Southern Oscillation Index | monthly    |       1979 |     2024 |
+
 ## Vignettes
 
 For more detailed explanations of the data sets and functionality see
-the vignettes, which are already rendered here:
+the vignettes, which are already rendered here (note that we do not
+automatically update them when the data in pacea are updated, so if you
+run them locally you may get more up-to-date values):
 
 -   [indices.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/indices.html)
     Climatic and oceanographic indices and associated plotting

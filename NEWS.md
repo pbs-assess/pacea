@@ -5,6 +5,8 @@ Developers: for some general tips for writing good bullets see https://style.tid
 
 ## Updates by date
 
+* 2024-04-17 Update `alpi` with values from 2016 to 2022.
+
 * 2024-04-12 New time series: zooplankton biomass anomalies for the Strait of Georgia,
   includes new functions and vignette.
 
