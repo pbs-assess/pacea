@@ -17,8 +17,7 @@ the .png file. See notes below (and Issue #44).
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/pbs-assess/pacea/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pbs-assess/pacea/actions/workflows/R-CMD-check.yaml)
-[![Codecov test
-coverage](https://codecov.io/gh/pbs-assess/pacea/branch/main/graph/badge.svg)](https://app.codecov.io/gh/pbs-assess/pacea?branch=main)
+[![codecov](https://codecov.io/gh/pbs-assess/pacea/graph/badge.svg?token=93afkFJUVL)](https://codecov.io/gh/pbs-assess/pacea)
 ![Visitors](https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Fpbs-assess%2Fpacea&label=VISITORS&countColor=%23263759&style=flat&labelStyle=lower)
 <!-- badges: end -->
 
