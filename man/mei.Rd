@@ -26,7 +26,17 @@ combines both oceanic and atmospheric variables, to an assessment of ENSO in
 in a single index.
 }
 \details{
-NOTE: on NOAA's PSL website given below it was noted that there was an
+NOTE (22th April 2024): on NOAA's PSL website given below it states: "The
+input OLR dataset is delayed at the source. We will update the index when
+it's available. The source dataset (JRA-55) for the MEI V2 has been
+discontinued by the Japanese Meteorological Agency as of January 2024. We
+have switched to using the JRA3Q reanalysis which yields very similar
+results." The whole time series looks to be affected, but we have not looked
+into whether it has reverted to the original `mei` that was in earlier
+version of `pacea`, because of the following note. Andy can dig into this if
+you need.
+
+NOTE (13th Dec 2023): on NOAA's PSL website given below it was noted that there was an
 issue with one of the data sources for calculating the MEI and the values
 were therefore recalculated on 13th Dec 2023. These are now used in `pacea`, and means
 that `mei` in versions of `pacea` installed before 21st Dec 2023 will have

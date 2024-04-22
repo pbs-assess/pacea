@@ -5,6 +5,10 @@ Developers: for some general tips for writing good bullets see https://style.tid
 
 ## Updates by date
 
+* 2024-04-22 Monthly update: `buoy_sst`, and indices `ao`, `mei`, `npi_monthly`,
+  `npi_annual`, `oni`, `pdo`, and `soi`. NOTE: NOAA again recalculated the whole
+  time series for the MEI; see `?mei`.
+
 * 2024-04-17 Update `alpi` with values from 2016 to 2022.
 
 * 2024-04-12 New time series: zooplankton biomass anomalies for the Strait of Georgia,

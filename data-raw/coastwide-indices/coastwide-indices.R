@@ -170,6 +170,15 @@ if(sum(monthly_file_exists) > 1){
                                    month,
                                    value)
 
+  # Remove the NA's that get filled in for the missing months of the final year
+  rows_to_remove <- which(is.na(npi_monthly_new$value))
+  rows_to_remove <- rows_to_remove[rows_to_remove > 600]  # Need to keep row 552
+                                        # which is December 1944.
+  npi_monthly_new <- npi_monthly_new[-rows_to_remove, ]
+
+
+
+
   class(npi_monthly_new) <- c("pacea_index",
                               class(npi_monthly_new))
 
@@ -189,7 +198,11 @@ if(sum(monthly_file_exists) > 1){
 
   if(check_index_changed(npi_monthly, npi_monthly_new)){
     expect_equal(npi_monthly,
-                 npi_monthly_new[1:nrow(npi_monthly), ]) # See note at top if fails.
+                 npi_monthly_new[1:nrow(npi_monthly), ]) # See note above if
+                                        # fails, can just be NA's from the
+    # previous year.
+    # This might not happen after April 2024 as have now removed the trailing
+    # NA's with rows_to_remove above
 
     npi_monthly <- npi_monthly_new
     usethis::use_data(npi_monthly,

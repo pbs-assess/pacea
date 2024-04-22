@@ -188,7 +188,7 @@ example:
 
 ``` r
 oni
-#> # A tibble: 889 × 4
+#> # A tibble: 890 × 4
 #>     year month value anomaly
 #>    <dbl> <dbl> <dbl>   <dbl>
 #>  1  1950     1  24.7   -1.53
@@ -201,7 +201,7 @@ oni
 #>  8  1950     8  26.0   -0.42
 #>  9  1950     9  25.8   -0.39
 #> 10  1950    10  25.6   -0.44
-#> # ℹ 879 more rows
+#> # ℹ 880 more rows
 ```
 
 **What climatic and oceanographic indices are currently available, and
@@ -214,8 +214,8 @@ knitr::kable(pacea_indices)
 | Object      | Description                                     | Resolution | Start year | End year |
 |:------------|:------------------------------------------------|:-----------|-----------:|---------:|
 | pdo         | Pacific Decadal Oscillation                     | monthly    |       1854 |     2024 |
-| npi_monthly | North Pacific Index (monthly)                   | monthly    |       1899 |     2023 |
-| npi_annual  | North Pacific Index (annual)                    | annual     |       1899 |     2023 |
+| npi_monthly | North Pacific Index (monthly)                   | monthly    |       1899 |     2024 |
+| npi_annual  | North Pacific Index (annual)                    | annual     |       1899 |     2024 |
 | alpi        | Aleutian Low Pressure Index                     | annual     |       1900 |     2022 |
 | oni         | Oceanic Niño Index                              | monthly    |       1950 |     2024 |
 | npgo        | North Pacific Gyre Oscillation                  | monthly    |       1950 |     2024 |
