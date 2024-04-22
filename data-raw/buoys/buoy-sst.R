@@ -942,6 +942,10 @@ buoy_sst %>% tail()
 summary(buoy_sst_new)
 summary(buoy_sst)
 
+# This update adds in
+nrow(buoy_sst_new) - nrow(buoy_sst)
+#  new daily means. Could use in commit message.
+
 stop("Do some quick thinking before updating.")  # Could add in code like for indices
 
 buoy_sst <- buoy_sst_new
