@@ -1,0 +1,12 @@
+# From https://discourse.julialang.org/t/getting-the-github-all-checks-pass-green-mark-even-if-codecov-decreased/74264
+# Hopefully stops red cross only because the code coverage has just gone down.
+# Putting it here based on https://github.com/codecov/codecov-action/issues/554
+coverage:
+  status:
+    project:
+      default:
+        informational: true
+    patch:
+      default:
+        informational: true
+comment: false
