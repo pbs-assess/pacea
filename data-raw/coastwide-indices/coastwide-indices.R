@@ -1,5 +1,5 @@
 # Obtaining the oceanographic basin indices and compile them into pacea.
-# Creating a consistent format, of class pacea_index.
+# Creating a consistent format of class pacea_index.
 
 # To update - run through line-by-line. Some of the checks to do with checking
 #  older values of an index with the newly-downloaded older values may fail,
