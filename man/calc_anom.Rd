@@ -15,13 +15,13 @@ calc_anom(
 \arguments{
 \item{data}{pacea data object: BCCM, OISST, buoy_sst data only}
 
+\item{clim_years}{climatology period years}
+
 \item{clim_time}{time units (e.g. month) to summarize climatologies}
 
 \item{time_period_return}{vector of value(s) for the specific time units to estimate climatologies (e.g. '4' for week 4 or April). Set to equal 'all' for all time units.}
 
 \item{years_return}{vector of value(s) to return the years of interest. Defaults to all years in input data}
-
-\item{clim_year}{climatology period years}
 }
 \value{
 anomaly data values of same class as input pacea data
@@ -43,13 +43,13 @@ head(anom_bccm2)
 
 # oisst data
 anom_oi <- calc_anom(oisst_7day)
-head(anom_oi) 
+head(anom_oi)
 
 # pacea buoy sst data
 anom_buoy <- calc_anom(buoy_sst)
 head(anom_buoy)
 
-anom_buoy2 <- calc_anom(buot_sst, clim_time = "week") 
+anom_buoy2 <- calc_anom(buot_sst, clim_time = "week")
 head(anom_buoy2)
 }
 }

@@ -41,7 +41,7 @@ head(clim_bccm2)
 
 # oisst data
 clim_oi <- calc_clim(oisst_7day)
-head(clim_oi) 
+head(clim_oi)
 
 # pacea buoy sst data
 clim_buoy <- calc_clim(buoy_sst)
