@@ -104,6 +104,7 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
 
         # interactive or forced download
         if(ask && !force){
+          # nocov start
           ans <- ask(paste("Newer version of data available and previous version will be deleted from local cache folder:",
                            cache_dir, "Is that okay?", sep = "\n"))
 
@@ -111,16 +112,16 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
           if(layer == "test_data"){
             ans <- FALSE
           }
-
+          # nocov end
         }
 
         if (!ans) {
-
+          # nocov start
           warning("Returned local version of data.", call. = FALSE)
 
           dat <- readRDS(local_file_dir)
           return(dat)
-
+          # nocov end
         } else {
 
           # download data
@@ -156,6 +157,7 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
 
     ## interactive ask to store in cache folder - from bcmaps package
     if (ask && !force) {
+      # nocov start
       ans <- ask(paste("pacea would like to download and store these data in the directory:",
                        cache_dir, "Is that okay?", sep = "\n"))
 
@@ -165,6 +167,7 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
       }
 
       if (!ans) stop("Exiting...", call. = FALSE)
+      # nocov end
     }
 
     # check if directory exists
@@ -241,7 +244,7 @@ ask <- function(...) {
   # default is TRUE, e.g. when using 'test()' function
   ret <- TRUE
   if(!any(unlist(lapply(tb, function(x) any(grepl("test_env", x))))) && interactive()){
-    ret <- utils::menu(choices) == which(choices == "Yes")
+    ret <- utils::menu(choices) == which(choices == "Yes")   # nocov
   }
 
   return(ret)
