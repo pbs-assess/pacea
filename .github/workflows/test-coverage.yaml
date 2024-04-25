@@ -34,7 +34,8 @@ jobs:
             quiet = FALSE,
             clean = FALSE,
             install_path = file.path(normalizePath(Sys.getenv("RUNNER_TEMP"), winslash = "/"), "package"),
-            token = if (token != "") token
+            token = if (token != "") token,
+ 	    function_exclusions = c("plot.pacea_zooplankton")
           )
         shell: Rscript {0}
 
