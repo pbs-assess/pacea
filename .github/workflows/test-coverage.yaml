@@ -35,7 +35,9 @@ jobs:
             clean = FALSE,
             install_path = file.path(normalizePath(Sys.getenv("RUNNER_TEMP"), winslash = "/"), "package"),
             token = if (token != "") token,
-            line_exclusions = list("R/clear-cache.R" = c(27))
+            line_exclusions = list("R/clear-cache.R" = c(27)),
+            exclude_start = "# nocov start",
+            exclude_end = "# nocov end"
           )
         shell: Rscript {0}
 
