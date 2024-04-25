@@ -1,6 +1,7 @@
 # These are on plotting functions for pacea_index and then pacea_recruitment,
-# pacea_biomass, pacea_buoy, and pacea_harbour_seals objects.
+# pacea_biomass, pacea_buoy, pacea_harbour_seals and pacea_zooplankton objects.
 
+# plot.pacea_index()
 test_that("index plotting: the stopifnot commands are working", {
   expect_error(plot(oni,
                     value = "foo"))
@@ -110,4 +111,19 @@ test_that("harbour seals plotting  works with various options", {
   #             plot(harbour_seals,
   #                  include_coastwide = FALSE))
 
+})
+
+# plot.pacea_zooplankton()
+test_that("zooplankton plotting: the stopifnot command works", {
+  expect_error(plot(zooplankton_sog,
+                    species_group = "foo"))
+})
+
+test_that("zooplankton plotting works with various options", {
+  expect_invisible(plot(zooplankton_sog,
+                        species_group = "cladocera",
+                        xlab = "Hello world",
+                        ylab = "Hello again",
+                        mgp_val = c(3, 2, 0)))
+  expect_invisible(plot(zooplankton_sog))
 })
