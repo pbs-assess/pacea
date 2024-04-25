@@ -9,8 +9,6 @@ test_that("calc_clim works for bccm data", {
 
   # expect warning: climatology years not a full 30 years (ie 1991-2020)
   expect_warning(clim_bccm <- calc_clim(pdata, time_period_return = 6))
-  expect_warning(clim_bccm <- calc_clim(pdata, clim_time = "month"))
-  expect_warning(clim_bccm <- calc_clim(pdata, clim_time = "week"))
 
   # output equal to class
   expect_equal(class(clim_bccm)[1], "pacea_stclim")
@@ -72,6 +70,10 @@ test_that("calc_anom works for bccm data", {
 
   # test when years_return is missing, warning is from short climatology
   expect_warning(calc_anom(pdata, time_period_return = 6))
+
+  # test that month and week options work, warning is from short climatology
+  expect_warning(calc_anom(pdata, clim_time = "month"))
+  expect_warning(calc_anom(pdata, clim_time = "week"))
 })
 
 
