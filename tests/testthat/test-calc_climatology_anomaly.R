@@ -71,9 +71,13 @@ test_that("calc_anom works for bccm data", {
   # test when years_return is missing, warning is from short climatology
   expect_warning(calc_anom(pdata, time_period_return = 6))
 
-  # test that month and week options work, warning is from short climatology
+  # test that month option work, warning is from short climatology
   expect_warning(calc_anom(pdata, clim_time = "month"))
-  expect_warning(calc_anom(pdata, clim_time = "week"))
+
+  # test that week options works, only works for pacea_buoy object
+  expect_equal(class(calc_anom(dplyr::filter(buoy_sst, stn_id == "C46004"),
+                               clim_time = "week"))[1],
+               "pacea_buoyclim")
 })
 
 
