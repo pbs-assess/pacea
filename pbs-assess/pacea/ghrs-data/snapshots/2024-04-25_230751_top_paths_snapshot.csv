@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,120,16
+/pbs-assess/pacea/commits/main,77,3
+/pbs-assess/pacea/issues,26,3
+/pbs-assess/pacea/issues/48,24,6
+/pbs-assess/pacea/tree/main,18,3
+/pbs-assess/pacea/tree/main/.github/workflows,18,3
+/pbs-assess/pacea/actions/workflows/R-CMD-check.yaml,14,1
+/pbs-assess/pacea/blob/main/.github/workflows/test-coverage.yaml,12,3
+/pbs-assess/pacea/issues/52,10,2
+/pbs-assess/pacea/tree/dev-andy,10,1
