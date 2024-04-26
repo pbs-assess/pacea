@@ -1264,3 +1264,25 @@
 ##' @source Created, based on Kelly Young's descriptions, in
 ##'   `data-raw/zooplankton/zooplankton.R`
 "zooplankton_sog_axis_names"
+
+
+#' Geospatial pacea grid - BC coastline grid template
+#'
+#' A simple features object of the grid used for interpolation of British Columbia continental margin (BCCM) model. The grid is divided into two regions with differing resolutions: a higher resolution inshore 2km x 2km grid and lower resolution offshore 6km x 6km grid. The boundary between the two regions is created using the 200m isobath along the continental shelf. 
+#' 
+#' Grid cells were removed where the overlapped land using the 'bc_coast' shapefile in pacea. The grid onle covers the Canadian Pacific EEZ region with a 10km buffer.
+#'
+#' @format A simple features dataframe.
+#' @examples
+#' \dontrun{
+#' head(grid26)
+#' plot(grid26)
+#' 
+#' # convert to sf points object
+#' library(sf)
+#' grid26_points <- st_centroid(grid26)
+#' }
+#'
+#' @source Generated from running `data-raw/grids/create-grid.R`.
+"grid26"
+
