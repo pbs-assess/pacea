@@ -4,7 +4,7 @@
 \alias{plot.pacea_stanom}
 \title{Plot anomaly of BCCM spatiotemporal data layer}
 \usage{
-\method{plot}{pacea_stanom}(x, months.plot, years.plot, clim.dat, bc = TRUE, eez = TRUE)
+\method{plot}{pacea_stanom}(x, months.plot, years.plot, clim.dat, bc = TRUE, eez = TRUE, ...)
 }
 \arguments{
 \item{x}{a BCCM ROMS `pacea_stanom` object; output from using `calc_anom()`}
@@ -18,6 +18,9 @@
 \item{bc}{logical. Should BC coastline layer be plotted? Can only be plotted with one plot layer.}
 
 \item{eez}{logical. Should BC EEZ layer be plotted? Can only be plotted with one plot layer.}
+
+\item{...}{other arguments to be passed on, but not currently used (`?ggplot`
+says the same thing); this should remove a R-CMD-check warning.}
 }
 \value{
 plot of the spatial data to the current device (returns nothing)

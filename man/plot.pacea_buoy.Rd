@@ -8,7 +8,8 @@
   obj,
   stn_id = "C46205",
   years = NULL,
-  year_highlight = lubridate::year(lubridate::today())
+  year_highlight = lubridate::year(lubridate::today()),
+  ...
 )
 }
 \arguments{
@@ -21,7 +22,11 @@ Entrance, north of Haida Gwaii)}
 \item{years}{vector of given years to plot. If left as NULL then plots all
 available years.}
 
-\item{year_highlight}{numeric of the year to highlight; defaults to current year.}
+\item{year_highlight}{numeric of the year to highlight; defaults to current
+year.}
+
+\item{...}{other arguments to be passed on, but not currently used (`?ggplot`
+says the same thing); this should remove a R-CMD-check warning.}
 }
 \value{
 a ggplot object of the plot

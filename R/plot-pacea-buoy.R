@@ -10,7 +10,11 @@
 ##'   Entrance, north of Haida Gwaii)
 ##' @param years vector of given years to plot. If left as NULL then plots all
 ##'   available years.
-##' @param year_highlight numeric of the year to highlight; defaults to current year.
+##' @param year_highlight numeric of the year to highlight; defaults to current
+##'   year.
+##' @param ... other arguments to be passed on, but not currently used (`?ggplot`
+##'   says the same thing); this should remove a R-CMD-check warning.
+##'
 ##' @return a ggplot object of the plot
 ##' @export
 ##' @author Andrew Edwards
@@ -22,8 +26,8 @@
 plot.pacea_buoy <- function(obj,
                             stn_id = "C46205",
                             years = NULL,
-                            year_highlight = lubridate::year(lubridate::today())
-                            ){
+                            year_highlight = lubridate::year(lubridate::today()),
+                            ...){
   station <- stn_id       # Can't use stn_id == stn_id in upcoming filter
   if(length(station) == 1){
     obj_one_stn <- dplyr::filter(obj,
@@ -51,6 +55,7 @@ plot.pacea_buoy <- function(obj,
 ##' @param year_highlight numeric of the year to highlight
 ##' @param title text string for title of plot; defaults to `stn_id` followed by
 ##'   the buoy's name (e.g. C46146 Halibut Bank), like Andrea Hilborn has.
+##'
 ##' @return ggplot object of the plot
 ##' @importFrom ggplot2 ggplot aes geom_line theme_bw theme element_text element_rect labs scale_colour_viridis_c ylab
 ##' @export

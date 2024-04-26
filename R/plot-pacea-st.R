@@ -1,21 +1,23 @@
 #' Plot a pacea spatiotemporal data layer
-#' 
-#' Plot for BCCM ROMS sf objects using `ggplot()`. A quick visualization of data, specifying month(s) and year(s). For more options and configurable plots see vignette. 
+#'
+#' Plot for BCCM ROMS sf objects using `ggplot()`. A quick visualization of data, specifying month(s) and year(s). For more options and configurable plots see vignette.
 #'
 #' @param x a BCCM ROMS `pacea_st` object, which is an `sf` object
 #' @param months.plot character or numeric vector to indicate which months to include (e.g. `c(1, 2)`, `c("April", "may")`, `c(1, "April")`)
 #' @param years.plot vector of years to include, from 1993 to 2019
-#' @param bc logical. Should BC coastline layer be plotted? 
-#' @param eez logical. Should BC EEZ layer be plotted? 
+#' @param bc logical. Should BC coastline layer be plotted?
+#' @param eez logical. Should BC EEZ layer be plotted?
+#' @param ... other arguments to be passed on, but not currently used (`?ggplot`
+#'   says the same thing); this should remove a R-CMD-check warning.
 #'
 #' @return plot of the spatial data to the current device (returns nothing)
-#' 
+#'
 #' @importFrom sf st_drop_geometry st_transform
 #' @importFrom dplyr left_join select mutate arrange
 #' @importFrom tidyr pivot_longer
 #' @importFrom ggplot2 ggplot aes theme_bw theme geom_sf scale_fill_gradientn guides guide_colorbar guide_legend labs facet_grid facet_wrap xlab ylab
 #' @importFrom pals jet cividis ocean.oxy plasma ocean.algae ocean.tempo
-#' 
+#'
 #' @export
 #'
 #' @examples
@@ -26,20 +28,21 @@
 plot.pacea_st <- function(x,
                           months.plot = c("April"),
                           years.plot = c(2018),
-                          bc = TRUE, 
-                          eez = TRUE) {
-  
-  
+                          bc = TRUE,
+                          eez = TRUE,
+                          ...) {
+
+
   # month reference table
   month_table <- data.frame(month.name = month.name,
                             month.abb = month.abb,
                             month.num = 1:12)
-  
+
   # stop errors
   stopifnot("'x' must be of class `sf`" =
               "sf" %in% class(x))
   stopifnot("Must enter valid numerals for 'years'" = !any(is.na(suppressWarnings(as.numeric(years.plot)))))
-  
+
   # check if years are available in data
   obj_names <- x %>% st_drop_geometry() %>%
     colnames() %>% strsplit(split = "_") %>%
@@ -47,13 +50,13 @@ plot.pacea_st <- function(x,
     matrix(ncol = 2, byrow = TRUE) %>% as.data.frame()
   stopifnot("Invalid 'years' specified" = suppressWarnings(as.numeric(years.plot)) %in% unique(obj_names$V1))
   rm(obj_names)
-  
+
   # object units attribute
   obj_unit <- attributes(x)$units
-  
+
   # subset year_month columns
   tobj <- subset_pacea_ym(data = x, months = months.plot, years = years.plot)  ####MOVE THIS DOWN
-  
+
   ##### OPTION 1
   # ggplotting
 
@@ -136,61 +139,61 @@ plot.pacea_st <- function(x,
 #' function to index months and years from geospatial ROMS data
 #' @noRd
 subset_pacea_ym <- function(data, years = years, months = months) {
-  
+
   # indexing time for selection of plots to show
   dat_names <- as.data.frame(matrix(as.numeric(unlist(strsplit(names(st_drop_geometry(data)), split = "_"))), ncol = 2, byrow = TRUE))
-  
-  
+
+
   month_table <- data.frame(month.name = month.name,
                             month.abb = month.abb,
                             month.num = 1:12)
-  
+
   m_ind <- month_match(months)
-  
+
   # indexing month and year
   tind <- dat_names[dat_names[,1] %in% as.numeric(years) &
                       dat_names[,2] %in% m_ind, , drop = FALSE]
   tind <- merge(tind, month_table, by.x = "V2", by.y = "month.num", sort = FALSE)[,c("V1", "V2")] %>%
     arrange(V1, V2)
-  
+
   tind1 <- do.call(paste, c(tind[c("V1", "V2")], sep = "_"))
-  
+
   tdat <- data %>% dplyr::select(all_of(tind1))
-  
+
   names(tdat) <- c(tind1, "geometry")
   class(tdat) <- c("pacea_st", "sf", "data.frame")
   attr(tdat, "units") <- attributes(data)$units
-  
+
   return(tdat)
 }
 
 #' function to get months from a vector
 #' @noRd
-month_match <- function(mths) { 
+month_match <- function(mths) {
   month_table <- data.frame(month.name = month.name,
                             month.abb = month.abb,
                             month.num = 1:12)
-  
+
   index_out <- vector()
-  
+
   for(imonth in mths) {
     if(is.na(suppressWarnings(as.numeric(imonth)))){
       tind <- as.vector(unlist(apply(month_table, 2, function(x) {
         grep(pattern = imonth, x = x, ignore.case = TRUE)
       })))
-      
+
       if(length(unique(tind)) == 0) stop("month names are invalid - must be full names, abbreviations, or numeric")
       if(length(unique(tind)) > 1) stop(paste0("'", imonth, "'", " month name incorrect or abbreviation too short - more than one name matched"))
-      
+
       index_out <- c(index_out, unique(tind))
     } else {
       tind <- which(month_table$month.num == as.numeric(imonth))
-      
+
       if(length(unique(tind)) == 0) stop(paste0("'", imonth, "'", " is not a valid month."))
-      
+
       index_out <- c(index_out, unique(tind))
     }
   }
-  
+
   return(index_out)
 }

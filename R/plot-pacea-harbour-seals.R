@@ -58,7 +58,8 @@ plot.pacea_harbour_seals <- function(obj,
                                      median_pch = 16,
                                      median_line_col = "black",
                                      median_line_lty = 1,
-                                     median_line_lwd = 2){
+                                     median_line_lwd = 2,
+                                     ...){
 
   stopifnot("value must be a column of the object in the first argument" =
             value %in% names(obj))

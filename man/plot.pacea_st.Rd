@@ -4,7 +4,14 @@
 \alias{plot.pacea_st}
 \title{Plot a pacea spatiotemporal data layer}
 \usage{
-\method{plot}{pacea_st}(x, months.plot = c("April"), years.plot = c(2018), bc = TRUE, eez = TRUE)
+\method{plot}{pacea_st}(
+  x,
+  months.plot = c("April"),
+  years.plot = c(2018),
+  bc = TRUE,
+  eez = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{a BCCM ROMS `pacea_st` object, which is an `sf` object}
@@ -16,6 +23,9 @@
 \item{bc}{logical. Should BC coastline layer be plotted?}
 
 \item{eez}{logical. Should BC EEZ layer be plotted?}
+
+\item{...}{other arguments to be passed on, but not currently used (`?ggplot`
+says the same thing); this should remove a R-CMD-check warning.}
 }
 \value{
 plot of the spatial data to the current device (returns nothing)

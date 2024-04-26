@@ -4,7 +4,16 @@
 \alias{plot.pacea_oianom}
 \title{Plot anomaly of OISST spatiotemporal data layer}
 \usage{
-\method{plot}{pacea_oianom}(x, weeks.plot, months.plot, years.plot, clim.dat, bc = TRUE, eez = TRUE)
+\method{plot}{pacea_oianom}(
+  x,
+  weeks.plot,
+  months.plot,
+  years.plot,
+  clim.dat,
+  bc = TRUE,
+  eez = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{an OISST `pacea_oianom` object; output from using `calc_anom()` of `oisst_7day` or `oisst_month` data}
@@ -20,6 +29,9 @@
 \item{bc}{logical. Should BC coastline layer be plotted? Can only be plotted with one plot layer.}
 
 \item{eez}{logical. Should BC EEZ layer be plotted? Can only be plotted with one plot layer.}
+
+\item{...}{other arguments to be passed on, but not currently used (`?ggplot`
+says the same thing); this should remove a R-CMD-check warning.}
 }
 \value{
 plot of the spatial data to the current device (returns nothing)
