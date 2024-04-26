@@ -10,7 +10,6 @@ plot_with_uncertainty_discrete(
   value,
   xlab,
   ylab,
-  y_tick,
   x_tick_extra_years,
   uncertainty_bar_col,
   y_max,
