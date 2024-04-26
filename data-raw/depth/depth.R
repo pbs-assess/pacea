@@ -1,4 +1,6 @@
 # Create an object of depth values, based on grid26.
+# These are currently just working note to keep track of ideas, jump to the end
+#  to see latest thinking.
 
 load_all()
 library(PBSdata)   # devtools::install_github("pbs-software/pbs-data/PBSdata")
@@ -30,3 +32,16 @@ vignette('PBSdata-UG', package = "PBSdata")
 library(rhdf5)    # vignette at
 # https://www.bioconductor.org/packages/release/bioc/vignettes/rhdf5/inst/doc/rhdf5.html
 a <- H5Fopen("S102_S111sample/S102/102CA0024600N07100W.h5")
+
+# CHS website also says they supply data to GEBCO, which is what Kelsey had
+# mentioned:
+# https://www.charts.gc.ca/data-gestion/index-eng.html    links to
+# https://www.gebco.net/
+# OR they also have direct data from OpenData or the Federal Geospatial Platform
+# (Govt employees only, but that's fine for us here).
+
+# See the options from
+# https://www.charts.gc.ca/data-gestion/index-eng.html
+#  in the Bathymetry tab. OpenData link looks best.
+
+# Kelsey going to help me.

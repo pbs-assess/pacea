@@ -94,14 +94,14 @@ bccm_primaryproduction(update = FALSE, ask = interactive(), force = FALSE)
 `sf` data object requested.
 }
 \description{
-Loading and/or downloading British Columbia continental margin (BCCM) model data for the BC Pacific region to local drive. 
+Loading and/or downloading British Columbia continental margin (BCCM) model data for the BC Pacific region to local drive.
 
 To download all BCCM data, use the function `bccm_all_variables()`. See help page for details (`?bccm_all_variables`).
 }
 \details{
 The following functions serve to download specific individual ocean variables of the BCCM model data. Use `bccm_all_variables()` if you would like to download all variables - see help file `?bccm_all_variables` for details. If a variable has already been downloaded, the function will load data from `pacea_cache()` folder into user's local R environment.
 
-The British Columbia continental margin (BCCM) model is an ocean circulation-biogeochemical model implementation of the regional ocean modelling system (ROMS). It has a horizontal resolution of 3km x 3km and a vertical discretization based on bathymetry of 42 depth levels increasing in resolution near the surface. These modelled output data were provided by Angelica Pena and the data is further detailed in Pena et al. (2019). 
+The British Columbia continental margin (BCCM) model is an ocean circulation-biogeochemical model implementation of the regional ocean modelling system (ROMS). It has a horizontal resolution of 3km x 3km and a vertical discretization based on bathymetry of 42 depth levels increasing in resolution near the surface. These modelled output data were provided by Angelica Pena and the data is further detailed in Pena et al. (2019).
 
 BCCM data were interpolated to a 2km x 2km inshore grid and a 6km x 6km offshore grid. Data provided are monthly means that span from 1993-2019. Each column represents a distinct 'year_month' combination (e.g. 2010_4).
 
