@@ -72,6 +72,7 @@ Imports:
     sf (>= 1.0.10),
     stats,
     tidyr,
+    tibble,
     usethis
 RoxygenNote: 7.2.3
 Remotes: github::pbs-assess/gfiphc
