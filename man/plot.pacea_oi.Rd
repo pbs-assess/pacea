@@ -4,7 +4,7 @@
 \alias{plot.pacea_oi}
 \title{Plot OISST data}
 \usage{
-\method{plot}{pacea_oi}(x, weeks.plot, months.plot, years.plot, bc = TRUE, eez = TRUE)
+\method{plot}{pacea_oi}(x, weeks.plot, months.plot, years.plot, bc = TRUE, eez = TRUE, ...)
 }
 \arguments{
 \item{x}{a OISST `pacea_oi` object, which is an `sf` object.}
@@ -18,6 +18,9 @@
 \item{bc}{logical. Should BC coastline layer be plotted?}
 
 \item{eez}{logical. Should BC EEZ layer be plotted?}
+
+\item{...}{other arguments to be passed on, but not currently used (`?ggplot`
+says the same thing); this should remove a R-CMD-check warning.}
 }
 \value{
 plot of the spatial data to the current device (returns nothing)

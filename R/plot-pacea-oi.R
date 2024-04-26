@@ -8,7 +8,8 @@
 #' @param years.plot numeric vector to indicate which years to plot. Defaults to current year (or most recent) available.
 #' @param bc logical. Should BC coastline layer be plotted?
 #' @param eez logical. Should BC EEZ layer be plotted?
-#'
+#' @param ... other arguments to be passed on, but not currently used (`?ggplot`
+#'   says the same thing); this should remove a R-CMD-check warning.
 #' @return plot of the spatial data to the current device (returns nothing)
 #'
 #' @importFrom sf st_coordinates
@@ -29,7 +30,8 @@ plot.pacea_oi <- function(x,
                           months.plot,
                           years.plot,
                           bc = TRUE,
-                          eez = TRUE) {
+                          eez = TRUE,
+                          ...) {
 
   stopifnot("'x' must have 'week' or 'month' as column name" = any(c("week", "month") %in% colnames(x)))
 
