@@ -42,6 +42,8 @@ or click the knit button in RStudio
 Note the first slide below creates the title slide (on page 2), from a
    powerpoint slide saved as .png.
 
+See the long_talk = FALSE and other options in first chunk.
+
 When talk is finished save the .pdf with a new name
 (e.g. pacea-release-talk-dfo.pdf, pacea-release-talk-uvic.pdf) and commit the
 .pdf, so we can just keep the single set of .Rmd code. Also link the pdf talk
@@ -78,8 +80,12 @@ orchid
 -->
 
 ```{r, setup, include = FALSE}
-long_talk <- FALSE    # if FALSE then chunks with eval=long_talk will not be
-                      # evaluated, as we are writing a shorter version
+long_talk <- TRUE    # if FALSE then chunks with eval=long_talk will not be
+                     # evaluated, as we are writing a shorter version
+explain_assessment <- FALSE  # set to TRUE for two slides explaining stock assessment
+
+more_details <- FALSE        # set to TRUE for some of the more detailed slides
+                             # (setting FALSE for national EAFM talk)
 
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -116,7 +122,7 @@ colorize <- function(x, color){
 
 ```{r coverpage, echo=FALSE, out.width = "100%"}
 knitr::include_graphics(paste0(here::here(),
-                               "/talks/talks-manual-figures/pacea-title-slide-sidney.png"))
+                               "/talks/talks-manual-figures/pacea-title-slide-eafmwg-national.png"))
 ```
 
 ```{r introduction, child = "introduction.Rmd"}

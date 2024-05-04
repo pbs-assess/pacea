@@ -13,6 +13,10 @@ Currently, we have estimates of:
 
 - Pacific Herring (coming soon)
 
+\
+
+Also have zooplankton biomass anomalies for the Strait of Georgia.
+
 ## Hake biomass
 
 The hake biomass time series is saved as a `tibble` object in `pacea`:
@@ -99,4 +103,32 @@ Or just plot estimates for a single region:
 ```{r sealplot2, echo = long_talk, eval = long_talk}
 plot(harbour_seals,
      region = "SOG")
+```
+
+## Zooplankton in the Strait of Georgia
+
+Biomass anomalies of zooplankton biomass from 1996 onwards from
+
+Perry et al. (2021), as extended by Kelly Young each year for DFO's
+
+State of the Pacific Ocean Report.
+```{r zooplankton}
+zooplankton_sog
+```
+
+## Zooplankton in the Strait of Georgia
+
+Default plot of anomalies of total biomass:
+```{r zooplot}
+plot(zooplankton_sog)
+```
+
+```{asis, echo = long_talk}
+## Zooplankton in the Strait of Georgia
+
+Or plot anomalies for a specific species group:
+```
+```{r zooplot2, echo = long_talk, eval = long_talk}
+plot(zooplankton_sog,
+     species_group = "cladocera")
 ```

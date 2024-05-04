@@ -54,14 +54,14 @@ Geodetic CRS:  WGS 84
 # i Use `print(n = ...)` to see more rows
 ```
 
-```{asis, echo = long_talk}
+```{asis, echo = more_details}
 ## Help file
 ```
-```{r oissthelp, eval=FALSE, echo=long_talk}
+```{r oissthelp, eval = FALSE, echo = more_details}
 ?oisst_month
 ```
 
-```{r oissthelp2, eval=FALSE, echo=long_talk}
+```{r oissthelp2, eval = FALSE, echo = more_details}
 Description
   Simple features objects of NOAAs Optimal Interpolation SST
 

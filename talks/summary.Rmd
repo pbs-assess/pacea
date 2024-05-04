@@ -39,7 +39,9 @@ Please:
 
  - understand the limitations of the data
 
-```{asis, echo = long_talk}
+ - cite `pacea` and the original sources for any data you use
+
+```{asis, echo = more_details}
 ## Recommended guidelines for users
 
 To check when you last installed `pacea`
@@ -52,12 +54,12 @@ Compare that with the updates in the NEWS file (and you can also check dates of 
 https://github.com/pbs-assess/pacea/commits/main)
 ```
 
-```{r installedscreenshot, echo=FALSE, out.width="30%", eval = long_talk}
+```{r installedscreenshot, echo=FALSE, out.width="30%", eval = more_details}
 knitr::include_graphics(paste0(here::here(),
                                "/talks/talks-manual-figures/github-commits.png"))
 ```
 
-```{asis, echo = long_talk}
+```{asis, echo = more_details}
 ## Recommended guidelines for users
 
  - any problems, make a minimum working example (usually makes you figure it out yourself)
@@ -70,11 +72,34 @@ knitr::include_graphics(paste0(here::here(),
      a new `Issue` (allows others to see, and maybe answer, your question)
 ```
 
-## Recommended guidelines for users
+## Current uses of pacea (that we know about)
 
- - cite `pacea` and the original sources for any data you use
+ - Spiny Dogfish: understanding declines over the past 20 years
 
- - let us know of any applications (so we understand the uptake and how much
+ - shrimp: impact of including environmental variables on predicting distributions
+
+ - humpback whales and porpoises: environmental covariates in species distribution models
+
+ - Pacific Saury assessment: finding links between two basin-scale indices and process errors, directly supporting Canada's North Pacific Fisheries
+   Commission commitments
+
+## Lessons learned (applicable to other regions)
+
+ - is possible to amaglamate different ecosystem information into one place
+
+ - not an off-the-side-of-your-desk project
+
+ - is being used by DFO scientists (and others)
+
+ - infrastructure of the package could be utilised in other regions if
+   interested
+
+   (e.g. my monthly download of OISST data is for all Canadian waters, the data processing,
+   storing and plotting functions could be adopted)
+
+## Summary
+
+<!-- - let us know of any applications (so we understand the uptake and how much
    effort to devote to maintaining it)
 
    - you could be out on a survey and wondering how warm the water is
@@ -82,11 +107,20 @@ knitr::include_graphics(paste0(here::here(),
 
     - Chris Rooper: looking at Pacific Saury process errors from a stock assessment
  using the indices (PDO etc.). ``It made my life easier today."
+-->
+ - https://github.com/pbs-assess/pacea
+
+ - installation:
+   \textcolor{red}{\texttt{remotes::install\_github("pbs-assess/pacea")}}
+
+\
 
 \begin{center}
 \includegraphics[width = 1cm]{"../man/figures/logo.png"}\\
 \emph{We wrangle the data so you don't have to}
 \end{center}
+
+\
 
 ```{r citation, eval=FALSE}
 citation("pacea")

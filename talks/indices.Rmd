@@ -90,7 +90,7 @@ Continuing the help...
      should be considered an estimate.
 ```
 
-```{asis, echo = long_talk}
+```{asis, echo = more_details}
 ## Climatic and oceanographic indices
 
 So for some analyses you may want to restrict values to a specified time period
@@ -98,7 +98,7 @@ So for some analyses you may want to restrict values to a specified time period
 
   \
 ```
-```{r onilocal, eval = long_talk, echo = long_talk}
+```{r onilocal, eval = long_talk, echo = more_details}
 oni_fix <- dplyr::filter(oni,
                          year < 2023 | year == 2023 & month < 3)
 tail(oni_fix)       # Will always end with February 2023
@@ -143,17 +143,17 @@ plot(oni,
      lwd = 2)
 ```
 
-```{asis, echo = long_talk}
+```{asis, echo = more_details}
 ## Technical aside regarding `plot()`
 
 The object `oni` has the class `pacea_index`:  \
 ```
 
-```{asis, eval = long_talk, echo = long_talk}
+```{asis, eval = long_talk, echo = more_details}
 class(oni)
 ```
 
-```{asis, echo = long_talk}
+```{asis, echo = more_details}
   \
 which ensures that `plot(oni)`
 automatically uses our specialised function `plot.pacea_index(oni)`, giving

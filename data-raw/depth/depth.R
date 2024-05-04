@@ -44,4 +44,8 @@ a <- H5Fopen("S102_S111sample/S102/102CA0024600N07100W.h5")
 # https://www.charts.gc.ca/data-gestion/index-eng.html
 #  in the Bathymetry tab. OpenData link looks best.
 
-# Kelsey going to help me.
+# Kelsey going to help me. Cole made suggestions, added to Issue #48.
+
+# From:
+# https://open.canada.ca/data/en/dataset/e6e11b99-f0cc-44f7-f5eb-3b995fb1637e/resource/34d89346-527b-4723-9140-f4782cc384fb
+# canada_west_coast_DEM_original.gdb. zip - 7 Gb file, taking an hour to download.
