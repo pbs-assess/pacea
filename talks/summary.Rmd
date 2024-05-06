@@ -22,7 +22,7 @@ We will:
   - hake assessment output: February each year
   - harbour seals: next time assessment is updated
   - herring assessment output: when SAR published each year
-  - BCCM model output: in early 2024 the model may be run into 2020 (boundary
+  - BCCM model output: the model may be run into 2020 (boundary
     conditions come from a global model currently only available to Jan 2021).
     - note that BCCM is a research model (not an operational model) so updates
       depend on projects and access to High Performance Computing.
@@ -45,7 +45,9 @@ Please:
 ## Recommended guidelines for users
 
 To check when you last installed `pacea`
-```{r installed, eval=FALSE}
+```
+
+```{r installed, echo = more_details, eval = more_details}
 pacea_installed()
 
 You last locally installed pacea on 2023-11-01 which is 8 days ago.
@@ -94,8 +96,8 @@ knitr::include_graphics(paste0(here::here(),
  - infrastructure of the package could be utilised in other regions if
    interested
 
-   (e.g. my monthly download of OISST data is for all Canadian waters, the data processing,
-   storing and plotting functions could be adopted)
+   (e.g. my monthly download of buoy data is for all Canadian waters, the data processing,
+   storing, and plotting functions could be adopted)
 
 ## Summary
 

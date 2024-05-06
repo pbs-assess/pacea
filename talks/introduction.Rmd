@@ -90,7 +90,7 @@ So the SST analysis did not happen.
 
 ## Motivation
 
-- Motivated by Dan Duplisea's `gslea` package for the Gulf of St. Lawrence.
+- Initial motivation was Dan Duplisea's `gslea` package for the Gulf of St. Lawrence.
 
 - Outputs from a BC physical biogeochemical model have been shared by Angelica Peña.
 
@@ -158,7 +158,7 @@ knitr::include_graphics(paste0(here::here(),
 ```
 
 But it became non-trivial to decide on regions, and we decided to explicitly include
-spatial data.
+spatial information, especially regarding outputs of the biogeochemical model.
 
 ## `pacea` objects
 

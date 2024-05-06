@@ -98,34 +98,41 @@ So for some analyses you may want to restrict values to a specified time period
 
   \
 ```
-```{r onilocal, eval = long_talk, echo = more_details}
+```{r onilocal, echo = more_details, eval = more_details}
 oni_fix <- dplyr::filter(oni,
                          year < 2023 | year == 2023 & month < 3)
 tail(oni_fix)       # Will always end with February 2023
 ```
 
+```{asis, echo = more_details}
 ## Further plotting options and styles
 
 Each index has a default plotting style (which you can override). For `oni` it
 shows the monthly anomalies as colour-code bars:
+```
 
-```{r oniplot2}
+```{r oniplot2, echo = more_details, eval = more_details}
 plot(oni)
 ```
 
+```{asis, echo = more_details}
 ## Further plotting options and styles
 
 Another option is as a black line with filled-in colouring:
+```
 
-```{r oniplot3}
+```{r oniplot3, echo = more_details, eval = more_details}
 plot(oni,
      style = "red_blue")
 ```
 
+```{asis, echo = more_details}
 ## Further plotting options and styles
 
 To see `oni` as an annual (not monthly index):
-```{r oniannual}
+```
+
+```{r oniannual, echo = more_details, eval = more_details}
 plot(oni,
      smooth_over_year = TRUE,
      lwd = 6)
@@ -133,7 +140,7 @@ plot(oni,
 
 ## Further plotting options and styles
 
-And say you want to see if specific events coincide with El Niño (based on a
+Say you want to see if specific events coincide with El Niño (based on a
 true story, see help for details):
 ```{r onievent}
 plot(oni,
@@ -149,7 +156,7 @@ plot(oni,
 The object `oni` has the class `pacea_index`:  \
 ```
 
-```{asis, eval = long_talk, echo = more_details}
+```{asis, echo = more_details, eval = long_talk}
 class(oni)
 ```
 
