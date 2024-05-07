@@ -1,27 +1,30 @@
 # Outputs from the Pacific Herring stock assessments. Run code line-by-line and check plots.
-#  See ?herring for details. Likely using some of hake and harbour-seals.
+#  See ?herring for details. Combining parts of Matt's sample code, hake.R,  harbour-seals.R,
+#  and pacea-save() from hake-assessment package.
 
 # From DFO (2024) STOCK STATUS UPDATE WITH APPLICATION OF MANAGEMENT PROCEDURES
 # FOR PACIFIC HERRING (CLUPEA PALLASII) IN BRITISH COLUMBIA: STATUS IN 2023 AND
 # FORECAST FOR 2024. Science Response.
 
-load_all()
-
 # Order (Figure 8) is HG, PRD, CC, SOG, WCVI. Presumably consistent.
 
-# Sample code from Matt:
+load_all()
+assess_yr <- 2023       # Year of the assessment (status in that year)
 
-# This should get you going, for example HG:
+herring_dir <- paste0(here::here(),
+                      "/data-raw/herring/herring-assessment-",
+                      assess_yr,
+                      "/")
+load(file = paste0(herring_dir,
+                   "HG_aaa_gfiscam.RData"))
 
-load(file = "HG_aaa_gfiscam.RData")
 # Age-2 recruitment (should match Table 14 in the PDF)
-model$mcmccalcs$recr.quants
+# model$mcmccalcs$recr.quants
 # Spawning biomass (Table 19)
-model$mcmccalcs$sbt.quants
-row.names(model$mcmccalcs$sbt.quants)
+# model$mcmccalcs$sbt.quants
+# row.names(model$mcmccalcs$sbt.quants)
 
-
-Andy doing:
+# Andy doing:
 
 years <- 1953:2023
 
@@ -34,10 +37,27 @@ expect_equal(as.numeric(row.names(t(raw_recruit))),    # names() does not work s
 
 recruit <- model$mcmccalcs$recr.quants %>%
   t() %>%
+  cbind(year = row.names(t(raw_recruit))) %>%
   as_tibble() %>%
-  cbind(year = row.names(t(raw_recruit)))
-recruit
+  select(-"MPD") %>%
+  relocate(year,
+           low = "5%",
+           median = "50%",
+           high = "95%") %>%
+  type.convert(as.is = TRUE) %>%
+  mutate(year = as.numeric(year),  # Make a double like oni, hake_recruitment etc.
+         low = low / 1000,
+         median = median / 1000,
+         high = high / 1000)       # Convert from millions to billions (to match
+                                   # SR Figures).
 
+class(recruit) <- c("pacea_recruitment",
+                    class(recruit))
+
+attr(recruit, "axis_name") <-
+  "Pacific Herring recruitment (billions of age-2 fish)"
+
+plot(recruit)
 
 
 
