@@ -21,9 +21,10 @@ Often want to print all of a (small) tibble, but `as.data.frame()`
 }
 \examples{
 \dontrun{
-# See all the years (rows)
+# To see all the years (rows of a long tibble):
 oni \%>\% a()
-# Want to see all the species (columns)
+
+# To see all the species (columns of a wide tibble):
 tail(zooplankton_sog) \%>\% a()
 }
 }

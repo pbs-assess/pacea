@@ -70,7 +70,7 @@ Currently, pacea contains:
     record, that incorporates observations from different platforms
     (satellites, ships, buoys, and Argo floats):
 
-    -   provided as weekly and monthly means from Sep 1981 to Feb 2024.
+    -   provided as weekly and monthly means from Sep 1981 to Apr 2024.
         **Updated monthly.**
 
 -   9 climatic and oceanographic indices, such as the Pacific Decadal
@@ -112,6 +112,9 @@ pacea installation (see below). Since the initial release we have also:
     to 2022; they were originally only available to 2015. The Aleutian
     Low was mentioned in several talks at the 2024 State of the Pacific
     Ocean meeting, motivating us to update the values here.
+
+-   helper function `a()`, shorthand for `as.data.frame()`, see examples
+    in `?a`.
 
 ## Brief examples of some questions that can be quickly investigated
 

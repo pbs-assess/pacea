@@ -5,6 +5,8 @@ Developers: for some general tips for writing good bullets see https://style.tid
 
 ## Updates by date
 
+* 2024-05-07 Add helper function `a()`, shorthand for `as.data.frame()`.
+
 * 2024-04-22 Monthly update: `buoy_sst`, and indices `ao`, `mei`, `npi_monthly`,
   `npi_annual`, `oni`, `pdo`, and `soi`. NOTE: NOAA again recalculated the whole
   time series for the MEI; see `?mei`.

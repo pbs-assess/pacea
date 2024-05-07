@@ -118,6 +118,8 @@ also:
   several talks at the 2024 State of the Pacific Ocean meeting, motivating us to
   update the values here.
 
+- helper function `a()`, shorthand for `as.data.frame()`, see examples in `?a`.
+
 ## Brief examples of some questions that can be quickly investigated
 
 **How does this year's sea surface temperature (red curve) in West Dixon Entrance compare to previous
