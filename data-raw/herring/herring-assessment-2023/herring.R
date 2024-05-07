@@ -32,15 +32,11 @@ expect_equal(row.names(raw_recruit),
 expect_equal(as.numeric(row.names(t(raw_recruit))),    # names() does not work since a matrix
              years)
 
-
 recruit <- model$mcmccalcs$recr.quants %>%
   t() %>%
   as_tibble() %>%
   cbind(year = row.names(t(raw_recruit)))
 recruit
-
-
-better:
 
 
 
