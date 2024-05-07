@@ -5,6 +5,8 @@
 #  each year. So hake_recruitment_<assess_yr> = hake_recruitment.
 #  See ?hake for details.
 
+# Not re-run in 2024 since changing create_data_hake() -> create_data(), but
+# should work.
 load_all()
 assess_yr <- 2024       # Year of the hake assessment; update each year
 
@@ -66,8 +68,8 @@ if(check_index_changed(hake_recruitment,
   usethis::use_data(hake_recruitment,
                     overwrite = TRUE)
 
-  create_data_hake(paste0("hake_recruitment_", assess_yr),
-                   get(paste0("hake_recruitment_", assess_yr)))
+  create_data(paste0("hake_recruitment_", assess_yr),
+              get(paste0("hake_recruitment_", assess_yr)))
 
   plot(hake_recruitment)
 }
@@ -100,8 +102,8 @@ if(check_index_changed(hake_recruitment_over_2010,
   usethis::use_data(hake_recruitment_over_2010,
                     overwrite = TRUE)
 
-  create_data_hake(paste0("hake_recruitment_over_2010_", assess_yr),
-                   get(paste0("hake_recruitment_over_2010_", assess_yr)))
+  create_data(paste0("hake_recruitment_over_2010_", assess_yr),
+              get(paste0("hake_recruitment_over_2010_", assess_yr)))
 
   plot(hake_recruitment_over_2010)
 }
@@ -134,8 +136,8 @@ if(check_index_changed(hake_recruitment_over_R0,
   usethis::use_data(hake_recruitment_over_R0,
                     overwrite = TRUE)
 
-  create_data_hake(paste0("hake_recruitment_over_R0_", assess_yr),
-                   get(paste0("hake_recruitment_over_R0_", assess_yr)))
+  create_data(paste0("hake_recruitment_over_R0_", assess_yr),
+              get(paste0("hake_recruitment_over_R0_", assess_yr)))
 
   plot(hake_recruitment_over_R0)
 }
@@ -167,8 +169,8 @@ if(check_index_changed(hake_biomass,
   usethis::use_data(hake_biomass,
                     overwrite = TRUE)
 
-  create_data_hake(paste0("hake_biomass_", assess_yr),
-                   get(paste0("hake_biomass_", assess_yr)))
+  create_data(paste0("hake_biomass_", assess_yr),
+              get(paste0("hake_biomass_", assess_yr)))
 
   plot(hake_biomass)
 }
