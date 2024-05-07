@@ -90,3 +90,14 @@ data-raw/zooplankton/2024/*.*
 data-raw/zooplankton/36_Young SOPO2022_submission.pdf
 data-raw/zooplankton/Perry et al 2021_suppl fig1 journal.pone.0245941.s004.pdf
 data-raw/zooplankton/kelly-emails.txt
+
+data-raw/depth/S102_S111sample/
+data-raw/depth/S102andS111.zip
+
+data/older-data/test_grid_10.rda
+data/older-data/test_grid_2.rda
+data/older-data/test_grid_20.rda
+
+.github/workflows/test-coverage-example-2.yaml
+.github/workflows/test-coverage-example.yaml
+.github/workflows/test-coverage-sdmTMB.yaml
