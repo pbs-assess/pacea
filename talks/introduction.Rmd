@@ -13,7 +13,7 @@
 
 - DFO's Competitive Science Research Fund for funding (project 21-FS-03-13).
 
-```{asis, echo = long_talk}
+```{asis, echo = explain_assessment}
 ## What is a stock assessment?
 
 - Collect data from surveys and commercial fisheries, including ages of fish
@@ -23,12 +23,12 @@
 Pacific Hake assessment from 2023, estimate the historical population size:
 ```
 
-```{r hakeintro, echo = FALSE, eval = long_talk}
+```{r hakeintro, echo = FALSE, eval = explain_assessment}
 plot(hake_biomass,
      y_max = 3.5)
 ```
 
-```{asis, echo=long_talk}
+```{asis, echo = explain_assessment}
 ## What is a stock assessment?
 
 Advice often in the form of 'decision tables' that indicate probabilities of future events given
@@ -90,7 +90,7 @@ So the SST analysis did not happen.
 
 ## Motivation
 
-- Motivated by Dan Duplisea's `gslea` package for the Gulf of St. Lawrence.
+- Initial motivation was Dan Duplisea's `gslea` package for the Gulf of St. Lawrence.
 
 - Outputs from a BC physical biogeochemical model have been shared by Angelica Peña.
 
@@ -114,7 +114,7 @@ approach data matrix R-package. R package version 0.1 https://github.com/duplise
 
 ## Why an R package?
 
-- R is the programming language most widely used by stock assessment scientists.
+- R is the computer programming language most widely used by stock assessment scientists.
 
 - An R package is the standard way to share code (and data).
 
@@ -128,7 +128,7 @@ approach data matrix R-package. R package version 0.1 https://github.com/duplise
 - Include vignettes that walk users through various features.
 
 - All data (except one type) is saved within the package, no further downloading
-  required.
+  required, so not relying on external websites being functional.
 
 ## Why an R package on GitHub?
 
@@ -148,6 +148,18 @@ knitr::include_graphics(paste0(here::here(),
 - 'codecov' is the amount of the code that is covered by unit tests, which help weed
   out bugs.
 
+## Spatial domain
+
+Started thinking about ecosystem assessment regions like in gslea:
+
+```{r gslea, echo=FALSE, out.width="50%"}
+knitr::include_graphics(paste0(here::here(),
+                               "/talks/talks-manual-figures/gslmap.plain-1.png"))
+```
+
+But it became non-trivial to decide on regions, and we decided to explicitly include
+spatial information, especially regarding outputs of the biogeochemical model.
+
 ## `pacea` objects
 
 Currently, pacea contains:
@@ -163,3 +175,5 @@ Currently, pacea contains:
    and those related to El Niño
 
 - estimates of abundances for Harbour Seals and Pacific Hake
+
+- zooplankton biomass anomalies for the Strait of Georgia

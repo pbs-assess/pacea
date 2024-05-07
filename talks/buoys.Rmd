@@ -27,7 +27,7 @@ knitr::include_graphics(paste0(here::here(),
                                "/man/figures/buoys_map.png"))
 ```
 
-```{asis, echo = long_talk}
+```{asis}
 ## Sea surface temperature data from buoys
 
 Extensive data processing to calculate daily mean SST:
@@ -41,6 +41,8 @@ Extensive data processing to calculate daily mean SST:
   - $\geq 10$ 2-hour measurements every day
 
 - Switch from DFO data stream to ECCC data stream when appropriate
+
+- Time zones and daylight savings time
 
 - Still working on fixing a few outliers in the high-resolution data (hard to automate)
 ```

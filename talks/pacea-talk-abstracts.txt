@@ -1,0 +1,30 @@
+Also see CSRF report, NOAA/DFO Sidney meeting report, and SOPO 2024 report.
+
+National EAFM seminar for 9th May 2024 (and add links to email): [see email to
+Mary and Susan, 18th April 2024, in which I tweaked this and embedded references]
+
+Presenting pacea: an R package of Pacific ecosystem information to help facilitate an
+ecosystem approach to fisheries management.
+
+Andrew Edwards
+
+The leading cause of ecosystem information not being used in DFO stock assessments is
+the availability of such information. Our pacea R package aims to overcome this
+limitation by amalgamating disparate types of information in a single R package.
+Released in November 2023, pacea currently includes:
+ - 204,828 calculations of daily sea surface temperature based on data from 19
+ buoys;
+ - 27 years of monthly mean outputs from a spatial physical-biogeochemical
+ model, for 40,580 spatial cells, including pH, salinity, temperature,
+ phytoplankton, and primary production.
+ - 42 years of spatial values from NOAA’s spatial Optimum Interpolation Sea Surface Temperature (OISST) record, that incorporates observations from different platforms (satellites, ships, buoys, and Argo floats);
+- 9 climatic and oceanographic indices, such as the Pacific Decadal Oscillation and those related to El Niño;
+- estimates of abundances for Harbour Seals and Pacific Hake;
+- zooplankton biomass anomalies for 25 species groups, from 1996 onwards.
+The package includes many helper and plotting functions with full documentation
+and references. This talk will demonstrate the package, and also explain some of
+the features that may be of interest to colleagues from other regions who might
+consider building a similar package; pacea itself was originally motivated by
+the gslea package for the Gulf of St Lawrence.
+
+Add logo. Add references.
