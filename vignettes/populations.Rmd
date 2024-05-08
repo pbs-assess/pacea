@@ -33,15 +33,16 @@ library(dplyr)
 In pacea we include estimates of populations, including uncertainty, as calculated from recent
 stock assessments.
 
-Currently, we have Pacific Hake, a major component of the ecosystem, and Pacific Harbour Seal, the most
-abundant pinniped species in the Northeast Pacific.
+Currently, we have [Pacific Hake](#hake) and [Pacific Herring](#herring), major components of the ecosystem, and [Pacific Harbour Seals](#harbourseal), the most
+abundant pinniped species in the Northeast Pacific. Click on links to jump to
+the relevant sections below.
 
 NEW (since original release of pacea): we have updated the Pacific Hake
 estimates with those from the 2024 assessment, but retained the 2023
 assessment's estimates within the package (as `hake_biomass_2023` etc.). See
-below and the help files for more details.
+below and the help files for more details. And Pacific Herring was added in May 2024.
 
-## Pacific Hake
+## Pacific Hake {#hake}
 
 The hake biomass time series is saved as a `tibble` in `pacea`, as simply:
 ```{r hakebiomass}
@@ -71,7 +72,7 @@ class(hake_biomass)
 such that the above command `plot(hake_biomass)` first looks to use our tailored function
 `plot.pacea_biomass()`, which gives the style of plot shown above. We use this
 approach for `hake_recruitment` and various other objects in `pacea`, to enable
-easy default plotting.
+easy default plotting. All functions have help files, for example `?plot.pacea_biomass`.
 
 The `hake_recruitment` object contains annual estimates of recruitment of age-0
 fish
@@ -160,7 +161,79 @@ filter(hake_recruitment_2024, year %in% c(2020, 2021))
 ```
 See page 13 of the 2024 assessment document for explanation.
 
-## Pacific Harbour Seals
+## Pacific Herring {#herring}
+
+Pacific Herring results from the latest assessment (DFO 2024; SR 2024/001) are
+saved in a similar manner to those for Pacific
+Hake. The spawning biomass time series is saved as a `tibble` in `pacea`, as simply:
+```{r herringbiomass}
+herring_spawning_biomass
+tail(herring_spawning_biomass)
+```
+with the annual estimates given as median, low and high ends of the 90% credible
+intervals. Units are thousands of tonnes of female spawning biomass each year, as documented in `?herring_spawning_biomass` which also refers to
+`?herring_recruitment` for full details and further background. For example, it
+is important to know that these are 90% credible intervals (not 95% like for hake),
+units are thousands of tonnes (not millions like for hake), and are for males
+and females combined (not females only like for hake). As usual, do read the
+help files. (We included `spawning` in the name `herring_spawning_biomass` as we
+may also include total biomass at some point if available).
+
+Results are included for the five major
+herring stock assessment regions: Haida Gwaii (HG), Prince Rupert District
+(PRD), Central Coast (CC), Strait of Georgia (SOG), and West Coast of Vancouver
+Island (WCVI). These are given in the `region` column, and to see values for
+just one region it is easy to filter:
+```{r herringregion}
+filter(herring_spawning_biomass,
+       region == "HG")
+```
+
+Built-in plotting functions have been developed, with the default being to plot
+all regions:
+```{r herringplot1, fig.height = 12}
+plot(herring_spawning_biomass)
+```
+
+where the solid circles are the annual medians, with credible intervals given by
+the shaded regions, matching the style used above for hake.
+
+We have made it easy to plot results for just one region:
+```{r herringplot2}
+plot(herring_spawning_biomass,
+     region = "PRD")
+```
+
+See `?plot.pacea_biomass_herring` for options, such as `title = "short"` to use
+the region's acronym rather than full name.
+
+The `herring_recruitment` object contains annual estimates of recruitment of
+age-2 fish
+```{r herringrec}
+herring_recruitment
+tail(herring_recruitment)
+```
+
+for which values are billions of age-2 fish, and our default plot is
+```{r herringrecplot, fig.height = 12}
+plot(herring_recruitment)
+```
+
+This uses the same style of plot, with the dots represent the medians, with blue
+bars showing the 90% credible intervals. Again, it is easy (see
+`?plot.pacea_recruitment_herring`) to plot just one of the regions:
+```{r herringrecplot2}
+plot(herring_recruitment,
+     region = "SOG")
+```
+
+We aim to update `herring_spawning_biomass` and `herring_recruitment` annually
+as new assessments are
+conducted, and so have also saved the 2023 assessment's results as
+`herring_spawning_biomass_2023` and `herring_recruitment_2023`, which will not
+change going forward as `pacea` is updated.
+
+## Pacific Harbour Seals {#harbourseal}
 
 Estimated abundances for seven regions (and coastwide) were calculated by DFO
 (2022; SAR 2022/034), and are included in `pacea` as:
