@@ -103,7 +103,7 @@ plot.pacea_biomass <- function(obj,
 
   add_tickmarks(obj_lub,
                 y_tick_by = y_tick_by,
-                y_tick_start = floor(par("usr")[3]),
+                y_tick_start = 0,
                 y_tick_end = ceiling(par("usr")[4]),
                 x_tick_extra_years = x_tick_extra_years,
                 start_decade_ticks = start_decade_ticks)
