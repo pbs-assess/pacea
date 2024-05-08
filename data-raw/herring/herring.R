@@ -27,17 +27,24 @@ load_all()
 assess_yr <- 2023       # Year of the assessment (status in that year)
 regions_all <- c("HG", "PRD", "CC", "SOG", "WCVI")
 
-
-# call create_herring_object() once for each region, and make into one big object
+# call create_herring_object() once for each region, and make recruitment and
+#  spawning biomass each into one big tibble, that then get modified after
 
 herring_recruitment_new <- tibble()
+herring_spawning_biomass_new <- tibble()
+
 for(i in 1:length(regions_all)){
-  recruit_region <- create_herring_object(assess_yr,
+  results_region <- create_herring_object(assess_yr,
                                           regions_all[i])
+
   herring_recruitment_new <- rbind(herring_recruitment_new,
-                                   recruit_region)
+                                   results_region[["recruit"]])
+
+  herring_spawning_biomass_new <- rbind(herring_spawning_biomass_new,
+                                   results_region[["spawning_biomass"]])
 }
 
+# Recruitment
 herring_recruitment_new <- dplyr::mutate(herring_recruitment_new,
                                          region = as.factor(region))
 
@@ -70,7 +77,8 @@ check_index_changed(herring_recruitment,
 if(check_index_changed(herring_recruitment,
                        herring_recruitment_new)){
 
-  plot(herring_recruitment)
+  plot(herring_recruitment)  # Hard to do in one big figure because
+                             # par(mfrow=c(5, 1)) is in plotting function
   windows()
   plot(herring_recruitment_new)
 
@@ -84,5 +92,61 @@ if(check_index_changed(herring_recruitment,
 
   create_data(paste0("herring_recruitment_", assess_yr),
               get(paste0("herring_recruitment_", assess_yr)))
-
 }
+
+# Spawning biomass (copying recruitment code from above, query-replace, then
+# going through TODO delete me when finished going through).
+herring_spawning_biomass_new <- dplyr::mutate(herring_spawning_biomass_new,
+                                         region = as.factor(region))
+
+class(herring_spawning_biomass_new) <- c("pacea_spawning_biomass_herring",
+                                    class(herring_spawning_biomass_new))
+
+attr(herring_spawning_biomass_new, "axis_name") <-
+  "Pacific Herring spawning_biomass (billions of age-2 fish)"
+
+herring_spawning_biomass_new
+herring_spawning_biomass_new %>% tail()
+
+# plots all five regions:
+plot(herring_spawning_biomass_new)         # Calls plot.pacea_spawning_biomass_herring(herring_spawning_biomass_new)
+
+# one region:
+plot(herring_spawning_biomass_new,
+     region = "HG")
+
+
+# Will need to include something like this when update with 2024 assessment
+# results. This is taken from hake
+
+# For 2023, first year of doing this, forcing the if statement to work, should
+# then work for future years.
+
+check_index_changed(herring_spawning_biomass,
+                    herring_spawning_biomass_new)
+
+if(check_index_changed(herring_spawning_biomass,
+                       herring_spawning_biomass_new)){
+
+  plot(herring_spawning_biomass)  # Hard to do in one big figure because
+                             # par(mfrow=c(5, 1)) is in plotting function
+  windows()
+  plot(herring_spawning_biomass_new)
+
+  herring_spawning_biomass <- herring_spawning_biomass_new
+
+  assign(paste0("herring_spawning_biomass_", assess_yr),
+         herring_spawning_biomass_new)
+
+  usethis::use_data(herring_spawning_biomass,
+                    overwrite = TRUE)
+
+  create_data(paste0("herring_spawning_biomass_", assess_yr),
+              get(paste0("herring_spawning_biomass_", assess_yr)))
+}
+
+
+
+
+
+#       # Spawning biomass (Table 19)  - check values
