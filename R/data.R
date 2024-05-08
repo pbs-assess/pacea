@@ -1285,3 +1285,101 @@
 #'
 #' @source Generated from running `data-raw/grids/create-grid.R`.
 "grid26"
+
+##' Pacific Herring annual age-2 recruitments as estimated by the most recent
+##' stock assessment, for each of the five major stock assessment regions.
+##'
+##' Pacific Herring (\emph{Clupea pallasii}) abundance in British Columbia is assessed using a
+##' Bayesian statistical catch-age model. There are five major herring stock assessment regions: Haida Gwaii (HG),
+##' Prince Rupert District (PRD), Central Coast (CC), Strait of Georgia (SoG), and
+##' West Coast of Vancouver Island (WCVI). (There are also two minor regions but
+##' full stock assessments are not done for those). Results for the five major
+##' regions are included in pacea. The most recent assessment is DFO (2024); see
+##' that and references within for full details, including the map in Figure 1
+##' that denotes the regions. Note that recruitments are calculated for age-2
+##' fish, and that uncertainty is given by 90\% credible intervals, defined as
+##' the 5th and 95th percentiles, (whereas the
+##' hake recruitments in pacea correspond to age-0 fish and 95\% credible
+##' intervals, defined as the 2.5 and 97.5 percentiles).
+##'
+##' Historical estimates of recruitment and biomass will change from stock assessment to stock
+##' assessment, and so we use `herring_recruitment` to represent
+##' the results from the most recent assessment (currently for the status in
+##' 2023, with the reference being DFO 2024), and also save
+##' these as `herring_recruitment_2023` so that they will be preserved in future
+##' updates of `pacea`. This is so that you can always refer to a specific set of
+##' assessment results (rather than have your analyses change because you have
+##' updated `pacea` and we have replaced `herring_recruitment` with results from a
+##' new assessment). The same holds for the other herring object, namely
+##' `herring_spawning_biomass`; i.e. it is also saved with the assessment year
+##' appended.
+##'
+##' The 2023 status and results included here are given in DFO (2024):
+##'
+##' DFO. 2024. Stock Status Update with Application of Management Procedures for
+##' Pacific Herring (\emph{Clupea pallasii}) in British Columbia: Status in 2023
+##' and Forecast for 2024. DFO Canadian Science
+##' Advisory Secretariat Science Response 2024/001. 65 p.
+##' https://publications.gc.ca/collections/collection_2024/mpo-dfo/fs70-7/Fs70-7-2024-001-eng.pdf
+##'
+##' @format A tibble also of class `pacea_herring_recruitment` with columns:
+##' \describe{
+##'   \item{year:}{year of the recruitment estimate for age-2 fish}
+##'   \item{low:}{low end (5th percentile) of the 90\% credible interval for
+##'   recruitment, billions of age-2 fish}
+##'   \item{median:}{median estimate of recruitment, billions of age-2 fish}
+##'   \item{high:}{high end (95th percentile) of the 90\% credible interval for
+##'   recruitment, billions of age-2 fish}
+##'  }
+##'
+##' @examples
+##' \dontrun{
+##' herring_recruitment
+##' plot(herring_recruitment)
+##' plot(herring_recruitment, region = "HG")
+##' }
+##' @author Andrew Edwards
+##' @source Generated from Andy running `data-raw/herring/herring.R`, which uses
+##'   model results provided by Matthew Grinnell.
+"herring_recruitment"
+
+##' @rdname herring_recruitment
+"herring_recruitment_2023"
+
+##' Pacific Herring annual spawning stock biomass (males and females) as
+##' estimated by the most recent stock assessment for each of the five major
+##' stock assessment regions.
+##'
+##' Spawning biomass is calculated for each major stock assessment region
+##' separately, and is calculated for males and females combined. Note that in
+##' the assessment (DFO, 2024) spawning biomass is calculated for 2024, but that
+##' is a projection assuming zero catch, and so is excluded here.
+##'
+##' See `?herring_recruitment` for further details and references, and explanations
+##' of `herring_spawning_biomass_2023`.
+##'
+##' @format A tibble also of class `pacea_herring_biomass` with columns:
+##' \describe{
+##'   \item{year:}{year of the estimate of spawning stock biomass (males and
+##'   females)}
+##'   \item{low:}{low end (5th percentile) of the 90\% credible interval for
+##'   biomass, units as for `median`}
+##'   \item{median:}{median estimate of spawning biomass, in thousands of tonnes
+##'   of spawning biomass}
+##'   \item{high:}{high end (95th percentile) of the 90\% credible interval for
+##'   biomass, units as for `median`}
+##'  }
+##'
+##' @examples
+##' \dontrun{
+##' herring_spawning_biomass
+##' plot(herring_spawning_biomass)
+##' plot(herring_spawning_biomass, region = "HG")
+##' }
+##' @author Andrew Edwards
+##' @source Generated from Andy running `data-raw/herring/herring.R`, which uses
+##'   model results provided by Matthew Grinnell.
+"herring_spawning_biomass"
+
+##' @rdname herring_spawning_biomass
+"herring_spawning_biomass_2023"

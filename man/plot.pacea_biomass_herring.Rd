@@ -11,7 +11,7 @@
   y_lab = attr(obj, "axis_name"),
   mar_all_regions = c(3, 3, 2, 0),
   oma_all_regions = c(2, 1, 1, 1),
-  y_tick_by = 0.25,
+  y_tick_by = 5,
   title = "full",
   ...
 )
