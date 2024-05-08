@@ -19,9 +19,7 @@
 ## names of the *.RData files (usually they’re just called “aaa_gfiscam.RData” and
 ## stored in their respective folders). For herring we use median and
 ## 90% CI. Note that spawning biomass goes up to 2024, but 2024 is a projection so you might want to omit it.
-
 ## There’s a LOT of other stuff in there.. just ask if you want to know more.
-
 
 # Order (e.g. Figure 8) is HG, PRD, CC, SOG, WCVI.
 
@@ -32,55 +30,59 @@ regions_all <- c("HG", "PRD", "CC", "SOG", "WCVI")
 
 # call create_herring_object() once for each region, and make into one big object
 
-recruit <- tibble()
+herring_recruitment_new <- tibble()
 for(i in 1:length(regions_all)){
   recruit_region <- create_herring_object(assess_yr,
                                           regions_all[i])
-  recruit <- rbind(recruit,
-                   recruit_region)
+  herring_recruitment_new <- rbind(herring_recruitment_new,
+                                   recruit_region)
 }
 
-recruit <- dplyr::mutate(recruit,
-                         region = as.factor(region))
+herring_recruitment_new <- dplyr::mutate(herring_recruitment_new,
+                                         region = as.factor(region))
 
-class(recruit) <- c("pacea_recruitment_herring",
-                    class(recruit))
+class(herring_recruitment_new) <- c("pacea_recruitment_herring",
+                                    class(herring_recruitment_new))
 
-attr(recruit, "axis_name") <-
+attr(herring_recruitment_new, "axis_name") <-
   "Pacific Herring recruitment (billions of age-2 fish)"
 
-# works, plots all five
-plot.pacea_recruitment_herring(recruit)
+herring_recruitment_new
+herring_recruitment_new %>% tail()
 
-# working:
-plot.pacea_recruitment_herring(recruit,
-                               region = "HG")
+# plots all five regions:
+plot(herring_recruitment_new)         # Calls plot.pacea_recruitment_herring(herring_recruitment_new)
 
-# works now it's exported:
-plot(recruit,
+# one region:
+plot(herring_recruitment_new,
      region = "HG")
 
 
+# Will need to include something like this when update with 2024 assessment
+# results. This is taken from hake
 
+# For 2023, first year of doing this, forcing the if statement to work, should
+# then work for future years.
 
+check_index_changed(herring_recruitment,
+                    herring_recruitment_new)
 
+if(check_index_changed(herring_recruitment,
+                       herring_recruitment_new)){
 
+  plot(herring_recruitment)
+  windows()
+  plot(herring_recruitment_new)
 
+  herring_recruitment <- herring_recruitment_new
 
+  assign(paste0("herring_recruitment_", assess_yr),
+         herring_recruitment_new)
 
-
-if(check_index_changed(hake_recruitment,
-                       hake_recruitment_new)){
-  hake_recruitment <- hake_recruitment_new
-  usethis::use_data(hake_recruitment,
+  usethis::use_data(herring_recruitment,
                     overwrite = TRUE)
-  plot(hake_recruitment)
+
+  create_data(paste0("herring_recruitment_", assess_yr),
+              get(paste0("herring_recruitment_", assess_yr)))
+
 }
-
-
-
-
-NEED somewhere maybe:
-years <- 1953:2023
-expect_equal(as.numeric(row.names(t(raw_recruit))),    # names() does not work since a matrix
-             years)

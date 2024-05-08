@@ -3,8 +3,8 @@
 ##' If index has changed from the saved one then save the new version. Only used
 ##' for updating data (see files in `data-raw`).
 ##'
-##' @param old original object (of class `pacea_index`, `pacea_recruitment` or
-##'   `pacea_biomass`) saved in pacea
+##' @param old original object (of class `pacea_index`, `pacea_recruitment`,
+##'   `pacea_biomass`, or `pacea_recruitment_herring`) saved in pacea
 ##' @param new newly downloaded and wrangled object (must also be one of the above classes)
 ##' @param alpi logical if checking the `alpi` object, as comparing axis name
 ##'   does not work because it is convoluted. See
@@ -23,10 +23,12 @@ check_index_changed <- function(old,
                                 alpi = FALSE){
   stopifnot(class(old)[1] %in% c("pacea_index",
                                  "pacea_recruitment",
-                                 "pacea_biomass"))
+                                 "pacea_biomass",
+                                 "pacea_recruitment_herring"))
   stopifnot(class(new)[1] %in% c("pacea_index",
                                  "pacea_recruitment",
-                                 "pacea_biomass"))
+                                 "pacea_biomass",
+                                 "pacea_recruitment_herring"))
 
   # Tried testthat::expect_equal but it returned tibble of FALSE's, so need
   #  extra checks here
