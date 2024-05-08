@@ -5,6 +5,9 @@ Developers: for some general tips for writing good bullets see https://style.tid
 
 ## Updates by date
 
+* 2024-05-08 Added Pacific Herring stock assessment results, including new
+  plotting functions (see `populations` vignette linked from README).
+
 * 2024-05-07 Add helper function `a()`, shorthand for `as.data.frame()`.
 
 * 2024-04-22 Monthly update: `buoy_sst`, and indices `ao`, `mei`, `npi_monthly`,

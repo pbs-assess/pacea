@@ -76,11 +76,13 @@ Currently, pacea contains:
 -   9 climatic and oceanographic indices, such as the Pacific Decadal
     Oscillation and those related to El Niño. **Updated monthly.**
 
--   estimates of abundances for Harbour Seals and Pacific Hake (with
-    Pacific Herring coming soon).
+-   estimates of abundances for Harbour Seals.
+
+-   estimates of spawning stock biomass and annual recruitments for
+    Pacific Hake and Pacific Herring. **Updated annually.**
 
 -   zooplankton biomass anomalies in the Strait of Georgia, for 25
-    species groups, from 1996 onwards.
+    species groups, from 1996 onwards. **Updated annually.**
 
 Plotting and helper functions are provided, and demonstrated in the
 detailed vignettes. All data and model outputs are fully documented and
@@ -97,7 +99,8 @@ the northeast Pacific Ocean margin. Deep-Sea Research II,
 The values highlighed above with **Updated monthly** have been updated
 each month since the release of pacea, as documented in the
 [NEWS](NEWS.md), which it is advisable to check when you update your
-pacea installation (see below). Since the initial release we have also:
+pacea installation (see below). Since the initial release we have also
+(in order):
 
 -   updated the estimates of Pacific Hake abundance and recruitment with
     values from the 2024 assessment (retaining the original estimates
@@ -106,15 +109,22 @@ pacea installation (see below). Since the initial release we have also:
     vignette.
 
 -   added zooplankton biomass anomalies for the Strait of Georgia, with
-    a new vignette (see below).
+    a new vignette:
+    [zooplankton.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/zooplankton.html).
 
 -   extended calculations of the Aleutian Low Pressure Index (ALPI) up
     to 2022; they were originally only available to 2015. The Aleutian
     Low was mentioned in several talks at the 2024 State of the Pacific
     Ocean meeting, motivating us to update the values here.
 
--   helper function `a()`, shorthand for `as.data.frame()`, see examples
-    in `?a`.
+-   added helper function `a()`, shorthand for `as.data.frame()`, see
+    examples in `?a`.
+
+-   added Pacific Herring stock assessment results, for spawning stock
+    biomass and age-2 recruitment for each of the five major stock
+    assessment regions; see the
+    [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
+    vignette.
 
 ## Brief examples of some questions that can be quickly investigated
 
