@@ -30,7 +30,7 @@ assess_yr <- 2023       # Year of the assessment (status in that year)
 regions_all <- c("HG", "PRD", "CC", "SOG", "WCVI")
 
 
-call create_herring_object() once for each region, and make into one big object
+# call create_herring_object() once for each region, and make into one big object
 
 recruit <- tibble()
 for(i in 1:length(regions_all)){
@@ -49,10 +49,24 @@ class(recruit) <- c("pacea_recruitment_herring",
 attr(recruit, "axis_name") <-
   "Pacific Herring recruitment (billions of age-2 fish)"
 
-plot.pacea_recruitment(dplyr::filter(recruit,
-                                     region == "HG"))
+# works, plots all five
+plot.pacea_recruitment_herring(recruit)
 
-make plotting function default to all of them, with region option to pick one
+# working:
+plot.pacea_recruitment_herring(recruit,
+                               region = "HG")
+
+# works now it's exported:
+plot(recruit,
+     region = "HG")
+
+
+
+
+
+
+
+
 
 
 if(check_index_changed(hake_recruitment,
