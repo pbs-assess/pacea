@@ -94,27 +94,45 @@ if(check_index_changed(herring_recruitment,
               get(paste0("herring_recruitment_", assess_yr)))
 }
 
+# Check values with Tables 14-18:
+dplyr::filter(herring_recruitment,
+              year >= 2014) %>%
+  a()
+
+
 # Spawning biomass (copying recruitment code from above, query-replace, then
 # going through TODO delete me when finished going through).
+# TODO make sure to remove the final year
 herring_spawning_biomass_new <- dplyr::mutate(herring_spawning_biomass_new,
-                                         region = as.factor(region))
+                                              region = as.factor(region))
 
-class(herring_spawning_biomass_new) <- c("pacea_spawning_biomass_herring",
+# The final year, which should be assess_yr + 1, is a projection in the absence
+# of fishing, though TODO am clarifying with Matt exactly when in the year
+# biomass is estimated (Fig 13d for SOG gives known 2023 catch, obviously no
+# 2024 catch).
+
+# Check there's one value for assess_yr for each region
+dplyr::filter(herring_spawning_biomass_new,
+              year == assess_yr + 1)
+# So only keep years before the projection year
+herring_spawning_biomass_new <- dplyr::filter(herring_spawning_biomass_new,
+                                              year < assess_yr + 1)
+
+class(herring_spawning_biomass_new) <- c("pacea_biomass_herring",
                                     class(herring_spawning_biomass_new))
 
 attr(herring_spawning_biomass_new, "axis_name") <-
-  "Pacific Herring spawning_biomass (billions of age-2 fish)"
+  "Pacific Herring spawning biomass (thousand tons)"
 
 herring_spawning_biomass_new
-herring_spawning_biomass_new %>% tail()
+herring_spawning_biomass_new %>% tail()    # Nothing for assess_yr
 
-# plots all five regions:
-plot(herring_spawning_biomass_new)         # Calls plot.pacea_spawning_biomass_herring(herring_spawning_biomass_new)
+# plot all five regions:
+plot(herring_spawning_biomass_new)         # Calls TODO plot.pacea_spawning_biomass_herring(herring_spawning_biomass_new)
 
 # one region:
 plot(herring_spawning_biomass_new,
      region = "HG")
-
 
 # Will need to include something like this when update with 2024 assessment
 # results. This is taken from hake
@@ -129,7 +147,7 @@ if(check_index_changed(herring_spawning_biomass,
                        herring_spawning_biomass_new)){
 
   plot(herring_spawning_biomass)  # Hard to do in one big figure because
-                             # par(mfrow=c(5, 1)) is in plotting function
+                                  # par(mfrow=c(5, 1)) is in plotting function
   windows()
   plot(herring_spawning_biomass_new)
 
@@ -145,8 +163,8 @@ if(check_index_changed(herring_spawning_biomass,
               get(paste0("herring_spawning_biomass_", assess_yr)))
 }
 
-
-
-
-
-#       # Spawning biomass (Table 19)  - check values
+# Check values with Tables 19-23:
+dplyr::filter(herring_spawning_biomass,
+              year >= 2014) %>%
+  a()
+# Looks good

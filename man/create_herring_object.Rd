@@ -14,23 +14,10 @@ List of recruitment and biomass objects, to then be saved in package.
 }
 \description{
 Used in `data-raw/herring/herring.R` to create data objects; not really
-needed by `pacea` userse.
-}
-\details{
-TODO
-Usually you have to create a variable first, and then call
- [usethis::use_data()] with the variable name as an argument and the
- package data will be created. This function just unifies that into one step,
- and allows automated naming with `paste0()`, unlike `usethis::use_data()`.
- Change name from original hake::create_data_hake(), as
- will work for any data object. See `data-raw/groundfish/hake.R` for example use.
+needed by `pacea` users.
 }
 \examples{
 \dontrun{
-In data-raw/groundfish/hake.R see these lines (which allow `assess_yr` to
-  part of the data object, which `use_data()` does not):
- create_data(paste0("hake_recruitment_", assess_yr),
-             get(paste0("hake_recruitment_", assess_yr)))
 }
 }
 \author{

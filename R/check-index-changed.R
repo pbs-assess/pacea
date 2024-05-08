@@ -24,11 +24,13 @@ check_index_changed <- function(old,
   stopifnot(class(old)[1] %in% c("pacea_index",
                                  "pacea_recruitment",
                                  "pacea_biomass",
-                                 "pacea_recruitment_herring"))
+                                 "pacea_recruitment_herring",
+                                 "pacea_biomass_herring"))
   stopifnot(class(new)[1] %in% c("pacea_index",
                                  "pacea_recruitment",
                                  "pacea_biomass",
-                                 "pacea_recruitment_herring"))
+                                 "pacea_recruitment_herring",
+                                 "pacea_biomass_herring"))
 
   # Tried testthat::expect_equal but it returned tibble of FALSE's, so need
   #  extra checks here

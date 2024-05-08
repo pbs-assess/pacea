@@ -7,8 +7,8 @@
 check_index_changed(old, new, alpi = FALSE)
 }
 \arguments{
-\item{old}{original object (of class `pacea_index`, `pacea_recruitment` or
-`pacea_biomass`) saved in pacea}
+\item{old}{original object (of class `pacea_index`, `pacea_recruitment`,
+`pacea_biomass`, or `pacea_recruitment_herring`) saved in pacea}
 
 \item{new}{newly downloaded and wrangled object (must also be one of the above classes)}
 
