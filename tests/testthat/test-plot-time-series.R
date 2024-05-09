@@ -1,5 +1,6 @@
 # These are on plotting functions for pacea_index and then pacea_recruitment,
-# pacea_biomass, pacea_buoy, pacea_harbour_seals and pacea_zooplankton objects.
+# pacea_biomass, pacea_buoy, pacea_harbour_seals, pacea_zooplankton, and
+# pacea_recruitment_herring objects.
 
 # plot.pacea_index()
 test_that("index plotting: the stopifnot commands are working", {
@@ -85,6 +86,52 @@ test_that("biomass plotting works with various options", {
   expect_invisible(plot(hake_biomass,
                         y_max = 100))
 })
+
+# Adapting some of hake one for herring_recruitment
+test_that("herring recruitment plotting: the stopifnot commands are working", {
+  expect_error(plot(herring_recruitment,
+                    region = "foo"))
+  expect_error(plot(herring_recruitment,
+                    title = "foo"))
+  expect_error(plot.herring_recruitment(npi_monthly))
+
+})
+
+test_that("herring recruitment plotting works with various options", {
+  expect_invisible(plot(herring_recruitment))
+  expect_invisible(plot(herring_recruitment,
+                        region = "HG"))
+  expect_invisible(plot(herring_recruitment,
+                        title = NULL))
+  expect_invisible(plot(herring_recruitment,
+                        title = "full"))
+  expect_invisible(plot(herring_recruitment,
+                        title = "short"))
+})
+
+# Essentially copy the herring recruitment ones to test herring biomass plots
+# Adapting some of hake one for herring_recruitment
+test_that("herring biomass plotting: the stopifnot commands are working", {
+  expect_error(plot(herring_spawning_biomass,
+                    region = "foo"))
+  expect_error(plot(herring_spawning_biomass,
+                    title = "foo"))
+  expect_error(plot.herring_biomass(npi_monthly))
+
+})
+
+test_that("herring biomass plotting works with various options", {
+  expect_invisible(plot(herring_spawning_biomass))
+  expect_invisible(plot(herring_spawning_biomass,
+                        region = "HG"))
+  expect_invisible(plot(herring_spawning_biomass,
+                        title = NULL))
+  expect_invisible(plot(herring_spawning_biomass,
+                        title = "full"))
+  expect_invisible(plot(herring_spawning_biomass,
+                        title = "short"))
+})
+
 
 # plot.pacea_buoy()
 test_that("buoy SST plotting  works with various options", {
