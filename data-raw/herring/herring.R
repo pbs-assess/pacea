@@ -122,7 +122,7 @@ class(herring_spawning_biomass_new) <- c("pacea_biomass_herring",
                                     class(herring_spawning_biomass_new))
 
 attr(herring_spawning_biomass_new, "axis_name") <-
-  "Pacific Herring spawning biomass (thousand tons)"
+  "Pacific Herring spawning biomass (thousand t)"
 
 herring_spawning_biomass_new
 herring_spawning_biomass_new %>% tail()    # Nothing for assess_yr

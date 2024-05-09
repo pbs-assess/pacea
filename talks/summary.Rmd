@@ -95,9 +95,9 @@ knitr::include_graphics(paste0(here::here(),
 
  - infrastructure of the package could be utilised in other regions if
    interested
-
-   (e.g. my monthly download of buoy data is for all Canadian waters, the data processing,
-   storing, and plotting functions could be adopted)
+   - e.g. my monthly download of buoy data is for all Canadian waters,
+   the data processing, storing, and plotting functions could be adopted
+   - similarly for other types of data/information
 
 ## Summary
 
@@ -118,7 +118,7 @@ knitr::include_graphics(paste0(here::here(),
 \
 
 \begin{center}
-\includegraphics[width = 1cm]{"../man/figures/logo.png"}\\
+\includegraphics[width = 2cm]{"../man/figures/logo.png"}\\
 \emph{We wrangle the data so you don't have to}
 \end{center}
 

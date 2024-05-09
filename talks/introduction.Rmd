@@ -95,7 +95,7 @@ So the SST analysis did not happen.
 - Outputs from a BC physical biogeochemical model have been shared by Angelica Peña.
 
 - But the netCDF format may be unfamiliar to non-oceanographers --
-  we take care of the wrangling into R
+  we take care of the wrangling into R.
 
 - Open Data is great, but can be hard to
   `r colorize("convert raw data into usable information", "red")`.
@@ -174,6 +174,9 @@ Currently, pacea contains:
 - 9 climatic and oceanographic indices, such as the Pacific Decadal Oscillation
    and those related to El Niño
 
-- estimates of abundances for Harbour Seals and Pacific Hake
+- estimates of abundances for Harbour Seals
 
-- zooplankton biomass anomalies for the Strait of Georgia
+- estimates of spawning stock biomass and annual recruitments for Pacific Hake
+  and Pacific Herring
+
+- zooplankton biomass anomalies

@@ -2,20 +2,20 @@
 
 ## Estimates of animal populations
 
-In `pacea` we include estimates of populations, with measures of uncertainty, as
-calculated from recent stock assessments.
+In `pacea` we include estimates of populations as
+calculated from recent stock assessments or analyses.
 
-Currently, we have estimates of:
+Currently, we have:
 
-- Pacific Hake (the coastwide stock off Canada and United States)
+- Pacific Hake spawning biomass and recruitments for the coastwide stock off Canada and United States
 
-- Pacific Harbour Seals (most abundant pinniped species in the Northeast Pacific)
+- Pacific Harbour Seals abundance (the most abundant pinniped species in the Northeast Pacific)
 
-- Pacific Herring (coming soon)
+- Pacific Herring spawning biomass and recruitments for all five stock
+  assessment regions
 
-\
+- Zooplankton biomass anomalies for 24 species groups in the Strait of Georgia
 
-Also have zooplankton biomass anomalies for the Strait of Georgia.
 
 ## Hake biomass
 
@@ -32,7 +32,7 @@ tail(hake_biomass)
 ?hake_biomass
 
 Pacific Hake annual spawning stock biomass (females only) as estimated
-by the 2023 stock assessment.
+by the 2024 stock assessment.
 
 Description:
 
@@ -76,6 +76,32 @@ Estimates of annual recruitment (exclude recent years for any analyses since not
 greatly informed by data; see `?hake_recruitment`):
 ```{r hakerecuitmentplot}
 plot(hake_recruitment)
+```
+
+## Herring biomass
+
+The herring spawning biomass time series is saved similarly to hake, but
+contains values for five regions:
+```{r herringbiomass}
+herring_spawning_biomass
+
+tail(herring_spawning_biomass)
+```
+
+## Herring biomass
+
+Estimates of spawning biomass for one region (HG = Haida Gwaii):
+```{r herringbiomassplot}
+plot(herring_spawning_biomass,
+     region = "HG")
+```
+
+## Herring recruitment
+
+Estimates of annual age-2 recruitment for one region (HG = Haida Gwaii):
+```{r herringrecuitmentplot}
+plot(herring_recruitment,
+     region = "HG")
 ```
 
 ## Pacific Harbour Seals
