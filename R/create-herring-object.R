@@ -10,8 +10,9 @@
 ##' \dontrun{
 ##' }
 ##' @export
-create_herring_object <- function(assess_yr,
-                                  region,
+create_herring_object <- function(assess_yr,    # nocov start
+                                  region,       # because need local files and
+                                                # not a user function anyway
                                   herring_dir = NULL){
 
   if(is.null(herring_dir)){
@@ -74,4 +75,4 @@ create_herring_object <- function(assess_yr,
 
   return(list(recruit = recruit,
               spawning_biomass = spawning_biomass))
-}
+}                                    # nocovend
