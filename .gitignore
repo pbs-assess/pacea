@@ -101,3 +101,6 @@ data/older-data/test_grid_20.rda
 .github/workflows/test-coverage-example-2.yaml
 .github/workflows/test-coverage-example.yaml
 .github/workflows/test-coverage-sdmTMB.yaml
+/data-raw/depth/GEBCO_Grid_documentation.pdf
+/data-raw/depth/GEBCO_Grid_terms_of_use.pdf
+/data-raw/depth/gebco_2023_n58.0_s42.0_w-146.0_e-117.0.nc
