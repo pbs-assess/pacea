@@ -1,4 +1,4 @@
-# Adding depth values to grid26. Original code written by Kelsey Flynn in
+# Adding depth values to grid26 into new object grid26_depth. Original code written by Kelsey Flynn in
 #  depth-to-grid.R. Andy tweaking it here for saving as a data object in pacea.
 #Date: 2024-05-10
 #Author: Kelsey Flynn
@@ -29,7 +29,7 @@ crs_new <- paste0(terra::crs(grid26, describe=TRUE)[,2],
 
 #read in gebco ncdf as terra spatraster
 bathy <- terra::rast(here::here("data-raw/depth/",
-                              "gebco_2023_n58.0_s42.0_w-146.0_e-117.0.nc"))
+                                "gebco_2023_n58.0_s42.0_w-146.0_e-117.0.nc"))
 
 
 #template raster to transform bathy data to match pacea grid
@@ -64,43 +64,45 @@ grid26 %>%
   geom_spatraster(data=bathy_proj)+
   geom_sf()
 
+# Now to save depths into new grid26_depth object
+grid26_depth <- grid26   # Renaming as changing existing grid26 will likely mess
+                         # up existing code
+
 #Zonal statistics
-grid26$mean_depth <- exactextractr::exact_extract(bathy_proj, grid26, "mean")
-grid26$max_depth <- exactextractr::exact_extract(bathy_proj, grid26, "max")
-grid26$min_depth <- exactextractr::exact_extract(bathy_proj, grid26, "min")
+grid26_depth$mean_depth <- exactextractr::exact_extract(bathy_proj, grid26_depth, "mean")
+grid26_depth$max_depth <- exactextractr::exact_extract(bathy_proj, grid26_depth, "max")
+grid26_depth$min_depth <- exactextractr::exact_extract(bathy_proj, grid26_depth, "min")
 
 #lookieloo
-grid26 %>%
+grid26_depth %>%
   ggplot(.) +
   geom_sf(aes(fill=mean_depth),colour=NA)
 
 #Any average depths above 0 meter elevation?
-grid26 %>%
+grid26_depth %>%
   mutate(above0=ifelse(mean_depth>0, "Y", "N")) %>%
   ggplot(.) +
   geom_sf(aes(fill=above0),colour=NA)
 
 #Any minimum depths above 0 meter elevation?
-grid26 %>%
+grid26_depth %>%
   mutate(above0_min=ifelse(min_depth>0, "Y", "N")) %>%
   ggplot(.) +
   geom_sf(aes(fill=above0_min),colour=NA)
 
+# Quick plot but it shows the grid also
+plot(grid26_depth["mean_depth"])
 
-plot(grid26["mean_depth"])     # shows the grid also
-
-# This is nicer for the plot (from above)
-grid26 %>%
+# This is nicer for the plot (copied from above)
+grid26_depth %>%
   ggplot(.) +
   geom_sf(aes(fill=mean_depth),
           colour=NA)
 
 # Actual values are:
-grid26["mean_depth"]    # As sf object still, mean_depth and geometry
-head(grid26$mean_depth) # Vector of the mean depths, so just showing first 6
-length(grid26$mean_depth) # Vector of the mean depths, so just showing first 6
+grid26_depth["mean_depth"]    # As sf object still, mean_depth and geometry
+head(grid26_depth$mean_depth) # Vector of the mean depths, so just showing first 6
+length(grid26_depth$mean_depth) # Vector of the mean depths, so just showing first 6
 
-grid26_depth <- grid26   # As expect changing existing grid26 will mess up
-                              # other code
 usethis::use_data(grid26_depth,
                   overwrite = TRUE)
