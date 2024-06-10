@@ -457,7 +457,7 @@ if(check_index_changed(soi, soi_new)){
 
 #NGPO
 # Useful background:
-#  http://www.o3d.org/npgo/
+#  http://www.o3d.org/npgo/        # Timed out on 10-06-2024, no time to dig into
 download.file("http://www.o3d.org/npgo/npgo.php",
               destfile="npgo.txt",
               mode="wb",
