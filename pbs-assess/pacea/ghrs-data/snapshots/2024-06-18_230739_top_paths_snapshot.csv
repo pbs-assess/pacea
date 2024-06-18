@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,43,16
+/pbs-assess/pacea/tree/main/data,23,4
+/pbs-assess/pacea/tree/main/vignettes,11,4
+/pbs-assess/pacea/tree/main/R,6,3
+/pbs-assess/PACea,4,2
+/pbs-assess/pacea/tree/main/data/older-data,4,2
+/pbs-assess/pacea/blob/main/data/ao.rda,4,1
+/pbs-assess/pacea/blob/main/data/npgo.rda,4,1
+/pbs-assess/pacea/blob/main/data/alpi.rda,2,1
+/pbs-assess/pacea/blob/main/data/buoy_metadata.rda,2,1
