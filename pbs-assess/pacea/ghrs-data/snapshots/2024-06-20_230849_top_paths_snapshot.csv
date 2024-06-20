@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,28,15
+/pbs-assess/pacea/tree/main/data-raw,17,2
+/pbs-assess/pacea/tree/main/data-raw/lighthouses/DATA_Active_Lightstations/Chrome_Island,11,1
+/pbs-assess/pacea/tree/main/data-raw/lighthouses/DATA_Active_Lightstations,10,2
+/pbs-assess/pacea/tree/main/data,9,2
+/pbs-assess/pacea/tree/main/data-raw/buoys,9,2
+/pbs-assess/pacea/tree/main/data-raw/erddap,8,1
+/pbs-assess/pacea/tree/main/R,6,2
+/pbs-assess/pacea/blob/main/data-raw/erddap/oisst.R,6,1
+/pbs-assess/pacea/blob/main/data-raw/lighthouses/DATA_Active_Lightstations/Chrome_Island/Chrome_Island_-_Average_Monthly_Sea_Surface_Temperatures_1961-2021_french.csv,6,1
