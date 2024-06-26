@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,32,16
+/pbs-assess/pacea/tree/main/data,18,4
+/pbs-assess/pacea/tree/main/data-raw,17,2
+/pbs-assess/pacea/tree/main/R,15,5
+/pbs-assess/pacea/blob/main/data-raw/erddap/oisst.R,15,3
+/pbs-assess/pacea/tree/main/data-raw/lighthouses/DATA_Active_Lightstations,13,3
+/pbs-assess/pacea/tree/main/data-raw/buoys,11,3
+/pbs-assess/pacea/tree/main/data-raw/lighthouses/DATA_Active_Lightstations/Chrome_Island,11,1
+/pbs-assess/pacea/blob/main/data-raw/buoys/buoy-sst.R,10,3
+/pbs-assess/pacea/tree/main/data/older-data,9,3
