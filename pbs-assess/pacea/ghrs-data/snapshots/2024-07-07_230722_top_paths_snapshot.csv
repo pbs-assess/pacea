@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,21,14
+/pbs-assess/pacea/blob/main/data-raw/buoys/buoy-sst.R,18,2
+/pbs-assess/pacea/tree/main/vignettes,12,1
+/pbs-assess/pacea/blob/main/data-raw/erddap/oisst.R,10,2
+/pbs-assess/pacea/tree/main/R,9,4
+/pbs-assess/pacea/tree/main/data,9,3
+/pbs-assess/pacea/blob/main/vignettes/bccm.html,6,1
+/pbs-assess/pacea/blob/main/DESCRIPTION,4,2
+/pbs-assess/pacea/blob/main/NAMESPACE,4,2
+/pbs-assess/pacea/blob/main/R/get-pacea-data.R,4,2
