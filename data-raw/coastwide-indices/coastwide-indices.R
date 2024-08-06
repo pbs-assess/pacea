@@ -457,7 +457,14 @@ if(check_index_changed(soi, soi_new)){
 
 #NGPO
 # Useful background:
-#  http://www.o3d.org/npgo/        # Timed out on 10-06-2024, no time to dig into
+#  http://www.o3d.org/npgo/        # Timed out on 10-06-2024, no time to dig
+#  into. Did once on 6-08-2024 then worked the second time (had looked on
+#  browser also, though doubt that mattered). Did download but looks like format
+#  has changed: download file is just html. But 'Download Index' link from https://www.o3d.org/npgo/ has not
+#  been updated since the latest already in pacea, though that isn't exactly
+#  what we used. So something has changed, but don't worry now as looks like
+#  data not update anyway.a
+
 download.file("http://www.o3d.org/npgo/npgo.php",
               destfile="npgo.txt",
               mode="wb",
