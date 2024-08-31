@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,11,5
+/pbs-assess/pacea/tree/main/.github/workflows,7,1
+/pbs-assess/pacea/blob/b24309dc951d7864af9f894d6d9e778755ea78b1/vignettes/oisst.Rmd,5,1
+/pbs-assess/pacea/tree/main/.github,5,1
+/pbs-assess/pacea/tree/main/R,5,1
+/pbs-assess/pacea/tree/main/tests,5,1
+/pbs-assess/pacea/blob/main/inst/CITATION,3,1
+/pbs-assess/pacea/blob/main/talks/pacea-release-talk-dfo.pdf,3,1
+/pbs-assess/pacea/tree/main/tests/testthat,3,1
+/pbs-assess/pacea/blob/b24309dc951d7864af9f894d6d9e778755ea78b1/vignettes/oisst.html,2,1
