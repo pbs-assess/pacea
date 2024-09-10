@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,10,5
+/pbs-assess/pacea/tree/main/data,5,2
+/pbs-assess/pacea/tree/main/data-raw/buoys,5,2
+/pbs-assess/pacea/tree/main/data-raw,4,2
+/pbs-assess/pacea/commits/main,4,1
+/pbs-assess/pacea/issues/49,3,2
+/pbs-assess/pacea/blob/main/talks/pacea-release-talk-dfo.pdf,3,1
+/pbs-assess/pacea/blob/main/data/buoy_sst.rda,2,1
+/pbs-assess/pacea/blob/main/data-raw/buoys/buoy-sst.R,2,1
+/pbs-assess/pacea/tree/main/data-raw/data-key,2,1
