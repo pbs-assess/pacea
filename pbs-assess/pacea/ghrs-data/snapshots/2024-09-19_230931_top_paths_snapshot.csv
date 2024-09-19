@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,29,12
+/pbs-assess/pacea/tree/main/data,5,2
+/pbs-assess/pacea/tree/main/data-raw/buoys,5,2
+/pbs-assess/pacea/issues,4,4
+/pbs-assess/pacea/issues/49,4,3
+/pbs-assess/pacea/tree/main/data-raw,4,2
+/pbs-assess/pacea/issues/55,2,2
+/pbs-assess/pacea/actions/runs/10492416963/job/29063902752,2,1
+/pbs-assess/pacea/blob/main/data/buoy_sst.rda,2,1
+/pbs-assess/pacea/blob/main/data-raw/buoys/buoy-sst.R,2,1
