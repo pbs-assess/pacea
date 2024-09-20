@@ -5,6 +5,10 @@ Developers: for some general tips for writing good bullets see https://style.tid
 
 ## Updates by date
 
+* 2024-09-20 Monthly updates for: `buoy_sst`, and indices `ao`, `mei`, `npgo`, `oni`, `pdo`, and `soi`.
+ 
+* 2024-08-21 Monthly update for: `oisst_7day` and `oisst_month`.
+
 * 2024-08-06 Monthly update for: `oisst_7day`, `oisst_month` (both updated two
   weeks earlier), `buoy_sst`, and indices `ao`, `oni`, `pdo`, and `soi`.
 

@@ -463,9 +463,11 @@ if(check_index_changed(soi, soi_new)){
 #  has changed: download file is just html. But 'Download Index' link from https://www.o3d.org/npgo/ has not
 #  been updated since the latest already in pacea, though that isn't exactly
 #  what we used. So something has changed, but don't worry now as looks like
-#  data not update anyway.a
+#  data not updated anyway.
+# 20-09-2024: changing filename to "https://www.o3d.org/npgo/data/NPGO.txt"
+# which has been updated to August 2024. It used to be "http://www.o3d.org/npgo/npgo.php"
 
-download.file("http://www.o3d.org/npgo/npgo.php",
+download.file("http://www.o3d.org/npgo/data/NPGO.txt",
               destfile="npgo.txt",
               mode="wb",
               quiet = FALSE)
@@ -487,7 +489,7 @@ npgo_new <-read.table("npgo.txt",
 stopifnot(npgo_new[1, 1:2] == c(1950, 1)) # Check still starts in January 1950
 
 class(npgo_new) <- c("pacea_index",
-                    class(npgo_new))
+                     class(npgo_new))
 
 attr(npgo_new, "axis_name") <- "North Pacific Gyre Oscillation"
 
@@ -503,7 +505,6 @@ if(check_index_changed(npgo, npgo_new)){
   npgo <- npgo_new
   usethis::use_data(npgo,
                     overwrite = TRUE)
-  plot(npgo)  # TODO maybe update when plotting functions finalised
 }
 
 # ENSO MEI https://www.psl.noaa.gov/enso/mei
