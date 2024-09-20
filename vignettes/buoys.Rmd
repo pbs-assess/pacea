@@ -59,7 +59,7 @@ knitr::include_graphics(paste0(here::here(),
 
 (built with code in data-raw/buoys/buoys-map.R), and also
 shown at
-https://github.com/IOS-OSD-DPG/Pacific_SST_Monitoring#eccc-buoy-data .
+[https://github.com/IOS-OSD-DPG/Pacific_SST_Monitoring#eccc-buoy-data](https://github.com/IOS-OSD-DPG/Pacific_SST_Monitoring#eccc-buoy-data).
 
 Some of the recent data are also plotted on that website, by Andrea Hilborn,
 Charles Hannah and Lu Guan, which is automatically updated roughly every
@@ -98,7 +98,7 @@ Plot data from a single buoy for all years, the default is for buoy C46205:
 plot(buoy_sst)
 ```
 
-The red lines gives the current year. Since `buoy_sst` has class `pacea_buoy`,
+The red line gives the current year. Since `buoy_sst` has class `pacea_buoy`,
 `plot(buoy_sst)` function calls our tailored `plot.pacea_buoy()` function.
 The gap in the red line at the start of the year indicates missing data (or days
 that get excluded due to our protocols).
