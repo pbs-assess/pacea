@@ -101,6 +101,7 @@ dfo_data       # 3.666 million rows when removing pre-1991 . Every few minutes h
                # 9/11/2023 update: 3.797 million rows
                # 29/1/2024 update: 3.811 million rows
                #  6/8/2024 update: 3.839 million rows
+               #  20/9/2024 update: 3.845 million rows
 
 summary(dfo_data)   # Earliest is 1987, so not adding tons of data, yet not really worth
                     # excluding 1987-1991 for our purposes (Andrea did since

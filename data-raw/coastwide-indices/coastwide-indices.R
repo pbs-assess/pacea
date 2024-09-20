@@ -612,6 +612,7 @@ tail(ao)
 tail(ao_new)
 
 check_index_changed(ao, ao_new)
+
 if(check_index_changed(ao, ao_new)){
   expect_equal(ao,
                ao_new[1:nrow(ao), ]) # See note at top if fails. Not tested
