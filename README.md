@@ -349,7 +349,10 @@ fisheries management. <https://github.com/pbs-assess/pacea>,
 
 You may wish to add the date you installed it (using
 `pacea_installed()`). Use `citation("pacea")` to get a version for LaTeX
-and R Markdown bibliographies.
+and R Markdown bibliographies. Although the DOI badge at the top of this
+page ends in …805, the …804 DOI is preferable because that will not
+change with any future updates to the GitHub tag. So …804 seems simpler
+and more consistent to use (thanks!).
 
 Also let us know of any applications. This will help us devote effort
 into maintaining `pacea`.
