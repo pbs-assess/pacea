@@ -1,10 +1,8 @@
 
 <!--
 README.md is generated from README.Rmd. Please edit that file. Build with
-
-load_all()
-rmarkdown::render("README.Rmd")
-
+-->
+<!--
 which builds the .html that can be viewed locally (but isn't pushed to GitHub;
 GitHub uses README.md to make the page you see on GitHub).
 
@@ -42,7 +40,7 @@ to get you started.
 
 Currently, pacea contains:
 
--   205,179 calculations of daily sea surface temperature based on data
+-   206,901 calculations of daily sea surface temperature based on data
     from 19 buoys. **Updated monthly.**
 
 -   outputs from the spatial British Columbia continental margin (BCCM)
@@ -70,7 +68,7 @@ Currently, pacea contains:
     record, that incorporates observations from different platforms
     (satellites, ships, buoys, and Argo floats):
 
-    -   provided as weekly and monthly means from Sep 1981 to Apr 2024.
+    -   provided as weekly and monthly means from Sep 1981 to Jul 2024.
         **Updated monthly.**
 
 -   9 climatic and oceanographic indices, such as the Pacific Decadal
@@ -201,7 +199,7 @@ example:
 
 ``` r
 oni
-#> # A tibble: 890 × 4
+#> # A tibble: 895 × 4
 #>     year month value anomaly
 #>    <dbl> <dbl> <dbl>   <dbl>
 #>  1  1950     1  24.7   -1.53
@@ -214,7 +212,7 @@ oni
 #>  8  1950     8  26.0   -0.42
 #>  9  1950     9  25.8   -0.39
 #> 10  1950    10  25.6   -0.44
-#> # ℹ 880 more rows
+#> # ℹ 885 more rows
 ```
 
 **What climatic and oceanographic indices are currently available, and
@@ -342,9 +340,9 @@ colleagues for the Gulf of St Lawrence.
 If you use `pacea` in your work then please cite it as
 
 Edwards A.M., Tai T.C., Watson J., Peña M.A., Hilborn A., Hannah C.G.,
-and Rooper C.N. (2023). “pacea: An R package of Pacific ecosystem
-information to help facilitate an ecosystem approach to fisheries
-management.” <https://github.com/pbs-assess/pacea>.
+Rooper C.N., and Flynn K.L. (2024). “pacea: An R package of Pacific
+ecosystem information to help facilitate an ecosystem approach to
+fisheries management.” <https://github.com/pbs-assess/pacea>.
 
 You may wish to add the date you installed it (using
 `pacea_installed()`). Use `citation("pacea")` to get a version for LaTeX
@@ -361,10 +359,9 @@ Fisheries and Oceans Canada (project 21-FS-03-13).
 We thank the following for contributing ideas, example code for ROMS
 output, model output, and/or helping with ideas and coding issues:
 
--   Kelsey Flynn, Jessica Nephin, Lindsay Davidson, Strahan Tucker,
-    Brianna Wright, Patrick Thompson, Matt Grinnell, Sean Anderson,
-    Philina English, Chris Grandin, Jennifer Boldt, Kelly Young, and
-    others.
+-   Jessica Nephin, Lindsay Davidson, Strahan Tucker, Brianna Wright,
+    Patrick Thompson, Matt Grinnell, Sean Anderson, Philina English,
+    Chris Grandin, Jennifer Boldt, Kelly Young, and others.
 
 And a big thanks to Carley Colclough for expertly designing the pacea
 logo.

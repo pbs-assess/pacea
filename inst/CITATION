@@ -4,7 +4,8 @@ citHeader("To cite pacea in publications please use:")
 bibentry(
   bibtype = "misc",
   title = "pacea: An R package of Pacific ecosystem information to help facilitate an ecosystem approach to fisheries management",
-  author = "A. M. Edwards and T. C. Tai and J. Watson and M. A. Peña and A. Hilborn and C. G. Hannah and C. N. Rooper",
+  author =
+    "A. M. Edwards and T. C. Tai and J. Watson and M. A. Peña and A. Hilborn and C. G. Hannah and C. N. Rooper and K. L. Flynn",
   url = "https://github.com/pbs-assess/pacea",
-  year = "2023"
+  year = "2024"
 )
