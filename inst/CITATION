@@ -6,6 +6,6 @@ bibentry(
   title = "pacea: An R package of Pacific ecosystem information to help facilitate an ecosystem approach to fisheries management",
   author =
     "A. M. Edwards and T. C. Tai and J. Watson and M. A. Peña and A. Hilborn and C. G. Hannah and C. N. Rooper and K. L. Flynn",
-  url = "https://github.com/pbs-assess/pacea",
+  url = "https://github.com/pbs-assess/pacea, https://zenodo.org/doi/10.5281/zenodo.13840804",
   year = "2024"
 )

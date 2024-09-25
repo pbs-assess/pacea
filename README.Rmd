@@ -33,6 +33,7 @@ library(tibble)
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/pbs-assess/pacea/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pbs-assess/pacea/actions/workflows/R-CMD-check.yaml)
 [![codecov](https://codecov.io/gh/pbs-assess/pacea/graph/badge.svg?token=93afkFJUVL)](https://codecov.io/gh/pbs-assess/pacea)
+[![DOI](https://zenodo.org/badge/417554147.svg)](https://zenodo.org/doi/10.5281/zenodo.13840804)
 ![Visitors](https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Fpbs-assess%2Fpacea&label=VISITORS&countColor=%23263759&style=flat&labelStyle=lower)
 <!-- badges: end -->
 
@@ -348,12 +349,13 @@ This work is strongly motivated by, and based on, the [GSLea](https://github.com
 
 ## Citation
 
-If you use `pacea` in your work then please cite it as
+If you use `pacea` in your work then please cite it as (NOTE this has been
+updated since the original release):
 
 Edwards A.M., Tai T.C., Watson J., Peña M.A., Hilborn A., Hannah C.G., Rooper
-  C.N., and Flynn K.L. (2024). "pacea: An R package of Pacific ecosystem information to
-  help facilitate an ecosystem approach to fisheries management."
-  <https://github.com/pbs-assess/pacea>.
+  C.N., and Flynn K.L. (2024). pacea: An R package of Pacific ecosystem information to
+  help facilitate an ecosystem approach to fisheries management.
+  <https://github.com/pbs-assess/pacea>, <https://zenodo.org/doi/10.5281/zenodo.13840804>
 
 You may wish to add the date you installed it (using `pacea_installed()`). Use
 `citation("pacea")` to get a version for LaTeX and R Markdown bibliographies.
