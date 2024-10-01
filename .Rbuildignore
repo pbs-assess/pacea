@@ -15,6 +15,7 @@ data-raw/*
 R/plot-buoy-sst.R
 ^R/plot-buoy-sst\.R$
 R/plot-buoy-sst*.R
+^R-temp/$
 
 notes/*
 ^README\.Rmd$

@@ -100,6 +100,8 @@ dfo_data       # 3.666 million rows when removing pre-1991 . Every few minutes h
                # so keeping with with_tz.
                # 9/11/2023 update: 3.797 million rows
                # 29/1/2024 update: 3.811 million rows
+               #  6/8/2024 update: 3.839 million rows
+               #  20/9/2024 update: 3.845 million rows
 
 summary(dfo_data)   # Earliest is 1987, so not adding tons of data, yet not really worth
                     # excluding 1987-1991 for our purposes (Andrea did since
@@ -174,6 +176,7 @@ dfo_daily_mean
 # 158,012 rows up to 2023-08-23
 # 158,638            2023-11-09
 # 159,407            2023-02-17  # max(dfo_daily_mean$date)
+# 160,467            2024-07-30
 
 # Before doing two-hour quality control had less, not sure how many (can test by
 #  changing num_two_hour_intervals_required)
