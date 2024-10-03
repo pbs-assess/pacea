@@ -2,7 +2,11 @@
 # along (easier to follow what was commented out by Greig). Copy this over to
 # hottsee-data-interpolation.R when finalised.
 
-# ROMs data from Angelina Pena - full bottom and surface variables that Andy requested
+# HOTSSea data from Greig Oldford - Salinity and Temperature 1980-2018
+# model depths vary by grid cell, usually only slightly at the surface
+# fields are therefore processed accounting for varying depth level spans.
+
+# BCCM was ROMs output from Angelina Pena - full bottom and surface variables that Andy requested
 
 library(devtools)
 library(dplyr)
@@ -12,7 +16,8 @@ library(sf)
 library(stars)
 library(ncdf4)
 library(ggplot2)
-library(concaveman)
+library(concaveman)   # could not install, says not available for this version
+                      # of R, but website says R>= 2.10 so should be fine.
 
 sf_use_s2(FALSE)  # remove spherical geometry (s2) for sf operations
 
@@ -29,6 +34,7 @@ tbc <- bc_coast
 # convert to multilinestring
 tbc.line <- st_cast(tbc, "MULTILINESTRING")
 
+# Travis had this all commented out:
 # #####
 # # create polygons for cropping to roms data
 # nc_dat <- nc_open(paste0("data-raw/roms/bcc42_era5glo12r4_mon1993to2019_botTSO.nc"))
@@ -65,21 +71,21 @@ tbc.line <- st_cast(tbc, "MULTILINESTRING")
 
 # OPTION 1 FOR LOOPING THROUGH VARIABLES FOR EACH DEPTH
 # loop variables
-ifiles <- list.files("./data-raw/roms/", pattern = "TSOpH.nc")
-jvars <- c("temp", "salt", "Oxygen", "pH")
+ifiles <- list.files("./data-raw/hotssea/",
+                     pattern = "tempsalin_avg.nc")
+jvars <- c("votemper", "vosaline")   # French since NEMO
 
 # index table
-vars_fullname <- c("temperature", "salinity", "oxygen", "pH")
-vars_units <- c("Temperature (\u00B0C)",
-                "Salinity (ppt)",
-                "Dissolved oxygen content (mmol-oxygen m^-3)",
-                "pH")
-jvars_table <- cbind(jvars, vars_fullname, vars_units)
-
-
+vars_fullname <- c("temperature",
+                   "salinity")
+vars_units <- c("Temperature (potential; \u00B0C)",
+                "Salinity (PSU)")
+jvars_table <- cbind(jvars,
+                     vars_fullname,
+                     vars_units)
 
 # OPTION 2 FOR LOOPING THROUGH ONLY SURFACE VARIABLES (PRIMARY PRODUCTION)
-# loop variables
+# loop variables - won't be needed for hotssea
 ifiles <- list.files("./data-raw/roms/", pattern = "zInt_PT.nc")
 jvars <- c("phytoplankton", "PTproduction")
 
