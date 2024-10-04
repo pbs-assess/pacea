@@ -236,7 +236,8 @@ output2 <- point2rast(data = tdat_sf_cropped,
                       nnmax = nmax,
                       as = "SpatRast")
 
-
+plot(output2) # with roms_buff gave fancy artwork. And with roms_cave_cropped.
+HERE need to make our own grid I think. See make-mask-layer.R
 
 # 6 km res
 #    output6 <- point2rast(data = tdat_sf, spatobj = offshore_poly, loc = llnames, cellsize = 6000, nnmax = nmax, as = "SpatRast")
