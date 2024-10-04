@@ -24,7 +24,7 @@ sf_use_s2(FALSE)  # remove spherical geometry (s2) for sf operations
 
 # load pacea
 load_all()
-
+dir <- here::here()   # Will give pacea/
 
 #####
 # START - load data to environment
@@ -106,7 +106,7 @@ version <- "01"
 proctimes <- vector()
 
 # surface mask layer
-snc_dat <- nc_open("hotssea_1980to2018_monthly_0to4m_tempsalin_avg.nc")
+snc_dat <- nc_open(paste0(dir, "/data-raw/hotssea/hotssea_1980to2018_monthly_0to4m_tempsalin_avg.nc"))
 snc_lon <- as.vector(ncvar_get(snc_dat, "nav_lon"))
 snc_lat <- as.vector(ncvar_get(snc_dat, "nav_lat"))
 svar <- as.vector(ncvar_get(snc_dat, "votemper", count = c(-1, -1, 1)))
@@ -115,15 +115,16 @@ sdat <- data.frame(x = snc_lon, y = snc_lat, value = svar) %>%
   st_as_sf(coords = c("x", "y"), crs = "EPSG:4326") %>%
   st_transform(crs = "EPSG:3005")
 
-sroms_cave <- sdat %>%
+shotssea_cave <- sdat %>%
   na.omit() %>%
   concaveman::concaveman()
-sroms_buff <- sdat %>%
-  na.omit() %>%
-  st_geometry() %>%
-  st_buffer(dist = 2000) %>%     # TODO make that 1500?
-  st_union() %>%
-  st_as_sf()
+## sroms_buff <- sdat %>%   # TODO commenting for now, may come back to if can
+## mask with coastline
+##   na.omit() %>%
+##   st_geometry() %>%
+##   st_buffer(dist = 2000) %>%     # TODO make that 1500?
+##   st_union() %>%
+##   st_as_sf()
 
 rm(snc_dat, snc_lon, snc_lat, svar, sdat)
 # END parameters
@@ -207,54 +208,61 @@ plot(tdat_sf_cropped)   # works
 # BCCM is eventually saved as a polygon. So think need some of this to create
 # polygons for ssea. Can plot all these:
 
-  # create polygon for cropping ROMS data.
-    roms_cave <- tdat_sf %>%
-      na.omit() %>%
-      concaveman::concaveman()     # creates outline of a set of points, this is
-                                   # basically a rectangle
-#
-    roms_cave_cropped <- tdat_sf_cropped %>%
+  # create polygon for cropping hotssea data.
+#hotssea_cave <- tdat_sf_cropped %>%
+#  na.omit() %>%
+#  concaveman::concaveman()   # creates outline of a set of points, this is
+                             # basically a rectangle, seems like going backwards?
+
+#roms_cave <- tdat_sf %>%
+#      na.omit() %>%
+#      concaveman::concaveman()
+
+hotssea_cave_cropped <- tdat_sf_cropped %>%
       na.omit() %>%
       concaveman::concaveman()     # this is the concave outline of everything (since cropped)
 
 
-    roms_buff <- tdat_sf_cropped %>%
-      na.omit() %>%
-      st_geometry() %>%
-      st_buffer(dist = 1500) %>%
-      st_union() %>%
-      st_as_sf()                   # This is the kind of buffer outline, more detailed
+# Not going buffer yet
+    ## roms_buff <- tdat_sf_cropped %>%
+    ##   na.omit() %>%
+    ##   st_geometry() %>%
+    ##   st_buffer(dist = 1500) %>%
+    ##   st_union() %>%
+    ##   st_as_sf()                   # This is the kind of buffer outline, more detailed
 
     # interpolate data
     # 2 km res
-#THIS MIGHT CRASH as inshore_poly shouldn't ovelap domain of hotssea HERE
 #    output2 <- point2rast(data = tdat_sf, spatobj = inshore_poly, loc = llnames, cellsize = 2000, nnmax = nmax, as = "SpatRast")
 output2 <- point2rast(data = tdat_sf_cropped,
-                      spatobj = roms_buff,   # Travis had inshore_poly
+                      spatobj = hotssea_poly,   # Travis had inshore_poly, thought
                       loc = llnames,
                       cellsize = 1500,       # Want 1500 not 2000
                       nnmax = nmax,
                       as = "SpatRast")
+# This is a "SpatRaster" object, doesn't plot well
 
-plot(output2) # with roms_buff gave fancy artwork. And with roms_cave_cropped.
-HERE need to make our own grid I think. See make-mask-layer.R
+
+plot(output2) # with roms_buff gave fancy artwork. Looks wrong but could be the plotting
 
 # 6 km res
 #    output6 <- point2rast(data = tdat_sf, spatobj = offshore_poly, loc = llnames, cellsize = 6000, nnmax = nmax, as = "SpatRast")
 
- crop out grid cells with polygon masks
-    t2_sf2 <- output2 %>%
-#      mask(bccm_eez_poly) %>%
+# crop out grid cells with polygon masks
+    t2_sf <- output2 %>%
+    mask(hotssea_poly) %>%
 #      mask(inshore_poly) %>%
       stars::st_as_stars() %>%  ## check here for converting to points (not raster)
       st_as_sf()
+
 #    t2_sf6 <- output6 %>%
 #      mask(bccm_eez_poly) %>%
 #      mask(offshore_poly) %>%
 #      stars::st_as_stars() %>%
 #     st_as_sf()
 
-hello
+
+# plot(t2_sf2)  nope, each does look the same though
 
     # mask 2k grid with 6k grid, then combine grids
 #    t2_sf26a <- t2_sf2[!st_intersects(st_union(t2_sf6), t2_sf2, sparse=FALSE, prepared=TRUE),] %>%
@@ -262,20 +270,9 @@ hello
 #      rbind(t2_sf6)
 
 
-    ##### BC MASK OPTION 1 - Using bc shapefile
-    # index points that dont intersect with bc coast shapefile
-    #  disjoint - do not share space
-    # dis2 <- t2_sf26[st_disjoint(st_union(tbc), t2_sf26, sparse=FALSE, prepared=TRUE),]
-    #
-    # #  convert bc coast to sf linestring and finding coastline intersections separately - increased processing speed
-    # #  using st_intersects is much faster than other predicate functions
-    # sub.t2 <- t2_sf26[st_intersects(st_union(tbc), t2_sf26, sparse=FALSE, prepared=TRUE),]
-    # inter.line <- sub.t2[st_intersects(tbc.line, sub.t2, sparse=FALSE, prepared=TRUE),]
-    # t2_sf26 <- rbind(dis2, inter.line)
-
     ##### BC MASK OPTION 2 - Using roms outline
     # 1. use roms_cave
- #   t2_sf26b <- t2_sf26a[roms_cave,]
+   t2_sfb <- t2_sf[hotssea_cave_cropped,]
 
     # 2. use roms_buff to get haida gwaii outline and shore
 #    t2_sf26b <- t2_sf26b[roms_buff,]
@@ -314,12 +311,11 @@ hello
 #      st_as_sf(geometry = st_geometry(t2_sf26))
 
 
-tdat_sf_cropped_2 <- tdat_sf_cropped
-skipping this for now:  TODO put back in
-#    tdat_sf_cropped_2 <- tdat_sf_cropped %>%
-#      st_drop_geometry() %>%
-#      round(digits = 6) %>%
-#      st_as_sf(geometry = st_geometry(tdat_sf_cropped))
+# skipping this for now:  TODO put back in
+tdat_sf_cropped_2 <- tdat_sf_cropped %>%
+  st_drop_geometry() %>%
+  round(digits = 6) %>%
+  st_as_sf(geometry = st_geometry(tdat_sf_cropped))
 
     # assign pacea class
 
@@ -336,7 +332,11 @@ class(tdat_sf_cropped_2) <- c("pacea_st",
     # assign units attribute
     attr(tdat_sf_cropped_2, "units") <- jvars_table[which(jvars_table[, 1] == j), 3]
 
-# doesn't work though, using plot.pacea_st()
+HERE
+
+# doesn't work though, using plot.pacea_st(), even after doing th cropping
+# etc. above.
+# AHA think because variable names are slightly different
 plot(tdat_sf_cropped_2, cex = 0.6, pch = 16)
 
 
