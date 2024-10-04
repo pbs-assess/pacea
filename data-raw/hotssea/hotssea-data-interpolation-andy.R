@@ -35,36 +35,6 @@ tbc <- bc_coast
 # convert to multilinestring
 tbc.line <- st_cast(tbc, "MULTILINESTRING")
 
-# Travis had this all commented out:
-# #####
-# # create polygons for cropping to roms data
-# nc_dat <- nc_open(paste0("data-raw/roms/bcc42_era5glo12r4_mon1993to2019_botTSO.nc"))
-#
-# # load lon-lat and mask layers from netcdf
-# nc_lon <- as.vector(ncvar_get(nc_dat, "lon_rho"))
-# nc_lat <- as.vector(ncvar_get(nc_dat, "lat_rho"))
-#
-# nc_var <- ncvar_get(nc_dat, "temp")
-# nc_varmat <- apply(nc_var, 3, c)
-#
-# # put sst into dataframe and sf object
-# dat <- data.frame(x = nc_lon, y = nc_lat) %>% cbind(nc_varmat) %>%
-#   st_as_sf(coords = c("x", "y"), crs = "EPSG:4326") %>%
-#   st_transform(crs = "EPSG: 3005")
-#
-# # create polygon for cropping ROMS data
-# roms_cave <- dat %>%
-#   na.omit() %>%
-#   concaveman::concaveman()
-# roms_buff <- dat %>%
-#   na.omit() %>%
-#   st_geometry() %>%
-#   st_buffer(dist = 5000) %>%
-#   st_union()
-#
-# rm(nc_dat, nc_lon, nc_lat, nc_var, nc_varmat, dat)
-# #####
-
 
 #####
 # PARAMETERS
@@ -115,26 +85,27 @@ sdat <- data.frame(x = snc_lon, y = snc_lat, value = svar) %>%
   st_as_sf(coords = c("x", "y"), crs = "EPSG:4326") %>%
   st_transform(crs = "EPSG:3005")
 
-shotssea_cave <- sdat %>%
+surf_hotssea_cave <- sdat %>%
   na.omit() %>%
   concaveman::concaveman()
-## sroms_buff <- sdat %>%   # TODO commenting for now, may come back to if can
-## mask with coastline
-##   na.omit() %>%
-##   st_geometry() %>%
-##   st_buffer(dist = 2000) %>%     # TODO make that 1500?
-##   st_union() %>%
-##   st_as_sf()
+  # plots as a rectangle-ish
+
+## mask with coastline, I think this is kind of a fix as we've used surface info
+surf_hotssea_buff <- sdat %>%
+  na.omit() %>%
+  st_geometry() %>%
+  st_buffer(dist = 1500) %>%
+  st_union() %>%
+  st_as_sf()
+# Kind of looks the same on the plot, actually that could just be a rescaling
 
 rm(snc_dat, snc_lon, snc_lat, svar, sdat)
 # END parameters
 #####
 
 
-# for(i in ifiles) {
-i <- ifiles[1]
-
-
+for(i in ifiles[1]){   # ifiles) {  # TODO put back in for all of them
+# i <- ifiles[1]   # for running line by line
   nc_dat <- nc_open(i)
 
   # load lon-lat and mask layers from netcdf
@@ -154,16 +125,20 @@ i <- ifiles[1]
   # temp hardcode till fix above - GO
   ti = "0to10m"
 
-#  for(j in jvars) {
-j <- "votemper"
+  for(j in c("votemper")){   # jvars) {   # TODO put back in for loop
+    # j <- "votemper"  # for running line-by-line
     start <- Sys.time()
 
     nc_var <- ncvar_get(nc_dat, j)
     nc_varmat <- apply(nc_var, 3, c)
 
     # put sst into dataframe and sf object
-    dat <- data.frame(x = nc_lon, y = nc_lat) %>% cbind(nc_varmat)
-    dat_sf <- st_as_sf(dat, coords = c("x", "y"), crs = "EPSG:4326")    # Okay for Greig's
+    dat <- data.frame(x = nc_lon,
+                      y = nc_lat) %>%
+      cbind(nc_varmat)
+    dat_sf <- st_as_sf(dat,
+                       coords = c("x", "y"),
+                       crs = "EPSG:4326")    # Okay for Greig's
     tdat_sf <- st_transform(dat_sf, crs = "EPSG: 3005")                 # BC Albers
 
  # Gives this, where 39468 = 132 cells x 299 cells I think no need to crop
@@ -189,100 +164,101 @@ j <- "votemper"
 
 # plot(dat_sf) and plot(tdat_sf) look pretty similar, slightly rotated
 # (different projection)
-stopifnot(ncol(tdat_sf) == 469)    # if fails then change 468 below, note we
-                                   # remove geometry column
 
-tdat_sf_tib <- tibble::as_tibble(tdat_sf) %>%
-  dplyr::select(-c("geometry")) %>%
-  dplyr::rowwise() %>%
-  dplyr::mutate(min = min(c_across(`1`:`468`)),
-                max = max(c_across(`1`:`468`)))  # Takes a few minutes
+# Andy tried manually to crop with this, but should jsut have used same approach
+# of cave and buffer, so commenting these out:
+## stopifnot(ncol(tdat_sf) == 469)    # if fails then change 468 below, note we
+##                                    # remove geometry column
 
-only_zeros_indices <- which(tdat_sf_tib$min == 0 & tdat_sf_tib$max == 0)  # length(only_zeros_indices) is 30086
-tdat_sf_cropped <- tdat_sf[-only_zeros_indices, ]
-tdat_sf_cropped
-dim(tdat_sf_cropped)
-plot(tdat_sf_cropped)   # works
+## tdat_sf_tib <- tibble::as_tibble(tdat_sf) %>%
+##   dplyr::select(-c("geometry")) %>%
+##   dplyr::rowwise() %>%
+##   dplyr::mutate(min = min(c_across(`1`:`468`)),
+##                 max = max(c_across(`1`:`468`)))  # Takes a few minutes
 
+## # This is stuff Andy added that I think messes things up and is why it doesn't plot
+## only_zeros_indices <- which(tdat_sf_tib$min == 0 & tdat_sf_tib$max == 0)  # length(only_zeros_indices) is 30086
+## tdat_sf_cropped <- tdat_sf[-only_zeros_indices, ]
+## tdat_sf_cropped
+## dim(tdat_sf_cropped)
+## plot(tdat_sf_cropped)   # works
 
-# BCCM is eventually saved as a polygon. So think need some of this to create
-# polygons for ssea. Can plot all these:
-
-  # create polygon for cropping hotssea data.
-#hotssea_cave <- tdat_sf_cropped %>%
-#  na.omit() %>%
-#  concaveman::concaveman()   # creates outline of a set of points, this is
-                             # basically a rectangle, seems like going backwards?
-
-#roms_cave <- tdat_sf %>%
-#      na.omit() %>%
-#      concaveman::concaveman()
-
-hotssea_cave_cropped <- tdat_sf_cropped %>%
+# This was for ROMS, so adapting now:
+# create polygon for cropping ROMS data
+# The s Travis had is for surface, I hadn't noticed that. So putting surf_ in
+# ones above. Then here inside the loop
+# they're done for each object (because deep ones won't have the same coverage).
+# Some looks lke overkill but I think the conversions were needed to get to the
+# same format.
+    hotssea_cave <- tdat_sf %>%
       na.omit() %>%
-      concaveman::concaveman()     # this is the concave outline of everything (since cropped)
+      concaveman::concaveman()
 
+    hotssea_buff <- tdat_sf %>%
+      na.omit() %>%
+      st_geometry() %>%
+      st_buffer(dist = 1500) %>%
+      st_union() %>%
+      st_as_sf()
 
-# Not going buffer yet
-    ## roms_buff <- tdat_sf_cropped %>%
-    ##   na.omit() %>%
-    ##   st_geometry() %>%
-    ##   st_buffer(dist = 1500) %>%
-    ##   st_union() %>%
-    ##   st_as_sf()                   # This is the kind of buffer outline, more detailed
+    output2 <- point2rast(data = tdat_sf,
+                          spatobj = hotssea_poly,
+                          loc = llnames,
+                          cellsize = 1500,       # Want 1500 not 2000
+                          nnmax = nmax,
+                          as = "SpatRast")
 
-    # interpolate data
-    # 2 km res
-#    output2 <- point2rast(data = tdat_sf, spatobj = inshore_poly, loc = llnames, cellsize = 2000, nnmax = nmax, as = "SpatRast")
-output2 <- point2rast(data = tdat_sf_cropped,
-                      spatobj = hotssea_poly,   # Travis had inshore_poly, thought
-                      loc = llnames,
-                      cellsize = 1500,       # Want 1500 not 2000
-                      nnmax = nmax,
-                      as = "SpatRast")
-# This is a "SpatRaster" object, doesn't plot well
+    # This is a "SpatRaster" object, doesn't plot well
+    #plot(output2) # with roms_buff gave fancy artwork. Looks wrong but could be the
+    # plotting as it's a SpatRaster.
+    # plot(output2)  - now gives something sensible, using my new hotssea_poly
 
-
-plot(output2) # with roms_buff gave fancy artwork. Looks wrong but could be the plotting
-
-# 6 km res
-#    output6 <- point2rast(data = tdat_sf, spatobj = offshore_poly, loc = llnames, cellsize = 6000, nnmax = nmax, as = "SpatRast")
+    # 6 km res, not needed here
+    #    output6 <- point2rast(data = tdat_sf, spatobj = offshore_poly, loc = llnames, cellsize = 6000, nnmax = nmax, as = "SpatRast")
 
 # crop out grid cells with polygon masks
     t2_sf <- output2 %>%
-    mask(hotssea_poly) %>%
-#      mask(inshore_poly) %>%
+      terra::mask(hotssea_poly) %>%  #      mask(inshore_poly) %>%
       stars::st_as_stars() %>%  ## check here for converting to points (not raster)
       st_as_sf()
 
-#    t2_sf6 <- output6 %>%
-#      mask(bccm_eez_poly) %>%
-#      mask(offshore_poly) %>%
-#      stars::st_as_stars() %>%
-#     st_as_sf()
+    # mask gives a warning but I think still uses terra::mask:
+    # Warning message:
+    #  In findGeneric(f, envir) :
+    # 'mask' is a formal generic function; S3 methods will not likely be found
 
+    # Not needed presumably:
+    #    t2_sf6 <- output6 %>%
+    #      mask(bccm_eez_poly) %>%
+    #      mask(offshore_poly) %>%
+    #      stars::st_as_stars() %>%
+    #     st_as_sf()
 
-# plot(t2_sf2)  nope, each does look the same though
+    # plot(t2_sf2)  nope, each does look the same though
 
+    # TODO not sure if this step adds anything in beyond just combining the grids
     # mask 2k grid with 6k grid, then combine grids
 #    t2_sf26a <- t2_sf2[!st_intersects(st_union(t2_sf6), t2_sf2, sparse=FALSE, prepared=TRUE),] %>%
 #      rbind(t2_sf2[st_intersects(st_union(t2_sf6), t2_sf2, sparse=FALSE, prepared=TRUE),]) %>%
 #      rbind(t2_sf6)
 
-
     ##### BC MASK OPTION 2 - Using roms outline
     # 1. use roms_cave
-   t2_sfb <- t2_sf[hotssea_cave_cropped,]
+    t2_sfb <- t2_sf[hotssea_cave, ]
 
-    # 2. use roms_buff to get haida gwaii outline and shore
-#    t2_sf26b <- t2_sf26b[roms_buff,]
+    # 2. use roms_buff to get haida gwaii outline and shore - do, as likely
+    # needed for elsewhere:
+    t2_sfb <- t2_sfb[hotssea_buff,]
 
     # 3. use default surface roms_cave
-#    t2_sf26b <- t2_sf26b[sroms_cave,]
+    t2_sfb <- t2_sfb[surf_hotssea_cave,]
 
     # 4. use default surface roms_buff
-#    t2_sf26 <- t2_sf26b[sroms_buff,]
+    t2_sf <- t2_sfb[surf_hotssea_buff,]    # Carefull, going back to t2_sf
+    # Simple feature collection with 34515 features and 468 fields
+    # Geometry type: POLYGON
 
+    # BCCM:
     # data should have 41,288 grid cells
     # if(nrow(t2_sf26) != 41288){
     #   out.msg <- paste0(as.symbol(t2_sf26), " nrows = ", nrow(get(objname)),
@@ -291,53 +267,35 @@ plot(output2) # with roms_buff gave fancy artwork. Looks wrong but could be the 
     # }
 
     # assign column names as year_month
-    names(tdat_sf_cropped)[1:(ncol(tdat_sf_cropped) - 1)] <- cnames
-
-    # covert to long format data - Don't do long format as it is too big
-    # t3_sf26 <- t2_sf26 %>%
-    #   tidyr::pivot_longer(cols = !last_col(), cols_vary = "slowest", names_to = "date", values_to = "value")  %>%
-    #   mutate(year = substr(date, 1, 4),
-    #          month = substr(date, 6, 7)) %>%
-    #   dplyr::select(-date) %>%
-    #   relocate(value, .after = last_col()) %>%
-    #   relocate(geometry, .after = last_col())
+    names(t2_sf)[1:(ncol(t2_sf) - 1)] <- cnames
 
     # round to 6 decimal places to reduce file size
-    # t3_sf26[, "value"] <- t3_sf26$value %>% # for long format
-    #   round(digits = 6)
-#    t3_sf26 <- t2_sf26 %>%
-#      st_drop_geometry() %>%
-#      round(digits = 6) %>%
-#      st_as_sf(geometry = st_geometry(t2_sf26))
+    t3_sf <- t2_sf %>%
+      st_drop_geometry() %>%
+      round(digits = 6) %>%
+      st_as_sf(geometry = st_geometry(t2_sf))
 
-
-# skipping this for now:  TODO put back in
-tdat_sf_cropped_2 <- tdat_sf_cropped %>%
-  st_drop_geometry() %>%
-  round(digits = 6) %>%
-  st_as_sf(geometry = st_geometry(tdat_sf_cropped))
 
     # assign pacea class
 
     # Travis had this, but I think safer to do line after since it isn't a tibble
-    # class(tdat_sf_cropped_2) <- c("pacea_st", "sf", "tbl_df", "tbl", "data.frame")
+    class(t3_sf) <- c("pacea_st", "sf", "tbl_df", "tbl", "data.frame")
 
 # This works here while still just an sf object:
-plot(tdat_sf_cropped_2, cex = 0.6, pch = 16)
+# plot(tdat_sf_cropped_2, cex = 0.6, pch = 16)
 
-class(tdat_sf_cropped_2) <- c("pacea_st",
-                              class(tdat_sf_cropped_2))
+# class(tdat_sf_cropped_2) <- c("pacea_st",
+#                              class(tdat_sf_cropped_2))
 
 
     # assign units attribute
-    attr(tdat_sf_cropped_2, "units") <- jvars_table[which(jvars_table[, 1] == j), 3]
+    attr(t3_sf, "units") <- jvars_table[which(jvars_table[, 1] == j), 3]
 
-HERE
 
 # doesn't work though, using plot.pacea_st(), even after doing th cropping
 # etc. above.
 # AHA think because variable names are slightly different
-plot(tdat_sf_cropped_2, cex = 0.6, pch = 16)
+# plot(tdat_sf_cropped_2, cex = 0.6, pch = 16)
 
 
     # name file and write data
@@ -351,7 +309,7 @@ plot(tdat_sf_cropped_2, cex = 0.6, pch = 16)
 #    TODO, for now dumping in same folder
     filename <- paste0(objname, "_", version, ".rds")
     #filename <- paste0("../pacea-data/data/",objname, ".rds")
-    assign(objname, tdat_sf_cropped_2)
+    assign(objname, t3_sf)
 
     do.call("save", list(as.name(objname), file = filename, compress = "xz"))
 
@@ -362,6 +320,7 @@ plot(tdat_sf_cropped_2, cex = 0.6, pch = 16)
     proctimes <- c(proctimes, jtime)
 
     # remove files
+    # TODO update this:
     rm(dat, dat_sf, tdat_sf, roms_cave, roms_buff,
        output2, output6, t2_sf2, t2_sf6, t2_sf26,
        t2_sf26a, t2_sf26b, t3_sf26, nc_var, nc_varmat)
@@ -370,6 +329,12 @@ plot(tdat_sf_cropped_2, cex = 0.6, pch = 16)
   }
 }
 
+HERE, need to get the bc_coast back in, but in a way that it doesn't expand the axes.
+plot.pacea_st_hotssea(hotssea_0to10m_temperature, bc = FALSE, eez = FALSE,
+                      months.plot = "June", years.plot = 2013:2018)
+
+
+TODO
 Greig: Might work to creat the times [or see cnames above]
 
                           time_counter <- ncvar_get(snc_dat, "time_counter")

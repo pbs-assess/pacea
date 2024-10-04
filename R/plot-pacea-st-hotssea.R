@@ -101,12 +101,15 @@ plot.pacea_st_hotssea <- function(x,
   pfill <- vars_units[pind]
   pcol <- colpal[pind] %>% unlist()
   plimits <- limit_funs[pind] %>% unlist()
-browser()
+
   # main plot
   tplot <- tobj2 %>%
     ggplot() + theme_bw() +
     theme(strip.background = element_blank()) +
-    geom_sf(aes(fill = value)) + # , col = NA) # +     # ERROR IS HERE
+    geom_sf(aes(fill = value),
+            col = NA) +
+#    xlim(-127, -122) +   # Need to automate so doesn't get overridden by
+#    bc_coast TODO HERE
     scale_fill_gradientn(colours = pcol, limits = plimits) +
     guides(fill = guide_colorbar(barheight = 12,
                                  ticks.colour = "grey30", ticks.linewidth = 0.5,
@@ -123,6 +126,7 @@ browser()
     tplot <- tplot +
     facet_wrap(.~plot.date.f)
   }
+
 
   # eez and bc layers
   if(eez == TRUE){
