@@ -1,4 +1,7 @@
-#' Plot a pacea spatiotemporal data layer
+#' Plot a pacea spatiotemporal data layer for hotssea output
+#'
+#' TODO using plot.pacea_st() as template, then will see if can just adapt that
+#' function to cover this. Probably can by adding an attribute to the hotssea results.
 #'
 #' Plot for BCCM ROMS sf objects using `ggplot()`. A quick visualization of data, specifying month(s) and year(s). For more options and configurable plots see vignette.
 #'
@@ -25,12 +28,12 @@
 #' pdata <- bccm_surface_temperature()
 #' plot(pdata)
 #' }
-plot.pacea_st <- function(x,
-                          months.plot = c("April"),
-                          years.plot = c(2018),
-                          bc = TRUE,
-                          eez = TRUE,
-                          ...) {
+plot.pacea_st_hotssea <- function(x,
+                                  months.plot = c("April"),
+                                  years.plot = c(2018),
+                                  bc = TRUE,
+                                  eez = TRUE,
+                                  ...) {
 
 
   # month reference table
@@ -73,8 +76,7 @@ plot.pacea_st <- function(x,
   tobj2$month.f <- factor(tobj2$month.name, levels = c(unique(tobj2$month.name)))
   tobj2$plot.date.f <- factor(tobj2$plot.date, levels = c(unique(tobj2$plot.date)))
 
-
-  # color pallete index table
+  # color pallete index table # adapting for hotssea
   vars_units <- c("Temperature\n(\u00B0C)",
                   "Salinity\n(ppt)",
                   "Dissolved oxygen content\n(mmol-oxygen m^-3)",
@@ -99,12 +101,12 @@ plot.pacea_st <- function(x,
   pfill <- vars_units[pind]
   pcol <- colpal[pind] %>% unlist()
   plimits <- limit_funs[pind] %>% unlist()
-
+browser()
   # main plot
   tplot <- tobj2 %>%
     ggplot() + theme_bw() +
     theme(strip.background = element_blank()) +
-    geom_sf(aes(fill = value), col = NA) +
+    geom_sf(aes(fill = value)) + # , col = NA) # +     # ERROR IS HERE
     scale_fill_gradientn(colours = pcol, limits = plimits) +
     guides(fill = guide_colorbar(barheight = 12,
                                  ticks.colour = "grey30", ticks.linewidth = 0.5,
