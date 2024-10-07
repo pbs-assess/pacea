@@ -127,6 +127,10 @@ plot.pacea_st_hotssea <- function(x,
     facet_wrap(.~plot.date.f)
   }
 
+  # Do not change the axes sizes when adding on extra layers
+  # TODO add an argument to do this or not
+  x_lim <- ggplot_build(tplot)$layout$panel_scales_x[[1]]$range$range
+
 
   # eez and bc layers
   if(eez == TRUE){
