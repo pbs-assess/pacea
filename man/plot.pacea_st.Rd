@@ -14,7 +14,7 @@
 )
 }
 \arguments{
-\item{x}{a BCCM ROMS `pacea_st` object, which is an `sf` object}
+\item{x}{a `pacea_st` object, which is an `sf` object}
 
 \item{months.plot}{character or numeric vector to indicate which months to include (e.g. `c(1, 2)`, `c("April", "may")`, `c(1, "April")`)}
 
@@ -31,7 +31,10 @@ says the same thing); this should remove a R-CMD-check warning.}
 plot of the spatial data to the current device (returns nothing)
 }
 \description{
-Plot for BCCM ROMS sf objects using `ggplot()`. A quick visualization of data, specifying month(s) and year(s). For more options and configurable plots see vignette.
+Plot for `pacea_st` classes of objects using `ggplot()`. Objects can be BCCM
+ outputs, OISST values, or HOTSSEA outputs.
+Gives a quick visualization of data, specifying month(s) and year(s). For
+ more options and configurable plots see vignette.
 }
 \examples{
 \dontrun{

@@ -1,11 +1,11 @@
-#' Plot a pacea spatiotemporal data layer for hotssea output
+#' Plot a pacea spatiotemporal data layer
 #'
-#' TODO using plot.pacea_st() as template, then will see if can just adapt that
-#' function to cover this. Probably can by adding an attribute to the hotssea results.
+#' Plot for `pacea_st` classes of objects using `ggplot()`. Objects can be BCCM
+#'  outputs, OISST values, or HOTSSEA outputs.
+#' Gives a quick visualization of data, specifying month(s) and year(s). For
+#'  more options and configurable plots see vignette.
 #'
-#' Plot for BCCM ROMS sf objects using `ggplot()`. A quick visualization of data, specifying month(s) and year(s). For more options and configurable plots see vignette.
-#'
-#' @param x a BCCM ROMS `pacea_st` object, which is an `sf` object
+#' @param x a `pacea_st` object, which is an `sf` object
 #' @param months.plot character or numeric vector to indicate which months to include (e.g. `c(1, 2)`, `c("April", "may")`, `c(1, "April")`)
 #' @param years.plot vector of years to include, from 1993 to 2019
 #' @param bc logical. Should BC coastline layer be plotted?
@@ -28,13 +28,12 @@
 #' pdata <- bccm_surface_temperature()
 #' plot(pdata)
 #' }
-plot.pacea_st_hotssea <- function(x,
-                                  months.plot = c("April"),
-                                  years.plot = c(2018),
-                                  bc = TRUE,
-                                  eez = TRUE,
-                                  ...) {
-
+plot.pacea_st <- function(x,
+                          months.plot = c("April"),
+                          years.plot = c(2018),
+                          bc = TRUE,
+                          eez = TRUE,
+                          ...) {
 
   # month reference table
   month_table <- data.frame(month.name = month.name,
@@ -94,7 +93,7 @@ plot.pacea_st_hotssea <- function(x,
   tobj2$month.f <- factor(tobj2$month.name, levels = c(unique(tobj2$month.name)))
   tobj2$plot.date.f <- factor(tobj2$plot.date, levels = c(unique(tobj2$plot.date)))
 
-  # color pallete index table # adapting for hotssea
+  # color pallete index table
   vars_units <- c("Temperature\n(\u00B0C)",
                   salinity_unit_for_label,
                   "Dissolved oxygen content\n(mmol-oxygen m^-3)",
