@@ -114,7 +114,7 @@ plot.pacea_st_hotssea <- function(x,
                   list(c(floor(min(tobj2$value)), ceiling(max(tobj2$value)))),
                   list(c(floor(min(tobj2$value)), ceiling(max(tobj2$value)))))
 
-  # parameters for plotting
+  # parameters for plotting, first line picks the right index.
   pind <- grep(strsplit(obj_unit, " ")[[1]][1], vars_units)
   pfill <- vars_units[pind]
   pcol <- colpal[pind] %>% unlist()
