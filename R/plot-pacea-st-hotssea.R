@@ -60,6 +60,14 @@ plot.pacea_st_hotssea <- function(x,
   # subset year_month columns
   tobj <- subset_pacea_ym(data = x, months = months.plot, years = years.plot)  ####MOVE THIS DOWN
 
+  # Restrict axes to just data or not (BCCM and OISST are for full coast)
+  if(is.null(attr(x, "restrict_plotting_range"))){
+    restrict_plot <- FALSE
+  } else {
+    restrict_plot <- attr(x, "restrict_plotting_range")
+  }
+  stopifnot("restrict_plotting_ranage attribute needs to be NULL, TRUE, or FALSE" = is.logical(restrict_plot))
+
   ##### OPTION 1
   # ggplotting
 
@@ -127,19 +135,31 @@ plot.pacea_st_hotssea <- function(x,
     facet_wrap(.~plot.date.f)
   }
 
-  # Do not change the axes sizes when adding on extra layers
-  # TODO add an argument to do this or not
-  x_lim <- ggplot_build(tplot)$layout$panel_scales_x[[1]]$range$range
-
+  # Sometimes (e.g. hotssea output) want to restrict the plotting range to the
+  # area of interest, but ggplot expands it to the full BC coast when we add in
+  # the coast. So here get the current default axes ranges and then reapply them
+  # at the end.
+  if(restrict_plot){
+    x_lim <- ggplot_build(tplot)$layout$panel_scales_x[[1]]$range$range
+    y_lim <- ggplot_build(tplot)$layout$panel_scales_y[[1]]$range$range
+  }
 
   # eez and bc layers
   if(eez == TRUE){
     tplot <- tplot +
       geom_sf(data = bc_eez, fill = NA, lty = "dotted")
   }
+
   if(bc == TRUE){
     tplot <- tplot +
       geom_sf(data = bc_coast, fill = "darkgrey")
+  }
+
+  if(restrict_plot){
+    tplot <- tplot +
+      coord_sf(xlim = x_lim,
+               ylim = y_lim,
+               expand = FALSE)
   }
 
   tplot
@@ -175,35 +195,4 @@ subset_pacea_ym <- function(data, years = years, months = months) {
   attr(tdat, "units") <- attributes(data)$units
 
   return(tdat)
-}
-
-#' function to get months from a vector
-#' @noRd
-month_match <- function(mths) {
-  month_table <- data.frame(month.name = month.name,
-                            month.abb = month.abb,
-                            month.num = 1:12)
-
-  index_out <- vector()
-
-  for(imonth in mths) {
-    if(is.na(suppressWarnings(as.numeric(imonth)))){
-      tind <- as.vector(unlist(apply(month_table, 2, function(x) {
-        grep(pattern = imonth, x = x, ignore.case = TRUE)
-      })))
-
-      if(length(unique(tind)) == 0) stop("month names are invalid - must be full names, abbreviations, or numeric")
-      if(length(unique(tind)) > 1) stop(paste0("'", imonth, "'", " month name incorrect or abbreviation too short - more than one name matched"))
-
-      index_out <- c(index_out, unique(tind))
-    } else {
-      tind <- which(month_table$month.num == as.numeric(imonth))
-
-      if(length(unique(tind)) == 0) stop(paste0("'", imonth, "'", " is not a valid month."))
-
-      index_out <- c(index_out, unique(tind))
-    }
-  }
-
-  return(index_out)
 }

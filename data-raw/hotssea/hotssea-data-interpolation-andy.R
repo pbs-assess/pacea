@@ -1,10 +1,14 @@
+# Currently have to run this; keep doing to get plotting (and 0's) figured out,
+# then work out the saving. Simply doing readRDS on the saved file, but need to
+# incorporate into Travis's anyway.
+
 # Andy starting again from Travis's roms-data-interpolation.R, incorporating Greig's additions as I go
 # along (easier to follow what was commented out by Greig). Copy this over to
 # hottsee-data-interpolation.R when finalised.
 
 # HOTSSea data from Greig Oldford - Salinity and Temperature 1980-2018
-# model depths vary by grid cell, usually only slightly at the surface
-# fields are therefore processed accounting for varying depth level spans.
+# model depths vary by grid cell, usually only slightly at the surface.
+# Fields are therefore processed accounting for varying depth level spans.
 
 # Run this from the data-raw/hotssea/ directory
 
@@ -279,7 +283,8 @@ for(i in ifiles[1]){   # ifiles) {  # TODO put back in for all of them
     # assign pacea class
 
     # Travis had this, but I think safer to do line after since it isn't a tibble
-    class(t3_sf) <- c("pacea_st", "sf", "tbl_df", "tbl", "data.frame")
+    class(t3_sf) <- c("pacea_st_hotssea", "pacea_st", "sf", "tbl_df", "tbl",
+    "data.frame")  # TODO get rid of pacea_st_hotssea
 
 # This works here while still just an sf object:
 # plot(tdat_sf_cropped_2, cex = 0.6, pch = 16)
@@ -290,7 +295,8 @@ for(i in ifiles[1]){   # ifiles) {  # TODO put back in for all of them
 
     # assign units attribute
     attr(t3_sf, "units") <- jvars_table[which(jvars_table[, 1] == j), 3]
-
+    attr(t3_sf, "restrict_plotting_range") <- TRUE      # To then use to automatically restrict
+                                        # the plotting
 
 # doesn't work though, using plot.pacea_st(), even after doing th cropping
 # etc. above.
@@ -324,22 +330,24 @@ for(i in ifiles[1]){   # ifiles) {  # TODO put back in for all of them
     rm(dat, dat_sf, tdat_sf, roms_cave, roms_buff,
        output2, output6, t2_sf2, t2_sf6, t2_sf26,
        t2_sf26a, t2_sf26b, t3_sf26, nc_var, nc_varmat)
-    rm(list = objname)
+    # rm(list = objname)   # TODO add back in when have saved and reloaded .rds
     gc()
   }
 }
+
+
+
+## TODO
+## Greig: Might work to creat the times [or see cnames above]
+
+##                           time_counter <- ncvar_get(snc_dat, "time_counter")
+## time_dates <- as.POSIXct(time_counter, origin = "1900-01-01", tz = "UTC")
+## time_formatted <- format(time_dates, "%Y-%m")
 
 HERE, need to get the bc_coast back in, but in a way that it doesn't expand the axes.
 plot.pacea_st_hotssea(hotssea_0to10m_temperature, bc = TRUE, eez = FALSE,
                       months.plot = "June", years.plot = 2013) # :2018)
 
-
-tTODO
-Greig: Might work to creat the times [or see cnames above]
-
-                          time_counter <- ncvar_get(snc_dat, "time_counter")
-time_dates <- as.POSIXct(time_counter, origin = "1900-01-01", tz = "UTC")
-time_formatted <- format(time_dates, "%Y-%m")
 
 
 TODO:
@@ -383,7 +391,7 @@ tt <- plot.pacea_st_hotssea(hotssea_0to10m_temperature, bc = FALSE, eez = FALSE,
              ylim = ggplot_build(ttt)$layout$panel_scales_y[[1]]$range$range,
              expand = FALSE)
 
-Panel:
+Panel plot works also.
 
 tt <- plot.pacea_st_hotssea(hotssea_0to10m_temperature, bc = FALSE, eez = FALSE,
                             months.plot = "June", years.plot = 2013:2018)
@@ -391,3 +399,7 @@ tt <- plot.pacea_st_hotssea(hotssea_0to10m_temperature, bc = FALSE, eez = FALSE,
     coord_sf(xlim = ggplot_build(ttt)$layout$panel_scales_x[[1]]$range$range,
              ylim = ggplot_build(ttt)$layout$panel_scales_y[[1]]$range$range,
              expand = FALSE)
+
+TODO in help mention you can change co-ordinates afterwards with your own xlim
+                                                              and ylim values wiht +
+                                                              coord_sf(xlim, ylim)
