@@ -67,11 +67,11 @@ jvars_table <- cbind(jvars,
 llnames <- c("x", "y")
 nmax <- 4
 
-# column names
-cnames <- paste(rep(1980:2018, each=12),    # TODO double check model starts in
-                                        # Jan; see end of file for Greig's suggestion
-                1:12,
-                sep="_")
+# column names, adapting Travis's BCCM one. But then adapting Greig's more
+#  automated version. See below as is automatic from the .nc file.
+# cnames <- paste(rep(1980:2018, each=12),
+#                1:12,
+#                sep="_")
 
 # version of data update
 version <- "01"
@@ -84,6 +84,16 @@ snc_dat <- nc_open(paste0(dir, "/data-raw/hotssea/hotssea_1980to2018_monthly_0to
 snc_lon <- as.vector(ncvar_get(snc_dat, "nav_lon"))
 snc_lat <- as.vector(ncvar_get(snc_dat, "nav_lat"))
 svar <- as.vector(ncvar_get(snc_dat, "votemper", count = c(-1, -1, 1)))
+
+# Adapting Greig's automated suggestion
+snc_time_counter <- ncvar_get(snc_dat, "time_counter")
+snc_time_dates <- as.POSIXct(snc_time_counter, origin = "1900-01-01", tz = "UTC")
+
+# Removes leading zeros for months, so matches Travis's style.
+cnames <-
+  stringr::str_glue("{lubridate::year(snc_time_dates)}_{lubridate::month(snc_time_dates)}") %>%
+  as.vector()
+
 
 sdat <- data.frame(x = snc_lon, y = snc_lat, value = svar) %>%
   st_as_sf(coords = c("x", "y"), crs = "EPSG:4326") %>%
@@ -283,8 +293,11 @@ for(i in ifiles[1]){   # ifiles) {  # TODO put back in for all of them
     # assign pacea class
 
     # Travis had this, but I think safer to do line after since it isn't a tibble
-    class(t3_sf) <- c("pacea_st_hotssea", "pacea_st", "sf", "tbl_df", "tbl",
-    "data.frame")  # TODO get rid of pacea_st_hotssea
+    class(t3_sf) <- c("pacea_st",
+                      "sf",
+                      "tbl_df",
+                      "tbl",
+                      "data.frame")
 
 # This works here while still just an sf object:
 # plot(tdat_sf_cropped_2, cex = 0.6, pch = 16)
@@ -335,12 +348,3 @@ for(i in ifiles[1]){   # ifiles) {  # TODO put back in for all of them
     gc()
   }
 }
-
-
-
-## TODO
-## Greig: Might work to creat the times [or see cnames above]
-
-##                           time_counter <- ncvar_get(snc_dat, "time_counter")
-## time_dates <- as.POSIXct(time_counter, origin = "1900-01-01", tz = "UTC")
-## time_formatted <- format(time_dates, "%Y-%m")
