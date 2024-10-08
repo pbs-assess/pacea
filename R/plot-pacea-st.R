@@ -1,4 +1,7 @@
-#' Plot a pacea spatiotemporal data layer
+#' Plot a pacea spatiotemporal data layer for hotssea output
+#'
+#' TODO using plot.pacea_st() as template, then will see if can just adapt that
+#' function to cover this. Probably can by adding an attribute to the hotssea results.
 #'
 #' Plot for BCCM ROMS sf objects using `ggplot()`. A quick visualization of data, specifying month(s) and year(s). For more options and configurable plots see vignette.
 #'
@@ -25,12 +28,12 @@
 #' pdata <- bccm_surface_temperature()
 #' plot(pdata)
 #' }
-plot.pacea_st <- function(x,
-                          months.plot = c("April"),
-                          years.plot = c(2018),
-                          bc = TRUE,
-                          eez = TRUE,
-                          ...) {
+plot.pacea_st_hotssea <- function(x,
+                                  months.plot = c("April"),
+                                  years.plot = c(2018),
+                                  bc = TRUE,
+                                  eez = TRUE,
+                                  ...) {
 
 
   # month reference table
@@ -57,6 +60,24 @@ plot.pacea_st <- function(x,
   # subset year_month columns
   tobj <- subset_pacea_ym(data = x, months = months.plot, years = years.plot)  ####MOVE THIS DOWN
 
+  # Restrict axes to just data or not (BCCM and OISST are for full coast)
+  if(is.null(attr(x, "restrict_plotting_range"))){
+    restrict_plot <- FALSE
+  } else {
+    restrict_plot <- attr(x, "restrict_plotting_range")
+  }
+  stopifnot("restrict_plotting_ranage attribute needs to be NULL, TRUE, or FALSE" = is.logical(restrict_plot))
+
+  # Salinity units for salinity plots (BCCM is ppt, hotssea has attribute
+  #  indicating psu)
+  if(is.null(attr(x, "salinity_unit"))){
+    salinity_unit_for_label <- "Salinity\n(ppt)"
+  } else {
+    salinity_unit_for_label <- paste0("Salinity\n(",
+                                      attr(x, "salinity_unit"),
+                                      ")")
+  }
+
   ##### OPTION 1
   # ggplotting
 
@@ -73,10 +94,9 @@ plot.pacea_st <- function(x,
   tobj2$month.f <- factor(tobj2$month.name, levels = c(unique(tobj2$month.name)))
   tobj2$plot.date.f <- factor(tobj2$plot.date, levels = c(unique(tobj2$plot.date)))
 
-
-  # color pallete index table
+  # color pallete index table # adapting for hotssea
   vars_units <- c("Temperature\n(\u00B0C)",
-                  "Salinity\n(ppt)",
+                  salinity_unit_for_label,
                   "Dissolved oxygen content\n(mmol-oxygen m^-3)",
                   "pH",
                   "Phytoplankton\n(mmol-nitrogen m^-2)",
@@ -94,7 +114,7 @@ plot.pacea_st <- function(x,
                   list(c(floor(min(tobj2$value)), ceiling(max(tobj2$value)))),
                   list(c(floor(min(tobj2$value)), ceiling(max(tobj2$value)))))
 
-  # parameters for plotting
+  # parameters for plotting, first line picks the right index.
   pind <- grep(strsplit(obj_unit, " ")[[1]][1], vars_units)
   pfill <- vars_units[pind]
   pcol <- colpal[pind] %>% unlist()
@@ -122,14 +142,31 @@ plot.pacea_st <- function(x,
     facet_wrap(.~plot.date.f)
   }
 
+  # Sometimes (e.g. hotssea output) want to restrict the plotting range to the
+  # area of interest, but ggplot expands it to the full BC coast when we add in
+  # the coast. So here get the current default axes ranges and then reapply them
+  # at the end.
+  if(restrict_plot){
+    x_lim <- ggplot_build(tplot)$layout$panel_scales_x[[1]]$range$range
+    y_lim <- ggplot_build(tplot)$layout$panel_scales_y[[1]]$range$range
+  }
+
   # eez and bc layers
   if(eez == TRUE){
     tplot <- tplot +
       geom_sf(data = bc_eez, fill = NA, lty = "dotted")
   }
+
   if(bc == TRUE){
     tplot <- tplot +
       geom_sf(data = bc_coast, fill = "darkgrey")
+  }
+
+  if(restrict_plot){
+    tplot <- tplot +
+      coord_sf(xlim = x_lim,
+               ylim = y_lim,
+               expand = FALSE)
   }
 
   tplot
