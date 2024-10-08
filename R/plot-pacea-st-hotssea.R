@@ -68,6 +68,16 @@ plot.pacea_st_hotssea <- function(x,
   }
   stopifnot("restrict_plotting_ranage attribute needs to be NULL, TRUE, or FALSE" = is.logical(restrict_plot))
 
+  # Salinity units for salinity plots (BCCM is ppt, hotssea has attribute
+  #  indicating psu)
+  if(is.null(attr(x, "salinity_unit"))){
+    salinity_unit_for_label <- "Salinity\n(ppt)"
+  } else {
+    salinity_unit_for_label <- paste0("Salinity\n(",
+                                      attr(x, "salinity_unit"),
+                                      ")")
+  }
+
   ##### OPTION 1
   # ggplotting
 
@@ -86,7 +96,7 @@ plot.pacea_st_hotssea <- function(x,
 
   # color pallete index table # adapting for hotssea
   vars_units <- c("Temperature\n(\u00B0C)",
-                  "Salinity\n(ppt)",
+                  salinity_unit_for_label,
                   "Dissolved oxygen content\n(mmol-oxygen m^-3)",
                   "pH",
                   "Phytoplankton\n(mmol-nitrogen m^-2)",
@@ -114,10 +124,7 @@ plot.pacea_st_hotssea <- function(x,
   tplot <- tobj2 %>%
     ggplot() + theme_bw() +
     theme(strip.background = element_blank()) +
-    geom_sf(aes(fill = value),
-            col = NA) +
-#    xlim(-127, -122) +   # Need to automate so doesn't get overridden by
-#    bc_coast TODO HERE
+    geom_sf(aes(fill = value), col = NA) +
     scale_fill_gradientn(colours = pcol, limits = plimits) +
     guides(fill = guide_colorbar(barheight = 12,
                                  ticks.colour = "grey30", ticks.linewidth = 0.5,
@@ -195,4 +202,35 @@ subset_pacea_ym <- function(data, years = years, months = months) {
   attr(tdat, "units") <- attributes(data)$units
 
   return(tdat)
+}
+
+#' function to get months from a vector
+#' @noRd
+month_match <- function(mths) {
+  month_table <- data.frame(month.name = month.name,
+                            month.abb = month.abb,
+                            month.num = 1:12)
+
+  index_out <- vector()
+
+  for(imonth in mths) {
+    if(is.na(suppressWarnings(as.numeric(imonth)))){
+      tind <- as.vector(unlist(apply(month_table, 2, function(x) {
+        grep(pattern = imonth, x = x, ignore.case = TRUE)
+      })))
+
+      if(length(unique(tind)) == 0) stop("month names are invalid - must be full names, abbreviations, or numeric")
+      if(length(unique(tind)) > 1) stop(paste0("'", imonth, "'", " month name incorrect or abbreviation too short - more than one name matched"))
+
+      index_out <- c(index_out, unique(tind))
+    } else {
+      tind <- which(month_table$month.num == as.numeric(imonth))
+
+      if(length(unique(tind)) == 0) stop(paste0("'", imonth, "'", " is not a valid month."))
+
+      index_out <- c(index_out, unique(tind))
+    }
+  }
+
+  return(index_out)
 }

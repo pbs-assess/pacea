@@ -297,6 +297,7 @@ for(i in ifiles[1]){   # ifiles) {  # TODO put back in for all of them
     attr(t3_sf, "units") <- jvars_table[which(jvars_table[, 1] == j), 3]
     attr(t3_sf, "restrict_plotting_range") <- TRUE      # To then use to automatically restrict
                                         # the plotting
+    attr(t3_sf, "salinity_unit") <- "PSU"      # To automate the axes labels
 
 # doesn't work though, using plot.pacea_st(), even after doing th cropping
 # etc. above.
