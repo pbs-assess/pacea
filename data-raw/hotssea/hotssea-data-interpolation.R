@@ -54,7 +54,7 @@ tbc.line <- st_cast(tbc, "MULTILINESTRING")
 # loop variables
 # Absolute path of directory where .nc files are saved, change version number here.
 nc_dir <- paste0(pacea_dir,
-                 "/data-raw/hotssea/hotssea-version-2")
+                 "/data-raw/hotssea/hotssea-version-1.02.3")
 
 nc_filenames <- list.files(nc_dir,
                            pattern = ".nc")
@@ -68,13 +68,13 @@ jvars <- c("votemper", "vosaline")   # French since NEMO
 vars_fullname <- c("temperature",
                    "salinity")
 vars_units <- c("Temperature (\u00B0C)",
-  #  "Temperature (potential; \u00B0C)",  TODO Greig had this, need to tweak
-  #  plot_pacea_st() maybe still
                 "Salinity (PSU)")
+
 # Table of variables, full names, and units for plotting
 jvars_table <- cbind(jvars,
                      vars_fullname,
                      vars_units)
+jvars_table
 
 # OPTION 2 FOR LOOPING THROUGH ONLY SURFACE VARIABLES (PRIMARY PRODUCTION)
 # loop variables - won't be needed for hotssea
@@ -100,17 +100,16 @@ proctimes <- vector()
 
 # surface mask layer
 snc_dat <- nc_open(paste0(nc_dir,
-                          "/hotssea_1980to2018_monthly_0to4m_temperature_avg.nc"))
-
+                          "/hotssea_1980to2018_surface_temperature_mean.nc"))
 snc_lon <- as.vector(ncvar_get(snc_dat, "nav_lon"))
 snc_lat <- as.vector(ncvar_get(snc_dat, "nav_lat"))
 svar <- as.vector(ncvar_get(snc_dat, "votemper", count = c(-1, -1, 1)))
 summary(svar)
-# For 0to4m temp avg, now have:
+# For surface, now have:
 #  Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's
 #  1.467   5.570   6.678   6.541   7.782   9.911   30087
 
-# Might need this:
+# Might need this if have 0's still
 # svar[svar == 0] <- NA                  # 0's are NA's (e.g. on land), so set to
                                        # NA here. Now there are NA's and no 0's but maybe
                                        # not always so check.
@@ -123,7 +122,7 @@ snc_time_dates <- as.POSIXct(snc_time_counter, origin = "1900-01-01", tz = "UTC"
 cnames <-
   stringr::str_glue("{lubridate::year(snc_time_dates)}_{lubridate::month(snc_time_dates)}") %>%
   as.vector()
-cnames    # TODO reload files when Greig fixes them.
+cnames
 
 sdat <- data.frame(x = snc_lon,
                    y = snc_lat,
@@ -132,7 +131,7 @@ sdat <- data.frame(x = snc_lon,
            crs = "EPSG:4326") %>%
   st_transform(crs = "EPSG:3005")
 
-# plot(sdat) looks good
+# plot(sdat) # looks good
 expect_equal(summary(svar),
              summary(sdat$value))   # have only changed
                                         # co-ordinate system so far
@@ -181,7 +180,7 @@ for(i in nc_filenames[1]{  # TODO put back in for all of them
   ## }
 
   # temp hardcode till fix above - GO
-  depth_range_i <- "avg0to30m"   # was ti but too cryptic
+  depth_range_i <- "avg0to30m"   # was ti but too cryptic  TODO automate this
 
   #for(j in c("votemper")){   # jvars) {   # TODO put back in for loop
      j <- "votemper"  # for running line-by-line
@@ -307,6 +306,9 @@ for(i in nc_filenames[1]{  # TODO put back in for all of them
 #      rbind(t2_sf2[st_intersects(st_union(t2_sf6), t2_sf2, sparse=FALSE, prepared=TRUE),]) %>%
 #      rbind(t2_sf6)
 
+
+ # TODO might not need this now as already masked above; TODO check if thiese
+ # actually change from step to step, and if not then comment out.
     ##### BC MASK OPTION 2 - Using roms outline
     # 1. use roms_cave
     t2_sfb <- t2_sf[hotssea_cave, ]
@@ -345,10 +347,17 @@ for(i in nc_filenames[1]{  # TODO put back in for all of them
       round(digits = 6) %>%
       st_as_sf(geometry = st_geometry(t2_sf))
 
+ # TODO comment me out, this is for testing saving of .nc file and loading into
+ # pacea, without being too big
+ t3_sf <- dplyr::select(t3_sf,
+                        c(`2018_4`:`2018_5`,
+                          "geometry"))
 
     # assign pacea class
 
-    # Travis had this, but I think safer to do line after since it isn't a tibble
+    # Travis had this, but I think safer to do line below since it isn't
+    #  actually a tibble, though I saw somewhere else it needed these in the
+    #  right order.
     class(t3_sf) <- c("pacea_st",
                       "sf",
                       "tbl_df",
@@ -402,6 +411,7 @@ for(i in nc_filenames[1]{  # TODO put back in for all of them
     names(jtime) <- paste(depth_range_i, tj, sep="_")
     proctimes <- c(proctimes, jtime)
 
+    # Manually add names to data-raw/data-key/hotssea_data_list.csv
     # remove files
     # TODO update this:
     #rm(dat, dat_sf, tdat_sf, roms_cave, roms_buff,
