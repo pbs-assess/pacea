@@ -28,7 +28,13 @@ sf_use_s2(FALSE)  # remove spherical geometry (s2) for sf operations
 
 # load pacea
 load_all()
-dir <- here::here()   # Will give pacea/
+pacea_dir <- here::here()   # Will give local pacea/
+pacea_data_dir <- paste0(here::here(),
+                         "/../pacea-data/data/")  # Where to save .rds files
+               # Lots of code in get-pacea-data.R would need changing to add a
+               # hotssea-data directory, which was the original plan. Hard to
+               # test all that and time consuming, so putting it all in one directory.
+
 
 #####
 # START - load data to environment
@@ -46,7 +52,16 @@ tbc.line <- st_cast(tbc, "MULTILINESTRING")
 
 # OPTION 1 FOR LOOPING THROUGH VARIABLES FOR EACH DEPTH
 # loop variables
-ifiles <- list.files(pattern = "tempsalin_avg.nc")
+# Absolute path of directory where .nc files are saved, change version number here.
+nc_dir <- paste0(pacea_dir,
+                 "/data-raw/hotssea/hotssea-version-2")
+
+nc_filenames <- list.files(nc_dir,
+                           pattern = ".nc")
+nc_filenames
+
+## ifiles <- list.files("hotssea-version-2", pattern = ".nc")
+# names within .nc for each variable:
 jvars <- c("votemper", "vosaline")   # French since NEMO
 
 # index table
@@ -54,14 +69,16 @@ vars_fullname <- c("temperature",
                    "salinity")
 vars_units <- c("Temperature (\u00B0C)",
   #  "Temperature (potential; \u00B0C)",  TODO Greig had this, need to tweak
-  #   plot_pacea_st() though
+  #  plot_pacea_st() maybe still
                 "Salinity (PSU)")
+# Table of variables, full names, and units for plotting
 jvars_table <- cbind(jvars,
                      vars_fullname,
                      vars_units)
 
 # OPTION 2 FOR LOOPING THROUGH ONLY SURFACE VARIABLES (PRIMARY PRODUCTION)
 # loop variables - won't be needed for hotssea
+# TODO actually might do as do have bottom, but I might just do files manually.
 
 # function argument
 llnames <- c("x", "y")
@@ -73,19 +90,30 @@ nmax <- 4
 #                1:12,
 #                sep="_")
 
-# version of data update
+# version of data update in pacea-data/, not the same as the version number
+# Greig has used when uploading to Zenodo. For that see the nc_filenames call
+# above and below.
 version <- "01"
 
 # processing times output
 proctimes <- vector()
 
 # surface mask layer
-snc_dat <- nc_open(paste0(dir, "/data-raw/hotssea/hotssea_1980to2018_monthly_0to4m_tempsalin_avg.nc"))
+snc_dat <- nc_open(paste0(nc_dir,
+                          "/hotssea_1980to2018_monthly_0to4m_temperature_avg.nc"))
+
 snc_lon <- as.vector(ncvar_get(snc_dat, "nav_lon"))
 snc_lat <- as.vector(ncvar_get(snc_dat, "nav_lat"))
 svar <- as.vector(ncvar_get(snc_dat, "votemper", count = c(-1, -1, 1)))
-svar[svar == 0] <- NA                  # 0's are NA's (e.g. on land), so set to
-                                       # NA here.
+summary(svar)
+# For 0to4m temp avg, now have:
+#  Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's
+#  1.467   5.570   6.678   6.541   7.782   9.911   30087
+
+# Might need this:
+# svar[svar == 0] <- NA                  # 0's are NA's (e.g. on land), so set to
+                                       # NA here. Now there are NA's and no 0's but maybe
+                                       # not always so check.
 
 # Adapting Greig's automated suggestion
 snc_time_counter <- ncvar_get(snc_dat, "time_counter")
@@ -95,18 +123,26 @@ snc_time_dates <- as.POSIXct(snc_time_counter, origin = "1900-01-01", tz = "UTC"
 cnames <-
   stringr::str_glue("{lubridate::year(snc_time_dates)}_{lubridate::month(snc_time_dates)}") %>%
   as.vector()
+cnames    # TODO reload files when Greig fixes them.
 
-
-sdat <- data.frame(x = snc_lon, y = snc_lat, value = svar) %>%
-  st_as_sf(coords = c("x", "y"), crs = "EPSG:4326") %>%
+sdat <- data.frame(x = snc_lon,
+                   y = snc_lat,
+                   value = svar) %>%
+  st_as_sf(coords = c("x", "y"),
+           crs = "EPSG:4326") %>%
   st_transform(crs = "EPSG:3005")
 
 # plot(sdat) looks good
+expect_equal(summary(svar),
+             summary(sdat$value))   # have only changed
+                                        # co-ordinate system so far
 
 surf_hotssea_cave <- sdat %>%
   na.omit() %>%
   concaveman::concaveman()
-  # plot(surf_hotssea_cave)  # plots as a rectangle-ish
+  # plot(surf_hotssea_cave)  # used to plot as a rectangle-ish when we had 0's
+  # (that we interpreted as real values), but now a concave
+  # outline around everything (one single outline, no islands) because we've used NA's
 
 ## mask with coastline, I think this is kind of a fix as we've used surface info
 surf_hotssea_buff <- sdat %>%
@@ -116,7 +152,7 @@ surf_hotssea_buff <- sdat %>%
   st_union() %>%
   st_as_sf()
   # plot(surf_hotssea_buff) # This is now the non-NA values (when they were 0's
-  # it loked like hotssea_cave.
+  # it loked like hotssea_cave, and so shows islands.
 
 # TODO put back in when possible
 # rm(snc_dat, snc_lon, snc_lat, svar, sdat)
@@ -124,9 +160,11 @@ surf_hotssea_buff <- sdat %>%
 #####
 
 
-#for(i in ifiles[1]){   # ifiles) {  # TODO put back in for all of them
- i <- ifiles[1]   # for running line by line
-  nc_dat <- nc_open(i)
+for(i in nc_filenames[1]{  # TODO put back in for all of them
+ i <- nc_filenames[2]   # for running line by line, doing temp
+ nc_dat <- nc_open(paste0(nc_dir,
+                          "/",
+                          i))
 
   # load lon-lat and mask layers from netcdf
   nc_lon <- as.vector(ncvar_get(nc_dat, "nav_lon"))
@@ -143,7 +181,7 @@ surf_hotssea_buff <- sdat %>%
   ## }
 
   # temp hardcode till fix above - GO
-  ti = "0to10m"
+  depth_range_i <- "avg0to30m"   # was ti but too cryptic
 
   #for(j in c("votemper")){   # jvars) {   # TODO put back in for loop
      j <- "votemper"  # for running line-by-line
@@ -163,7 +201,8 @@ surf_hotssea_buff <- sdat %>%
     dat_sf <- st_as_sf(dat,
                        coords = c("x", "y"),
                        crs = "EPSG:4326")    # Okay for Greig's
-    tdat_sf <- st_transform(dat_sf, crs = "EPSG: 3005")                 # BC Albers
+ tdat_sf <- st_transform(dat_sf,
+                         crs = "EPSG: 3005")                 # BC Albers
 
  # Gives this, where 39468 = 132 cells x 299 cells I think no need to crop
  #> tdat_sf
@@ -225,9 +264,10 @@ surf_hotssea_buff <- sdat %>%
       st_union() %>%
       st_as_sf()
 
-# This is what takes a few minutes (maybe 10):
+# This is what takes a few minutes (maybe 10):    TODO trying hotssea_buff not
+# hotssea_poly, since don't need full rectangle (might speed it up?)
     output2 <- point2rast(data = tdat_sf,
-                          spatobj = hotssea_poly,
+                          spatobj = hotssea_buff,  #poly,
                           loc = llnames,
                           cellsize = 1500,       # Want 1500 not 2000
                           nnmax = nmax,
@@ -336,14 +376,19 @@ surf_hotssea_buff <- sdat %>%
 
     # name file and write data
     tj <- jvars_table[which(jvars_table[, 1] == j), 2]
-    if(ti == "zInt"){
-      objname <- paste("hotssea", tj, sep = "_")
-    } else {
-      objname <- paste("hotssea", ti, tj, sep = "_")    # TODO add in mean
-    }
-#    filename <- paste0("../pacea-data/data/",objname, "_", version, ".rds")
+#    if(depth_range_i == "zInt"){
+#      objname <- paste("hotssea", tj, sep = "_")  # TODO
+#    } else {
+      objname <- paste("hotssea", depth_range_i, tj, "mean", sep = "_")    # TODO add in mean automatically
+#    }
+
+ #    filename <- paste0("../pacea-data/data/",objname, "_", version, ".rds")
 #    TODO, for now dumping in same folder
-    filename <- paste0(objname, "_", version, ".rds")
+ filename <- paste0(pacea_data_dir,
+                    objname,
+                    "_",
+                    version,
+                    ".rds")
     #filename <- paste0("../pacea-data/data/",objname, ".rds")
     assign(objname, t3_sf)
 
@@ -354,7 +399,7 @@ surf_hotssea_buff <- sdat %>%
     end <- Sys.time()
     jtime <- end-start
     print(jtime)
-    names(jtime) <- paste(ti, tj, sep="_")
+    names(jtime) <- paste(depth_range_i, tj, sep="_")
     proctimes <- c(proctimes, jtime)
 
     # remove files
