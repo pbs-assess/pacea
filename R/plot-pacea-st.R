@@ -164,8 +164,7 @@ plot.pacea_st <- function(x,
   if(restrict_plot){
     tplot <- tplot +
       coord_sf(xlim = x_lim,
-               ylim = y_lim,
-               expand = FALSE)
+               ylim = y_lim)
   }
 
   tplot

@@ -84,6 +84,8 @@ snc_dat <- nc_open(paste0(dir, "/data-raw/hotssea/hotssea_1980to2018_monthly_0to
 snc_lon <- as.vector(ncvar_get(snc_dat, "nav_lon"))
 snc_lat <- as.vector(ncvar_get(snc_dat, "nav_lat"))
 svar <- as.vector(ncvar_get(snc_dat, "votemper", count = c(-1, -1, 1)))
+svar[svar == 0] <- NA                  # 0's are NA's (e.g. on land), so set to
+                                       # NA here.
 
 # Adapting Greig's automated suggestion
 snc_time_counter <- ncvar_get(snc_dat, "time_counter")
@@ -99,10 +101,12 @@ sdat <- data.frame(x = snc_lon, y = snc_lat, value = svar) %>%
   st_as_sf(coords = c("x", "y"), crs = "EPSG:4326") %>%
   st_transform(crs = "EPSG:3005")
 
+# plot(sdat) looks good
+
 surf_hotssea_cave <- sdat %>%
   na.omit() %>%
   concaveman::concaveman()
-  # plots as a rectangle-ish
+  # plot(surf_hotssea_cave)  # plots as a rectangle-ish
 
 ## mask with coastline, I think this is kind of a fix as we've used surface info
 surf_hotssea_buff <- sdat %>%
@@ -111,15 +115,17 @@ surf_hotssea_buff <- sdat %>%
   st_buffer(dist = 1500) %>%
   st_union() %>%
   st_as_sf()
-# Kind of looks the same on the plot, actually that could just be a rescaling
+  # plot(surf_hotssea_buff) # This is now the non-NA values (when they were 0's
+  # it loked like hotssea_cave.
 
-rm(snc_dat, snc_lon, snc_lat, svar, sdat)
+# TODO put back in when possible
+# rm(snc_dat, snc_lon, snc_lat, svar, sdat)
 # END parameters
 #####
 
 
-for(i in ifiles[1]){   # ifiles) {  # TODO put back in for all of them
-# i <- ifiles[1]   # for running line by line
+#for(i in ifiles[1]){   # ifiles) {  # TODO put back in for all of them
+ i <- ifiles[1]   # for running line by line
   nc_dat <- nc_open(i)
 
   # load lon-lat and mask layers from netcdf
@@ -139,12 +145,16 @@ for(i in ifiles[1]){   # ifiles) {  # TODO put back in for all of them
   # temp hardcode till fix above - GO
   ti = "0to10m"
 
-  for(j in c("votemper")){   # jvars) {   # TODO put back in for loop
-    # j <- "votemper"  # for running line-by-line
+  #for(j in c("votemper")){   # jvars) {   # TODO put back in for loop
+     j <- "votemper"  # for running line-by-line
     start <- Sys.time()
 
     nc_var <- ncvar_get(nc_dat, j)
     nc_varmat <- apply(nc_var, 3, c)
+
+    nc_varmat[nc_varmat == 0] <- NA                  # 0's are NA's (e.g. on land), so set to
+                                       # NA here.
+
 
     # put sst into dataframe and sf object
     dat <- data.frame(x = nc_lon,
@@ -215,6 +225,7 @@ for(i in ifiles[1]){   # ifiles) {  # TODO put back in for all of them
       st_union() %>%
       st_as_sf()
 
+# This is what takes a few minutes (maybe 10):
     output2 <- point2rast(data = tdat_sf,
                           spatobj = hotssea_poly,
                           loc = llnames,
@@ -269,10 +280,15 @@ for(i in ifiles[1]){   # ifiles) {  # TODO put back in for all of them
 
     # 4. use default surface roms_buff
     t2_sf <- t2_sfb[surf_hotssea_buff,]    # Carefull, going back to t2_sf
+# With NA stuff is now:
+# Simple feature collection with 10731 features and 468 fields
+
     # Simple feature collection with 34515 features and 468 fields
     # Geometry type: POLYGON
 
     # BCCM:
+    # Now has 10731 cells, [nrow(t2_sf) =  10731], because have excluded the
+    # zeros. Previously had the rectangular grid:
     # data should have 41,288 grid cells
     # if(nrow(t2_sf26) != 41288){
     #   out.msg <- paste0(as.symbol(t2_sf26), " nrows = ", nrow(get(objname)),
@@ -333,6 +349,8 @@ for(i in ifiles[1]){   # ifiles) {  # TODO put back in for all of them
 
     do.call("save", list(as.name(objname), file = filename, compress = "xz"))
 
+# summary(t3_sf)   # TODO has no 0's, but a few low looking values so look into
+
     end <- Sys.time()
     jtime <- end-start
     print(jtime)
@@ -341,10 +359,10 @@ for(i in ifiles[1]){   # ifiles) {  # TODO put back in for all of them
 
     # remove files
     # TODO update this:
-    rm(dat, dat_sf, tdat_sf, roms_cave, roms_buff,
-       output2, output6, t2_sf2, t2_sf6, t2_sf26,
-       t2_sf26a, t2_sf26b, t3_sf26, nc_var, nc_varmat)
+    #rm(dat, dat_sf, tdat_sf, roms_cave, roms_buff,
+    #   output2, output6, t2_sf2, t2_sf6, t2_sf26,
+    #   t2_sf26a, t2_sf26b, t3_sf26, nc_var, nc_varmat)
     # rm(list = objname)   # TODO add back in when have saved and reloaded .rds
     gc()
   }
-}
+# }
