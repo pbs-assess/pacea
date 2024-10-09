@@ -1412,3 +1412,17 @@
 #'
 #' @source Generated from running `data-raw/depth/depth.R`.
 "grid26_depth"
+
+#' HOTSSea data layers
+#'
+#' List of available hotssea data layers for download.
+#'
+#' @format table
+#' @examples
+#' \dontrun{
+#' hotssea_data
+#' }
+#'
+#' @source Oldford et al., 2024.
+#' Generated from running `data-raw/data-key/data-list.R`
+"hotssea_data"
