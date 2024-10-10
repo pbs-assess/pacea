@@ -33,6 +33,7 @@ library(stars)
 library(ncdf4)
 library(ggplot2)
 library(concaveman)
+library(stringr)
 
 sf_use_s2(FALSE)  # remove spherical geometry (s2) for sf operations
 
@@ -161,7 +162,7 @@ surf_hotssea_buff <- surf_dat %>%
 #####
 
 
-for(i in nc_filenames[1]{  # TODO put back in for all of them
+for(i in nc_filenames[1]){  # TODO put back in for all of them
   i <- nc_filenames[2]   # for running line by line, doing temp
 
   # Automatically create object name, and then the variable name to extract

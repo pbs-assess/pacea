@@ -1,0 +1,236 @@
+---
+title: "HOTSsea Results"
+author: "Andrew Edwards, Greig Oldford, and Travis Tai"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{HOTSsea Results}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+date: "Last rendered on `r format(Sys.time(), '%d %B, %Y')`"
+---
+
+```{r run, echo = FALSE, eval = FALSE}
+rmarkdown::render("hotssea.Rmd")
+# to build, or click the knit button in RStudio
+```
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#",
+  fig.width = 5.7,
+  fig.height = 5
+)
+```
+
+# Introduction
+
+The Hindcast of the Salish Sea (HOTSSea) is a physical ocean model that
+recreates conditions throughout the Salish Sea from 1980 to 2018, filling in the gaps in patchy
+measurements. The model predicts physical ocean properties with sufficient accuracy to be useful for
+a variety of applications. The model corroborates observed ocean temperature trends and was used
+to examine areas with few observations. Results indicate that some seasons and areas are warming
+faster than others. HOTSsea was developed using the [Nucleus for European
+Modelling of the Ocean
+(NEMO)](https://www.earth-prints.org/entities/publication/8682029b-c939-4fea-8b22-67934d7969b7/details-reports)
+engine, and temperature and salinty outputs are included in pacea (from version
+1 of HOTSsea).
+
+The HOTSsea outputs in pacea are adapted from results
+provided by Greig Oldford (Fisheries and Oceans Canada). For model details see Oldford et al. (2024), which
+should be read and cited if you use the results, and Greig and Andy Edwards
+should be consulted for any clarifications.
+TODO add proper link and citation at
+the bottom.
+
+The model domain includes several distinct geographic areas within the Salish Sea:
+the Juan de Fuca Strait, Strait of Georgia, Gulf Islands, and Puget Sound.
+The model grid is approximately 1.5 km in horizontal resolution and has a width of ~200 km and length
+of ~450 km (132 cells x 299 cells) and was rotated 29° counter clockwise to true north to
+align with the axis of the Strait of Georgia. For pacea, results were translated
+onto a north-south aligned grid (all such calculations are in
+https://github.com/pbs-assess/data-raw/hotssea/hotssea-data-interpolation.R).
+The vertical grid for the HOTSSea model is divided into 40 vertical levels that
+increase in resolution at the surface. Monthly averages of variables over several
+specified depth ranges are included in pacea, for every month from January 1980 to
+December 2018.
+
+TODO mention this (or exclude from pacea maybe?):
+Fraser River was extended inland by manually adding non-existent river channel cells approximately
+150 km in total length, following Soontiens & Allen (2017).
+
+We have wrangled the HOTSsea model outputs into the same format as those from
+BCCM, such that the functions regarding plotting, climatology, and anomalies,
+described in the [BCCM vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm.html) will work for the HOTSea model
+output. Therefore, in this vignette we describe the available HOTSsea model
+outputs and present some results, and referring users to see the [BCCM
+vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm.html)
+for further analytical and visual possibilities (to avoid duplicating details here).
+
+```{r packages}
+library(pacea)
+library(dplyr)
+library(sf)
+library(ggplot2)
+```
+
+## Downloading HOTSsea data
+
+As for the BCCM results, the HOTSsea results were wrangled to simplify data format and structure. Because the
+results are spatially and temporally resolved, the compressed file size of each
+variable is fairly large (around 14 Mb). To keep the pacea package a
+reasonable downloadable size, the HOTSsea results are stored in a separate GitHub repository
+(https://github.com/pbs-assess/pacea-data) and can be downloaded locally using
+functions within pacea (obviously requiring internet access). The downloading
+is only needed once as the files get cached locally on your computer.
+
+The list of variables of the HOTSsea results available can be viewed from the list
+`hotssea_data`:
+```{r hotssea}
+hotssea_data
+```
+Note that the naming convention of variables is the same as for the BCCM results, such that
+`avg0to30m` means the average over all depths from 0 to 30 m, for example. The
+suffixes `_min`, `_mean`, `_max`, and `_sd` TODO (check that gets included) are
+additionally used here.
+
+So, for example, `hotssea_avg0to30m_temperature_min` is calculated by TODO ask
+Greig.
+
+HOTSsea results can be accessed using placeholder functions, named as in
+`hotssea_data`, that download the data to a local cache folder -- this directory can
+be identified using `pacea_cache()`:
+```{r cache, eval=FALSE}
+pacea_cache()
+"C:\\Users\\<your-windows-username>\\AppData\\Local/pacea/Cache"
+# On linux and Macs this will look different.
+```
+
+If you want, for example, the HOTSsea
+surface temperature data, you use the `hotssea_surface_temperature()`
+function to download it and load it into the R workspace.
+```{r download}
+# download data to cache folder and name object; `force = TRUE` to skip user prompt
+ # pdata <- hotssea_surface_temperature(force = TRUE)   # TODO use this for
+# example when it's uploaded
+pdata <- hotssea_avg0to30m_temperature_mean()
+```
+
+View the data help for more information on HOTSsea results
+(e.g. `?hotssea_bottom_oxygen`); these all point to a common help file for all
+hotssea objects.
+
+Once the data object has been downloaded into the cache folder, the placeholder
+function will simply load the data object into the current workspace (and not
+redownload it from the `pacea-data` repository).
+
+So, what does the data object look like:
+```{r}
+pdata
+head(pdata[, 1:5])   # geometry column is included when selecting columns from
+                     # an `sf` object.
+```
+
+The data are in wide format, with each column representing a unique year-month
+combination. The data also have various attributes, such as the units for the
+data values, and some extra ones for HOTSsea used to automate some plotting.
+```{r}
+names(attributes(pdata))
+attributes(pdata)$units
+class(pdata)
+```
+
+### *Downloading all HOTSsea data*
+
+Users can also choose to download all variables at once using `hotssea_all_variables()`. Then users can use the placeholder functions to call data into the environment.
+
+NOTE: this will take several minutes to download all data layers.
+
+```{r HOTSseaall, eval=FALSE}
+# TODO
+#hotssea_all_variables()
+#hotssea_surface_temperature()
+```
+
+## Updating HOTSsea data
+
+When you download HOTSsea data, the most recent version of the data will be
+downloaded to your cache folder. Occasionally, there will be updates to the
+HOTSsea data (e.g. adding data from more recent years and maybe future
+projections). If you want to check for an update for a data file you have
+already downloaded to the pacea_cache directory:
+Keep an eye on the [NEWS](https://github.com/pbs-assess/pacea/blob/main/NEWS.md)
+file on GitHub for updates (for such major updates will be also likely mention
+them on the main [README](https://github.com/pbs-assess/pacea/).
+
+## HOTSsea visualization
+
+HOTSsea results can be plotted using the `plot()` function for a quick view of the
+data. By using `plot()`, since the results object has our class `pacea_st` (same as for
+BCCM), `plot()` automatically uses our customised `plot.pacea_st()`. The default
+settings are to plot April 2018:
+```{r}
+plot(pdata)
+```
+
+The code works the same as in the BCCM vignette, for example showing two months
+for each of three years:
+and
+```{r, threemonths}
+plot(pdata,
+     months = c("June", "September"),
+     years = c(1995, 2010, 2018),
+     eez = FALSE)
+```
+
+To inspect the full time series we can show every available month in a huge panel plot
+(takes a while to plot):
+```{r, hotsseaplot, fig.height = 65, fig.width = 20}
+# had height of 80 for 30 rows for hdi TODO  # 16 was okay maybe
+# taking a long time with just two years here, plotting on screen wasn't too bad:
+plot(pdata, months = 1:12,
+     years = 1980:2018,
+     eez = FALSE)
+```
+
+## Calculating climatogy and anomalies of HOTSsea results
+
+The pacea package has some built in functions to calculate climatologies and
+anomalies of the geospatial BCCM results, and these functions can be used on the
+HOTSsea results also. See help files for details of functions. Here are some
+brief examples taken from the [BCCM
+vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm.html).
+
+First, let's calculate a climatology, which returns data in long format.
+
+```{r}
+clim <- calc_clim(pdata,
+                  clim_years = 1980:2000)
+clim   # Each row is a month-polygon combination
+```
+
+The anomalies relative to a climatology can be calculated in one function:
+```{r}
+anom <- calc_anom(pdata,
+                  clim_years = 1980:2000,
+                  time_period_return = c("Apr", "Sep"),
+                  years_return = c(2010, 2018))
+anom
+plot(anom,
+     months.plot = c("Apr", "Sep"),
+     years.plot = c(2010, 2018),
+     bc = FALSE,
+     eez = FALSE)
+```
+
+We have also incorporated the ability to add climatological data to the plot, which creates contour lines showing the anomaly areas that are above (or below for other variables) the 90th and 99th percentile of data.
+
+See the rest of the [BCCM
+vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm.html)
+for details and other features, like estimating statistics across spatial areas.
+
+## Reference
+
+Oldford, G.L., Jarníková, T., Christensen, V., and Dunphy, M. (2024).
+HOTSSea v1: a NEMO-based physical Hindcast of the Salish Sea (1980–2018)
+supporting ecosystem model development.  TODO add citation info and doi when published.
