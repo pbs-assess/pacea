@@ -1,7 +1,3 @@
-# Currently have to run this; keep doing to get plotting (and 0's) figured out,
-# then work out the saving. Simply doing readRDS on the saved file, but need to
-# incorporate into Travis's anyway.
-
 # Andy starting again from Travis's roms-data-interpolation.R, incorporating Greig's additions as I go
 # along (easier to follow what was commented out by Greig). Copy this over to
 # hottsee-data-interpolation.R when finalised.
@@ -12,12 +8,15 @@
 
 # Run this from the data-raw/hotssea/ directory
 
-# BCCM was ROMs output from Angelina Pena - full bottom and surface variables that Andy requested
-
 # Filenames that we save to (as .rds in pacea-data/) do need to match what we're calling them in pacea, but can have
 #  version number at the end. So must be in hotssea_data object. And want them
 #  somewhat automated from the filenames Greig used.
 
+# To clarify, there are:
+#  - .nc files as saved by Greig
+#  - .rds files that get savd to pacea-data/ with filename <object_name>-01.rds for
+#       version number
+#  - <object_name> when downloaded from pacea-data/ and loaded into R using <object_name>()
 
 library(devtools)
 library(dplyr)
@@ -71,7 +70,7 @@ jvars <- c("votemper", "vosaline")   # French since NEMO
 
 # index table
 vars_fullname <- c("temperature",
-                   "salinity")
+                   "salinity")      # these are in the .nc filenames
 vars_units <- c("Temperature (\u00B0C)",
                 "Salinity (PSU)")
 
@@ -81,19 +80,9 @@ jvars_table <- cbind(jvars,
                      vars_units)
 jvars_table
 
-# OPTION 2 FOR LOOPING THROUGH ONLY SURFACE VARIABLES (PRIMARY PRODUCTION)
-# loop variables - won't be needed for hotssea
-# TODO actually might do as do have bottom, but I might just do files manually.
-
 # function argument
 llnames <- c("x", "y")
 nmax <- 4
-
-# column names, adapting Travis's BCCM one. But then adapting Greig's more
-#  automated version. See below as is automatic from the .nc file.
-# cnames <- paste(rep(1980:2018, each=12),
-#                1:12,
-#                sep="_")
 
 # version of data update in pacea-data/, not the same as the version number
 # Greig has used when uploading to Zenodo. For that see the nc_filenames call
@@ -104,12 +93,12 @@ version <- "01"
 proctimes <- vector()
 
 # surface mask layer
-snc_dat <- nc_open(paste0(nc_dir,
+surf_nc_dat <- nc_open(paste0(nc_dir,
                           "/hotssea_1980to2018_surface_temperature_mean.nc"))
-snc_lon <- as.vector(ncvar_get(snc_dat, "nav_lon"))
-snc_lat <- as.vector(ncvar_get(snc_dat, "nav_lat"))
-svar <- as.vector(ncvar_get(snc_dat, "votemper", count = c(-1, -1, 1)))
-summary(svar)
+surf_nc_lon <- as.vector(ncvar_get(surf_nc_dat, "nav_lon"))
+surf_nc_lat <- as.vector(ncvar_get(surf_nc_dat, "nav_lat"))
+surf_var <- as.vector(ncvar_get(surf_nc_dat, "votemper", count = c(-1, -1, 1)))
+summary(surf_var)
 # For surface, now have:
 #  Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's
 #  1.467   5.570   6.678   6.541   7.782   9.911   30087
@@ -120,31 +109,30 @@ summary(svar)
                                        # not always so check.
 
 # Adapting Greig's automated suggestion
-snc_time_counter <- ncvar_get(snc_dat, "time_counter")
-snc_time_dates <- as.POSIXct(snc_time_counter,
+surf_nc_time_counter <- ncvar_get(surf_nc_dat, "time_counter")
+surf_nc_time_dates <- as.POSIXct(surf_nc_time_counter,
                              origin = "1900-01-01",
                              tz = "UTC")
 
 # Removes leading zeros for months, so matches Travis's style.
 cnames <-
-  stringr::str_glue("{lubridate::year(snc_time_dates)}_{lubridate::month(snc_time_dates)}") %>%
+  stringr::str_glue("{lubridate::year(surf_nc_time_dates)}_{lubridate::month(surf_nc_time_dates)}") %>%
   as.vector()
 cnames
 
-sdat <- data.frame(x = snc_lon,           # TODO sdat to surf_dat I think, as
-                                        # was confusing
-                   y = snc_lat,
-                   value = svar) %>%
+surf_dat <- data.frame(x = surf_nc_lon,
+                       y = surf_nc_lat,
+                       value = surf_var) %>%
   st_as_sf(coords = c("x", "y"),
            crs = "EPSG:4326") %>%
   st_transform(crs = "EPSG:3005")
 
 # plot(sdat) # looks good
-expect_equal(summary(svar),
-             summary(sdat$value))   # have only changed
+expect_equal(summary(surf_var),
+             summary(surf_dat$value))   # have only changed
                                         # co-ordinate system so far
 
-surf_hotssea_cave <- sdat %>%
+surf_hotssea_cave <- surf_dat %>%
   na.omit() %>%
   concaveman::concaveman()
   # plot(surf_hotssea_cave)  # used to plot as a rectangle-ish when we had 0's
@@ -152,7 +140,7 @@ surf_hotssea_cave <- sdat %>%
   # outline around everything (one single outline, no islands) because we've used NA's
 
 ## mask with coastline, I think this is kind of a fix as we've used surface info
-surf_hotssea_buff <- sdat %>%
+surf_hotssea_buff <- surf_dat %>%
   na.omit() %>%
   st_geometry() %>%
   st_buffer(dist = 1500) %>%
