@@ -14,6 +14,11 @@
 
 # BCCM was ROMs output from Angelina Pena - full bottom and surface variables that Andy requested
 
+# Filenames that we save to (as .rds in pacea-data/) do need to match what we're calling them in pacea, but can have
+#  version number at the end. So must be in hotssea_data object. And want them
+#  somewhat automated from the filenames Greig used.
+
+
 library(devtools)
 library(dplyr)
 library(terra)
@@ -116,7 +121,9 @@ summary(svar)
 
 # Adapting Greig's automated suggestion
 snc_time_counter <- ncvar_get(snc_dat, "time_counter")
-snc_time_dates <- as.POSIXct(snc_time_counter, origin = "1900-01-01", tz = "UTC")
+snc_time_dates <- as.POSIXct(snc_time_counter,
+                             origin = "1900-01-01",
+                             tz = "UTC")
 
 # Removes leading zeros for months, so matches Travis's style.
 cnames <-
@@ -124,7 +131,8 @@ cnames <-
   as.vector()
 cnames
 
-sdat <- data.frame(x = snc_lon,
+sdat <- data.frame(x = snc_lon,           # TODO sdat to surf_dat I think, as
+                                        # was confusing
                    y = snc_lat,
                    value = svar) %>%
   st_as_sf(coords = c("x", "y"),
@@ -178,10 +186,14 @@ for(i in nc_filenames[1]{  # TODO put back in for all of them
   ## } else {
   ##   ti <- strsplit(substr(i, 33, nchar(i)), "_")[[1]][1]
   ## }
-
   # temp hardcode till fix above - GO
   depth_range_i <- "avg0to30m"   # was ti but too cryptic  TODO automate this
 
+ # Greig has temp and salinity in separate files, so we can make this
+ # simpler. Don't think need the j loop, just check filename and do votemper
+ # etc. depending on the filename. So somewhat automatic.
+
+ HERE HERE - automate some of this
   #for(j in c("votemper")){   # jvars) {   # TODO put back in for loop
      j <- "votemper"  # for running line-by-line
     start <- Sys.time()
@@ -383,16 +395,19 @@ for(i in nc_filenames[1]{  # TODO put back in for all of them
 # plot(tdat_sf_cropped_2, cex = 0.6, pch = 16)
 
 
+ HERE - adapt this to be objname and filename somewhat automatically - see HERE
+ above also
     # name file and write data
     tj <- jvars_table[which(jvars_table[, 1] == j), 2]
 #    if(depth_range_i == "zInt"){
 #      objname <- paste("hotssea", tj, sep = "_")  # TODO
 #    } else {
-      objname <- paste("hotssea", depth_range_i, tj, "mean", sep = "_")    # TODO add in mean automatically
+      objname <- paste("hotssea", depth_range_i, tj, "mean", sep = "_")    # TODO add in mean/min/max automatically
 #    }
 
- #    filename <- paste0("../pacea-data/data/",objname, "_", version, ".rds")
-#    TODO, for now dumping in same folder
+# TODO filenames do need to match what we're calling them in pacea, but can have
+# version number at the end. So must be in hotssea_data object.
+
  filename <- paste0(pacea_data_dir,
                     objname,
                     "_",

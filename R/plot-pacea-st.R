@@ -146,8 +146,9 @@ plot.pacea_st <- function(x,
   # the coast. So here get the current default axes ranges and then reapply them
   # at the end.
   if(restrict_plot){
-    x_lim <- ggplot_build(tplot)$layout$panel_scales_x[[1]]$range$range
-    y_lim <- ggplot_build(tplot)$layout$panel_scales_y[[1]]$range$range
+    x_lim <- ggplot2::ggplot_build(tplot)$layout$panel_scales_x[[1]]$range$range
+    # TODO make shortcut function as useful
+    y_lim <- ggplot2::ggplot_build(tplot)$layout$panel_scales_y[[1]]$range$range
   }
 
   # eez and bc layers
@@ -163,8 +164,8 @@ plot.pacea_st <- function(x,
 
   if(restrict_plot){
     tplot <- tplot +
-      coord_sf(xlim = x_lim,
-               ylim = y_lim)
+      ggplot2::coord_sf(xlim = x_lim,
+                        ylim = y_lim)
   }
 
   tplot

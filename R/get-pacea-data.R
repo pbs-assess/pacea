@@ -20,9 +20,10 @@
 #' get_pacea_data("bccm_surface_temperature")
 #' }
 #'
-
-get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = FALSE) {
-
+get_pacea_data <- function(layer,
+                           update = FALSE,
+                           ask = interactive(),
+                           force = FALSE) {
   ## edit message
   if (!is.character(layer)) {
     stop("Data object must be referred to as a character string (in 'quotes')\n
@@ -33,7 +34,8 @@ get_pacea_data <- function(layer, update = FALSE, ask = interactive(), force = F
   test_names <- c("test_data", "test_data_01", "test_data_02", "test_corruptdata", "test_surftemp", "test_surfsal")
 
   ## find data in row - CHANGE datalist name if necessary
-  data_list <- pacea::bccm_data
+  data_list <- rbind(pacea::bccm_data,
+                     pacea::hotssea_data)
   data_row <- data_list[grep(layer, data_list[["data_name"]], ignore.case = TRUE), , drop = FALSE]
   if (nrow(data_row) != 1L && !(layer %in% test_names)) {
     stop(layer, " is not an available data object")
