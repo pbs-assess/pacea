@@ -13,10 +13,16 @@
 #  somewhat automated from the filenames Greig used.
 
 # To clarify, there are:
-#  - .nc files as saved by Greig
-#  - .rds files that get savd to pacea-data/ with filename <object_name>-01.rds for
-#       version number
-#  - <object_name> when downloaded from pacea-data/ and loaded into R using <object_name>()
+#  - .nc files as saved by Greig. Must have one of salinity or temperature in
+#   the filename, and that is what is contained in the data (unlike BCCM which had
+#   multiple variables in one .nc file). Currently have _1980to2018 in filename
+#   which gets removed automatically here to create <object_name>.
+#  - .rds files that get saved to pacea-data/ with filename <object_name>-01.rds for
+#       version number, with 'avg' added in compared to Greig's filenames to be
+#       consistent with Travis's
+#  - <object_name> when downloaded from pacea-data/ and loaded into R using
+#   <object_name>()
+#  - object names must then be added to hotssea_data object
 
 library(devtools)
 library(dplyr)
@@ -90,7 +96,7 @@ nmax <- 4
 version <- "01"
 
 # processing times output
-proctimes <- vector()
+# proctimes <- vector()
 
 # surface mask layer
 surf_nc_dat <- nc_open(paste0(nc_dir,
@@ -127,7 +133,7 @@ surf_dat <- data.frame(x = surf_nc_lon,
            crs = "EPSG:4326") %>%
   st_transform(crs = "EPSG:3005")
 
-# plot(sdat) # looks good
+# plot(surf_dat) # looks good
 expect_equal(summary(surf_var),
              summary(surf_dat$value))   # have only changed
                                         # co-ordinate system so far
@@ -156,271 +162,160 @@ surf_hotssea_buff <- surf_dat %>%
 
 
 for(i in nc_filenames[1]{  # TODO put back in for all of them
- i <- nc_filenames[2]   # for running line by line, doing temp
- nc_dat <- nc_open(paste0(nc_dir,
-                          "/",
-                          i))
+  i <- nc_filenames[2]   # for running line by line, doing temp
+
+  # Automatically create object name, and then the variable name to extract
+  obj_name <- stringr::str_replace(i, "1980to2018_", "") %>%
+    stringr::str_replace(".nc", "")
+
+  # If an average over depths then add in 'avg' for consistency with bccm
+  if(!(stringr::str_detect(i, "surface")) & !(stringr::str_detect(i, "bottom"))){
+    obj_name <- stringr::str_replace(obj_name,
+                                     "hotssea_",
+                                     "hotssea_avg")
+  }
+
+
+  stopifnot(!(stringr::str_detect(i, "temperature") &
+              stringr::str_detect(i, "salinity")))
+
+  if(stringr::str_detect(i, "temperature")){
+    j <- "votemper"
+  }
+
+  if(stringr::str_detect(i, "salinity")){
+    j <- "vosaline"
+  }
+
+  nc_dat <- nc_open(paste0(nc_dir,
+                           "/",
+                           i))
 
   # load lon-lat and mask layers from netcdf
   nc_lon <- as.vector(ncvar_get(nc_dat, "nav_lon"))
   nc_lat <- as.vector(ncvar_get(nc_dat, "nav_lat"))
 
-  # depth from file name
-  # hotssea_1980to2018_monthly_0to4m_tempsalin_avg.nc
-  # This was Travis's, will have to tailor, the 33,35 looks a bit risky TODO
-  ## if(substr(i, 33, 35) %in% c("bot", "sur")){
-  ##   ti <- substr(i, 33, 35)
-  ##   if(ti == "bot") {ti <- "bottom"} else {ti <- "surface"}
-  ## } else {
-  ##   ti <- strsplit(substr(i, 33, nchar(i)), "_")[[1]][1]
-  ## }
-  # temp hardcode till fix above - GO
-  depth_range_i <- "avg0to30m"   # was ti but too cryptic  TODO automate this
+  # start <- Sys.time()
 
- # Greig has temp and salinity in separate files, so we can make this
- # simpler. Don't think need the j loop, just check filename and do votemper
- # etc. depending on the filename. So somewhat automatic.
+  nc_var <- ncvar_get(nc_dat, j)
+  nc_varmat <- apply(nc_var, 3, c)
 
- HERE HERE - automate some of this
-  #for(j in c("votemper")){   # jvars) {   # TODO put back in for loop
-     j <- "votemper"  # for running line-by-line
-    start <- Sys.time()
+  nc_varmat[nc_varmat == 0] <- NA                  # 0's are NA's (e.g. on land), so set to
+  # NA here. Though Greig now has NA's in there.
 
-    nc_var <- ncvar_get(nc_dat, j)
-    nc_varmat <- apply(nc_var, 3, c)
+  # Put sst into dataframe and sf object
+  dat <- data.frame(x = nc_lon,
+                    y = nc_lat) %>%
+    cbind(nc_varmat)
+  dat_sf <- st_as_sf(dat,
+                     coords = c("x", "y"),
+                     crs = "EPSG:4326")    # Okay for Greig's
+  tdat_sf <- st_transform(dat_sf,
+                          crs = "EPSG: 3005")                 # BC Albers
 
-    nc_varmat[nc_varmat == 0] <- NA                  # 0's are NA's (e.g. on land), so set to
-                                       # NA here.
+  # Calculations earlier were for surface to give the surf_hotssea_cave and
+  # surf_hotssea_buff that get used below. Presume they're still needed. Also
+  # surface calculations give the cnames (column names.
+  # Then here inside the loop
+  # they're done for each object (because deep ones won't have the same coverage).
+  # Some looks like overkill but I think the conversions were needed to get to the
+  # same format.
+  hotssea_cave <- tdat_sf %>%
+    na.omit() %>%
+    concaveman::concaveman()
 
+  hotssea_buff <- tdat_sf %>%
+    na.omit() %>%
+    st_geometry() %>%
+    st_buffer(dist = 1500) %>%
+    st_union() %>%
+    st_as_sf()
 
-    # put sst into dataframe and sf object
-    dat <- data.frame(x = nc_lon,
-                      y = nc_lat) %>%
-      cbind(nc_varmat)
-    dat_sf <- st_as_sf(dat,
-                       coords = c("x", "y"),
-                       crs = "EPSG:4326")    # Okay for Greig's
- tdat_sf <- st_transform(dat_sf,
-                         crs = "EPSG: 3005")                 # BC Albers
+  # This took 6 minutes (which is shorter now using hotssea_buff not _poly):
+  output2 <- point2rast(data = tdat_sf,
+                        spatobj = hotssea_buff,
+                        loc = llnames,
+                        cellsize = 1500,       # Want 1500 not 2000
+                        nnmax = nmax,
+                        as = "SpatRast")
 
- # Gives this, where 39468 = 132 cells x 299 cells I think no need to crop
- #> tdat_sf
- # Simple feature collection with 39468 features and 468 fields
- # Geometry type: POINT
- # Dimension:     XY
- # Bounding box:  xmin: 972441.8 ymin: 209502.4 xmax: 1351568 ymax: 676720.4
- # Projected CRS: NAD83 / BC Albers
-# First 10 features:
-#   1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28
-#1  0 0 0 0 0 0 0 0 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-#2  0 0 0 0 0 0 0 0 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-#3  0 0 0 0 0 0 0 0 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+  # This is a "SpatRaster" object, doesn't plot well
+  # plot(output2) # with roms_buff gave fancy artwork. Looks wrong but could be the
+  # plotting as it's a SpatRaster.
+  # plot(output2)  - now gives something sensible, using my new hotssea_poly
 
-# plot(tdat_sf) gives 9 plots, and warning: plotting the first 9 out of 468
-# attributes; use max.plot = 468 to plot all. But maps of first 9 look different
-# to each other. Must be differences further down. Attributes are columns
-    # (fields) I think corresponding to months, since 1980 to 2018 monthly, and
-    # (2018-1980)*12 = 456.
+  # crop out grid cells with polygon masks
+  t2_sf <- output2 %>%
+    terra::mask(hotssea_poly) %>%      # Back to hotssea_poly
+    stars::st_as_stars() %>%  ## check here for converting to points (not raster)
+    st_as_sf()
 
-    # 0's may be the masking?
+  # This is needed as we used hotssea_poly above, and t2_sf has 31951 features.
+  #  This may not all be needed, but just
+  #  leave in as it's all a bit subtle and Travis spent a lot of time figuring it out.
+  ##### BC MASK OPTION 2 - Using roms outline
+  # 1. use roms_cave
+  t2_sfb <- t2_sf[hotssea_cave, ]
 
-# plot(dat_sf) and plot(tdat_sf) look pretty similar, slightly rotated
-# (different projection)
+  # 2. use roms_buff to get haida gwaii outline and shore - do, as likely
+  # needed for elsewhere:
+  t2_sfb <- t2_sfb[hotssea_buff,]
 
-# Andy tried manually to crop with this, but should jsut have used same approach
-# of cave and buffer, so commenting these out:
-## stopifnot(ncol(tdat_sf) == 469)    # if fails then change 468 below, note we
-##                                    # remove geometry column
+  # 3. use default surface roms_cave
+  t2_sfb <- t2_sfb[surf_hotssea_cave,]
 
-## tdat_sf_tib <- tibble::as_tibble(tdat_sf) %>%
-##   dplyr::select(-c("geometry")) %>%
-##   dplyr::rowwise() %>%
-##   dplyr::mutate(min = min(c_across(`1`:`468`)),
-##                 max = max(c_across(`1`:`468`)))  # Takes a few minutes
+  # 4. use default surface roms_buff
+  t2_sf <- t2_sfb[surf_hotssea_buff,]    # Carefull, going back to t2_sf
+  # With NA stuff is now:
+  # Simple feature collection with 10731 features and 468 fields
+  # Whereas was:
+  # Simple feature collection with 34515 features and 468 fields
+  # Geometry type: POLYGON
 
-## # This is stuff Andy added that I think messes things up and is why it doesn't plot
-## only_zeros_indices <- which(tdat_sf_tib$min == 0 & tdat_sf_tib$max == 0)  # length(only_zeros_indices) is 30086
-## tdat_sf_cropped <- tdat_sf[-only_zeros_indices, ]
-## tdat_sf_cropped
-## dim(tdat_sf_cropped)
-## plot(tdat_sf_cropped)   # works
+  # assign column names as year_month
+  names(t2_sf)[1:(ncol(t2_sf) - 1)] <- cnames
 
-# This was for ROMS, so adapting now:
-# create polygon for cropping ROMS data
-# The s Travis had is for surface, I hadn't noticed that. So putting surf_ in
-# ones above. Then here inside the loop
-# they're done for each object (because deep ones won't have the same coverage).
-# Some looks lke overkill but I think the conversions were needed to get to the
-# same format.
-    hotssea_cave <- tdat_sf %>%
-      na.omit() %>%
-      concaveman::concaveman()
+  # round to 6 decimal places to reduce file size
+  t3_sf <- t2_sf %>%
+    st_drop_geometry() %>%
+    round(digits = 6) %>%
+    st_as_sf(geometry = st_geometry(t2_sf))
 
-    hotssea_buff <- tdat_sf %>%
-      na.omit() %>%
-      st_geometry() %>%
-      st_buffer(dist = 1500) %>%
-      st_union() %>%
-      st_as_sf()
+  class(t3_sf) <- c("pacea_st",
+                    "sf",
+                    "tbl_df",
+                    "tbl",
+                    "data.frame")
 
-# This is what takes a few minutes (maybe 10):    TODO trying hotssea_buff not
-# hotssea_poly, since don't need full rectangle (might speed it up?)
-    output2 <- point2rast(data = tdat_sf,
-                          spatobj = hotssea_buff,  #poly,
-                          loc = llnames,
-                          cellsize = 1500,       # Want 1500 not 2000
-                          nnmax = nmax,
-                          as = "SpatRast")
+  # assign units attribute
+  attr(t3_sf, "units") <- jvars_table[which(jvars_table[, 1] == j), 3]
+  attr(t3_sf, "restrict_plotting_range") <- TRUE      # To then use to automatically restrict
+  # the plotting
+  attr(t3_sf, "salinity_unit") <- "PSU"      # To automate the axes labels
 
-    # This is a "SpatRaster" object, doesn't plot well
-    #plot(output2) # with roms_buff gave fancy artwork. Looks wrong but could be the
-    # plotting as it's a SpatRaster.
-    # plot(output2)  - now gives something sensible, using my new hotssea_poly
+  filename <- paste0(pacea_data_dir,
+                     obj_name,
+                     "_",
+                     version,
+                     ".rds")
+  assign(obj_name, t3_sf)
 
-    # 6 km res, not needed here
-    #    output6 <- point2rast(data = tdat_sf, spatobj = offshore_poly, loc = llnames, cellsize = 6000, nnmax = nmax, as = "SpatRast")
+  do.call("save", list(as.name(obj_name), file = filename, compress = "xz"))
 
-# crop out grid cells with polygon masks
-    t2_sf <- output2 %>%
-      terra::mask(hotssea_poly) %>%  #      mask(inshore_poly) %>%
-      stars::st_as_stars() %>%  ## check here for converting to points (not raster)
-      st_as_sf()
+  # Don't worry about timing, probably for when Travis was testing.
+  # end <- Sys.time()
+  # jtime <- end-start
+  # print(jtime)
+  # names(jtime) <- paste(depth_range_i, tj, sep="_")
+  # proctimes <- c(proctimes, jtime)
 
-    # mask gives a warning but I think still uses terra::mask:
-    # Warning message:
-    #  In findGeneric(f, envir) :
-    # 'mask' is a formal generic function; S3 methods will not likely be found
-
-    # Not needed presumably:
-    #    t2_sf6 <- output6 %>%
-    #      mask(bccm_eez_poly) %>%
-    #      mask(offshore_poly) %>%
-    #      stars::st_as_stars() %>%
-    #     st_as_sf()
-
-    # plot(t2_sf2)  nope, each does look the same though
-
-    # TODO not sure if this step adds anything in beyond just combining the grids
-    # mask 2k grid with 6k grid, then combine grids
-#    t2_sf26a <- t2_sf2[!st_intersects(st_union(t2_sf6), t2_sf2, sparse=FALSE, prepared=TRUE),] %>%
-#      rbind(t2_sf2[st_intersects(st_union(t2_sf6), t2_sf2, sparse=FALSE, prepared=TRUE),]) %>%
-#      rbind(t2_sf6)
-
-
- # TODO might not need this now as already masked above; TODO check if thiese
- # actually change from step to step, and if not then comment out.
-    ##### BC MASK OPTION 2 - Using roms outline
-    # 1. use roms_cave
-    t2_sfb <- t2_sf[hotssea_cave, ]
-
-    # 2. use roms_buff to get haida gwaii outline and shore - do, as likely
-    # needed for elsewhere:
-    t2_sfb <- t2_sfb[hotssea_buff,]
-
-    # 3. use default surface roms_cave
-    t2_sfb <- t2_sfb[surf_hotssea_cave,]
-
-    # 4. use default surface roms_buff
-    t2_sf <- t2_sfb[surf_hotssea_buff,]    # Carefull, going back to t2_sf
-# With NA stuff is now:
-# Simple feature collection with 10731 features and 468 fields
-
-    # Simple feature collection with 34515 features and 468 fields
-    # Geometry type: POLYGON
-
-    # BCCM:
-    # Now has 10731 cells, [nrow(t2_sf) =  10731], because have excluded the
-    # zeros. Previously had the rectangular grid:
-    # data should have 41,288 grid cells
-    # if(nrow(t2_sf26) != 41288){
-    #   out.msg <- paste0(as.symbol(t2_sf26), " nrows = ", nrow(get(objname)),
-    #                     ". nrows not equal to 13,377,312...wrangle to long format (or somethinig else) failed.")
-    #   stop(out.msg)
-    # }
-
-    # assign column names as year_month
-    names(t2_sf)[1:(ncol(t2_sf) - 1)] <- cnames
-
-    # round to 6 decimal places to reduce file size
-    t3_sf <- t2_sf %>%
-      st_drop_geometry() %>%
-      round(digits = 6) %>%
-      st_as_sf(geometry = st_geometry(t2_sf))
-
- # TODO comment me out, this is for testing saving of .nc file and loading into
- # pacea, without being too big
- t3_sf <- dplyr::select(t3_sf,
-                        c(`2018_4`:`2018_5`,
-                          "geometry"))
-
-    # assign pacea class
-
-    # Travis had this, but I think safer to do line below since it isn't
-    #  actually a tibble, though I saw somewhere else it needed these in the
-    #  right order.
-    class(t3_sf) <- c("pacea_st",
-                      "sf",
-                      "tbl_df",
-                      "tbl",
-                      "data.frame")
-
-# This works here while still just an sf object:
-# plot(tdat_sf_cropped_2, cex = 0.6, pch = 16)
-
-# class(tdat_sf_cropped_2) <- c("pacea_st",
-#                              class(tdat_sf_cropped_2))
-
-
-    # assign units attribute
-    attr(t3_sf, "units") <- jvars_table[which(jvars_table[, 1] == j), 3]
-    attr(t3_sf, "restrict_plotting_range") <- TRUE      # To then use to automatically restrict
-                                        # the plotting
-    attr(t3_sf, "salinity_unit") <- "PSU"      # To automate the axes labels
-
-# doesn't work though, using plot.pacea_st(), even after doing th cropping
-# etc. above.
-# AHA think because variable names are slightly different
-# plot(tdat_sf_cropped_2, cex = 0.6, pch = 16)
-
-
- HERE - adapt this to be objname and filename somewhat automatically - see HERE
- above also
-    # name file and write data
-    tj <- jvars_table[which(jvars_table[, 1] == j), 2]
-#    if(depth_range_i == "zInt"){
-#      objname <- paste("hotssea", tj, sep = "_")  # TODO
-#    } else {
-      objname <- paste("hotssea", depth_range_i, tj, "mean", sep = "_")    # TODO add in mean/min/max automatically
-#    }
-
-# TODO filenames do need to match what we're calling them in pacea, but can have
-# version number at the end. So must be in hotssea_data object.
-
- filename <- paste0(pacea_data_dir,
-                    objname,
-                    "_",
-                    version,
-                    ".rds")
-    #filename <- paste0("../pacea-data/data/",objname, ".rds")
-    assign(objname, t3_sf)
-
-    do.call("save", list(as.name(objname), file = filename, compress = "xz"))
-
-# summary(t3_sf)   # TODO has no 0's, but a few low looking values so look into
-
-    end <- Sys.time()
-    jtime <- end-start
-    print(jtime)
-    names(jtime) <- paste(depth_range_i, tj, sep="_")
-    proctimes <- c(proctimes, jtime)
-
-    # Manually add names to data-raw/data-key/hotssea_data_list.csv
-    # remove files
-    # TODO update this:
-    #rm(dat, dat_sf, tdat_sf, roms_cave, roms_buff,
-    #   output2, output6, t2_sf2, t2_sf6, t2_sf26,
-    #   t2_sf26a, t2_sf26b, t3_sf26, nc_var, nc_varmat)
-    # rm(list = objname)   # TODO add back in when have saved and reloaded .rds
-    gc()
-  }
+  # Manually add names to data-raw/data-key/hotssea_data_list.csv
+  # remove files
+  # TODO update this:
+  #rm(dat, dat_sf, tdat_sf, roms_cave, roms_buff,
+  #   output2, output6, t2_sf2, t2_sf6, t2_sf26,
+  #   t2_sf26a, t2_sf26b, t3_sf26, nc_var, nc_varmat)
+  # rm(list = objname)   # TODO add back in when have saved and reloaded .rds
+  gc()
+}
 # }
