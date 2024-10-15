@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,41,17
+/pbs-assess/pacea/tree/dev-andy,10,2
+/pbs-assess/pacea/issues/58,9,2
+/pbs-assess/pacea/issues,7,2
+/pbs-assess/pacea/tree/main/data-raw,6,3
+/pbs-assess/pacea/blob/dev-andy/data-raw/data-key/hotssea_data_list.csv,6,2
+/pbs-assess/pacea/commits/dev-andy,6,1
+/pbs-assess/pacea/tree/dev-andy/R,4,1
+/pbs-assess/pacea/blob/main/R/plot-pacea-oi.R,3,1
+/pbs-assess/pacea/blob/main/R/plot-pacea-st.R,3,1
