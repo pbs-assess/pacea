@@ -1,0 +1,448 @@
+---
+title: "Projecting OISST onto grid26"
+author: "Andrew Edwards"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Climatic and Oceanographic Indices}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+date: "Last rendered on `r format(Sys.time(), '%d %B, %Y')`"
+---
+
+```{r, run, eval = FALSE, echo = FALSE}
+rmarkdown::render("oisst_to_grid26.Rmd")
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Optimal Interoplation Sea Surface Temperature (OISST)
+
+This is for Philina's request (issue
+https://github.com/pbs-assess/pacea/issues/60 ) to project the OISST data onto
+the same grid (`grid26`) as used for the BCCM model results. Can adapt some of
+this into functions if needed later. Doing this quickly here for now.
+
+The OISST data are saved on the original  1/4° grid that NOAA provides them as.
+So we have not done any projection to get them into pacea; so try that here.
+
+Basing this on approach used in `data-raw/roms/roms-data-interpolation.R` for
+the BCCM model results, and recently adopted in
+`data-raw/hotssea/hotssea-data-interpolation.R` for the HOTSSea model results.
+
+Specifically, want to transform the `oisst_month` data, which is an `sf`
+object of monthly means in
+the original spatial 1/4° longitude x 1/4° latitude grid and WGS 84 projection
+and masked to show only the BC Exclusive Economic Zone area, onto the `grid26`
+grid. The coordinates in the geometry column of the `oisst_month` object are the centroid of each grid cell.
+
+This means that exactly the same spatiotemporal analyses can be done on
+both datasets.
+
+```{r packages}
+library(pacea)  # or load_all() when developing
+library(dplyr)
+library(sf)
+library(ggplot2)
+```
+
+In addition to the mean temperature value
+(weekly or monthly mean) for each grid cell, there are also other statistical
+measures, such as the standard deviation and number of observations. There is
+also a start- and end-date column that indicates the temporal period for which
+the mean is calculated from. Focussing here just on the monthly values.
+
+```{r, data}
+oisst_month
+# plot(oisst_month)
+bccm_sst <- bccm_surface_temperature()
+bccm_sst
+```
+
+Need to convert the former (means only) into the format of the latter, so with:
+
+1. year-month headings
+
+2. different co-ordinate system
+
+3. and POLYGON instead of POINT geometry:
+```{r, geometry}
+head(oisst_month$geometry)
+head(bccm_sst$geometry)
+```
+
+First generate a subset of data to use, filtering is for speed, selecting here
+is just what we need:
+```{r, subset}
+sub <- dplyr::filter(oisst_month,
+                     year == 1981) %>%
+  dplyr::select(year,
+                month,
+                sst,
+                geometry)
+# plot.pacea_oi(sub)    this works
+```
+
+### Step 1 - year-month headings
+
+```{r, wide}
+sub_wide <- sub %>%
+  tidyr::pivot_wider(names_from = c("year", "month"),
+                     values_from = "sst")
+sub_wide
+```
+
+### Step 2 - different co-ordinate system
+
+```{r, transform}
+sub_trans <- sf::st_transform(sub_wide,
+                              crs = "EPSG:3005")
+```
+
+### Step 3 - map onto grid26
+
+Attempt 1.
+
+This would be ideal, but requires data to be a terra spatraster. TODO ask Kelsey
+when she's back.
+
+Copying from Kelsey's code in `depth.R` and editing as necessary.
+
+```{r template, eval = FALSE}
+#template raster to transform bathy data to match pacea grid
+ext2 <- st_bbox(grid26)
+
+temp <- terra::rast(resolution = c(500, 500), #have to resample to lower res than input data
+                    xmin = ext2[1] - 500, #match extent + buffer of pacea grid
+                    ymin = ext2[2] - 500,
+                    xmax = ext2[3] + 500,
+                    ymax = ext2[4] + 500,
+                    crs = paste0(terra::crs(grid26, describe=TRUE)[,2],
+                                 ":",
+                                 terra::crs(grid26, describe=TRUE)[,3]))
+                                 #crs of pacea grid for zonal statistics
+
+#reproject to new crs, using bilinear for continuous data
+sub_trans_proj <- terra::project(sub_trans,
+                                 temp,
+                                 method="bilinear")
+# Error in (function (classes, fdef, mtable)  :
+#  unable to find an inherited method for function 'project' for signature '"sf"'
+
+sub_trans_proj
+```
+
+Attempt 2:
+
+Copying from `roms-data-interpolation.R` and editing:
+```{r, grid26}
+# interpolate data
+# 2 km res
+sub_2 <- point2rast(data = sub_trans,
+                    spatobj = inshore_poly,
+                    loc = c("x", "y"),
+                    cellsize = 2000,
+                    as = "SpatRast")
+# 6 km res
+sub_6 <- point2rast(data = sub_trans,
+                    spatobj = offshore_poly,
+                    loc = c("x", "y"),
+                    cellsize = 6000,
+                    as = "SpatRast")
+
+# crop out grid cells with polygon masks
+sub_sf2 <- sub_2 %>%
+  terra::mask(bccm_eez_poly) %>%
+  terra::mask(inshore_poly) %>%
+  stars::st_as_stars() %>%  ## check here for converting to points (not raster)
+  st_as_sf()
+sub_sf6 <- sub_6 %>%
+  terra::mask(bccm_eez_poly) %>%
+  terra::mask(offshore_poly) %>%
+  stars::st_as_stars() %>%
+  st_as_sf()
+
+# mask 2k grid with 6k grid, then combine grids
+sub_sf26a <- sub_sf2[!st_intersects(st_union(sub_sf6),
+                                    sub_sf2,
+                                    sparse=FALSE,
+                                    prepared=TRUE),] %>%
+  rbind(sub_sf2[st_intersects(st_union(sub_sf6),
+                              sub_sf2,
+                              sparse=FALSE,
+                              prepared=TRUE),]) %>%
+  rbind(sub_sf6)
+
+
+# Ideally want to make it bigger? For now Philina just wants same as BCCM.
+# Need to use same outline as for bccm values, i.e. roms_cave:
+
+## snc_lat <- as.vector(ncvar_get(snc_dat, "lat_rho"))
+## svar <- as.vector(ncvar_get(snc_dat, "temp", count = c(-1, -1, 1)))
+
+## sdat <- data.frame(x = snc_lon, y = snc_lat, value = svar) %>%
+##   st_as_sf(coords = c("x", "y"), crs = "EPSG:4326") %>%
+##   st_transform(crs = "EPSG:3005")
+
+## sroms_cave <- sdat %>%
+##   na.omit() %>%
+##   concaveman::concaveman()
+## sroms_buff <- sdat %>%
+##   na.omit() %>%
+##   st_geometry() %>%
+##   st_buffer(dist = 2000) %>%
+##   st_union() %>%
+##   st_as_sf()
+
+
+
+# Think can ignore roms_buff and roms_cave, which were data-specific
+# (e.g. bottom temperature), and we're already using the surface values
+sub_sf26b <- sub_sf26a[roms_cave,]
+
+    # 2. use roms_buff to get haida gwaii outline and shore
+    sub_sf26b <- sub_sf26b[roms_buff,]
+
+# TODO may need these if domains don't match
+    # 3. use default surface roms_cave
+#    sub_sf26b <- sub_sf26b[sroms_cave,]
+
+    # 4. use default surface roms_buff
+#    sub_sf26 <- sub_sf26b[sroms_buff,]
+
+expect_equal(nrow(sub_sf26b), 41288))   # Passes!
+    # data should have 41,288 grid cells
+
+    # assign column names as year_month. TODO seems to already be there, might
+    # be formatted slightly differently?
+#    names(sub_sf26)[1:(ncol(sub_sf26) - 1)] <- cnames
+
+    # covert to long format data - Don't do long format as it is too big
+    # t3_sf26 <- t2_sf26 %>%
+    #   tidyr::pivot_longer(cols = !last_col(), cols_vary = "slowest", names_to = "date", values_to = "value")  %>%
+    #   mutate(year = substr(date, 1, 4),
+    #          month = substr(date, 6, 7)) %>%
+    #   dplyr::select(-date) %>%
+    #   relocate(value, .after = last_col()) %>%
+    #   relocate(geometry, .after = last_col())
+
+    # round to 6 decimal places to reduce file size
+    # t3_sf26[, "value"] <- t3_sf26$value %>% # for long format
+    #   round(digits = 6)
+    oisst_month_grid26 <- sub_sf26b %>%
+      st_drop_geometry() %>%
+      round(digits = 6) %>%
+      st_as_sf(geometry = st_geometry(sub_sf26b))
+
+    # assign pacea class
+    class(oisst_month_grid26) <- c("pacea_st", "sf", "tbl_df", "tbl", "data.frame")
+
+    # assign units attribute
+    attr(oisst_month_grid26, "units") <- attr(oisst_month, "units")
+
+    save(oisst_month_grid26, file = "oisst_month_grid26.rds", compress = "xz")
+
+
+  # filename <- paste0("../pacea-data/data/",objname, "_", version, ".rds")
+    #filename <- paste0("../pacea-data/data/",objname, ".rds")
+    #assign(objname, t3_sf26)
+
+    #do.call("save", list(as.name(objname), file = filename, compress = "xz"))
+```
+
+Test the values. Compare with `oisst_month`.
+Plots look different but I don't know how to fix the colour scales:
+```{r plots}
+plot(oisst_month_grid26, year = 1981, month = 10)
+```
+
+Original:
+```{r plotorig}
+tt <- dplyr::filter(oisst_month, year == 1981, month == 10)
+plot.pacea_oi(tt)
+```
+
+
+```{r exit}
+knitr::knit_exit()
+```
+
+HERE
+
+```{r}
+# a random year with the date we are interested in to convert to the week of the year
+my.date <- as.Date("2015-09-04")
+lubridate::week(my.date)
+
+plot(oisst_7day, weeks.plot = lubridate::week(my.date), years.plot = c(1983, 2003, 2020))
+```
+
+## Wrangling OISST data
+
+### Masking data with shapefile
+(adated from example vignette with BCCM data)
+
+We can select an area of interest by masking the data with another `sf` shapefile, such as for a fishing region using indexing syntax. Below is an example using coordinates from DFO fish area 126.
+
+```{r create sf polygon}
+# coordinates for polygon (i.e. fishing area 126)
+crds <- list(matrix(c(-127.1506, -128.2331, -129.3492, -127.9167, -127.1847, -126.8200, -127.1506,
+                      49.85766, 49.00000, 48.99991, 50.11915, 50.40183, 50.24466, 49.85766),
+                    ncol = 2))
+
+# create polygon object with lat-lon WGS 84 projection (4326)
+a126 <- st_sfc(st_polygon(crds), crs = 4326) %>%
+  st_as_sf()
+
+# mask OISST data by indexing sf object with area 126 shapefile
+reg.dat <- oisst_month[a126, ]
+
+# reduction in number of data points after subsetting the region
+dim(oisst_month)
+dim(reg.dat)
+```
+
+To plot these subsetted data, we must reassign the class to the object for the `pacea` generic plot function to operate.
+
+```{r}
+class(reg.dat) <- class(oisst_month)
+plot(reg.dat, months.plot = c("Apr", "Sep"), years.plot = c(1982, 2002, 2022))
+```
+
+Otherwise we can build our own ggplot.
+
+```{r}
+reg.dat %>%
+  bind_cols(st_coordinates(reg.dat)) %>% # get coordinates out for plotting with geom_tile
+  filter(year %in% c(1982, 2002, 2022),  # filter out months and years
+         month %in% c(4, 9)) %>%
+  ggplot() +
+  geom_tile(aes(x = X, y= Y, fill = sst)) +
+  scale_fill_gradientn(colours = c("blue", "grey", "red"), name = attributes(oisst_month)$units) +
+  facet_grid(month~year) +
+  geom_sf(data = bc_coast)
+```
+
+### Extract data using coordinates
+(adated from example vignette with BCCM data)
+
+We can extract the spatial data using coordinates of interest. However, because the OISST are coordinates, we must use the `st_nearest_point()` function to find the data which are closest to our coordinates of interest.
+
+We'll use the location of data buoys. There is a list of buoys and locations in this pacakge, named as object: `buoy_metadata`.
+
+```{r}
+buoy_metadata
+
+# Let's use the La Perouse Bank location
+lat <- buoy_metadata$latitude[which(buoy_metadata$name == "La Perouse Bank")]
+lon <- buoy_metadata$longitude[which(buoy_metadata$name == "La Perouse Bank")]
+
+# create a dataframe and convert to sf object
+coords_LP <- data.frame(x = lon, y = lat)
+sf_LP <- st_as_sf(coords_LP, coords = c("x", "y"), crs = "EPSG: 4326")
+sf_LP
+
+st <- Sys.time()
+
+# distance from buoy to each coordinate
+dist <- st_distance(oisst_month, sf_LP)
+
+# subset data for points that are closest to buoy
+sub.dat <- oisst_month[which(dist == min(dist)),]
+```
+
+Now we can plot the time series for the data we've extracted
+
+```{r}
+sub.dat %>%
+  mutate(year = as.factor(year)) %>%  # set year to a factor so each line is plotted separately
+  ggplot() +
+  geom_line(aes(x = month, y = sst, col = year)) +
+  scale_y_continuous(name = attributes(oisst_month)$units)
+```
+
+To see where we are this year, let's plot just this year's data, with the historical distribution.
+
+```{r}
+# calculate summary statistics (median, sd, 0.05 and 0.95 probabilities)
+sum.dat <- sub.dat %>%
+  group_by(month) %>%
+  summarise(median_val = median(sst, na.rm = TRUE),
+            sd_val = sd(sst, na.rm = TRUE),
+            q05 = quantile(sst, probs = 0.05, na.rm = TRUE),
+            q95 = quantile(sst, probs = 0.95, na.rm = TRUE))
+
+sub.dat %>%
+  filter(year == 2023) %>%
+  mutate(year = as.factor(year)) %>%
+  ggplot() +
+  geom_ribbon(data = sum.dat, aes(x = month, ymin = q05, ymax = q95), fill = "grey") +
+  geom_line(aes(x = month, y = sst), col = "red") +
+  geom_line(data = sum.dat, aes(x = month, y = median_val), col = "black", linewidth = 1) +
+  scale_y_continuous(name = attributes(oisst_month)$units)
+```
+
+### Climatology and anomalies
+
+The `pacea` package has some built in functions to calculate climatologies and anomalies of the OISST data. These functions can be customized to return specific data. See help files for details of functions.
+
+First, let's calculate a climatology using the weekly 'oisst_7day' data.
+
+```{r}
+# help file for function
+# ?calc_clim
+
+# the default years for climtatology is 1991 - 2020
+clim_sst <- calc_clim(oisst_7day)
+
+head(clim_sst)
+
+# we can also select the climatology weeks to be returned: either a numeric value or convert a date to the week of the year
+clim_sst_sub <- calc_clim(oisst_7day, time_period_return = c(15, lubridate::week(as.Date("2010-08-01"))))
+
+head(clim_sst_sub)
+```
+
+Next, we can calculate the anomalies of the data, relative to the climatological mean.
+
+```{r}
+# help file for function
+# ?calc_anom
+
+anom_sst <- calc_anom(oisst_7day)
+
+head(anom_sst)
+```
+
+Arguments for the anomaly function allow users to specify the climatological reference period and the months/weeks and/or years to return as anomaly data
+
+```{r}
+anom_sst_sub <- calc_anom(oisst_7day, time_period_return = c(15, lubridate::week(as.Date("2010-08-01"))), years_return = c(2010, 2019))
+
+head(anom_sst_sub)
+```
+
+Anomaly data can also be plotted using built in generic functions in `pacea`.
+
+```{r}
+# plotting the subsetted data will be quicker
+plot(anom_sst_sub)
+```
+
+The plotting default is for the most recent time period in the data available. We can also specify the weeks and years to plot as a facet plot. If using the 'oisst_month' data, use the `months.plot` argument.
+
+```{r}
+plot(anom_sst_sub, weeks.plot = c(15, lubridate::week(as.Date("2010-08-01"))), years.plot = c(2010, 2019))
+```
+
+We have also incorporated the ability to add climatological data to the plot, which creates contour lines showing the anomaly areas that are above (or below for other variables) the 90th and 99th percentile of data (99th percentile contours may not appear if data values do not exceed that value).
+
+```{r}
+# there may be warnings that arise from the interpolation of the contour lines
+plot(anom_sst_sub, weeks.plot = c(15, lubridate::week(as.Date("2010-08-01"))), years.plot = c(2010, 2019), clim.dat = clim_sst_sub)
+```
+
+## References
+
+Huang, B., Liu, C., Banzon, V., Freeman, E., Graham, G., Hankins, B., Smith, T., Zhang, H. M., 2021. Improvements of the daily optimum interpolation Sea Surface temperature (DOISST) version 2.1. J. Clim. 34 (8), 2923–2939.

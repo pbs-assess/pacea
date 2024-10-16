@@ -20,7 +20,8 @@ tbc.line <- st_cast(tbc, "MULTILINESTRING")
 
 #####
 # create polygons for cropping to roms data
-nc_dat <- nc_open(paste0("data-raw/roms/bcc42_era5glo12r4_mon1993to2019_botTSO.nc"))
+nc_dat <- nc_open(paste0(here::here(),
+                         "/data-raw/roms/bcc42_era5glo12r4_mon1993to2019_botTSO.nc"))
 
 # load lon-lat and mask layers from netcdf
 nc_lon <- as.vector(ncvar_get(nc_dat, "lon_rho"))
@@ -35,12 +36,12 @@ dat <- data.frame(x = nc_lon, y = nc_lat) %>% cbind(nc_varmat) %>%
   st_transform(crs = "EPSG: 3005")
 
 # create polygon for cropping ROMS data
-roms_cave <- dat %>% 
+roms_cave <- dat %>%
   na.omit() %>%
   concaveman::concaveman()
-roms_buff <- dat %>% 
+roms_buff <- dat %>%
   na.omit() %>%
-  st_geometry() %>% 
+  st_geometry() %>%
   st_buffer(dist = 5000) %>%
   st_union()
 
@@ -48,7 +49,7 @@ rm(nc_dat, nc_lon, nc_lat, nc_var, nc_varmat, dat)
 #####
 
 #####
-# make sf grid 
+# make sf grid
 grid2 <- st_make_grid(inshore_poly, cellsize = 2000) %>%
   st_as_sf()
 grid2 <- grid2[inshore_poly,]
@@ -67,7 +68,7 @@ tgrid26 <- tgrid2 %>% rbind(grid6)
 # # index points that dont intersect with bc coast shapefile
 # #  disjoint - do not share space
 # dis2 <- tgrid26[st_disjoint(st_union(tbc), tgrid26, sparse=F, prepared=T),]
-# 
+#
 # #  convert bc coast to sf linestring and finding coastline intserections separately - increased processing speed
 # #  using st_intersects is much faster than other predicate functionss
 # sub.t2 <- tgrid26[st_intersects(st_union(tbc), tgrid26, sparse=F, prepared=T),]
@@ -75,11 +76,23 @@ tgrid26 <- tgrid2 %>% rbind(grid6)
 # grid26 <- rbind(dis2, inter.line)
 
 
-##### BC MASK OPTION 2 - Using roms outline 
+##### BC MASK OPTION 2 - Using roms outline
 # use roms_cave
 tgrid26 <- tgrid26[roms_cave,]
+
+grid26_new <- tgrid26[roms_buff,]
+# expect_equal(grid26_new, tgrid26)   # Thought this passed, but not so sure
+#  now and think failes; implies roms_buff does not do anything.
+# Accidentally did it, instead of expect_equal(grid26, grid26_new) to
+#  make sure I was still getting what Travis saved (by checking compared to the
+#  package saved version).
+
 
 # use roms_buff to get haida gwaii outline
 grid26 <- tgrid26[roms_buff,]
 
-usethis::use_data(grid26, overwrite = F)
+usethis::use_data(grid26, overwrite = FALSE)
+
+# To use for OISST mapping to grid26.
+usethis::use_data(roms_cave, overwrite = TRUE)
+usethis::use_data(roms_buff, overwrite = TRUE)
