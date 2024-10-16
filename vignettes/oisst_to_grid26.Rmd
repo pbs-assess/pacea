@@ -41,7 +41,7 @@ This means that exactly the same spatiotemporal analyses can be done on
 both datasets.
 
 ```{r packages}
-library(pacea)  # or load_all() when developing
+load_all() # library(pacea)  # or load_all() when developing
 library(dplyr)
 library(sf)
 library(ggplot2)
@@ -72,15 +72,16 @@ head(oisst_month$geometry)
 head(bccm_sst$geometry)
 ```
 
-First generate a subset of data to use, filtering is for speed, selecting here
+First generate a subset of data to use, filtering is for speed (now ignoring), selecting here
 is just what we need:
 ```{r, subset}
-sub <- dplyr::filter(oisst_month,
-                     year == 1981) %>%
-  dplyr::select(year,
-                month,
-                sst,
-                geometry)
+# sub <- dplyr::filter(oisst_month,
+#                     year == 1981) %>%
+sub <- dplyr::select(oisst_month,
+                     year,
+                     month,
+                     sst,
+                     geometry)
 # plot.pacea_oi(sub)    this works
 ```
 
@@ -105,10 +106,10 @@ sub_trans <- sf::st_transform(sub_wide,
 Attempt 1.
 
 This would be ideal, but requires data to be a terra spatraster. TODO ask Kelsey
-when she's back.
+when she's back. Copying from Kelsey's code in `depth.R` and editing as
+necessary.
 
-Copying from Kelsey's code in `depth.R` and editing as necessary.
-
+So this is not run:
 ```{r template, eval = FALSE}
 #template raster to transform bathy data to match pacea grid
 ext2 <- st_bbox(grid26)
@@ -211,7 +212,7 @@ sub_sf26b <- sub_sf26a[roms_cave,]
     # 4. use default surface roms_buff
 #    sub_sf26 <- sub_sf26b[sroms_buff,]
 
-expect_equal(nrow(sub_sf26b), 41288))   # Passes!
+expect_equal(nrow(sub_sf26b), 41288)   # Passes!
     # data should have 41,288 grid cells
 
     # assign column names as year_month. TODO seems to already be there, might
@@ -254,13 +255,16 @@ expect_equal(nrow(sub_sf26b), 41288))   # Passes!
 Test the values. Compare with `oisst_month`.
 Plots look different but I don't know how to fix the colour scales:
 ```{r plots}
-plot(oisst_month_grid26, year = 1981, month = 10)
+plot.pacea_st(oisst_month_grid26,     # being explicit about plot here, to help understanding
+     year = 1981,
+     month = 10)
 ```
 
 Original:
 ```{r plotorig}
-tt <- dplyr::filter(oisst_month, year == 1981, month == 10)
-plot.pacea_oi(tt)
+plot.pacea_oi(oisst_month,
+              year = 1981,
+              month = 10)
 ```
 
 
