@@ -242,8 +242,10 @@ expect_equal(nrow(sub_sf26b), 41288)   # Passes!
     # assign units attribute
     attr(oisst_month_grid26, "units") <- attr(oisst_month, "units")
 
-    save(oisst_month_grid26, file = "oisst_month_grid26.rds", compress = "xz")
-
+   save(oisst_month_grid26, file = "oisst_month_grid26.rds", compress = "xz")
+# To load (anywhere) before I've saved into package:
+# load(paste0(here::here(), "/vignettes/oisst_month_grid26.rds"))
+# TODO use_data
 
   # filename <- paste0("../pacea-data/data/",objname, "_", version, ".rds")
     #filename <- paste0("../pacea-data/data/",objname, ".rds")
@@ -266,6 +268,21 @@ plot.pacea_oi(oisst_month,
               year = 1981,
               month = 10)
 ```
+
+Figures come out differently.
+
+Figuring out ranges for colour bars, as done slightly differently in each
+function, but actually the global ranges are a bit different.
+```{r, bar1}
+c(floor(min(st_drop_geometry(oisst_month_grid26))), ceiling(max(st_drop_geometry(oisst_month_grid26))))
+# 3 19
+c(floor(min(st_drop_geometry(oisst_month$sst))), ceiling(max(st_drop_geometry(oisst_month$sst))))
+# 0 21
+```
+Makes sense that interpolated one covers a narrow range, but it also covers a
+smaller area.
+
+To compare areas:
 
 
 ```{r exit}

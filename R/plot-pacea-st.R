@@ -1,7 +1,7 @@
 #' Plot a pacea spatiotemporal data layer
 #'
 #' Plot for `pacea_st` classes of objects using `ggplot()`. Objects can be BCCM
-#'  outputs, OISST values, or HOTSSEA outputs.
+#'  outputs, OISST values (TODO no, but should work for the grid26 mapped values), or HOTSSEA outputs.
 #' Gives a quick visualization of data, specifying month(s) and year(s). For
 #'  more options and configurable plots see vignette.
 #'
@@ -59,7 +59,8 @@ plot.pacea_st <- function(x,
   # subset year_month columns
   tobj <- subset_pacea_ym(data = x, months = months.plot, years = years.plot)  ####MOVE THIS DOWN
 
-  # Restrict axes to just data or not (BCCM and OISST are for full coast)
+  # Restrict axes to just data or not (BCCM and OISST are for full coast,
+  #  HOTSSEA is just Salish Sea)
   if(is.null(attr(x, "restrict_plotting_range"))){
     restrict_plot <- FALSE
   } else {
