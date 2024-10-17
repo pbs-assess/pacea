@@ -234,7 +234,10 @@ for(i in nc_filenames[1]){  # TODO put back in for all of them
 
   # This took 6 minutes (which is shorter now using hotssea_buff not _poly):
   output2 <- point2rast(data = tdat_sf,
-                        spatobj = hotssea_buff,
+                        spatobj = hotssea_buff,   # TODO this will be
+                                        # inshore_poly_full, as Travis had
+                                        # inshore_poly but I created
+                                        # hotssea_buff here.
                         loc = llnames,
                         cellsize = 1500,       # Want 1500 not 2000
                         nnmax = nmax,
