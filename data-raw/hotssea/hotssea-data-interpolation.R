@@ -1,6 +1,5 @@
 # Andy starting again from Travis's roms-data-interpolation.R, incorporating Greig's additions as I go
-# along (easier to follow what was commented out by Greig). Copy this over to
-# hottsee-data-interpolation.R when finalised.
+# along (easier to follow what was commented out by Greig).
 
 # HOTSSea data from Greig Oldford - Salinity and Temperature 1980-2018
 # model depths vary by grid cell, usually only slightly at the surface.
@@ -127,6 +126,7 @@ cnames <-
   as.vector()
 cnames
 
+# These are points
 surf_dat <- data.frame(x = surf_nc_lon,
                        y = surf_nc_lat,
                        value = surf_var) %>%
@@ -146,6 +146,20 @@ surf_hotssea_cave <- surf_dat %>%
   # (that we interpreted as real values), but now a concave
   # outline around everything (one single outline, no islands) because we've used NA's
 
+usethis::use_data(surf_hotssea_cave, overwrite = TRUE)   # save for now to check
+                                        # with domain of bccm, then delete (maybe). TODO
+                                        # Doing that comparison in make-mask-layer.full.R
+# Plot two ways.
+ggplot() +
+  geom_sf(data = bc_coast) +
+  geom_sf(data = surf_hotssea_cave, col = NA, fill = "red")
+
+ggplot() +
+  geom_sf(data = surf_hotssea_cave, col = NA, fill = "red") +
+  geom_sf(data = bc_coast)
+
+
+
 ## mask with coastline, I think this is kind of a fix as we've used surface info
 surf_hotssea_buff <- surf_dat %>%
   na.omit() %>%
@@ -155,6 +169,15 @@ surf_hotssea_buff <- surf_dat %>%
   st_as_sf()
   # plot(surf_hotssea_buff) # This is now the non-NA values (when they were 0's
   # it loked like hotssea_cave, and so shows islands.
+
+usethis::use_data(surf_hotssea_buff, overwrite = TRUE)   # save for now to check
+                                        # with domain of bccm, then delete (maybe). TODO
+                                        # Doing that comparison in make-mask-layer.full.R
+
+usethis::use_data(surf_dat, overwrite = TRUE)   # save for now to check
+                                        # with domain of bccm, then delete (maybe). TODO
+                                        # Doing that comparison in make-mask-layer.full.R
+  # Just trying that without the extra fancy stuff.
 
 # TODO put back in when possible
 # rm(snc_dat, snc_lon, snc_lat, svar, sdat)
