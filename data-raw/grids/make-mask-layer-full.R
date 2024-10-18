@@ -75,18 +75,40 @@ tsst_sf1 <- st_transform(sst_sf1, crs = pmhc_crs)
 # tbuff <- st_buffer(teez, dist = 10000)
 
 # create polygon around ROMs data layer
-tsst_poly1 <- tsst_sf1 %>% summarise(geometry = st_union(geometry)) %>% st_convex_hull()
+tsst_poly1 <- tsst_sf1 %>%
+  summarise(geometry = st_union(geometry)) %>%
+  st_convex_hull()
 
 save(tsst_poly1, file = "tsst_poly1.rda")
 
-# Try that for hotssea:
-# create polygon around hotsseaROMs data layer
+
+# Try that for hotssea, since tsst_sf1 and surf_dat have same structure
+# create polygon around hotssea data layer
 hotssea_poly1 <- surf_dat %>%
   summarise(geometry = st_union(geometry)) %>%
   st_convex_hull()
 
+# Now try union:   this seems to be working HERE HERE HERE
+bccm_hotssea_new <- st_union(tsst_poly1,
+                             hotssea_poly1)
+
 ggplot() +
-  geom_sf(data = surf_dat) +
+  geom_sf(data = bccm_hotssea_new, col = NA, fill = "pink") +
+  geom_sf(data = bccm_hotssea_new, col = NA, fill = "pink") +
+  geom_sf(data = inshore_poly, col = NA, fill = "green") +
+  geom_sf(data = offshore_poly, col = NA, fill = "blue") +
+  geom_sf(data = bc_coast)
+
+
+
+HERE - above is good
+ggplot() +
+  # geom_sf(data = surf_dat, col = NA, fill = "green")
+  geom_sf(data = hotssea_poly1, col = NA, fill = "pink") # +
+  # geom_sf(data = surf_dat)
+
+ggplot() +
+  geom_sf(data = surf_dat, col = NA, fill = "green")
   geom_sf(data = hotssea_poly1, col = NA, fill = "pink") +
   geom_sf(data = surf_dat)
 plot(surf_dat)
@@ -111,9 +133,12 @@ ggplot() +
 
 # Some inlets there might be in hotssea domain, so we should check that:
 ggplot() +
-  geom_sf(data = bc_coast) +
+  # geom_sf(data = bc_coast) +
   geom_sf(data = tsst_poly1, col = NA, fill = "red") +
-  geom_sf(data = surf_hotssea_cave, col = NA, fill = "green")
+  geom_sf(data = surf_hotssea_cave, col = NA, fill = "green") +
+  geom_sf(data = bc_coast) +
+  geom_sf(data = tsst_poly1, col = "black", fill = NA)
+
 # Yes, a few inlests from hotssea are not within the bccm domain. Switch the
 # order also to see differently.
 
