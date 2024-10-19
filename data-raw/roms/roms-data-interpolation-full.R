@@ -3,6 +3,7 @@
 # Copying roms-data-interpolation.R to then edit.
 # ROMs data from Angelina Pena - full bottom and surface variables that Andy requested
 
+TODO close .nc files like Andrea said.
 library(devtools)
 library(dplyr)
 library(terra)
@@ -18,7 +19,7 @@ sf_use_s2(FALSE)  # remove spherical geometry (s2) for sf operations
 # load pacea
 load_all()
 
-
+pacea_dir <- here::here()
 #####
 # START - load data to environment
 
@@ -61,34 +62,41 @@ tbc.line <- st_cast(tbc, "MULTILINESTRING")
 #####
 # PARAMETERS
 
+# Do OPTION 1 or 2.
+option <- 1
 
 # OPTION 1 FOR LOOPING THROUGH VARIABLES FOR EACH DEPTH
 # loop variables
-ifiles <- list.files("./data-raw/roms/", pattern = "TSOpH.nc")
-jvars <- c("temp", "salt", "Oxygen", "pH")
+if(option == 1){
 
-# index table
-vars_fullname <- c("temperature", "salinity", "oxygen", "pH")
-vars_units <- c("Temperature (\u00B0C)",
-                "Salinity (ppt)",
-                "Dissolved oxygen content (mmol-oxygen m^-3)",
-                "pH")
-jvars_table <- cbind(jvars, vars_fullname, vars_units)
+  ifiles <- list.files(paste0(pacea_dir,
+                              "/data-raw/roms/"),
+                       pattern = "TSOpH.nc")
+  jvars <- c("temp", "salt", "Oxygen", "pH")
 
-
+  # index table
+  vars_fullname <- c("temperature", "salinity", "oxygen", "pH")
+  vars_units <- c("Temperature (\u00B0C)",
+                  "Salinity (ppt)",
+                  "Dissolved oxygen content (mmol-oxygen m^-3)",
+                  "pH")
+  jvars_table <- cbind(jvars, vars_fullname, vars_units)
+}
 
 # OPTION 2 FOR LOOPING THROUGH ONLY SURFACE VARIABLES (PRIMARY PRODUCTION)
 # loop variables
-ifiles <- list.files("./data-raw/roms/", pattern = "zInt_PT.nc")
-jvars <- c("phytoplankton", "PTproduction")
+if(option == 2){
+  ifiles <- list.files(paste0(pacea_dir,
+                              "/data-raw/roms/"),
+                       pattern = "zInt_PT.nc")
+  jvars <- c("phytoplankton", "PTproduction")
 
-# index table
-vars_fullname <- c("phytoplankton", "primaryproduction")
-vars_units <- c("Phytoplankton (mmol-nitrogen m^-2)",
-                "Total primary production (gC m^-2 d^-1)")
-jvars_table <- cbind(jvars, vars_fullname, vars_units)
-
-
+  # index table
+  vars_fullname <- c("phytoplankton", "primaryproduction")
+  vars_units <- c("Phytoplankton (mmol-nitrogen m^-2)",
+                  "Total primary production (gC m^-2 d^-1)")
+  jvars_table <- cbind(jvars, vars_fullname, vars_units)
+}
 
 # function argument
 llnames <- c("x", "y")
@@ -105,7 +113,8 @@ version <- "01"
 proctimes <- vector()
 
 # surface mask layer
-snc_dat <- nc_open("data-raw/roms/bcc42_era5glo12r4_mon1993to2019_surTSOpH.nc")
+snc_dat <- nc_open(paste0(pacea_dir,
+                          "/data-raw/roms/bcc42_era5glo12r4_mon1993to2019_surTSOpH.nc"))
 snc_lon <- as.vector(ncvar_get(snc_dat, "lon_rho"))
 snc_lat <- as.vector(ncvar_get(snc_dat, "lat_rho"))
 svar <- as.vector(ncvar_get(snc_dat, "temp", count = c(-1, -1, 1)))
@@ -128,13 +137,10 @@ rm(snc_dat, snc_lon, snc_lat, svar, sdat)
 # END parameters
 #####
 
-
-
-
-
-
 for(i in ifiles) {
-  nc_dat <- nc_open(paste0("data-raw/roms/",i))
+i <- ifiles[1]
+nc_dat <- nc_open(paste0(pacea_dir,
+                         "/data-raw/roms/",i))
 
   # load lon-lat and mask layers from netcdf
   nc_lon <- as.vector(ncvar_get(nc_dat, "lon_rho"))
@@ -149,7 +155,7 @@ for(i in ifiles) {
   }
 
   for(j in jvars) {
-
+j <- jvars[1]
     start <- Sys.time()
 
     nc_var <- ncvar_get(nc_dat, j)
@@ -173,28 +179,64 @@ for(i in ifiles) {
 
     # interpolate data
     # 2 km res
-    output2 <- point2rast(data = tdat_sf, spatobj = inshore_poly, loc = llnames, cellsize = 2000, nnmax = nmax, as = "SpatRast")
+    # output2 <- point2rast(data = tdat_sf, spatobj = inshore_poly, loc = llnames, cellsize = 2000, nnmax = nmax, as = "SpatRast")
     # 6 km res
-    output6 <- point2rast(data = tdat_sf, spatobj = offshore_poly, loc = llnames, cellsize = 6000, nnmax = nmax, as = "SpatRast")
+    # output6 <- point2rast(data = tdat_sf, spatobj = offshore_poly, loc = llnames, cellsize = 6000, nnmax = nmax, as = "SpatRast")
+  # 2x2 on full domain
+
+# Took maybe an hour for temp, avg0to40m. Should be the same for any though I
+# think. Think it's doing over the whole grid, even interpolating over land. For
+# which there isn't tons.
+output2_full <- point2rast(data = tdat_sf,
+                           spatobj = bccm_hotssea_poly,
+                           loc = llnames,
+                           cellsize = 2000,
+                           nnmax = nmax,
+                           as = "SpatRast")
+## > output2_full
+## class       : SpatRaster
+## dimensions  : 710, 651, 324  (nrow, ncol, nlyr)
+## resolution  : 2000, 2000  (x, y)
+## extent      : 108882.9, 1410883, -165260, 1254740  (xmin, xmax, ymin, ymax)
+## coord. ref. : NAD83 / BC Albers (EPSG:3005)
+## source(s)   : memory
+## names       :         1,        2,        3,         4,         5,         6, ...
+## min values  :  4.572711, 5.013850, 5.028921,  5.877672,  7.549509,  9.270278, ...
+## max values  : 10.229637, 9.604419, 9.817786, 10.668157, 12.789614, 13.939012, ...
+## > dim(output2_full)
+## [1] 710 651 324
+
 
     # crop out grid cells with polygon masks
-    t2_sf2 <- output2 %>%
-      mask(bccm_eez_poly) %>%
-      mask(inshore_poly) %>%
+#    t2_sf2 <- output2 %>%
+#      mask(bccm_eez_poly) %>%
+#      mask(inshore_poly) %>%
+#     stars::st_as_stars() %>%  ## check here for converting to points (not raster)
+#      st_as_sf()
+
+# Quick:
+    t2_sf2_full <- output2_full %>%
+#      mask(bccm_eez_poly) %>%
+#      mask(inshore_poly) %>%
       stars::st_as_stars() %>%  ## check here for converting to points (not raster)
       st_as_sf()
-    t2_sf6 <- output6 %>%
-      mask(bccm_eez_poly) %>%
-      mask(offshore_poly) %>%
-      stars::st_as_stars() %>%
-      st_as_sf()
 
+
+    ## t2_sf6 <- output6 %>%
+    ##   mask(bccm_eez_poly) %>%
+    ##   mask(offshore_poly) %>%
+    ##   stars::st_as_stars() %>%
+    ##   st_as_sf()
+
+# _full - not sure if need any of this, don't think so
     # mask 2k grid with 6k grid, then combine grids
-    t2_sf26a <- t2_sf2[!st_intersects(st_union(t2_sf6), t2_sf2, sparse=FALSE, prepared=TRUE),] %>%
-      rbind(t2_sf2[st_intersects(st_union(t2_sf6), t2_sf2, sparse=FALSE, prepared=TRUE),]) %>%
-      rbind(t2_sf6)
+#    t2_sf26a <- t2_sf2[!st_intersects(st_union(t2_sf6), t2_sf2, sparse=FALSE, prepared=TRUE),] %>%
+#      rbind(t2_sf2[st_intersects(st_union(t2_sf6), t2_sf2, sparse=FALSE, prepared=TRUE),]) %>%
+#      rbind(t2_sf6)
 
 
+# This was commented out for original roms-data-interpolation.R, think just
+# Travis trying options.
     ##### BC MASK OPTION 1 - Using bc shapefile
     # index points that dont intersect with bc coast shapefile
     #  disjoint - do not share space
@@ -206,18 +248,28 @@ for(i in ifiles) {
     # inter.line <- sub.t2[st_intersects(tbc.line, sub.t2, sparse=FALSE, prepared=TRUE),]
     # t2_sf26 <- rbind(dis2, inter.line)
 
-    ##### BC MASK OPTION 2 - Using roms outline
-    # 1. use roms_cave
-    t2_sf26b <- t2_sf26a[roms_cave,]
+##### BC MASK OPTION 2 - Using roms outline
+
+# Still don't understand the reason for four here:
+#dim(t2_sf2_full)
+#> [1] 462210    325
+
+    # 1. use roms_cave TODO change that name plus some of these
+    t2_sf26b <- t2_sf2_full[roms_cave,]
+#> dim(t2_sf26b)
+# > [1] 164454    325
 
     # 2. use roms_buff to get haida gwaii outline and shore
     t2_sf26b <- t2_sf26b[roms_buff,]
+#dim(t2_sf26b)
+#[1] 161025    325
 
     # 3. use default surface roms_cave
     t2_sf26b <- t2_sf26b[sroms_cave,]
-
+# same dim
     # 4. use default surface roms_buff
     t2_sf26 <- t2_sf26b[sroms_buff,]
+# same dim
 
     # data should have 41,288 grid cells
     # if(nrow(t2_sf26) != 41288){
@@ -255,16 +307,21 @@ for(i in ifiles) {
     # name file and write data
     tj <- jvars_table[which(jvars_table[, 1] == j), 2]
     if(ti == "zInt"){
-      objname <- paste("bccm", tj, sep = "_")
+      objname <- paste("bccm", tj, "full", sep = "_")
     } else {
-      objname <- paste("bccm", ti, tj, sep = "_")
+      objname <- paste("bccm", ti, tj, "full", sep = "_")
     }
-    filename <- paste0("../pacea-data/data/",objname, "_", version, ".rds")
+
+# TODO move to new directory
+filename <- paste0(pacea_dir,
+                   "/../pacea-data/data/",objname, "_", version, ".rds")
     #filename <- paste0("../pacea-data/data/",objname, ".rds")
     assign(objname, t3_sf26)
 
     do.call("save", list(as.name(objname), file = filename, compress = "xz"))
 
+# filesize is 120Mb. Ugh. 4x the existing ones., took 2 hours to process (TODO
+# close .nc files like Andrea said). sum(is.na(...)) is 0. So efficiently saved.
     end <- Sys.time()
     jtime <- end-start
     print(jtime)
