@@ -2,6 +2,7 @@
 # outputs. Making this one 1500m to match the hotssea output (though it won't
 # exactly match the curvilinear rotated grid).
 
+TODO do we need this? Don't think so now.
 library(terra)
 library(sf)
 library(dplyr)

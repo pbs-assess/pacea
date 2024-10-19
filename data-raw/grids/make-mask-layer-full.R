@@ -2,7 +2,7 @@
 #  output. Still want 2x2 inshore and 6x6 offshore polygons.
 # Adapting from  make-mask-layer.R, but don't need everything in that to be redone.
 
-# TODO remove lots of thc ommened out stuff once it works
+# TODO remove lots of the commented out stuff once it works
 
 library(devtools)
 library(sf)
