@@ -64,7 +64,7 @@ tbc.line <- st_cast(tbc, "MULTILINESTRING")
 # loop variables
 # Absolute path of directory where .nc files are saved, change version number here.
 nc_dir <- paste0(pacea_dir,
-                 "/data-raw/hotssea/hotssea-version-1.02.3")
+                 "/data-raw/hotssea/hotssea-version-1.02.4")
 
 nc_filenames <- list.files(nc_dir,
                            pattern = ".nc")
@@ -192,13 +192,14 @@ for(i in nc_filenames[1]){  # TODO put back in for all of them
   obj_name <- stringr::str_replace(i, "1980to2018_", "") %>%
     stringr::str_replace(".nc", "")
 
+  # Looks like Greig added to filename
   # If an average over depths then add in 'avg' for consistency with bccm
-  if(!(stringr::str_detect(i, "surface")) & !(stringr::str_detect(i, "bottom"))){
-    obj_name <- stringr::str_replace(obj_name,
-                                     "hotssea_",
-                                     "hotssea_avg")
-  }
-
+#  if(!(stringr::str_detect(i, "surface")) & !(stringr::str_detect(i, "bottom"))){
+#    obj_name <- stringr::str_replace(obj_name,
+#                                     "hotssea_",
+#                                     "hotssea_avg")
+#  }
+# TODO fix, think he put avg back in filename
 
   stopifnot(!(stringr::str_detect(i, "temperature") &
               stringr::str_detect(i, "salinity")))
@@ -255,17 +256,16 @@ for(i in nc_filenames[1]){  # TODO put back in for all of them
     st_union() %>%
     st_as_sf()
 
-  # This took 6 minutes (which is shorter now using hotssea_buff not _poly):
+  # This took 6 minutes with hotssea_buff, but need the full poly to spatial
+  #  geometries match up with bccm, for Elise and Philina:
+tictoc::tic()
   output2 <- point2rast(data = tdat_sf,
-                        spatobj = hotssea_buff,   # TODO this will be
-                                        # inshore_poly_full, as Travis had
-                                        # inshore_poly but I created
-                                        # hotssea_buff here.
+                        spatobj = bccm_hotssea_poly,
                         loc = llnames,
                         cellsize = 1500,       # Want 1500 not 2000
                         nnmax = nmax,
                         as = "SpatRast")
-
+tictoc::toc()   # 1.3 hours for 18/10/24 version
   # This is a "SpatRaster" object, doesn't plot well
   # plot(output2) # with roms_buff gave fancy artwork. Looks wrong but could be the
   # plotting as it's a SpatRaster.
@@ -321,6 +321,7 @@ for(i in nc_filenames[1]){  # TODO put back in for all of them
   attr(t3_sf, "salinity_unit") <- "PSU"      # To automate the axes labels
 
   filename <- paste0(pacea_data_dir,
+                     "hotssea/",
                      obj_name,
                      "_",
                      version,
@@ -328,6 +329,8 @@ for(i in nc_filenames[1]){  # TODO put back in for all of them
   assign(obj_name, t3_sf)
 
   do.call("save", list(as.name(obj_name), file = filename, compress = "xz"))
+  # 10/10/24 version was 13.9 Mb. Okay to add to pacea-data I think.
+  # 19/10/24 version is 13.2Mb.
 
   # Don't worry about timing, probably for when Travis was testing.
   # end <- Sys.time()
