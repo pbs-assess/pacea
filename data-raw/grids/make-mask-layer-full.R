@@ -1,6 +1,9 @@
 # create mask layers for full domain that encompasses bccm and hotssea
 #  output. Still want 2x2 inshore and 6x6 offshore polygons.
 # Adapting from  make-mask-layer.R, but don't need everything in that to be redone.
+
+# TODO remove lots of thc ommened out stuff once it works
+
 library(devtools)
 library(sf)
 library(ncdf4)
@@ -79,7 +82,7 @@ tsst_poly1 <- tsst_sf1 %>%
   summarise(geometry = st_union(geometry)) %>%
   st_convex_hull()
 
-save(tsst_poly1, file = "tsst_poly1.rda")
+# save(tsst_poly1, file = "tsst_poly1.rda")
 
 
 # Try that for hotssea, since tsst_sf1 and surf_dat have same structure
@@ -89,172 +92,104 @@ hotssea_poly1 <- surf_dat %>%
   st_convex_hull()
 
 # Now try union:   this seems to be working HERE HERE HERE
-bccm_hotssea_new <- st_union(tsst_poly1,
-                             hotssea_poly1)
+bccm_hotssea_poly <- st_union(tsst_poly1,
+                         hotssea_poly1)
 
 ggplot() +
-  geom_sf(data = bccm_hotssea_new, col = NA, fill = "pink") +
-  geom_sf(data = bccm_hotssea_new, col = NA, fill = "pink") +
+  geom_sf(data = bccm_hotssea_poly, col = NA, fill = "pink") +
   geom_sf(data = inshore_poly, col = NA, fill = "green") +
   geom_sf(data = offshore_poly, col = NA, fill = "blue") +
-  geom_sf(data = bc_coast)
+  geom_sf(data = bc_coast)       # Generally best to plot this last, as crs is
+                                 # different, so order matters (as well as overlaying)
 
+#Next need to figure out what to do about the 2x2 and 6x6 boundary.
+#Maybe do a test file of
+#Angelica's for the 2x2 everywhere. Realising that Travis already did that sort
+#of thing. Calculations below suggest that might be fine at 2x2 level, only 2.2
+#times as big as current .rds files.
 
-
-HERE - above is good
-ggplot() +
-  # geom_sf(data = surf_dat, col = NA, fill = "green")
-  geom_sf(data = hotssea_poly1, col = NA, fill = "pink") # +
-  # geom_sf(data = surf_dat)
-
-ggplot() +
-  geom_sf(data = surf_dat, col = NA, fill = "green")
-  geom_sf(data = hotssea_poly1, col = NA, fill = "pink") +
-  geom_sf(data = surf_dat)
-plot(surf_dat)
-
-
-
-# What we currently have in pacea:
-ggplot() +
-  geom_sf(data = inshore_poly, col = NA, fill = "green") +
-  geom_sf(data = offshore_poly, col = NA, fill = "blue") +
-  geom_sf(data = bc_coast)       # Generally best to plot this last
-
-# crs are different, so the order matters here. Full domain of BCCM:
-ggplot() +
-  geom_sf(data = tsst_poly1, col = NA, fill = "red") +
-  geom_sf(data = bc_coast)         # Generally best to plot this last
-
-# plot coast first to show outside-of-full-domain more clearly.
-ggplot() +
-  geom_sf(data = bc_coast) +
-  geom_sf(data = tsst_poly1, col = NA, fill = "red")
-
-# Some inlets there might be in hotssea domain, so we should check that:
-ggplot() +
-  # geom_sf(data = bc_coast) +
-  geom_sf(data = tsst_poly1, col = NA, fill = "red") +
-  geom_sf(data = surf_hotssea_cave, col = NA, fill = "green") +
-  geom_sf(data = bc_coast) +
-  geom_sf(data = tsst_poly1, col = "black", fill = NA)
-
-# Yes, a few inlests from hotssea are not within the bccm domain. Switch the
-# order also to see differently.
-
-# create a combined eez buffer and ROMs mask layer
-# bccm_eez_poly <- tbuff %>% st_intersection(tsst_poly1)
-
-# create a combined bbcm and hotssea buffer
-bccm_hotssea <- st_union(tsst_poly1,
-                         surf_hotssea_cave)
-bccm_hotssea_union_union <- st_union(st_union(tsst_poly1,
-                                              surf_hotssea_cave))
-
-
-ggplot() +
-  geom_sf(data = bc_coast) +
-  geom_sf(data = tsst_poly1, col = NA, fill = "red") +
-  geom_sf(data = surf_hotssea_cave, col = NA, fill = "green") +
-  geom_sf(data = bccm_hotssea, col = "black", fill = "orange")
-
-plot(bccm_hotssea)
-
-bccm_hotssea_2 <- st_union(surf_hotssea_cave,
-                           st_buffer(tsst_poly1, dist = 0))
-
-ggplot() +
-  geom_sf(data = bc_coast) +
-  geom_sf(data = tsst_poly1, col = NA, fill = "red") +
-  geom_sf(data = surf_hotssea_cave, col = NA, fill = "green") +
-  geom_sf(data = bccm_hotssea_2, col = "black", fill = "orange")
-
-#interwb says try:
-single_sf <- dplyr::bind_rows(tsst_poly1, surf_hotssea_cave)
-dissolve_sf <- st_union(single_sf) %>% st_union()
-
-bccm_hotssea_3 <- st_combine(surf_hotssea_cave,
-                             st_buffer(tsst_poly1, dist = 0))
-# Nope
-
-bccm_hotssea_4 <- rbind(surf_hotssea_cave,
-                        tsst_poly1)
-
-# Now trying:
-plot(surf_hotssea_buff)
-names(surf_hotssea_buff)   # colname is x though
-
-bccm_hotssea_5 <- st_union(tsst_poly1,
-                           surf_hotssea_buff)
-
-ggplot() +
-  geom_sf(data = bc_coast) +
-  geom_sf(data = tsst_poly1, col = NA, fill = "red") +
-  geom_sf(data = surf_hotssea_buff, col = NA, fill = "green") +
-  geom_sf(data = bccm_hotssea_5, col = "black", fill = "orange")
-
-
-# Now trying surf_dat, no luck as it contains points.
-
-
-
-
-HERE
-
+#Commenting next stuff to get to the polys
 
 # bc coast bounding box
-(bc_bbox <- st_bbox(tbc))
+#(bc_bbox <- st_bbox(tbc))
 
 # bc eez bounding box
-(eez_bbox <- st_bbox(teez))
+#(eez_bbox <- st_bbox(teez))
 
 # buffer bounding box
-(buff_bbox <- st_bbox(tbuff))
+#(buff_bbox <- st_bbox(tbuff))
 
 # isolating deep habitat types inshore and offshore gridded areas and getting coordinates
 # thabs <- c("Deep", "Seamount", "Hill", "Knoll", "Ridge", "Canyon")
-thabs <- c("Undefined Deep")
-tpmhc <- pmhc[grep(paste(thabs, collapse = "|"), pmhc$Habitat),]
-tpmhc_points <- (tpmhc %>% st_coordinates())[,c(1:2)]
+#thabs <- c("Undefined Deep")
+#tpmhc <- pmhc[grep(paste(thabs, collapse = "|"), pmhc$Habitat),]
+#tpmhc_points <- (tpmhc %>% st_coordinates())[,c(1:2)]
 
 # bounding box of deep habitat
-(tpmhc_bbox <- st_bbox(tpmhc))
+#(tpmhc_bbox <- st_bbox(tpmhc))
 
 # extract points from polygon
 ##  most northern point of deep habitat sf multipolygon
-pt1 <- tpmhc_points %>%
-  as.data.frame() %>%
-  dplyr::filter(Y == tpmhc_bbox$ymax) %>%
-  dplyr::filter(X == min(X)) %>%
-  mutate(X = X - 50000,
-         Y = Y + 5000)  # move point 50km west and 5k north
+## pt1 <- tpmhc_points %>%
+##   as.data.frame() %>%
+##   dplyr::filter(Y == tpmhc_bbox$ymax) %>%
+##   dplyr::filter(X == min(X)) %>%
+##   mutate(X = X - 50000,
+##          Y = Y + 5000)  # move point 50km west and 5k north
 
 ##  most eastern point of deep habitat sf multipolygon
-pt2 <- tpmhc_points %>%
-  as.data.frame() %>%
-  dplyr::filter(X == tpmhc_bbox$xmax) %>%
-  dplyr::filter(Y == min(Y)) %>%
-  mutate(X = X,
-         Y = Y - 30000)  # mover point 30km south
+## pt2 <- tpmhc_points %>%
+##   as.data.frame() %>%
+##   dplyr::filter(X == tpmhc_bbox$xmax) %>%
+##   dplyr::filter(Y == min(Y)) %>%
+##   mutate(X = X,
+##          Y = Y - 30000)  # mover point 30km south
 
 # points surrouding eez to cover inshore areas, and use to intersect with tbuff area
-pt3 <- data.frame(X = c(pt1$X, eez_bbox$xmax * 1.1,
-                        eez_bbox$xmax * 1.1, pt2$X),
-                  Y = c(eez_bbox$ymax * 1.1, eez_bbox$ymax * 1.1,
-                        eez_bbox$ymin * 0.9, eez_bbox$ymin * 0.9))
+## pt3 <- data.frame(X = c(pt1$X, eez_bbox$xmax * 1.1,
+##                         eez_bbox$xmax * 1.1, pt2$X),
+##                   Y = c(eez_bbox$ymax * 1.1, eez_bbox$ymax * 1.1,
+##                         eez_bbox$ymin * 0.9, eez_bbox$ymin * 0.9))
 
 # create mask polygon with points and crop to buffer eez area
-inshore_poly <- pt1 %>%
-  rbind(pt3, pt2, pt1) %>%
-  st_as_sf(coords = c("X", "Y"), crs = st_crs(teez)) %>%
-  summarise(geometry = st_combine(geometry)) %>%
-  st_cast("POLYGON") %>%
-  st_intersection(bccm_eez_poly)
+## inshore_poly <- pt1 %>%
+##   rbind(pt3, pt2, pt1) %>%
+##   st_as_sf(coords = c("X", "Y"),
+## crs = st_crs(teez)) %>%
+##   summarise(geometry = st_combine(geometry)) %>%
+##   st_cast("POLYGON") %>%
+##   st_intersection(bccm_eez_poly)
 
-offshore_poly <- bccm_eez_poly %>%
-  st_difference(inshore_poly)
+## offshore_poly <- bccm_eez_poly %>%
+##   st_difference(inshore_poly)
+
+# Structure is the same:
+inshore_poly
+offshore_poly
+bccm_hotssea_poly
+
+inshore_area <- st_area(inshore_poly) * 1e-06
+offshore_area <- st_area(offshore_poly) * 1e-06
+bh_area <- st_area(bccm_hotssea_poly) * 1e-06
+
+inshore_area
+offshore_area
+bh_area
+bh_area / (inshore_area + offshore_area)  # only 1.5x larger. Ignores land effects
+
+# Roughly, can work out how much bigger .rds file should be for bh than for inshore + offshore. How many 2x2 km squares
+
+curr_num_cells <- inshore_area / 4 + offshore_area / 9
+bh_est_num_cells <- bh_area / 4
+
+bh_est_size_ratio <- bh_est_num_cells/curr_num_cells
+bh_est_size_ratio
+
+# Only 2.17 times larger. So maybe don't worry about all the 2x2 and 6x6 and
+# just do 2x2 throughout.
 
 # save polygons as sf object to package
+usethis::use_data(bccm_hotssea_poly, overwrite = TRUE)
 #usethis::use_data(inshore_poly, overwrite = TRUE)
 #usethis::use_data(offshore_poly, overwrite = TRUE)
 #usethis::use_data(bccm_eez_poly, overwrite = TRUE)
