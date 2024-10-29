@@ -318,6 +318,9 @@ filename <- paste0(pacea_dir,
     #filename <- paste0("../pacea-data/data/",objname, ".rds")
     assign(objname, t3_sf26)
 
+# TODO - doesn't actually save as .rds file, maybe need saveRDS or
+# something. Check Travis's import functions.
+
     do.call("save", list(as.name(objname), file = filename, compress = "xz"))
 
 # filesize is 120Mb. Ugh. 4x the existing ones., took 2 hours to process (TODO

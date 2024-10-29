@@ -262,7 +262,9 @@ tictoc::tic()
   output2 <- point2rast(data = tdat_sf,
                         spatobj = bccm_hotssea_poly,
                         loc = llnames,
-                        cellsize = 1500,       # Want 1500 not 2000
+                        cellsize = 1500,       # Want 1500 not 2000  TODO HERE
+                                        # NEED TO REDO WITH 2000, for
+                                        # consistency
                         nnmax = nmax,
                         as = "SpatRast")
 tictoc::toc()   # 1.3 hours for 18/10/24 version
