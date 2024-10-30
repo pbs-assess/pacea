@@ -3,6 +3,8 @@
 # slightly differently between the two. If they are different then talk to
 # Kelsey and Andrea!
 
+# TODO rerun from scratch once I've rerun hotssea with 2000 m cells.
+
 load_all()
 
 # Not sure if need all these.
@@ -40,8 +42,7 @@ h
 b
 # No:
 overlap <- st_intersection(h, b) #tt, hotssea_poly)
-plot(overlap)  # shows some overlapping (and different size?) squares, so hasn't
-               # perfectly aligned I think. Or just plotted badly
+plot(overlap)  # looks okay, not sure why circles are shown at some corners
 
 # Yes:
 overlap_b_hotssea_poly <- st_intersection(b, hotssea_poly)
@@ -49,13 +50,13 @@ plot(overlap_b_hotssea_poly)  # Looks as expected, squares in the overlapping ar
 
 # No:
 overlap_h_grid26 <- st_intersection(h, grid26)
-plot(overlap_h_grid26)  # has lots of lines
+plot(overlap_h_grid26)  # has lots of lines, as expected, no reason to line up
 
-# No:
+# Yes:
 overlap_h_overlap_b_hotssea_poly <- st_intersection(h,
                                                     overlap_b_hotssea_poly)
-plot(overlap_h_overlap_b_hotssea_poly)  # Think the lines are an artefact, just
-                                        # want the actual area (not grid)
+plot(overlap_h_overlap_b_hotssea_poly)  # Similar but not the same as the
+                                        # earlier one
 
 # Yes, kind of:
 overlap_b_hotssea_poly_boundary <- st_boundary(overlap_b_hotssea_poly)
@@ -82,16 +83,19 @@ plot(overlap_b_hotssea_poly_union)
 overlap_h_overlap_b_hotssea_poly_union <- st_intersection(h,
                                                           overlap_b_hotssea_poly_union)
 plot(overlap_h_overlap_b_hotssea_poly_union[, 1])
-# Is what we want.
+# Is what we want. Look like only shows squares that are more than half within
+# the polygon
 
 # Then compare with
 windows()
 plot(overlap_b_hotssea_poly[, 1])
+# Shows parts of any square that is within the polygon
 
 st_area(overlap_h_overlap_b_hotssea_poly_union) %>% sum()
 st_area(overlap_b_hotssea_poly) %>% sum()
-# Not exactly the same
+# Not exactly the same, second is larger which makes sense.
 
+HERE - think about plots again and calcs. Looking good.
 
 # st_equals(b, h)
 # TEMP TODO delete:
