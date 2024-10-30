@@ -76,6 +76,11 @@ tsst_poly1 <- tsst_sf1 %>%
   st_convex_hull()             # the rectangle
 # I think that's all we need.
 
+# NOTE does not actually encompass all the squares completely. See
+# test-hotssea-bccm-full-overlap.R. Looks like it coveres the centers. Maybe
+# don't do the convex hull, and stick with outline of all the boxes. See where
+# else I've used it hotssea_poly.
+
 # create a combined eez buffer and ROMs mask layer
 # Don't think we need TODO check
 # bccm_eez_poly <- tbuff %>% st_intersection(tsst_poly1)
