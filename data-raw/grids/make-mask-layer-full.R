@@ -82,6 +82,10 @@ tsst_poly1 <- tsst_sf1 %>%
   summarise(geometry = st_union(geometry)) %>%
   st_convex_hull()
 
+plot(tsst_poly1)
+checking <- summarise(tsst_sf1, geometry = st_union(geometry))
+plot(checking, add = TRUE, col = "red")
+
 # save(tsst_poly1, file = "tsst_poly1.rda")
 
 
