@@ -90,11 +90,11 @@ hotssea_data
 ```
 Note that the naming convention of variables is the same as for the BCCM results, such that
 `avg0to30m` means the average over all depths from 0 to 30 m, for example. The
-suffixes `_min`, `_mean`, `_max`, and `_sd` TODO (check that gets included) are
+suffixes `_min`, `_mean`, `_max`, and `_sd` (check that gets included) are
 additionally used here.
 
-So, for example, `hotssea_avg0to30m_temperature_min` is calculated by TODO ask
-Greig.
+So, for example, `hotssea_avg0to30m_temperature_min` is calculated by TODO add
+in notes from Greig.
 
 HOTSsea results can be accessed using placeholder functions, named as in
 `hotssea_data`, that download the data to a local cache folder -- this directory can
@@ -112,7 +112,7 @@ function to download it and load it into the R workspace.
 # download data to cache folder and name object; `force = TRUE` to skip user prompt
  # pdata <- hotssea_surface_temperature(force = TRUE)   # TODO use this for
 # example when it's uploaded
-pdata <- hotssea_avg0to30m_temperature_mean()
+hot <- hotssea_avg0to30m_temperature_mean()
 ```
 
 View the data help for more information on HOTSsea results
@@ -125,8 +125,8 @@ redownload it from the `pacea-data` repository).
 
 So, what does the data object look like:
 ```{r}
-pdata
-head(pdata[, 1:5])   # geometry column is included when selecting columns from
+hot
+head(hot[, 1:5])   # geometry column is included when selecting columns from
                      # an `sf` object.
 ```
 
@@ -134,9 +134,9 @@ The data are in wide format, with each column representing a unique year-month
 combination. The data also have various attributes, such as the units for the
 data values, and some extra ones for HOTSsea used to automate some plotting.
 ```{r}
-names(attributes(pdata))
-attributes(pdata)$units
-class(pdata)
+names(attributes(hot))
+attributes(hot)$units
+class(hot)
 ```
 
 ### *Downloading all HOTSsea data*
@@ -169,14 +169,14 @@ data. By using `plot()`, since the results object has our class `pacea_st` (same
 BCCM), `plot()` automatically uses our customised `plot.pacea_st()`. The default
 settings are to plot April 2018:
 ```{r}
-plot(pdata)
+plot(hot)
 ```
 
 The code works the same as in the BCCM vignette, for example showing two months
 for each of three years:
 and
 ```{r, threemonths}
-plot(pdata,
+plot(hot,
      months = c("June", "September"),
      years = c(1995, 2010, 2018),
      eez = FALSE)
@@ -187,7 +187,7 @@ To inspect the full time series we can show every available month in a huge pane
 ```{r, hotsseaplot, fig.height = 65, fig.width = 20}
 # had height of 80 for 30 rows for hdi TODO  # 16 was okay maybe
 # taking a long time with just two years here, plotting on screen wasn't too bad:
-plot(pdata, months = 1:12,
+plot(hot, months = 1:12,
      years = 1980:2018,
      eez = FALSE)
 ```
@@ -203,14 +203,14 @@ vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob
 First, let's calculate a climatology, which returns data in long format.
 
 ```{r}
-clim <- calc_clim(pdata,
+clim <- calc_clim(hot,
                   clim_years = 1980:2000)
 clim   # Each row is a month-polygon combination
 ```
 
 The anomalies relative to a climatology can be calculated in one function:
 ```{r}
-anom <- calc_anom(pdata,
+anom <- calc_anom(hot,
                   clim_years = 1980:2000,
                   time_period_return = c("Apr", "Sep"),
                   years_return = c(2010, 2018))

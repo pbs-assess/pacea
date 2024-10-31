@@ -366,7 +366,7 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
   # names(jtime) <- paste(depth_range_i, tj, sep="_")
   # proctimes <- c(proctimes, jtime)
 
-  # Manually add names to data-raw/data-key/hotssea_data_list.csv  TODO
+  # Manually add names to data-raw/data-key/hotssea_data_list.csv. Done.
 
   # Save memory:
   ncdf4::nc_close(nc_dat)
