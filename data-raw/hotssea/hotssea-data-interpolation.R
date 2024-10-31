@@ -1,3 +1,7 @@
+# TODO this will save the one I already processed, but in a different
+# directory (pacea-data/data-hotssea/ instead of data/hotssea). Maybe check
+# they're equal, see mask code.
+
 # Andy starting again from Travis's roms-data-interpolation.R, incorporating Greig's additions as I go
 # along (easier to follow what was commented out by Greig).
 
@@ -33,17 +37,39 @@ library(ncdf4)
 library(ggplot2)
 library(concaveman)
 library(stringr)
+library(parallel)
+library(foreach)
 
 sf_use_s2(FALSE)  # remove spherical geometry (s2) for sf operations
+load_all()        # load pacea
 
-# load pacea
-load_all()
+
+# Set up parallel cluster (from https://www.blasbenito.com/post/02_parallelizing_loops_with_r/)
+
+num_cores <- parallel::detectCores() - 2   # Think memory might get limited if
+                                        # do too many
+# Create the cluster
+my_cluster <- parallel::makeCluster(
+                          num_cores,
+                          type = "PSOCK")
+
+my_cluster
+
+# Register it to be used by %dopar%
+doParallel::registerDoParallel(cl = my_cluster)
+
+
+# Set up directories
+
 pacea_dir <- here::here()   # Will give local pacea/
 pacea_data_dir <- paste0(here::here(),
-                         "/../pacea-data/data/")  # Where to save .rds files
+                         "/../pacea-data/data-hotssea/")  # Where to save .rds files
                # Lots of code in get-pacea-data.R would need changing to add a
                # hotssea-data directory, which was the original plan. Hard to
                # test all that and time consuming, so putting it all in one directory.
+               # Will probably upload to Zenodo and not commit them to
+               #  pacea-data/ as it's getting big. But that's a separate step to
+               #  making them here.
 
 
 #####
@@ -100,7 +126,7 @@ version <- "01"
 
 # surface mask layer
 surf_nc_dat <- nc_open(paste0(nc_dir,
-                          "/hotssea_1980to2018_surface_temperature_mean.nc"))
+                              "/hotssea_1980to2018_surface_temperature_mean.nc"))
 surf_nc_lon <- as.vector(ncvar_get(surf_nc_dat, "nav_lon"))
 surf_nc_lat <- as.vector(ncvar_get(surf_nc_dat, "nav_lat"))
 surf_var <- as.vector(ncvar_get(surf_nc_dat, "votemper", count = c(-1, -1, 1)))
@@ -117,8 +143,8 @@ summary(surf_var)
 # Adapting Greig's automated suggestion
 surf_nc_time_counter <- ncvar_get(surf_nc_dat, "time_counter")
 surf_nc_time_dates <- as.POSIXct(surf_nc_time_counter,
-                             origin = "1900-01-01",
-                             tz = "UTC")
+                                 origin = "1900-01-01",
+                                 tz = "UTC")
 
 # Removes leading zeros for months, so matches Travis's style.
 cnames <-
@@ -146,9 +172,11 @@ surf_hotssea_cave <- surf_dat %>%
   # (that we interpreted as real values), but now a concave
   # outline around everything (one single outline, no islands) because we've used NA's
 
-usethis::use_data(surf_hotssea_cave, overwrite = TRUE)   # save for now to check
-                                        # with domain of bccm, then delete (maybe). TODO
-                                        # Doing that comparison in make-mask-layer.full.R
+# usethis::use_data(surf_hotssea_cave, overwrite = TRUE)   # save for now to check
+                                        # with domain of bccm, then delete (maybe).
+                                        # Doing that comparison in
+                                        # make-mask-layer.full.R - looks like
+                                        # not needed now.
 # Plot two ways.
 ggplot() +
   geom_sf(data = bc_coast) +
@@ -170,51 +198,48 @@ surf_hotssea_buff <- surf_dat %>%
   # plot(surf_hotssea_buff) # This is now the non-NA values (when they were 0's
   # it loked like hotssea_cave, and so shows islands.
 
-usethis::use_data(surf_hotssea_buff, overwrite = TRUE)   # save for now to check
-                                        # with domain of bccm, then delete (maybe). TODO
+#usethis::use_data(surf_hotssea_buff, overwrite = TRUE)   # save for now to check
+                                        # with domain of bccm, then delete (maybe).
                                         # Doing that comparison in make-mask-layer.full.R
+                                        # Looks like not used.
 
 usethis::use_data(surf_dat, overwrite = TRUE)   # save for now to check
-                                        # with domain of bccm, then delete (maybe). TODO
-                                        # Doing that comparison in make-mask-layer.full.R
-  # Just trying that without the extra fancy stuff.
+                                        # with domain of bccm, then delete maybe.
+                                        # Doing that comparison in
+                                        # make-mask-layer.full.R - is used
+                                        # there, so best to keep. Maybe rename
+                                        # it to something more descriptive.
 
-# TODO put back in when possible
+nc_close(surf_nc_dat)
 # rm(snc_dat, snc_lon, snc_lat, svar, sdat)
+
 # END parameters
 #####
 
 
-for(i in nc_filenames[1]){  # TODO put back in for all of them
-  i <- nc_filenames[2]   # for running line by line, doing temp
+# Loop through all files, saving to an .rds (so nothing output from each loop)
+foreach(i = 1:length(nc_filenames)) %dopar% {
+  this_filename <- nc_filenames[i]
 
+  devtools::load_all()                 # Else get error in not finding %>%
   # Automatically create object name, and then the variable name to extract
-  obj_name <- stringr::str_replace(i, "1980to2018_", "") %>%
+  obj_name <- stringr::str_replace(this_filename, "1980to2018_", "") %>%
     stringr::str_replace(".nc", "")
 
-  # Looks like Greig added to filename
-  # If an average over depths then add in 'avg' for consistency with bccm
-#  if(!(stringr::str_detect(i, "surface")) & !(stringr::str_detect(i, "bottom"))){
-#    obj_name <- stringr::str_replace(obj_name,
-#                                     "hotssea_",
-#                                     "hotssea_avg")
-#  }
-# TODO fix, think he put avg back in filename
+  stopifnot(!(stringr::str_detect(this_filename, "temperature") &
+              stringr::str_detect(this_filename, "salinity")))
 
-  stopifnot(!(stringr::str_detect(i, "temperature") &
-              stringr::str_detect(i, "salinity")))
-
-  if(stringr::str_detect(i, "temperature")){
+  if(stringr::str_detect(this_filename, "temperature")){
     j <- "votemper"
   }
 
-  if(stringr::str_detect(i, "salinity")){
+  if(stringr::str_detect(this_filename, "salinity")){
     j <- "vosaline"
   }
 
-  nc_dat <- nc_open(paste0(nc_dir,
+  nc_dat <- ncdf4::nc_open(paste0(nc_dir,
                            "/",
-                           i))
+                           this_filename))
 
   # load lon-lat and mask layers from netcdf
   nc_lon <- as.vector(ncvar_get(nc_dat, "nav_lon"))
@@ -222,7 +247,7 @@ for(i in nc_filenames[1]){  # TODO put back in for all of them
 
   # start <- Sys.time()
 
-  nc_var <- ncvar_get(nc_dat, j)
+  nc_var <- ncdf4::ncvar_get(nc_dat, j)
   nc_varmat <- apply(nc_var, 3, c)
 
   nc_varmat[nc_varmat == 0] <- NA                  # 0's are NA's (e.g. on land), so set to
@@ -232,10 +257,11 @@ for(i in nc_filenames[1]){  # TODO put back in for all of them
   dat <- data.frame(x = nc_lon,
                     y = nc_lat) %>%
     cbind(nc_varmat)
-  dat_sf <- st_as_sf(dat,
+  dat_sf <- sf::st_as_sf(dat,       # NOTE stars::st_as_sf exists also, not sure
+                                    # which Travis used.
                      coords = c("x", "y"),
                      crs = "EPSG:4326")    # Okay for Greig's
-  tdat_sf <- st_transform(dat_sf,
+  tdat_sf <- sf::st_transform(dat_sf,      # ALSO exists stars::st_transform()
                           crs = "EPSG: 3005")                 # BC Albers
 
   # Calculations earlier were for surface to give the surf_hotssea_cave and
@@ -244,29 +270,30 @@ for(i in nc_filenames[1]){  # TODO put back in for all of them
   # Then here inside the loop
   # they're done for each object (because deep ones won't have the same coverage).
   # Some looks like overkill but I think the conversions were needed to get to the
-  # same format.
+  # same format (presumably these could just use the surface ones).
   hotssea_cave <- tdat_sf %>%
     na.omit() %>%
     concaveman::concaveman()
 
   hotssea_buff <- tdat_sf %>%
     na.omit() %>%
-    st_geometry() %>%
-    st_buffer(dist = 1500) %>%
-    st_union() %>%
-    st_as_sf()
+    sf::st_geometry() %>%
+    sf::st_buffer(dist = 1500) %>%
+    sf::st_union() %>%
+    sf::st_as_sf()
 
   # This took 6 minutes with hotssea_buff, but need the full poly to spatial
-  #  geometries match up with bccm, for Elise and Philina:
-tictoc::tic()
+  #  geometries match up with bccm, for Elise and Philina (2 is for 2x2 km,
+  #  which is all we're doing here though):
+  tictoc::tic()
   output2 <- point2rast(data = tdat_sf,
                         spatobj = bccm_hotssea_poly,
                         loc = llnames,
-                        cellsize = 2000,
+                        cellsize = 200000,   # TODO TODO remove two 0's!
                         nnmax = nmax,
                         as = "SpatRast")
-tictoc::toc()   # 1.3 hours for 18/10/24 version, 1.24 for 29/10/24 with 2000
-                # cellsize not 1500
+  tictoc::toc()   # 1.3 hours for 18/10/24 version, 1.24 for 29/10/24 with 2000
+                  # cellsize not 1500
   # This is a "SpatRaster" object, doesn't plot well
   # plot(output2) # with roms_buff gave fancy artwork. Looks wrong but could be the
   # plotting as it's a SpatRaster.
@@ -276,7 +303,7 @@ tictoc::toc()   # 1.3 hours for 18/10/24 version, 1.24 for 29/10/24 with 2000
   t2_sf <- output2 %>%
     terra::mask(hotssea_poly) %>%      # Back to hotssea_poly
     stars::st_as_stars() %>%  ## check here for converting to points (not raster)
-    st_as_sf()
+    sf::st_as_sf()
 
   # This is needed as we used hotssea_poly above, and t2_sf has 31951 features.
   #  This may not all be needed, but just
@@ -305,9 +332,9 @@ tictoc::toc()   # 1.3 hours for 18/10/24 version, 1.24 for 29/10/24 with 2000
 
   # round to 6 decimal places to reduce file size
   t3_sf <- t2_sf %>%
-    st_drop_geometry() %>%
+    sf::st_drop_geometry() %>%
     round(digits = 6) %>%
-    st_as_sf(geometry = st_geometry(t2_sf))
+    sf::st_as_sf(geometry = sf::st_geometry(t2_sf))
 
   class(t3_sf) <- c("pacea_st",
                     "sf",
@@ -322,7 +349,6 @@ tictoc::toc()   # 1.3 hours for 18/10/24 version, 1.24 for 29/10/24 with 2000
   attr(t3_sf, "salinity_unit") <- "PSU"      # To automate the axes labels
 
   filename <- paste0(pacea_data_dir,
-                     "hotssea/",
                      obj_name,
                      "_",
                      version,
@@ -340,13 +366,26 @@ tictoc::toc()   # 1.3 hours for 18/10/24 version, 1.24 for 29/10/24 with 2000
   # names(jtime) <- paste(depth_range_i, tj, sep="_")
   # proctimes <- c(proctimes, jtime)
 
-  # Manually add names to data-raw/data-key/hotssea_data_list.csv
-  # remove files
-  # TODO update this:
-  #rm(dat, dat_sf, tdat_sf, roms_cave, roms_buff,
-  #   output2, output6, t2_sf2, t2_sf6, t2_sf26,
-  #   t2_sf26a, t2_sf26b, t3_sf26, nc_var, nc_varmat)
-  # rm(list = objname)   # TODO add back in when have saved and reloaded .rds
+  # Manually add names to data-raw/data-key/hotssea_data_list.csv  TODO
+
+  # Save memory:
+  ncdf4::nc_close(nc_dat)
+  rm(nc_dat,
+     nc_lon,
+     nc_lat,
+     nc_var,
+     nc_varmat,
+     dat,
+     dat_sf,
+     tdat_sf,
+     hotssea_cave,
+     hotssea_buff,
+     output2,
+     t2_sf,
+     t2_sfb,
+     t3_sf,
+     obj_name)
   gc()
 }
-# }
+
+parallel::stopCluster(cl = my_cluster)
