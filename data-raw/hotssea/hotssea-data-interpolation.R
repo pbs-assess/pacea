@@ -242,8 +242,8 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
                            this_filename))
 
   # load lon-lat and mask layers from netcdf
-  nc_lon <- as.vector(ncvar_get(nc_dat, "nav_lon"))
-  nc_lat <- as.vector(ncvar_get(nc_dat, "nav_lat"))
+  nc_lon <- as.vector(ncdf4::ncvar_get(nc_dat, "nav_lon"))
+  nc_lat <- as.vector(ncdf4::ncvar_get(nc_dat, "nav_lat"))
 
   # start <- Sys.time()
 
@@ -289,7 +289,7 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
   output2 <- point2rast(data = tdat_sf,
                         spatobj = bccm_hotssea_poly,
                         loc = llnames,
-                        cellsize = 200000,   # TODO TODO remove two 0's!
+                        cellsize = 2000,
                         nnmax = nmax,
                         as = "SpatRast")
   tictoc::toc()   # 1.3 hours for 18/10/24 version, 1.24 for 29/10/24 with 2000
