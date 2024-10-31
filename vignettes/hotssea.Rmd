@@ -78,9 +78,8 @@ library(ggplot2)
 
 As for the BCCM results, the HOTSsea results were wrangled to simplify data format and structure. Because the
 results are spatially and temporally resolved, the compressed file size of each
-variable is fairly large (around 14 Mb). To keep the pacea package a
-reasonable downloadable size, the HOTSsea results are stored in a separate GitHub repository
-(https://github.com/pbs-assess/pacea-data) and can be downloaded locally using
+variable is fairly large (around 8 Mb, and there are 40 files). To keep the pacea package a
+reasonable downloadable size, the HOTSsea results are stored on Zenodo and can be downloaded locally using
 functions within pacea (obviously requiring internet access). The downloading
 is only needed once as the files get cached locally on your computer.
 

@@ -3,7 +3,7 @@
 # perfect because grid is not predefined but recalculated each time, and
 # slightly differently between the two. If they are different then talk to
 # Andrea or Kelsey. If they match then should be good.
-# Run through this line-by-line.
+# Run through this line-by-line. Went through with Andrea and looks good.
 
 # To chat with Andrea:
 # recap: hotssea is SoG, bccm is outer waters, there's a slight overlap. Want
