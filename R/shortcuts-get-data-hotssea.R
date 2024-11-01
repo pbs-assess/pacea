@@ -268,73 +268,73 @@ hotssea_avg30to150m_temperature_std <- function(update = FALSE, ask = interactiv
 
 #' @rdname hotssea_surface_salinity_min
 #' @export
-hotssea_avg150mtoBot_salinity_min <- function(update = FALSE, ask = interactive(),
+hotssea_avg150toBot_salinity_min <- function(update = FALSE, ask = interactive(),
                                               force = FALSE, version = "01",
                                               cache_subfolder = "hotssea"){
-  get_zenodo_data("hotssea_avg150mtoBot_salinity_min", update = update, ask = ask,
+  get_zenodo_data("hotssea_avg150toBot_salinity_min", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
 }
 
 #' @rdname hotssea_surface_salinity_min
 #' @export
-hotssea_avg150mtoBot_salinity_mean <- function(update = FALSE, ask = interactive(),
+hotssea_avg150toBot_salinity_mean <- function(update = FALSE, ask = interactive(),
                                                force = FALSE, version = "01",
                                                cache_subfolder = "hotssea"){
-  get_zenodo_data("hotssea_avg150mtoBot_salinity_mean", update = update, ask = ask,
+  get_zenodo_data("hotssea_avg150toBot_salinity_mean", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
 }
 
 #' @rdname hotssea_surface_salinity_min
 #' @export
-hotssea_avg150mtoBot_salinity_max <- function(update = FALSE, ask = interactive(),
+hotssea_avg150toBot_salinity_max <- function(update = FALSE, ask = interactive(),
                                               force = FALSE, version = "01",
                                               cache_subfolder = "hotssea"){
-  get_zenodo_data("hotssea_avg150mtoBot_salinity_max", update = update, ask = ask,
+  get_zenodo_data("hotssea_avg150toBot_salinity_max", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
 }
 
 #' @rdname hotssea_surface_salinity_min
 #' @export
-hotssea_avg150mtoBot_salinity_std <- function(update = FALSE, ask = interactive(),
+hotssea_avg150toBot_salinity_std <- function(update = FALSE, ask = interactive(),
                                               force = FALSE, version = "01",
                                               cache_subfolder = "hotssea"){
-  get_zenodo_data("hotssea_avg150mtoBot_salinity_std", update = update, ask = ask,
+  get_zenodo_data("hotssea_avg150toBot_salinity_std", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
 }
 
 #' @rdname hotssea_surface_salinity_min
 #' @export
-hotssea_avg150mtoBot_temperature_min <- function(update = FALSE, ask = interactive(),
+hotssea_avg150toBot_temperature_min <- function(update = FALSE, ask = interactive(),
                                                  force = FALSE, version = "01",
                                                  cache_subfolder = "hotssea"){
-  get_zenodo_data("hotssea_avg150mtoBot_temperature_min", update = update, ask = ask,
+  get_zenodo_data("hotssea_avg150toBot_temperature_min", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
 }
 
 #' @rdname hotssea_surface_salinity_min
 #' @export
-hotssea_avg150mtoBot_temperature_mean <- function(update = FALSE, ask = interactive(),
+hotssea_avg150toBot_temperature_mean <- function(update = FALSE, ask = interactive(),
                                                   force = FALSE, version = "01",
                                                   cache_subfolder = "hotssea"){
-  get_zenodo_data("hotssea_avg150mtoBot_temperature_mean", update = update, ask = ask,
+  get_zenodo_data("hotssea_avg150toBot_temperature_mean", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
 }
 
 #' @rdname hotssea_surface_salinity_min
 #' @export
-hotssea_avg150mtoBot_temperature_max <- function(update = FALSE, ask = interactive(),
+hotssea_avg150toBot_temperature_max <- function(update = FALSE, ask = interactive(),
                                                  force = FALSE, version = "01",
                                                  cache_subfolder = "hotssea"){
-  get_zenodo_data("hotssea_avg150mtoBot_temperature_max", update = update, ask = ask,
+  get_zenodo_data("hotssea_avg150toBot_temperature_max", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
 }
 
 #' @rdname hotssea_surface_salinity_min
 #' @export
-hotssea_avg150mtoBot_temperature_std <- function(update = FALSE, ask = interactive(),
+hotssea_avg150toBot_temperature_std <- function(update = FALSE, ask = interactive(),
                                                  force = FALSE, version = "01",
                                                  cache_subfolder = "hotssea"){
-  get_zenodo_data("hotssea_avg150mtoBot_temperature_std", update = update, ask = ask,
+  get_zenodo_data("hotssea_avg150toBot_temperature_std", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
 }
 
