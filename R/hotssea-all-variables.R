@@ -1,22 +1,35 @@
 #' Download all 40 HOTSSea model results from Zenodo to a local drive.
 #'
-#' Type `hotssea_data` to view the full list of available variables. See help
-#' files for specific variables for more details on HOTSSea model results, e.g.
-#' [?hotssea_bottom_temperature_max].
+#' This downloads (in parallel by default) all 40 HOTSSea model results from
+#' https://zenodo.org/records/14019142 to your local folder given by
+#' `paste0(pacea_cache(), "/hotssea")`. Each file is around 3-9Mb, and so downloading them all may
+#' take a while. You can check your cache folder for progress to see
+#' them appearing there. Downloading all 40 files might take around 13 hours,
+#' though with the parallel approach this might be only 2 hours. It depends on
+#' network speed and number of cores.
 #'
-#' CAUTION: The HOTSSea files are large (3-9 Mb) and downloading all 40 may take
-#' a while. TODO 200km versions (20kb ish) took 2 minutes; full versions are about 400 times
-#' bigger, so might take around 800 minutes, i.e. 13 hours. Either leave running
-#' overnight, or just download the files you definitely need, see
-#' [?hotssea_bottom_temperature_max]. But this is a one-time exercise and then
-#' you will have the files locally for all eternity.
+#' Either leave running overnight, or set `variables` to "temperature" or
+#' "salinity" if you only want one of those types of model output. Or you can just download the individual files you definitely need, see
+#' [?hotssea_bottom_temperature_max]. Remember the downloading is a one-time
+#' exercise (hence it's desirable to get all files at once) and then
+#' you will have the files locally for all eternity (ish).
 #'
-#' If it fails, you can try rerunning. You could then also try setting `run_parallel = FALSE`, or typing `options(timeout = 1200)`
+#' If this function fails, you can try rerunning it; it will not re-download any
+#' that were successful and this worked for someone testing it.
+#' Else you could then also try `hotssea_all_variables(run_parallel = FALSE)`, or typing `options(timeout = 1200)`
 #' (or higher) especially if running from the Pacific Biological Station. This
 #' function is particularly hard to test independently under different scenarios. An alternative if you are at
 #' the Pacific Biological Station is to get Andy to copy the files to an
 #' external drive.
 #'
+#' Or you can just download them manually (download all) from
+#' the Zenodo site given above) and put them in `paste0(pacea_cache(), "/hotssea")`.
+#'
+#' Type `hotssea_data` to view the full list of available variables. See help
+#' files for specific variables for more details on HOTSSea model results, e.g.
+#' [?hotssea_bottom_temperature_max].
+#'
+#' Also see the hotssea vignette.
 #'
 #' @param variables character Either `c("temperature", "salinity")`,
 #'   `"temperature"`, or `"salinity"`, describing what variables to
@@ -32,6 +45,7 @@
 #' @examples
 #' \dontrun{
 #' hotssea_all_variables()
+#' plot(hotssea_avg150toBot_temperature_min())
 #' }
 hotssea_all_variables <- function(variables = c("temperature", "salinity"),
                                   run_parallel = TRUE) {
@@ -56,9 +70,10 @@ hotssea_all_variables <- function(variables = c("temperature", "salinity"),
     }
   }
 
-  ans <- ask(paste("Downloading all 40 HOTSsea files (3-9 Mb each)  may take many hours. TODO update with CAUTION in help. Files will be downloaded to  directory:",
+  ans <-
+                   ask(paste("Downloading all 40 HOTSsea files (3-9 Mb each) may take a couple of hours (though it is hard to estimate). Please read the help file `?hotssea_all_variables` for faster options or solutions if this fails. Files will be downloaded to  directory:",
                    cache_dir,
-                   "If you get errors regarding corrupt files then empty the above directory, though this should be fixed now. Would you like to continue?", sep = "\n"))
+                   "Would you like to continue?", sep = "\n"))
 
   # calling scope - testthat detection; set ans = T for testthat
   tb <- .traceback(x = 0)
