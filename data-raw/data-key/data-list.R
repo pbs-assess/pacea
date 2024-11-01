@@ -1,5 +1,5 @@
 # generate pacea_data data objects for list of files
-library(dplyr)
+# library(dplyr)
 
 bccm_data <- read.csv(paste0(here::here(),
                              "/data-raw/data-key/data_list.csv"),

@@ -53,7 +53,7 @@ get_zenodo_data <- function(layer,
   }
 
   # testing data
-  #  test_names <- c("test_data", "test_data_01", "test_data_02", "test_corruptdata", "test_surftemp", "test_surfsal")
+  test_names <- c("test_data", "test_data_01", "test_data_02", "test_corruptdata", "test_surftemp", "test_surfsal")
 
   ## find data in row - CHANGE datalist name if necessary
   data_list <- rbind(pacea::hotssea_data)   # TODO think would add bccm_full here
@@ -89,7 +89,7 @@ get_zenodo_data <- function(layer,
   if (length(grep_list) > 0) {
 
     # local_filename <- grep_list[order(grep_list, decreasing = TRUE)][1]
-
+HERE - have to do load I think not readRDS. See final one in this function.
     # read local data and check if corrupted
     suppressWarnings({dat <- try(readRDS(local_file_dir), silent = TRUE)})
     if("try-error" %in% class(dat)){
