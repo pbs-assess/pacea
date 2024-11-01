@@ -17,7 +17,8 @@
 #' @param layer Name of the data object.
 #' @param update Logical. Would you like to check for a newer version of the layer?
 #' @param ask Logical. Should the user be asked before downloading the data to local cache? Defaults to the value of interactive().
-#' @param force Logical. Should download of data be forced? Overrides `ask` argument if TRUE.
+#' @param force Logical. Should download of data be forced? Overrides `ask`
+#'   argument if TRUE. Does not force a download if the file is already cached locally.
 #' @param version Character. Version number of data on Zenodo (as in what is
 #'   appended at the end of the filenames).
 #' @param cache_subfolder Character. The folder

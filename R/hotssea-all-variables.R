@@ -20,7 +20,8 @@
 #' @param run_parallel logical Run the downloads in parallel using
 #'   `parallel::foreach()`.
 #'
-#' @return downloaded files to `paste0(pacea_cache(), "/hotssea")` directory
+#' @return downloaded files to `paste0(pacea_cache(), "/hotssea")`
+#'   directory.
 #' @author Andrew Edwards and Travis Tai
 #' @export
 #' @examples
@@ -30,9 +31,25 @@
 hotssea_all_variables <- function(variables = c("temperature", "salinity"),
                                   run_parallel = TRUE) {
 
+  stopifnot(variables %in% c("temperature", "salinity") |
+            variables == c("temperature", "salinity"))
+
   cache_dir <- paste0(pacea::pacea_cache(),
                       "/hotssea")
-  hotssea_datalist <- pacea::hotssea_data
+
+  hotssea_data_vec <- pacea::hotssea_data$data_name  # Can get reduced in next loop
+
+
+  # Just select temperature or salinity if specified
+  if(length(variables) == 1){
+    if(variables == "temperature"){
+      hotssea_data_vec <- hotssea_data_vec[grep("temperature",
+                                                hotssea_data_vec)]
+    } else {
+      hotssea_data_vec <- hotssea_data_vec[grep("salinity",
+                                                hotssea_data_vec)]
+    }
+  }
 
   ans <- ask(paste("Downloading all 40 HOTSsea files (3-9 Mb each)  may take many hours. TODO update with CAUTION in help. Files will be downloaded to  directory:",
                    cache_dir,
@@ -42,7 +59,7 @@ hotssea_all_variables <- function(variables = c("temperature", "salinity"),
   tb <- .traceback(x = 0)
   if(any(unlist(lapply(tb, function(x) any(grepl("test_env", x)))))){
     #ans <- TRUE
-    hotssea_datalist <- data.frame(data_name = c("test_data_01"))
+    hotssea_data_vec <- "test_data_01"
   }
 
   if (!ans) stop("Exiting...", call. = FALSE)   # nocov
@@ -68,9 +85,9 @@ hotssea_all_variables <- function(variables = c("temperature", "salinity"),
     # Register it to be used by %dopar%
     doParallel::registerDoParallel(cl = my_cluster)
 
-    foreach::foreach(i = 1:nrow(hotssea_datalist)) %dopar% {
+    foreach::foreach(i = 1:length(hotssea_data_vec)) %dopar% {
 
-      data_name <- hotssea_datalist[i, 1]
+      data_name <- hotssea_data_vec[i]
       pacea::get_zenodo_data(data_name,
                              force = TRUE,
                              cache_subfolder = "hotssea")
@@ -80,8 +97,8 @@ hotssea_all_variables <- function(variables = c("temperature", "salinity"),
 
   } else {
     # Run in series
-    for(i in 1:nrow(hotssea_datalist)){
-      data_name <- hotssea_datalist[i, 1]
+    for(i in 1:length(hotssea_data_vec)){
+      data_name <- hotssea_data_vec[i]
       get_zenodo_data(data_name,
                       force = TRUE,
                       cache_subfolder = "hotssea")
