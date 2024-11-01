@@ -89,9 +89,10 @@ get_zenodo_data <- function(layer,
   if (length(grep_list) > 0) {
 
     # local_filename <- grep_list[order(grep_list, decreasing = TRUE)][1]
-HERE - have to do load I think not readRDS. See final one in this function.
     # read local data and check if corrupted
-    suppressWarnings({dat <- try(readRDS(local_file_dir), silent = TRUE)})
+    # BCCM has readRDS, here need load as seemed to have saved slightly
+    # differently. dat should automatically be the right name.
+    suppressWarnings({dat <- try(load(local_file_dir), silent = TRUE)})
     if("try-error" %in% class(dat)){
       # nocov start    # start of lines to ignore when testing code coverage
       # delete previous version in local folder
@@ -108,8 +109,8 @@ HERE - have to do load I think not readRDS. See final one in this function.
 
         warning("No access to internet - could not check for updates.", call. = FALSE)
 
-        dat <- readRDS(local_file_dir)
-        return(dat)
+        dat <- load(local_file_dir)
+        return(get(dat))
       }
 
       # list files from github repository
@@ -137,7 +138,7 @@ HERE - have to do load I think not readRDS. See final one in this function.
 
       # warning("Most recent version (_01) of data already downloaded in cache folder!", call. = FALSE)
 
-      #   dat <- readRDS(local_file_dir)
+      #   dat <- load(local_file_dir)
       # return(dat)
 
       # } else {
@@ -162,8 +163,8 @@ HERE - have to do load I think not readRDS. See final one in this function.
         # nocov start
         warning("Returned local version of data.", call. = FALSE)
 
-        dat <- readRDS(local_file_dir)
-        return(dat)
+        dat <- load(local_file_dir)
+        return(get(dat))
         # nocov end
       } else {
 
@@ -186,12 +187,13 @@ HERE - have to do load I think not readRDS. See final one in this function.
 
         message("Data successfully updated and downloaded to local cache folder!")
 
-        return(dat)
+        dat <- load(local_file_dir)
+        return(get(dat))
       }
     } else { # no update
 
-      dat <- readRDS(local_file_dir)
-      return(dat)
+      dat <- load(local_file_dir)
+      return(get(dat))
     }
 
   } else { # if file doesn't exist at all
@@ -244,14 +246,8 @@ HERE - have to do load I think not readRDS. See final one in this function.
     zen4R::download_zenodo(doi = "10.5281/zenodo.14019141",
                            path = cache_dir,
                            files = paste0(data_row$data_name, "_01.rds"))
-    load(local_file_dir)   # seems to not be a true .rds file, should contain
-                           # the object 'layer'
-#    assign("dat",
-#           get(layer))
-
-    # if above works can replace that and next with return(get(layer)) I think
-#    return(dat)             # layer should be the correct object name from the
-    #    file
-    return(get(layer))
+    dat <- load(local_file_dir)   # seems to not be a true .rds file, should contain
+                                  # the object 'layer'
+    return(get(dat))
   }
 }
