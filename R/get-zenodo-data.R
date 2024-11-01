@@ -27,7 +27,8 @@
 #' @return Data object requested
 #'
 #' @importFrom httr GET content status_code stop_for_status
-#'
+#' @importFrom foreach %dopar%
+#' @author Andrew Edwards and Travis Tai
 #' @export
 #'
 #' @examples

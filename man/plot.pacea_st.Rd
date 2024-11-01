@@ -32,7 +32,7 @@ plot of the spatial data to the current device (returns nothing)
 }
 \description{
 Plot for `pacea_st` classes of objects using `ggplot()`. Objects can be BCCM
- outputs, OISST values, or HOTSSEA outputs.
+ outputs, OISST values (TODO no, but should work for the grid26 mapped values), or HOTSSEA outputs.
 Gives a quick visualization of data, specifying month(s) and year(s). For
  more options and configurable plots see vignette.
 }
