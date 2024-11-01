@@ -1,4 +1,4 @@
-#' Download all 40 HOTSSea model results to local drive.
+#' Download all 40 HOTSSea model results from Zenodo to a local drive.
 #'
 #' Type `hotssea_data` to view the full list of available variables. See help
 #' files for specific variables for more details on HOTSSea model results, e.g.
@@ -9,9 +9,14 @@
 #' bigger, so might take around 800 minutes, i.e. 13 hours. Either leave running
 #' overnight, or just download the files you definitely need, see
 #' [?hotssea_bottom_temperature_max]. But this is a one-time exercise and then
-#' you will have the files locally for all eternity. An alternative if you are at
+#' you will have the files locally for all eternity.
+#'
+#' If it fails, you can try rerunning. You could then also try setting `run_parallel = FALSE`, or typing `options(timeout = 1200)`
+#' (or higher) especially if running from the Pacific Biological Station. This
+#' function is particularly hard to test independently under different scenarios. An alternative if you are at
 #' the Pacific Biological Station is to get Andy to copy the files to an
 #' external drive.
+#'
 #'
 #' @param variables character Either `c("temperature", "salinity")`,
 #'   `"temperature"`, or `"salinity"`, describing what variables to

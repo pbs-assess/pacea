@@ -28,3 +28,19 @@ consider building a similar package; pacea itself was originally motivated by
 the gslea package for the Gulf of St Lawrence.
 
 Add logo. Add references.
+
+--
+Potential high-level DMC (PAC RDG level) five-minute talk, think Andy T would
+actually give it. Sent to Steve, 1/11/24
+
+pacea: an R package of Pacific ecosystem information to help facilitate an
+ecosystem approach to fisheries management.
+
+- DFO is moving towards an Ecosystem Approach to Fisheries Management.
+- The leading cause of ecosystem information not being used in DFO stock assessments is
+the availability of such information.
+- Our pacea package is overcoming this limitation by amalgamating disparate
+types of information (e.g. outputs from oceanographic models, temperatures from
+buoys, zooplankton biomass anomalies), together with plotting and analytical
+functions.
+- Package authors are from StAR, OSD, and ESD.

@@ -67,16 +67,20 @@ Depends:
     R (>= 3.5.0)
 Imports:
     dplyr (>= 1.0.2),
+    doParallel,
+    foreach,
     ggplot2,
     httr,
     lubridate (>= 1.8.0),
     pals,
+    parallel,
     rappdirs,
     sf (>= 1.0.10),
     stats,
     tidyr,
     tibble,
-    usethis
+    usethis,
+    zen4R
 RoxygenNote: 7.2.3
 Remotes: github::pbs-assess/gfiphc
 Suggests:
