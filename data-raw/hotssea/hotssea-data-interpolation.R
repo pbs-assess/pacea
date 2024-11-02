@@ -1,7 +1,3 @@
-# TODO this will save the one I already processed, but in a different
-# directory (pacea-data/data-hotssea/ instead of data/hotssea). Maybe check
-# they're equal, see mask code.
-
 # Andy starting again from Travis's roms-data-interpolation.R, incorporating Greig's additions as I go
 # along (easier to follow what was commented out by Greig).
 
@@ -23,7 +19,7 @@
 #  - .rds files that get saved to pacea-data/ with filename <object_name>-01.rds for
 #       version number, with 'avg' added in compared to Greig's filenames to be
 #       consistent with Travis's
-#  - <object_name> when downloaded from pacea-data/ and loaded into R using
+#  - <object_name> when loaded from pacea-data/ and loaded into R using
 #   <object_name>()
 #  - object names must then be added to hotssea_data object
 
@@ -63,14 +59,9 @@ doParallel::registerDoParallel(cl = my_cluster)
 
 pacea_dir <- here::here()   # Will give local pacea/
 pacea_data_dir <- paste0(here::here(),
-                         "/../pacea-data/data-hotssea/")  # Where to save .rds files
-               # Lots of code in get-pacea-data.R would need changing to add a
-               # hotssea-data directory, which was the original plan. Hard to
-               # test all that and time consuming, so putting it all in one directory.
-               # Will probably upload to Zenodo and not commit them to
-               #  pacea-data/ as it's getting big. But that's a separate step to
-               #  making them here.
-
+                         "/../pacea-data/data-hotssea/")  # Where to save .rds
+                                        # files. Then uploading to Zenodo, not
+                                        # commiting those to GitHub.
 
 #####
 # START - load data to environment
@@ -86,8 +77,8 @@ tbc.line <- st_cast(tbc, "MULTILINESTRING")
 # PARAMETERS
 
 
-# OPTION 1 FOR LOOPING THROUGH VARIABLES FOR EACH DEPTH
-# loop variables
+# hotssea variables are each in separate files, unlike bccm which has multiple
+# variables in one file.
 # Absolute path of directory where .nc files are saved, change version number here.
 nc_dir <- paste0(pacea_dir,
                  "/data-raw/hotssea/hotssea-version-1.02.4")

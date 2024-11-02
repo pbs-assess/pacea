@@ -1,9 +1,24 @@
 # Interpolating the data for the full BCCM grid, not just inshore_poly and
 # offshore_poly.
-# Copying roms-data-interpolation.R to then edit.
+# Copying roms-data-interpolation.R to then edit, based on
+#  hotssea-data-interpolation.R in which worked out the parallel stuff.
 # ROMs data from Angelina Pena - full bottom and surface variables that Andy requested
 
-TODO close .nc files like Andrea said.
+# Run with option <- 1 then option <- 2.
+# From hotssea-data-interpolation.R, think these ideas still hold, but sticking
+# with filename stuff that Travis did for first bccm variables.
+# Filenames that we save to (as .rds in pacea-data/data-bccm-full/) do need to match what we're calling them in pacea, but can have
+#  version number at the end.
+
+# To clarify, there are:
+#  - .nc files as saved by Angelica. Have more than one variable in them
+# (unlike hotssea). Greig.
+#  - .rds files that get saved to pacea-data/data-bccm-full/ with filename <object_name>-01.rds for
+#       version number.
+#  - <object_name> when loaded from pacea-data/data-bccm-full and loaded into R using
+#   <object_name>()
+#  - object names must then be added to bccm_data_full for download functions TODO
+
 library(devtools)
 library(dplyr)
 library(terra)
@@ -13,13 +28,37 @@ library(stars)
 library(ncdf4)
 library(ggplot2)
 library(concaveman)
+library(parallel)
+library(foreach)
 
 sf_use_s2(FALSE)  # remove spherical geometry (s2) for sf operations
 
 # load pacea
 load_all()
 
-pacea_dir <- here::here()
+# Set up parallel cluster (from https://www.blasbenito.com/post/02_parallelizing_loops_with_r/)
+
+num_cores <- parallel::detectCores() - 2   # Think memory might get limited if
+                                        # do too many
+# Create the cluster
+my_cluster <- parallel::makeCluster(
+                          num_cores,
+                          type = "PSOCK")
+
+my_cluster
+
+# Register it to be used by %dopar%
+doParallel::registerDoParallel(cl = my_cluster)
+
+# Set up directories
+
+pacea_dir <- here::here()   # Will give local pacea/
+pacea_data_dir <- paste0(here::here(),
+                         "/../pacea-data/data-bccm-full/")  # Where to save .rds
+                                        # files. Then uploading to Zenodo, not
+                                        # commiting those to GitHub.
+# TODO add in mkdir if it's not already there.
+
 #####
 # START - load data to environment
 
@@ -29,49 +68,19 @@ tbc <- bc_coast
 # convert to multilinestring
 tbc.line <- st_cast(tbc, "MULTILINESTRING")
 
-# #####
-# # create polygons for cropping to roms data
-# nc_dat <- nc_open(paste0("data-raw/roms/bcc42_era5glo12r4_mon1993to2019_botTSO.nc"))
-#
-# # load lon-lat and mask layers from netcdf
-# nc_lon <- as.vector(ncvar_get(nc_dat, "lon_rho"))
-# nc_lat <- as.vector(ncvar_get(nc_dat, "lat_rho"))
-#
-# nc_var <- ncvar_get(nc_dat, "temp")
-# nc_varmat <- apply(nc_var, 3, c)
-#
-# # put sst into dataframe and sf object
-# dat <- data.frame(x = nc_lon, y = nc_lat) %>% cbind(nc_varmat) %>%
-#   st_as_sf(coords = c("x", "y"), crs = "EPSG:4326") %>%
-#   st_transform(crs = "EPSG: 3005")
-#
-# # create polygon for cropping ROMS data
-# roms_cave <- dat %>%
-#   na.omit() %>%
-#   concaveman::concaveman()
-# roms_buff <- dat %>%
-#   na.omit() %>%
-#   st_geometry() %>%
-#   st_buffer(dist = 5000) %>%
-#   st_union()
-#
-# rm(nc_dat, nc_lon, nc_lat, nc_var, nc_varmat, dat)
-# #####
-
-
 #####
 # PARAMETERS
 
-# Do OPTION 1 or 2.
+# Do OPTION 1 or 2. Then re-run (I think).
 option <- 1
 
 # OPTION 1 FOR LOOPING THROUGH VARIABLES FOR EACH DEPTH
 # loop variables
 if(option == 1){
 
-  ifiles <- list.files(paste0(pacea_dir,
-                              "/data-raw/roms/"),
-                       pattern = "TSOpH.nc")
+  nc_filenames <- list.files(paste0(pacea_dir,
+                                    "/data-raw/roms/"),
+                             pattern = "TSOpH.nc")
   jvars <- c("temp", "salt", "Oxygen", "pH")
 
   # index table
@@ -86,9 +95,9 @@ if(option == 1){
 # OPTION 2 FOR LOOPING THROUGH ONLY SURFACE VARIABLES (PRIMARY PRODUCTION)
 # loop variables
 if(option == 2){
-  ifiles <- list.files(paste0(pacea_dir,
-                              "/data-raw/roms/"),
-                       pattern = "zInt_PT.nc")
+  nc_filenames <- list.files(paste0(pacea_dir,
+                                    "/data-raw/roms/"),
+                             pattern = "zInt_PT.nc")
   jvars <- c("phytoplankton", "PTproduction")
 
   # index table
@@ -133,38 +142,47 @@ sroms_buff <- sdat %>%
   st_union() %>%
   st_as_sf()
 
+nc_close(snc_dat)
 rm(snc_dat, snc_lon, snc_lat, svar, sdat)
 # END parameters
 #####
 
-for(i in ifiles) {
-i <- ifiles[1]
-nc_dat <- nc_open(paste0(pacea_dir,
-                         "/data-raw/roms/",i))
+# Loop through all files, saving to an .rds (so nothing output from each loop)
+foreach(i = 1:2) %dopar% {    # Change 2 to length(nc_filenames) once it works TODO
+  this_filename <- nc_filenames[i]
+
+  devtools::load_all()                 # Else get error in not finding %>%
+
+  nc_dat <- ncdf4::nc_open(paste0(pacea_dir,
+                           "/data-raw/roms/",
+                           this_filename))
 
   # load lon-lat and mask layers from netcdf
-  nc_lon <- as.vector(ncvar_get(nc_dat, "lon_rho"))
-  nc_lat <- as.vector(ncvar_get(nc_dat, "lat_rho"))
+  nc_lon <- as.vector(ncdf4::ncvar_get(nc_dat, "lon_rho"))
+  nc_lat <- as.vector(ncdf4::ncvar_get(nc_dat, "lat_rho"))
 
   # depth from file name
-  if(substr(i, 33, 35) %in% c("bot", "sur")){
-    ti <- substr(i, 33, 35)
+  if(substr(this_filename, 33, 35) %in% c("bot", "sur")){
+    ti <- substr(this_filename, 33, 35)
     if(ti == "bot") {ti <- "bottom"} else {ti <- "surface"}
   } else {
-    ti <- strsplit(substr(i, 33, nchar(i)), "_")[[1]][1]
+    ti <- strsplit(substr(this_filename, 33, nchar(this_filename)), "_")[[1]][1]
   }
 
   for(j in jvars) {
-j <- jvars[1]
-    start <- Sys.time()
+    # j <- jvars[1]
+    # start <- Sys.time()
 
-    nc_var <- ncvar_get(nc_dat, j)
+    nc_var <- ncdf4::ncvar_get(nc_dat, j)
     nc_varmat <- apply(nc_var, 3, c)
 
     # put sst into dataframe and sf object
     dat <- data.frame(x = nc_lon, y = nc_lat) %>% cbind(nc_varmat)
-    dat_sf <- st_as_sf(dat, coords = c("x", "y"), crs = "EPSG:4326")
-    tdat_sf <- st_transform(dat_sf, crs = "EPSG: 3005")
+    dat_sf <- sf::st_as_sf(dat,
+                           coords = c("x", "y"),
+                           crs = "EPSG:4326")
+    tdat_sf <- sf::st_transform(dat_sf,
+                                crs = "EPSG: 3005")
 
     # create polygon for cropping ROMS data
     roms_cave <- tdat_sf %>%
@@ -172,10 +190,10 @@ j <- jvars[1]
       concaveman::concaveman()
     roms_buff <- tdat_sf %>%
       na.omit() %>%
-      st_geometry() %>%
-      st_buffer(dist = 2000) %>%
-      st_union() %>%
-      st_as_sf()
+      sf::st_geometry() %>%
+      sf::st_buffer(dist = 2000) %>%
+      sf::st_union() %>%
+      sf::st_as_sf()
 
     # interpolate data
     # 2 km res
@@ -184,42 +202,43 @@ j <- jvars[1]
     # output6 <- point2rast(data = tdat_sf, spatobj = offshore_poly, loc = llnames, cellsize = 6000, nnmax = nmax, as = "SpatRast")
   # 2x2 on full domain
 
-# Took maybe an hour for temp, avg0to40m. Should be the same for any though I
-# think. Think it's doing over the whole grid, even interpolating over land. For
-# which there isn't tons.
-output2_full <- point2rast(data = tdat_sf,
-                           spatobj = bccm_hotssea_poly,
-                           loc = llnames,
-                           cellsize = 2000,
-                           nnmax = nmax,
-                           as = "SpatRast")
-## > output2_full
-## class       : SpatRaster
-## dimensions  : 710, 651, 324  (nrow, ncol, nlyr)
-## resolution  : 2000, 2000  (x, y)
-## extent      : 108882.9, 1410883, -165260, 1254740  (xmin, xmax, ymin, ymax)
-## coord. ref. : NAD83 / BC Albers (EPSG:3005)
-## source(s)   : memory
-## names       :         1,        2,        3,         4,         5,         6, ...
-## min values  :  4.572711, 5.013850, 5.028921,  5.877672,  7.549509,  9.270278, ...
-## max values  : 10.229637, 9.604419, 9.817786, 10.668157, 12.789614, 13.939012, ...
-## > dim(output2_full)
-## [1] 710 651 324
+    # Took maybe an hour for temp, avg0to40m. Should be the same for any though I
+    # think. Think it's doing over the whole grid, even interpolating over land. For
+    # which there isn't tons.
+    output2_full <- point2rast(data = tdat_sf,
+                               spatobj = bccm_hotssea_poly,
+                               loc = llnames,
+                               cellsize = 200000,  # TODO change back to 2000,
+                                        # just testing loops
+                               nnmax = nmax,
+                               as = "SpatRast")
+    ## > output2_full
+    ## class       : SpatRaster
+    ## dimensions  : 710, 651, 324  (nrow, ncol, nlyr)
+    ## resolution  : 2000, 2000  (x, y)
+    ## extent      : 108882.9, 1410883, -165260, 1254740  (xmin, xmax, ymin, ymax)
+    ## coord. ref. : NAD83 / BC Albers (EPSG:3005)
+    ## source(s)   : memory
+    ## names       :         1,        2,        3,         4,         5,         6, ...
+    ## min values  :  4.572711, 5.013850, 5.028921,  5.877672,  7.549509,  9.270278, ...
+    ## max values  : 10.229637, 9.604419, 9.817786, 10.668157, 12.789614, 13.939012, ...
+    ## > dim(output2_full)
+    ## [1] 710 651 324
 
 
     # crop out grid cells with polygon masks
-#    t2_sf2 <- output2 %>%
-#      mask(bccm_eez_poly) %>%
-#      mask(inshore_poly) %>%
-#     stars::st_as_stars() %>%  ## check here for converting to points (not raster)
-#      st_as_sf()
+    #    t2_sf2 <- output2 %>%
+    #      mask(bccm_eez_poly) %>%
+    #      mask(inshore_poly) %>%
+    #     stars::st_as_stars() %>%  ## check here for converting to points (not raster)
+    #      st_as_sf()
 
-# Quick:
+    # Quick:
     t2_sf2_full <- output2_full %>%
-#      mask(bccm_eez_poly) %>%
-#      mask(inshore_poly) %>%
+      #      mask(bccm_eez_poly) %>%
+      #      mask(inshore_poly) %>%
       stars::st_as_stars() %>%  ## check here for converting to points (not raster)
-      st_as_sf()
+      sf::st_as_sf()
 
 
     ## t2_sf6 <- output6 %>%
@@ -228,52 +247,38 @@ output2_full <- point2rast(data = tdat_sf,
     ##   stars::st_as_stars() %>%
     ##   st_as_sf()
 
-# _full - not sure if need any of this, don't think so
+    # _full - not sure if need any of this, don't think so
     # mask 2k grid with 6k grid, then combine grids
-#    t2_sf26a <- t2_sf2[!st_intersects(st_union(t2_sf6), t2_sf2, sparse=FALSE, prepared=TRUE),] %>%
-#      rbind(t2_sf2[st_intersects(st_union(t2_sf6), t2_sf2, sparse=FALSE, prepared=TRUE),]) %>%
-#      rbind(t2_sf6)
+    #    t2_sf26a <- t2_sf2[!st_intersects(st_union(t2_sf6), t2_sf2, sparse=FALSE, prepared=TRUE),] %>%
+    #      rbind(t2_sf2[st_intersects(st_union(t2_sf6), t2_sf2, sparse=FALSE, prepared=TRUE),]) %>%
+    #      rbind(t2_sf6)
 
 
-# This was commented out for original roms-data-interpolation.R, think just
-# Travis trying options.
-    ##### BC MASK OPTION 1 - Using bc shapefile
-    # index points that dont intersect with bc coast shapefile
-    #  disjoint - do not share space
-    # dis2 <- t2_sf26[st_disjoint(st_union(tbc), t2_sf26, sparse=FALSE, prepared=TRUE),]
-    #
-    # #  convert bc coast to sf linestring and finding coastline intersections separately - increased processing speed
-    # #  using st_intersects is much faster than other predicate functions
-    # sub.t2 <- t2_sf26[st_intersects(st_union(tbc), t2_sf26, sparse=FALSE, prepared=TRUE),]
-    # inter.line <- sub.t2[st_intersects(tbc.line, sub.t2, sparse=FALSE, prepared=TRUE),]
-    # t2_sf26 <- rbind(dis2, inter.line)
 
-##### BC MASK OPTION 2 - Using roms outline
-
-# Still don't understand the reason for four here:
-#dim(t2_sf2_full)
-#> [1] 462210    325
+    # Still don't understand the reason for four here:
+    #dim(t2_sf2_full)
+    #> [1] 462210    325
 
     # 1. use roms_cave TODO change that name plus some of these
     t2_sf26b <- t2_sf2_full[roms_cave,]
-#> dim(t2_sf26b)
-# > [1] 164454    325
+    #> dim(t2_sf26b)
+    # > [1] 164454    325
 
     # 2. use roms_buff to get haida gwaii outline and shore
     t2_sf26b <- t2_sf26b[roms_buff,]
-#dim(t2_sf26b)
-#[1] 161025    325
+    #dim(t2_sf26b)
+    #[1] 161025    325
 
     # 3. use default surface roms_cave
     t2_sf26b <- t2_sf26b[sroms_cave,]
-# same dim
+    # same dim
     # 4. use default surface roms_buff
     t2_sf26 <- t2_sf26b[sroms_buff,]
-# same dim
+    # same dim
 
     # data should have 41,288 grid cells
     # if(nrow(t2_sf26) != 41288){
-    #   out.msg <- paste0(as.symbol(t2_sf26), " nrows = ", nrow(get(objname)),
+    #   out.msg <- paste0(as.symbol(t2_sf26), " nrows = ", nrow(get(obj_name)),
     #                     ". nrows not equal to 13,377,312...wrangle to long format (or somethinig else) failed.")
     #   stop(out.msg)
     # }
@@ -294,9 +299,9 @@ output2_full <- point2rast(data = tdat_sf,
     # t3_sf26[, "value"] <- t3_sf26$value %>% # for long format
     #   round(digits = 6)
     t3_sf26 <- t2_sf26 %>%
-      st_drop_geometry() %>%
+      sf::st_drop_geometry() %>%
       round(digits = 6) %>%
-      st_as_sf(geometry = st_geometry(t2_sf26))
+      sf::st_as_sf(geometry = sf::st_geometry(t2_sf26))
 
     # assign pacea class
     class(t3_sf26) <- c("pacea_st", "sf", "tbl_df", "tbl", "data.frame")
@@ -304,38 +309,46 @@ output2_full <- point2rast(data = tdat_sf,
     # assign units attribute
     attr(t3_sf26, "units") <- jvars_table[which(jvars_table[, 1] == j), 3]
 
+    attr(t3_sf26, "bccm_full") <- TRUE  # To then use to automatically
+                                        # extend the plotting
+
     # name file and write data
     tj <- jvars_table[which(jvars_table[, 1] == j), 2]
     if(ti == "zInt"){
-      objname <- paste("bccm", tj, "full", sep = "_")
+      obj_name <- paste("bccm", tj, "full", sep = "_")
     } else {
-      objname <- paste("bccm", ti, tj, "full", sep = "_")
+      obj_name <- paste("bccm", ti, tj, "full", sep = "_")
     }
 
-# TODO move to new directory
-filename <- paste0(pacea_dir,
-                   "/../pacea-data/data/",objname, "_", version, ".rds")
-    #filename <- paste0("../pacea-data/data/",objname, ".rds")
-    assign(objname, t3_sf26)
+    filename <- paste0(pacea_data_dir,
+                       obj_name,
+                       "_",
+                       version,
+                       ".rds")
 
-# TODO - doesn't actually save as .rds file, maybe need saveRDS or
-# something. Check Travis's import functions.
+    assign(obj_name, t3_sf26)
 
-    do.call("save", list(as.name(objname), file = filename, compress = "xz"))
+    # Doesn't actually save as .rds file, but sticking with Travis's
+    # conventions.
 
-# filesize is 120Mb. Ugh. 4x the existing ones., took 2 hours to process (TODO
-# close .nc files like Andrea said). sum(is.na(...)) is 0. So efficiently saved.
-    end <- Sys.time()
-    jtime <- end-start
-    print(jtime)
-    names(jtime) <- paste(ti, tj, sep="_")
-    proctimes <- c(proctimes, jtime)
+    do.call("save", list(as.name(obj_name), file = filename, compress = "xz"))
+
+    # filesize is 120Mb. Ugh. 4x the existing ones., took 2 hours to process (TODO
+    # close .nc files like Andrea said). sum(is.na(...)) is 0. So efficiently
+    # saved.
+
+    #end <- Sys.time()
+    #jtime <- end-start
+    #print(jtime)
+    #names(jtime) <- paste(ti, tj, sep="_")
+    #proctimes <- c(proctimes, jtime)
 
     # remove files
     rm(dat, dat_sf, tdat_sf, roms_cave, roms_buff,
        output2, output6, t2_sf2, t2_sf6, t2_sf26,
        t2_sf26a, t2_sf26b, t3_sf26, nc_var, nc_varmat)
-    rm(list = objname)
+    rm(list = obj_name)
     gc()
   }
+  ncdf4::nc_close(nc_dat)
 }
