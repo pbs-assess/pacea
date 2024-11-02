@@ -6,7 +6,8 @@
 \usage{
 hotssea_all_variables(
   variables = c("temperature", "salinity"),
-  run_parallel = TRUE
+  run_parallel = TRUE,
+  timeout_value = 14400
 )
 }
 \arguments{
@@ -17,6 +18,12 @@ want temperature or salinity only.}
 
 \item{run_parallel}{logical Run the downloads in parallel using
 `parallel::foreach()`.}
+
+\item{timeout_value}{numeric Timeout (seconds) for downloading a single file from
+the internet. Gets used by [zen4R::download_zenodo()] via
+[get_zenodo_data()]. Try increasing if get an Error saying Timeout has been
+reached. If it says `Timeout of 60 seconds` then `timeout_value` is not
+getting used (the default is 4 hours). Maybe try the manual download option above.}
 }
 \value{
 downloaded files to `paste0(pacea_cache(), "/hotssea")`
@@ -26,13 +33,12 @@ downloaded files to `paste0(pacea_cache(), "/hotssea")`
 This downloads (in parallel by default) all 40 HOTSSea model results from
 https://zenodo.org/records/14019142 to your local folder given by
 `paste0(pacea_cache(), "/hotssea")`. Each file is around 3-9Mb, and so downloading them all may
-take a while. You can check your cache folder for progress to see
-them appearing there. Downloading all 40 files might take around 13 hours,
-though with the parallel approach this might be only 2 hours. It depends on
-network speed and number of cores.
+take a few minutes or possibly longer. You can check your cache
+folder for progress to see them appearing there. The download is done in
+parallel (by default). Speed depends on network speed and number of cores.
 }
 \details{
-Either leave running overnight, or set `variables` to "temperature" or
+TODO Either leave running overnight, or set `variables` to "temperature" or
 "salinity" if you only want one of those types of model output. Or you can just download the individual files you definitely need, see
 [?hotssea_bottom_temperature_max]. Remember the downloading is a one-time
 exercise (hence it's desirable to get all files at once) and then

@@ -25,6 +25,8 @@
 #'   `paste0(pacea::pacea_cache(), cache_subfolder)` will be
 #'   searched first for the desired model output file, and if the no file is
 #'   there then it will be downloaded from Zenodo into this directory.
+#' @param timeout_value numeric Timeout (seconds) for downloading a file from
+#'   the internet. Gets used in [zen4R::download_zenodo()].
 #' @return Data object requested
 #'
 #' @importFrom httr GET content status_code stop_for_status
@@ -43,7 +45,8 @@ get_zenodo_data <- function(layer,
                            ask = interactive(),
                            force = FALSE,
                            version = "01",
-                           cache_subfolder = "hotssea"){
+                           cache_subfolder = "hotssea",
+                           timeout_value = 7200){
   ## edit message
   if (!is.character(layer)) {
     stop("Data object must be referred to as a character string (in 'quotes')\n
@@ -100,7 +103,7 @@ get_zenodo_data <- function(layer,
       # delete previous version in local folder
       unlink(local_file_dir)
 
-      stop("Local version of data is corrupt/incomplete, likely due to an interruption during download. Deleting corrupt file... Then run again")
+      stop("Local version of data is corrupt/incomplete, likely due to an interruption during download. Deleting corrupt file... Now run your same command again (you may need to do this a few times).")
       # nocov end
     }
 
@@ -176,7 +179,8 @@ get_zenodo_data <- function(layer,
 
         zen4R::download_zenodo(doi = "10.5281/zenodo.14019141",
                                path = cache_dir,
-                               files = paste0(data_row$data_name, "_01.rds"))
+                               files = paste0(data_row$data_name, "_01.rds"),
+                               timeout = timeout_value)
 
         # create file name with version number
         #  filename <- paste0(git_filename)
@@ -247,7 +251,8 @@ get_zenodo_data <- function(layer,
     # saveRDS(dat, file = file_dir, compress = "xz")
     zen4R::download_zenodo(doi = "10.5281/zenodo.14019141",
                            path = cache_dir,
-                           files = paste0(data_row$data_name, "_01.rds"))
+                           files = paste0(data_row$data_name, "_01.rds"),
+                           timeout = timeout_value)
     dat <- load(local_file_dir)   # seems to not be a true .rds file, should contain
                                   # the object 'layer'
     return(get(dat))

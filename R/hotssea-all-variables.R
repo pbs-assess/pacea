@@ -3,12 +3,11 @@
 #' This downloads (in parallel by default) all 40 HOTSSea model results from
 #' https://zenodo.org/records/14019142 to your local folder given by
 #' `paste0(pacea_cache(), "/hotssea")`. Each file is around 3-9Mb, and so downloading them all may
-#' take a while. You can check your cache folder for progress to see
-#' them appearing there. Downloading all 40 files might take around 13 hours,
-#' though with the parallel approach this might be only 2 hours. It depends on
-#' network speed and number of cores.
+#' take a few minutes or possibly longer. You can check your cache
+#' folder for progress to see them appearing there. The download is done in
+#' parallel (by default). Speed depends on network speed and number of cores.
 #'
-#' Either leave running overnight, or set `variables` to "temperature" or
+#' TODO Either leave running overnight, or set `variables` to "temperature" or
 #' "salinity" if you only want one of those types of model output. Or you can just download the individual files you definitely need, see
 #' [?hotssea_bottom_temperature_max]. Remember the downloading is a one-time
 #' exercise (hence it's desirable to get all files at once) and then
@@ -37,6 +36,11 @@
 #'   want temperature or salinity only.
 #' @param run_parallel logical Run the downloads in parallel using
 #'   `parallel::foreach()`.
+#' @param timeout_value numeric Timeout (seconds) for downloading a single file from
+#'   the internet. Gets used by [zen4R::download_zenodo()] via
+#'   [get_zenodo_data()]. Try increasing if get an Error saying Timeout has been
+#'   reached. If it says `Timeout of 60 seconds` then `timeout_value` is not
+#'   getting used (the default is 4 hours). Maybe try the manual download option above.
 #'
 #' @return downloaded files to `paste0(pacea_cache(), "/hotssea")`
 #'   directory.
@@ -48,7 +52,8 @@
 #' plot(hotssea_avg150toBot_temperature_min())
 #' }
 hotssea_all_variables <- function(variables = c("temperature", "salinity"),
-                                  run_parallel = TRUE) {
+                                  run_parallel = TRUE,
+                                  timeout_value = 14400) {
 
   stopifnot(variables %in% c("temperature", "salinity") |
             variables == c("temperature", "salinity"))
@@ -71,7 +76,7 @@ hotssea_all_variables <- function(variables = c("temperature", "salinity"),
   }
 
   ans <-
-                   ask(paste("Downloading all 40 HOTSsea files (3-9 Mb each) may take a couple of hours (though it is hard to estimate). Please read the help file `?hotssea_all_variables` for faster options or solutions if this fails. Files will be downloaded to  directory:",
+                   ask(paste("Downloading all 40 HOTSsea files (3-9 Mb each) may take a few minutes (though it is hard to estimate). Please read the help file `?hotssea_all_variables` for faster options or solutions if this fails. Files will be downloaded to  directory:",
                    cache_dir,
                    "Would you like to continue?", sep = "\n"))
 
@@ -110,7 +115,8 @@ hotssea_all_variables <- function(variables = c("temperature", "salinity"),
       data_name <- hotssea_data_vec[i]
       pacea::get_zenodo_data(data_name,
                              force = TRUE,
-                             cache_subfolder = "hotssea")
+                             cache_subfolder = "hotssea",
+                             timeout_value = timeout_value)
     }
 
     parallel::stopCluster(cl = my_cluster)
@@ -121,7 +127,8 @@ hotssea_all_variables <- function(variables = c("temperature", "salinity"),
       data_name <- hotssea_data_vec[i]
       get_zenodo_data(data_name,
                       force = TRUE,
-                      cache_subfolder = "hotssea")
+                      cache_subfolder = "hotssea",
+                      timeout_value = timeout_value)
     }
   }
 

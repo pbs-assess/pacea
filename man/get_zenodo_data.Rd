@@ -10,7 +10,8 @@ get_zenodo_data(
   ask = interactive(),
   force = FALSE,
   version = "01",
-  cache_subfolder = "hotssea"
+  cache_subfolder = "hotssea",
+  timeout_value = 7200
 )
 }
 \arguments{
@@ -30,6 +31,9 @@ appended at the end of the filenames).}
 `paste0(pacea::pacea_cache(), cache_subfolder)` will be
 searched first for the desired model output file, and if the no file is
 there then it will be downloaded from Zenodo into this directory.}
+
+\item{timeout_value}{numeric Timeout (seconds) for downloading a file from
+the internet. Gets used in [zen4R::download_zenodo()].}
 }
 \value{
 Data object requested
