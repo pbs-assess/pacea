@@ -218,3 +218,12 @@ st_area(overlap_b_hotssea_poly) %>% sum()
 # Not exactly the same, second is larger which makes sense.
 
 # To get geometry for full results I had to do b[1, ]$geometry[[1]]
+
+
+# Checking full BCCM results before hosting on Zenodo and then downloading to
+# the cache:
+
+load(paste0(pacea_data_dir,
+            "../data-bccm-full/bccm_primaryproduction_full_01.rds"))
+plot(bccm_primaryproduction_full, months = c("April", "May", "June"))
+plot(bccm_primaryproduction_full, months = c(1:12))

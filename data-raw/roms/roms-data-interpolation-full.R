@@ -5,6 +5,16 @@
 # ROMs data from Angelina Pena - full bottom and surface variables that Andy requested
 
 # Run with option <- 1 then option <- 2.
+# 1/11/24 overnight:
+# Full option 1 took 10 hours to do all 20 files. Using 6 cores. pH files all
+# got made last, but each depth range is its own file (so pH should have got
+# made with the others), so I'm thinking memory got too full and those got
+# reserved to the end. So if do again maybe just do 4 cores. CPUE was maxed out,
+# and memory still 12Gb used after it finished (I thought things were cleaned
+# up). Ah, each R session is still open, I forget to add the closing parallel thing.
+# Full option 2:
+# Only two files, think took about 2 hours each. Not sure why not parallel though.
+
 # From hotssea-data-interpolation.R, think these ideas still hold, but sticking
 # with filename stuff that Travis did for first bccm variables.
 # Filenames that we save to (as .rds in pacea-data/data-bccm-full/) do need to match what we're calling them in pacea, but can have
@@ -71,8 +81,8 @@ tbc.line <- st_cast(tbc, "MULTILINESTRING")
 #####
 # PARAMETERS
 
-# Do OPTION 1 or 2. Then re-run (I think).
-option <- 1
+# Do OPTION 1 or 2. Then re-run.
+option <- 2
 
 # OPTION 1 FOR LOOPING THROUGH VARIABLES FOR EACH DEPTH
 # loop variables
@@ -148,7 +158,7 @@ rm(snc_dat, snc_lon, snc_lat, svar, sdat)
 #####
 
 # Loop through all files, saving to an .rds (so nothing output from each loop)
-foreach(i = 1:2) %dopar% {    # Change 2 to length(nc_filenames) once it works TODO
+foreach(i = 1:length(nc_filenames)) %dopar% {
   this_filename <- nc_filenames[i]
 
   devtools::load_all()                 # Else get error in not finding %>%
@@ -204,12 +214,12 @@ foreach(i = 1:2) %dopar% {    # Change 2 to length(nc_filenames) once it works T
 
     # Took maybe an hour for temp, avg0to40m. Should be the same for any though I
     # think. Think it's doing over the whole grid, even interpolating over land. For
-    # which there isn't tons.
+    # which there isn't tons. 200,000 cellsize took about 4 mins for each
+    # complete file.
     output2_full <- point2rast(data = tdat_sf,
                                spatobj = bccm_hotssea_poly,
                                loc = llnames,
-                               cellsize = 200000,  # TODO change back to 2000,
-                                        # just testing loops
+                               cellsize = 2000,
                                nnmax = nmax,
                                as = "SpatRast")
     ## > output2_full
@@ -352,3 +362,5 @@ foreach(i = 1:2) %dopar% {    # Change 2 to length(nc_filenames) once it works T
   }
   ncdf4::nc_close(nc_dat)
 }
+
+parallel::stopCluster(cl = my_cluster)
