@@ -42,7 +42,11 @@
 #' @param update Logical. Would you like to check for a newer version of the layer?
 #' @param ask Logical. Should the user be asked before downloading the data to local cache? Defaults to the value of interactive().
 #' @param force Logical. Should download of data be forced? Overrides `ask` argument if TRUE.
-#'
+#' @param version character Version number of data as saved on Zenodo. Only
+#'   currently works for "01" as that's all that is currently available.
+#' @param cache_subfolder character. Subfolder to put or look for the objects;
+#'   defaults to `hotssea` and it is best to stick with this. The objects will
+#'   be put in your `paste0(pacea::pacea_cache(), cache_subfolder)` directory.
 #' @return `sf` data object requested.
 #' @export
 #'
