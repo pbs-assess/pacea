@@ -69,7 +69,7 @@ get_zenodo_data <- function(layer,
   }
 
   # Change subfolder DOI if doing bccm_full
-  if(grep("bccm", layer) & grep("full", layer)){
+  if(grepl("bccm", layer) & grepl("full", layer)){
     cache_subfolder = "bccm_full"
     zenodo_doi = "10.5281/zenodo.14031460"
   }
