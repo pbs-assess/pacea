@@ -5,6 +5,9 @@
 # Andrea or Kelsey. If they match then should be good.
 # Run through this line-by-line. Went through with Andrea and looks good.
 
+# Also checking some other things at the end; once done then means can carry on
+# to next step, just keeping code here for possible later needs.
+
 # To chat with Andrea:
 # recap: hotssea is SoG, bccm is outer waters, there's a slight overlap. Want
 # the grids to line up. Travis didn't predefine a grid (for the original bccm),
@@ -155,7 +158,7 @@ plot.pacea_st(b_to_plot, years = "1993", month = "Jan")
 # Woo-hoo, the squares' locations match up. As desired.
 
 HERE - keep the rest below for reference and learning, but the above is what we
-need. So stop here.
+need. So stop here. Though the code at the end was used to check a few things
 
 # Having done the stuff below, and then looking at an sf vignette, think this
 # might be the way to go, but turns out not.
@@ -221,9 +224,22 @@ st_area(overlap_b_hotssea_poly) %>% sum()
 
 
 # Checking full BCCM results before hosting on Zenodo and then downloading to
-# the cache:
-
+# the cache, look good:
 load(paste0(pacea_data_dir,
             "../data-bccm-full/bccm_primaryproduction_full_01.rds"))
 plot(bccm_primaryproduction_full, months = c("April", "May", "June"))
 plot(bccm_primaryproduction_full, months = c(1:12))
+
+# Checking the full BCCM result I did once (and used above to check the
+# overlap), with the version I did for all the variables in the parallel loop.
+
+# Loaded in b above, then compare with new b from parallel. They match, which is
+# good confirmation.
+load(paste0(pacea_data_dir,
+            "../data-bccm-full/bccm_avg0to40m_temperature_full_01.rds"))
+b_parallel_one_res <- bccm_avg0to40m_temperature_full[, 1]   # Just January 1993
+sf::st_equals(b_one_res, b_parallel_one_res)
+
+plot.pacea_st(b_one_res, years = "1993", month = "Jan")
+windows()
+plot.pacea_st(b_parallel_one_res, years = "1993", month = "Jan")
