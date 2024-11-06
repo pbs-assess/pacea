@@ -18,7 +18,7 @@ jobs:
       PKG_SYSREQS: false
       - name: dependencies on Linux
         if: runner.os == 'Linux'
-        run: sudo apt-get install -y make libicu-dev libxml2-dev libssl-dev pandoc librdf0-dev libnode-dev libcurl4-gnutls-dev
+        run: sudo aptitude install -y make libicu-dev libxml2-dev libssl-dev pandoc librdf0-dev libnode-dev libcurl4-gnutls-dev
     steps:
       - uses: actions/checkout@v4
 
