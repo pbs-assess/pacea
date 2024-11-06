@@ -46,28 +46,29 @@
 #' \code{*depth*} must be replaced by one of the following depth categories:
 #'
 #' \describe{
-#'   \code{surface}{sea surface}\cr
-#'   \code{avg0to30m}{average between 0m and 30m depth}\cr
-#'   \code{avg30to150m}{average between 30m and 150m depth}\cr
-#'   \code{150toBot} {average between 150m depth and sea bottom}\cr
-#'   \code{bottom}{sea bottom}
+#'   \code{surface}{sea surface, the top model cell at that location}\cr
+#'   \code{avg0to30m}{depth-integrated average over 0-30 m}\cr
+#'   \code{avg30to150m}{depth-integrated average over 30-150 m}\cr
+#'   \code{150toBot} {depth-integrated from 150 m to the bottom cell}\cr
+#'   \code{bottom}{sea bottom, the bottom model cell at that location}
 #' }
 #'
-#' #' \code{*statistics*} must be replaced by one of the following statistics:
-#'TODO HERE
+#' #' \code{*statistic*} must be replaced by one of the following statistics:
+#'
 #' \describe{
-#'   \code{min}{sea bottom}\cr
-#'   \code{mean}{average between 0m and 40m depth}\cr
-#'   \code{max}{average between 40m and 100m depth}\cr
-#'   \code{std} {:  average between 100m depth and sea bottom}\cr
+#'   \code{min}{minimum daily mean over the month}\cr
+#'   \code{mean}{mean daily mean over the month}\cr
+#'   \code{max}{maximum daily mean over the month}\cr
+#'   \code{std} {standard deviation of the daily means for the month}\cr
 #' }
 #'
 #' The five permissable depth values for four types of statistics for both
 #' temperature and salinity yield the 40 different combinations.
 #' For example, `hotssea_avg0to30m_temperature_max()` refers to the mean (over
 #' the top 30 m) of each modelled depths' maximum (over the month) daily mean
-#' temperature. See the hotssea vignette for a more detailed explanation of these
-#' calculations.
+#' temperature. See the hotssea vignette for explicit explanation of these
+#' calculations; in particular the `*statistic* is calculated for all cells
+#' before the depth averaging is performed.
 #'
 #' @format A simple features dataframe.
 #'
@@ -79,14 +80,18 @@
 #' @param cache_subfolder character. Subfolder to put or look for the objects;
 #'   defaults to `hotssea` and it is best to stick with this. The objects will
 #'   be put in your `paste0(pacea::pacea_cache(), cache_subfolder)` directory.
+#'
 #' @return `sf` data object requested.
 #' @export
 #'
-#' @source Peña, M.A., Fine, I. and Callendar, W. 2019. Interannual variability in primary production and shelf-offshore transport of nutrients along the northeast Pacific Ocean margin. Deep-Sea Research II, doi:10.1016/j.dsr2.2019.104637.
+#' @source Oldford, G.L., Jarníková, T., Christensen, V., and Dunphy, M. (in review).
+#' HOTSSea v1: a NEMO-based physical Hindcast of the Salish Sea (1980–2018)
+#' supporting ecosystem model development. Preprint. https://doi.org/10.5194/gmd-2024-58
 #'
 #' @examples
 #' \dontrun{
-#' my_data <- hotssea_bottom_oxygen()
+#' h <- hotssea_bottom_salinity_min()
+#' plot(h)
 #' }
 hotssea_surface_salinity_min <- function(update = FALSE, ask = interactive(),
                                          force = FALSE, version = "01",

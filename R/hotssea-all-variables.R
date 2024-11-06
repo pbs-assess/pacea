@@ -46,6 +46,10 @@
 #'   directory.
 #' @author Andrew Edwards and Travis Tai
 #' @export
+#'
+#' @source Oldford, G.L., Jarníková, T., Christensen, V., and Dunphy, M. (in review).
+#' HOTSSea v1: a NEMO-based physical Hindcast of the Salish Sea (1980–2018)
+#' supporting ecosystem model development. Preprint. https://doi.org/10.5194/gmd-2024-58
 #' @examples
 #' \dontrun{
 #' hotssea_all_variables()
