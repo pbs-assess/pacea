@@ -1,10 +1,10 @@
-#' BCCM model output for the full domain of the model (not just within Canada's
+#' Use BCCM model output for the full domain of the model (not just within Canada's
 #' Exclusive Economic Zone).
 #'
 #' @description
 #' Loading and/or downloading British Columbia Continental Margin (BCCM) model
 #'   outputs for the full domain of the model (down into US waters) to local
-#'   drive. See the functions without `_full` get only the values in Canada's Exclusive
+#'   drive. Use the functions without `_full` get only the values in Canada's Exclusive
 #'   Economic Zone. See the two BCCM vignettes.
 #'
 #' To download all BCCM data for the full domain, use the function
@@ -17,14 +17,16 @@
 #'  of the BCCM model data over its full domain, on a 2 km x 2 km grid. Each
 #'  file is around 120 Mb, but only takes a couple of minutes (on a home
 #'  network, may be slower from a work network because of firewalls). If a
-#'  variable has already been downloaded, the function will load data from
+#'  variable has already been downloaded, the function will simply load data from
 #'  your `paste0(pacea_cache(), "/bccm_full"` folder into your local R environment.
 #'
 #' The 22 objects available are desribed below as their respective functions;
 #'   the equivalent functions without `_full` are for the BCCM outputs
 #'   restricted to Canada's EEZ and on a coarser grid for the offshore. The
 #'   objects obtained here are stored on Zenodo, with [get_zenodo_data()]
-#'   automatically taking care of the DOI address.
+#'   automatically taking care of the DOI address for the one-time download.
+#'
+#' If you get an error see [bccm_all_variables_full()].
 #'
 #' \describe{
 #'   \code{bccm_*depth*_oxygen_full()} Dissolved oxygen measured as mmol-oxygen m^-3\cr

@@ -1,16 +1,14 @@
-#' Get large data products from Zenodo
+#' Get large data products from Zenodo (if the file is not already cached locally)
 #'
-#' Assumes version `_01` for now. Have to adapt code if version gets updated,
-#' but it's quite fiddly (though Travis did for BCCM).  TODO
 #'
-#' TODO update if get same function working for bccm_full.
-#'
-#' HOTSSea model results have been wrangled from the original results provided
-#'  by Greig Oldford (see data-raw/hotssea). These are too big to be included in
-#'  pacea as standard data objects, and so have been archived on Zenodo. The
-#'  function downloads an object and saves it in on the user's computer. It is
-#'  automatically called from TODO, and is not really needed separately by
-#'  users. See that for usage.
+#' HOTSSea and full BCCM model results have been wrangled from the original
+#'  results and are hosted on Zenodo due to large filesizes. This function
+#'  downloads an individual file
+#'  and puts it in the appropriate cache on a user's local computer. Users
+#'  should use the functions that
+#'  call this, see [hotssea_all_variables()] and [bccm_all_variables_full()],
+#'  and also the help for invidual functions such as
+#'  [hotssea_surface_salinity_min()] and [bccm_bottom_temperature_full()].
 #'
 #' Based on [get_bccm_data()], but getting from Zenodo not `pacea-data/`.
 #'

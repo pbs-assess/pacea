@@ -1,41 +1,73 @@
-#' HOTSSea model output
+#' Load or download the HOTSSea model output
 #'
-#' @description
-#' Loading and/or downloading the HOTSsea physical hindcast of the Salish Sea
-#'   model output to local drive.
+#' Loading and/or downloading model output from HOTSsea physical hindcast of the
+#' Salish Sea model. Loads it into your R environment from your local cache, and if
+#' it has not been previously downloaded will first download it from Zenodo
+#' into your local cache.
+#' To download all HOTSsea model output in one go (recommended), first use the
+#'   function [hotssea_all_variables()]. See the hotssea vignette for further explanations.
 #'
-#' To download all HOTSsea data, use the function `hotssea_all_variables()`. See help page for details (`?hotssea_all_variables`).
+#' The Hindcast of the Salish Sea (HOTSSea) is a physical ocean model that
+#' recreates conditions throughout the Salish Sea from 1980 to 2018, filling in
+#' the gaps in patchy measurements Oldford et al., (in review). The model
+#' predicts physical ocean properties with sufficient accuracy to be useful for
+#' a variety of applications. It corroborates observed ocean temperature trends
+#' and can examine areas with few observations. Results indicate that some
+#' seasons and areas are warming faster than others. HOTSSea was developed using
+#' the Nucleus for European Modelling of the Ocean (NEMO)
+#' engine, and temperature and salinty outputs are included in pacea (from version
+#'  1 of HOTSSea).
 #'
-#' @details
+#' The HOTSSea outputs in pacea are adapted from results
+#' provided by Greig Oldford (Fisheries and Oceans Canada). For model details see
+#' Oldford et al., (in review), which should
+#' be read and cited if you use the results, and Greig and Andrew Edwards
+#' should be consulted for any clarifications and uses of the results.
 #'
-#' TODO edit all this for hotssea
-#'
-#' TODO The following functions serve to download specific individual ocean variables of the BCCM model data. Use `bccm_all_variables()` if you would like to download all variables - see help file `?bccm_all_variables` for details. If a variable has already been downloaded, the function will load data from `pacea_cache()` folder into user's local R environment.
-#'
-#' TODO The British Columbia continental margin (BCCM) model is an ocean circulation-biogeochemical model implementation of the regional ocean modelling system (ROMS). It has a horizontal resolution of 3km x 3km and a vertical discretization based on bathymetry of 42 depth levels increasing in resolution near the surface. These modelled output data were provided by Angelica Pena and the data is further detailed in Pena et al. (2019).
-#'
-#' TODOBCCM data were interpolated to a 2km x 2km inshore grid and a 6km x 6km offshore grid. Data provided are monthly means that span from 1993-2019. Each column represents a distinct 'year_month' combination (e.g. 2010_4).
-#'
-#'
+#' The following 40 functions serve to download specific individual ocean
+#' calculations related to temperature or salinity from the HOTSSea model. If a
+#' variable has already been downloaded, the function will load data from the
+#' `hotssea` subfolder in the user's
+#' `pacea_cache()` folder into user's local R environment. Each file is around
+#' 3-9 Mb, but should not take long to download.
+##'
+#' The 40 variables available are desribed below as their respective
+#' functions. The variables are listed in the object `hotssea_data`.
+#' The variables are stored on Zenodo, with [get_zenodo_data()]
+#' automatically taking care of the DOI address for the one-time download.
+#'#'
+#' #'
 #' \describe{
-#'   \code{bccm_*depth*_oxygen()} Dissolved oxygen measured as mmol-oxygen m^-3\cr
-#'   \code{bccm_*depth*_salinity()} Salinity in ppt\cr
-#'   \code{bccm_*depth*_temperature()} Temperature in oC\cr
-#'   \code{bccm_*depth*_ph()} pH\cr
-#'   \code{bccm_phytoplankton()} Total phytoplankton biomass in mmol-nitrogen m^-2\cr
-#'   \code{bccm_primaryproduction()} Total primary production in gC m^-2 d^-1
+#'   \code{hotssea_*depth*_temperature()_*statistic*} Temperature in oC\cr
+#'   \code{hotssea_*depth*_salinity()} Salinity in PSU\cr
 #' }
 #'
 #' NOTE:\cr
 #' \code{*depth*} must be replaced by one of the following depth categories:
 #'
 #' \describe{
-#'   \code{bottom}{sea bottom}\cr
-#'   \code{0to40}{average between 0m and 40m depth}\cr
-#'   \code{40to100}{average between 40m and 100m depth}\cr
-#'   \code{100tobot} {:  average between 100m depth and sea bottom}\cr
-#'   \code{surface}{sea surface}
+#'   \code{surface}{sea surface}\cr
+#'   \code{avg0to30m}{average between 0m and 30m depth}\cr
+#'   \code{avg30to150m}{average between 30m and 150m depth}\cr
+#'   \code{150toBot} {average between 150m depth and sea bottom}\cr
+#'   \code{bottom}{sea bottom}
 #' }
+#'
+#' #' \code{*statistics*} must be replaced by one of the following statistics:
+#'TODO HERE
+#' \describe{
+#'   \code{min}{sea bottom}\cr
+#'   \code{mean}{average between 0m and 40m depth}\cr
+#'   \code{max}{average between 40m and 100m depth}\cr
+#'   \code{std} {:  average between 100m depth and sea bottom}\cr
+#' }
+#'
+#' The five permissable depth values for four types of statistics for both
+#' temperature and salinity yield the 40 different combinations.
+#' For example, `hotssea_avg0to30m_temperature_max()` refers to the mean (over
+#' the top 30 m) of each modelled depths' maximum (over the month) daily mean
+#' temperature. See the hotssea vignette for a more detailed explanation of these
+#' calculations.
 #'
 #' @format A simple features dataframe.
 #'
@@ -54,7 +86,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' my_data <- bccm_bottom_oxygen()
+#' my_data <- hotssea_bottom_oxygen()
 #' }
 hotssea_surface_salinity_min <- function(update = FALSE, ask = interactive(),
                                          force = FALSE, version = "01",

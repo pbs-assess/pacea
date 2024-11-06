@@ -1,36 +1,46 @@
 #' Download all 22 BCCM full model results from Zenodo to a local drive.
 #'
 #' This downloads (in parallel by default) all 22 BCCM full model results from
-#' https://zenodo.org/records/14031460 to your local folder given by
-#' `paste0(pacea_cache(), "/bccm_full")`. Each file is around 120 Mb, though
+#' https://zenodo.org/records/14031460 to your local cache directory given by
+#' `paste0(pacea_cache(), "/bccm_full")`. Each file is around 120 Mb, and only
+#' took about two minutes each on a home network (and since was running on 6
+#' parallel cores, it all took less than 10 minutes. Any files that are already
+#' present in your cache directory are not re-downloaded. You can look at your
+#' cache directory to see progress (files should gradually appear).
 #'
-#' # TODO carry on from here. Might only be slow on DFO network.3-9Mb, and so downloading them all may
-#' take a few minutes or possibly longer. You can check your cache
-#' folder for progress to see them appearing there. The download is done in
-#' parallel (by default). Speed depends on network speed and number of cores.
+#' The download is done in parallel (by default). Speed depends on network speed
+#' and number of cores.
 #'
-#' TODO Either leave running overnight, or set `variables` to "temperature" or
-#' "salinity" if you only want one of those types of model output. Or you can just download the individual files you definitely need, see
-#' [?hotssea_bottom_temperature_max]. Remember the downloading is a one-time
-#' exercise (hence it's desirable to get all files at once) and then
-#' you will have the files locally for all eternity (ish).
+#' You can download individual files, see [bccm_bottom_oxygen_full()], but
+#' since the downloading is a one-time exercise it's likely desirable to just get
+#' them all at once, providing you have the disk space (around 2.4 Gb).
 #'
-#' If this function fails, you can try rerunning it; it will not re-download any
+#' If you get an error saying `Windows Defender Firewall has blocked some features of
+#'   this app` when running from RStudio, try running from just R. You may as
+#'   well try downloading all variables in one go with
+#'   [bccm_all_variables_full()], then you will be fine as they will all then be
+#'   cached on your machine. You can also try, in the
+#'   command line in RStudio, the command
+#'   `system2("R -e 'library(pacea); bccm_all_variables_full()'")`. If that does
+#'   not work you will have to just run R and do `library(pacea);
+#'   bccm_all_variables_full()`.
+#'
+#' If this function fails with a different error, you can try rerunning it; it will not re-download any
 #' that were successful and this worked for someone testing it.
-#' Else you could then also try `hotssea_all_variables(run_parallel = FALSE)`, or typing `options(timeout = 1200)`
-#' (or higher) especially if running from the Pacific Biological Station. This
-#' function is particularly hard to test independently under different scenarios. An alternative if you are at
-#' the Pacific Biological Station is to get Andy to copy the files to an
-#' external drive.
+#' Else you could then also try `hotssea_all_variables(run_parallel = FALSE)`,
+#' or increasing the `timeout` option even higher, especially if running from
+#' the Pacific Biological Station. This
+#' function is particularly hard to test independently under different
+#' scenarios.
 #'
-#' Or you can just download them manually (download all) from
-#' the Zenodo site given above) and put them in `paste0(pacea_cache(), "/hotssea")`.
+#' Or you can always just download them manually (download all) from
+#' the Zenodo site given above) and put them in `paste0(pacea_cache(), "/bccm_full")`.
 #'
-#' Type `hotssea_data` to view the full list of available variables. See help
-#' files for specific variables for more details on HOTSSea model results, e.g.
-#' [?hotssea_bottom_temperature_max].
+#' Type `bccm_data` to view the full list of available variables. See help
+#' files for specific variables for more details on BCCM model results, e.g.
+#' [bccm_bottom_temperature_full()].
 #'
-#' Also see the hotssea vignette.
+#' Also see the two BCCM vignettes.
 #'
 #' @param variables character TODO Either `c("temperature", "salinity")`,
 #'   `"temperature"`, or `"salinity"`, describing what variables to
@@ -53,32 +63,15 @@
 #' bccm_all_variables_full()
 #' plot(bccm_avg100mtoBot_temperature_full())
 #' }
-bccm_all_variables_full <- function(variables = c("temperature", "salinity"),
-                                    run_parallel = TRUE,
+bccm_all_variables_full <- function(run_parallel = TRUE,
                                     timeout_value = 14400) {
-
-  # TODO maybe not needed if speed is fast
-  stopifnot(variables %in% c("temperature", "salinity") |
-            variables == c("temperature", "salinity"))
 
   cache_dir <- paste0(pacea::pacea_cache(),
                       "/bccm_full")
 
   bccm_full_data_vec <- pacea::bccm_data_full$data_name  # Can get reduced in next loop
 
-  # TODO remove if remove above TODO. Just select temperature or salinity if specified
-  ## if(length(variables) == 1){
-  ##   if(variables == "temperature"){
-  ##     bccm_full_data_vec <- bccm_full_data_vec[grep("temperature",
-  ##                                               bccm_full_data_vec)]
-  ##   } else {
-  ##     bccm_full_data_vec <- bccm_full_data_vec[grep("salinity",
-  ##                                               bccm_full_data_vec)]
-  ##   }
-  ## }
-
-  ans <-
-                   ask(paste("Downloading all 22 bccm_full files (around 120 Mb each) may take a TODO few minutes (though it is hard to estimate). Please read the help file `?bccm_all_variables_full` for faster options or solutions if this fails. Files will be downloaded to  directory:",
+  ans <- ask(paste("Downloading all 22 bccm_full files (around 120 Mb each) may take a TODO few minutes (though it is hard to estimate). Please read the help file `?bccm_all_variables_full` for faster options or solutions if this fails. Files will be downloaded to  directory:",
                    cache_dir,
                    "Would you like to continue?", sep = "\n"))
 
@@ -94,7 +87,7 @@ bccm_all_variables_full <- function(variables = c("temperature", "salinity"),
   if(.Platform$OS.type != "windows" & run_parallel){
     warning(paste0("The parallel code in `bccm_all_variables_full()` has not been fully tested on non-Windows machines. If it does not work (you don't see any files being downloaded into ",
                    cache_dir,
-                   " after a 'few' hours, then retry with `run_parallel = FALSE`"))
+                   " after say 20 minutes, then retry with `run_parallel = FALSE`, and see the help."))
   }
 
   if(run_parallel){
