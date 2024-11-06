@@ -222,7 +222,7 @@ To inspect the full time series we can show every available month in a huge pane
 following figure shows, for each month from 1980 to 2018,
 the depth-integrated mean(over the top 30 m) of each modelled depths' maximum (over
 the month) daily mean temperature.
-```{r, hotsseaplot, fig.height = 65, fig.width = 18}
+```{r, hotsseaplot, fig.height = 65, fig.width = 20}
 plot(hot, months = 1:12,
      years = 1980:2018,
      eez = FALSE)

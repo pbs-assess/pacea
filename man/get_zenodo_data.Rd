@@ -2,7 +2,7 @@
 % Please edit documentation in R/get-zenodo-data.R
 \name{get_zenodo_data}
 \alias{get_zenodo_data}
-\title{Get large data products from Zenodo}
+\title{Get large data products from Zenodo (if the file is not already cached locally)}
 \usage{
 get_zenodo_data(
   layer,
@@ -10,7 +10,8 @@ get_zenodo_data(
   ask = interactive(),
   force = FALSE,
   version = "01",
-  cache_subfolder = "hotssea",
+  cache_subfolder,
+  zenodo_doi = "10.5281/zenodo.14019141",
   timeout_value = 7200
 )
 }
@@ -30,7 +31,13 @@ appended at the end of the filenames).}
 \item{cache_subfolder}{Character. The folder
 `paste0(pacea::pacea_cache(), cache_subfolder)` will be
 searched first for the desired model output file, and if the no file is
-there then it will be downloaded from Zenodo into this directory.}
+there then it will be downloaded from Zenodo into this directory. Is set to
+`hotssea` but gets automatically changed to `bccm_full` if `layer`
+contains `bccm` and `full`.}
+
+\item{zenodo_doi}{character. The DOI of the zenodo record to download files
+from. Default is for `hotssea` but gets automatically changed to the DOI
+for `bccm_full` if `layer` contains `bccm` and `full`.}
 
 \item{timeout_value}{numeric Timeout (seconds) for downloading a file from
 the internet. Gets used in [zen4R::download_zenodo()].}
@@ -39,25 +46,26 @@ the internet. Gets used in [zen4R::download_zenodo()].}
 Data object requested
 }
 \description{
-Assumes version `_01` for now. Have to adapt code if version gets updated,
-but it's quite fiddly (though Travis did for BCCM).  TODO
+HOTSSea and full BCCM model results have been wrangled from the original
+ results and are hosted on Zenodo due to large filesizes. This function
+ downloads an individual file
+ and puts it in the appropriate cache on a user's local computer. Users
+ should use the functions that
+ call this, see [hotssea_all_variables()] and [bccm_all_variables_full()],
+ and also the help for invidual functions such as
+ [hotssea_surface_salinity_min()] and [bccm_bottom_temperature_full()].
 }
 \details{
-TODO update if get same function working for bccm_full.
-
-HOTSSea model results have been wrangled from the original results provided
- by Greig Oldford (see data-raw/hotssea). These are too big to be included in
- pacea as standard data objects, and so have been archived on Zenodo. The
- function downloads an object and saves it in on the user's computer. It is
- automatically called from TODO, and is not really needed separately by
- users. See that for usage.
-
 Based on [get_bccm_data()], but getting from Zenodo not `pacea-data/`.
 }
 \examples{
 \dontrun{
-tt <- get_zenodo_data("hotssea_surface_temperature_max")
-plot(tt)
+h <- get_zenodo_data("hotssea_surface_temperature_max")
+plot(h)
+
+b <- get_zenodo_data("bccm_bottom_oxygen_full")   # Only took 20 seconds on
+  home network, for a 108Mb file.
+plot(b)
 }
 
 }
