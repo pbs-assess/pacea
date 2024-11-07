@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,70,23
+/pbs-assess/pacea/issues,18,2
+/pbs-assess/pacea/commits/dev-andy,15,2
+/pbs-assess/pacea/issues/57,13,5
+/pbs-assess/pacea/issues/62,6,2
+/pbs-assess/pacea/tree/main,5,4
+/pbs-assess/pacea/issues/58,5,2
+/pbs-assess/pacea/tree/main/.github/workflows,5,2
+/pbs-assess/pacea/blob/main/data-raw/depth/depth.R,4,3
+/pbs-assess/pacea/tree/main/data-raw,4,3
