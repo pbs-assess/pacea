@@ -968,7 +968,11 @@
 
 #' BCCM data layers
 #'
-#' List of available BCCM data layers for download.
+#' List of available BCCM data layers for download. `_full` means layers over
+#' the full original domain (extending down into US waters) and on a 2 km x 2 km
+#' grid everywhere. Without `_full` means the layers restricted to Canada's
+#' Exclusive Economic Zone, on a 2 km x 2 km grid inshore, and 6 km x 6km
+#' offshore. See the two vignettes (rendered on the GitHub site) for details.
 #'
 #' @format table
 #' @examples
@@ -979,6 +983,9 @@
 #' @source Pena et al., 2019.
 #' Generated from running `data-raw/data-key/data-list.R`
 "bccm_data"
+
+#' @rdname bccm_data
+"bccm_data_full"
 
 #' Optimal interpolation SST
 #'

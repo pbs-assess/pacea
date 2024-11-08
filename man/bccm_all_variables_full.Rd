@@ -15,11 +15,6 @@ the internet. Gets used by [zen4R::download_zenodo()] via
 [get_zenodo_data()]. Try increasing if get an Error saying Timeout has been
 reached. If it says `Timeout of 60 seconds` then `timeout_value` is not
 getting used (the default is 4 hours). Maybe try the manual download option above.}
-
-\item{variables}{character TODO Either `c("temperature", "salinity")`,
-`"temperature"`, or `"salinity"`, describing what variables to
-download. Given the potentially long download times, some people may just
-want temperature or salinity only.}
 }
 \value{
 downloaded files to `paste0(pacea_cache(), "/bccm_full")`

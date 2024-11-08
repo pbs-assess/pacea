@@ -43,7 +43,7 @@ folder for progress to see them appearing there. The download is done in
 parallel (by default). Speed depends on network speed and number of cores.
 }
 \details{
-TODO Either leave running overnight, or set `variables` to "temperature" or
+You can or set `variables` to "temperature" or
 "salinity" if you only want one of those types of model output. Or you can just download the individual files you definitely need, see
 [?hotssea_bottom_temperature_max]. Remember the downloading is a one-time
 exercise (hence it's desirable to get all files at once) and then
@@ -54,8 +54,8 @@ that were successful and this worked for someone testing it.
 Else you could then also try `hotssea_all_variables(run_parallel = FALSE)`, or typing `options(timeout = 1200)`
 (or higher) especially if running from the Pacific Biological Station. This
 function is particularly hard to test independently under different scenarios. An alternative if you are at
-the Pacific Biological Station is to get Andy to copy the files to an
-external drive.
+the Pacific Biological Station is the 1990s solution of getting Andy to copy
+the files to an external drive for you.
 
 Or you can just download them manually (download all) from
 the Zenodo site given above) and put them in `paste0(pacea_cache(), "/hotssea")`.

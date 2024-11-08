@@ -3,9 +3,12 @@
 \docType{data}
 \name{bccm_data}
 \alias{bccm_data}
+\alias{bccm_data_full}
 \title{BCCM data layers}
 \format{
 table
+
+An object of class \code{data.frame} with 22 rows and 1 columns.
 }
 \source{
 Pena et al., 2019.
@@ -13,9 +16,15 @@ Generated from running `data-raw/data-key/data-list.R`
 }
 \usage{
 bccm_data
+
+bccm_data_full
 }
 \description{
-List of available BCCM data layers for download.
+List of available BCCM data layers for download. `_full` means layers over
+the full original domain (extending down into US waters) and on a 2 km x 2 km
+grid everywhere. Without `_full` means the layers restricted to Canada's
+Exclusive Economic Zone, on a 2 km x 2 km grid inshore, and 6 km x 6km
+offshore. See the two vignettes (rendered on the GitHub site) for details.
 }
 \examples{
 \dontrun{

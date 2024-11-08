@@ -42,10 +42,6 @@
 #'
 #' Also see the two BCCM vignettes.
 #'
-#' @param variables character TODO Either `c("temperature", "salinity")`,
-#'   `"temperature"`, or `"salinity"`, describing what variables to
-#'   download. Given the potentially long download times, some people may just
-#'   want temperature or salinity only.
 #' @param run_parallel logical Run the downloads in parallel using
 #'   `parallel::foreach()`.
 #' @param timeout_value numeric Timeout (seconds) for downloading a single file from
@@ -71,7 +67,8 @@ bccm_all_variables_full <- function(run_parallel = TRUE,
 
   bccm_full_data_vec <- pacea::bccm_data_full$data_name  # Can get reduced in next loop
 
-  ans <- ask(paste("Downloading all 22 bccm_full files (around 120 Mb each) may take a TODO few minutes (though it is hard to estimate). Please read the help file `?bccm_all_variables_full` for faster options or solutions if this fails. Files will be downloaded to  directory:",
+  ans <-
+                   ask(paste("Downloading all 22 bccm_full files (around 120 Mb each), may take around ten minutes depending on connection speed (seems faster on a home network). Please read the help file `?bccm_all_variables_full` for faster options or solutions if this fails. Files will be downloaded to  directory:",
                    cache_dir,
                    "Would you like to continue?", sep = "\n"))
 
