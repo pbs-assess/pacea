@@ -2,22 +2,22 @@
 
 data-raw/lighthouses/*
 ideas/*
-
+notes/*
+vignettes/
+data-raw/*
+data-raw/pacific_marine_habitat_classes/*
 R/older-functions/*
 data/older-data/*
+talks/*
 
 ^.*\.Rproj$
 ^\.Rproj\.user$
-
-data-raw/pacific_marine_habitat_classes/*
-data-raw/*
 
 R/plot-buoy-sst.R
 ^R/plot-buoy-sst\.R$
 R/plot-buoy-sst*.R
 ^R-temp/$
 
-notes/*
+
 ^README\.Rmd$
-vignettes/
 ^LICENSE\.md$
