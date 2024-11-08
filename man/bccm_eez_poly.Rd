@@ -5,6 +5,8 @@
 \alias{bccm_eez_poly}
 \alias{inshore_poly}
 \alias{offshore_poly}
+\alias{hotssea_poly}
+\alias{bccm_hotssea_poly}
 \title{Polygons masking layers for BC waters}
 \format{
 A simple features polygon dataframe.
@@ -12,14 +14,21 @@ A simple features polygon dataframe.
   \item{bccm_eez_poly}{BC EEZ boundary witha 10km buffer and clipped with BCCM data output boundary}
   \item{inshore_poly}{inshore (continental shelf) region of bccm_eez_poly}
   \item{offshore_poly}{offshore (deep seafloor) region of bccm_eez_poly}
+  \item{hotssea_poly}{HOTSSea domain}
+  \item{bccm_hotssea_poly}{combined full BCCM and HOTSSea domains}
 }
+
+An object of class \code{sf} (inherits from \code{data.frame}) with 1 rows and 1 columns.
+
+An object of class \code{sf} (inherits from \code{data.frame}) with 1 rows and 1 columns.
 
 An object of class \code{sf} (inherits from \code{data.frame}) with 1 rows and 1 columns.
 
 An object of class \code{sf} (inherits from \code{data.frame}) with 1 rows and 1 columns.
 }
 \source{
-Generated from running `data-raw/grids/make-mask-layer.R`.
+Generated from running `data-raw/grids/make-mask-layer.R`,
+  `..../make-mask-layer-hotssea.R`, or `..../make-mask-layer-full.R`
 }
 \usage{
 bccm_eez_poly
@@ -27,9 +36,14 @@ bccm_eez_poly
 inshore_poly
 
 offshore_poly
+
+hotssea_poly
+
+bccm_hotssea_poly
 }
 \description{
-Simple features objects of BCCM ROMS data, inshore, and offshore regions of BC Exclusive Economic Zone (EEZ) waters.
+Simple features objects of BCCM ROMS data, inshore, and offshore regions of
+BC Exclusive Economic Zone (EEZ) waters, and HOTSSea domain.
 }
 \details{
 Bathymetric classifications were used to derive a line to separate continental shelf (inshore) and deep sea regions. Includes a 10km buffer around the EEZ and limited by BCCM  data coverage.
@@ -42,9 +56,13 @@ GIS hub Pacific Marine Habitat Classes - obtained from: https://www.gis-hub.ca/d
 bccm_eez_poly
 inshore_poly
 offshore_poly
+hotssea_poly
+bccm_hotssea_poly
 plot(bccm_eez_poly)
 plot(inshore_poly)
 plot(offshore_poly)
+plot(hotssea_poly)
+plot(bccm_hotssea_poly)
 }
 
 }
