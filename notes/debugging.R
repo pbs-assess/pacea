@@ -112,3 +112,7 @@ Execution halted
 Commenting out the failing lines in test-get-pacea-data.R, then:
 > check()
 passes with no errors.
+
+Trying windows-latest instead of ubuntu-latest in R-CMD-check.yaml. Think it may
+have been something to do with the parallel code perhaps (ooh, maybe when
+installing the new required packages). That is probably it.
