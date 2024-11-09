@@ -1,0 +1,203 @@
+---
+title: "BCCM Results Over Full Domain"
+author: "Andrew Edwards and Travis Tai"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{BCCM Results Over Full Domain}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+date: "Last rendered on `r format(Sys.time(), '%d %B, %Y')`"
+---
+
+```{r run, echo = FALSE, eval = FALSE}
+rmarkdown::render("bccm_full.Rmd")
+# to build, or click the knit button in RStudio
+```
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#",
+  cache = TRUE,
+  cache_path = "bccm-full-cache/",
+  fig.path = "bccm-full-figs-cache/",
+  fig.width = 7.7,
+  fig.height = 7
+)
+```
+
+# Introduction
+
+The British Columbia Continental Margin (BCCM) model is a
+physical biogeochemical oceanographic model, implemented using the Regional Ocean Modeling
+System (ROMS; Peña et al., 2019). Results restricted to Canada's Exclusive Economic Zone and mapped
+to a 2 km x 2 km grid onshore and 6 x 6 km grid offshore are
+discussed in the [BCCM Results vignette](bccm.html), which should be looked at
+to understand more about the model. The restrictions and
+varying of the gridsize were done to reduce file sizes.
+
+Due to several requests from users we have now also mapped the BCCM results for its full domain (extending
+north and south into US waters) onto a 2 km x 2km grid. These requests included:
+
+- [Issue #49](https://github.com/pbs-assess/pacea/issues/49): extend the BCCM
+  results into US waters
+- [Issue #58](https://github.com/pbs-assess/pacea/issues/58): add the results from the
+HOTSSea physical oceanographic model for the Salish Sea (a region not covered by
+the BCCM results, ideally on a grid that overlaps as that used for the BCCM
+- [Issue #48](https://github.com/pbs-assess/pacea/issues/48) and [Issue
+  #62](https://github.com/pbs-assess/pacea/issues/62): have an easily exported grid that covers a larger domain
+- [Issue #60](https://github.com/pbs-assess/pacea/issues/60): projecting the Optimally Interpolated Sea Surface Temperature values onto the same grid as the
+BCCM results.
+
+These requests are now mostly fulfilled, and include the BCCM results on the
+full domain. The results are in the same format as those for the restricted
+domain described in the [BCCM Results vignette](bccm.html) vignette. The
+file sizes are much larger (each variable is about 120 Mb rather than about 30
+Mb), but only need to be downloaded once.
+
+We have kept consistent terminology and functionality as for the restricted BCCM
+results. Basically:
+- variable names are appended with `_full`
+- plotting and analysis functions should still work on the `_full` variables.
+
+## Available variables
+
+```{r packages}
+library(pacea)
+library(dplyr)
+library(sf)
+library(ggplot2)
+```
+
+For the restricted domain, the available variables are given in the data object
+`bccm_data`. For the full domain, the variables are therefore given in
+`bccm_data_full`:
+```{r bccm_data-Full}
+bccm_data_full
+```
+The `bccm_data` object gives the same `r nrow(bccm_data_full)` names, but without
+the `_full`.
+
+## Downloading bccm full results
+
+The 22 BCCM full model results are stored on Zenodo at https://zenodo.org/records/14031460. Each can be downloaded
+individually (if you only want certain variables) as described below. It is
+easiest to just
+just simply download them all to your computer in one go, using
+```{r download, eval = FALSE}
+bccm_all_variables_full()
+```
+This places them into a cache directory on your local machine, given by
+by `paste0(pacea_cache(), "/bccm_full")`. It only took about 10 minutes to
+download them all (the code uses parallel cores on Windows) on a home network,
+but could be longer on a work network. You can check progress in your local
+cache directory, where files should gradually appear.
+Any files that are already
+present in your cache directory are not re-downloaded. See
+`?bccm_all_variables_full` if you have problems.
+
+### Using the bccm full results
+
+As an example, let's look at the estimates of primary production, calling the
+object `pp` locally:
+```{r pp}
+pp <- bccm_primaryproduction_full()
+```
+Note the `()`. The `bccm_primaryproduction_full()` function assigns the
+output to our designated variable simply named `pp`.
+
+If you have not already previously downloaded the relevant results it
+will first download them into your cache folder (i.e. it will get just the
+specified model results, rather than all of them as in the
+`bccm_all_variables_full()` described above). If you have previously downloaded
+the results the function will simply load them in from your cached folder.
+
+View the data help for more information
+(e.g. `?bccm_primaryproduction_full`); similar help functions all point to a
+common help file for all `bccm_full` objects.
+
+So, what does the object look like?
+```{r pp1}
+pp
+head(pp[, 1:5])   # note that the geometry column is included when selecting columns from
+                  # an `sf` object.
+```
+
+The object is in wide format, with each column representing a unique year-month
+combination, and is a 'simple features' (`sf`) R object, and so contains a
+`geometry` column. The data also have various attributes, such as the units for the
+data values, and some extra ones to automate some plotting. (This is useful but
+not essential for users to know).
+```{r}
+names(attributes(pp))
+attributes(pp)$units
+class(pp)
+```
+## Visualising the bccm full results
+
+We give some examples here, and then refer users to the [BCCM Results
+vignette](bccm.html) since the examples shown there should work for the `_full`
+results. (Note we have not tested every potential idea you might have, but by
+keeping the structure of the outputs the same, our custom plotting and analysis
+functions should work).
+
+
+### Plotting with `plot()`
+
+Results can be plotted using the `plot()` function (that we have
+customised). The default settings are to plot results for April, 2018. However,
+users can specify any time period(s) available in the results. Examples are:
+```{r plot1}
+plot(pp)
+```
+
+To see the estimated primary production for each month of 2018
+```{r, ppplot, fig.width = 16, fig.height = 12}
+plot(pp, months = 1:12)
+```
+
+This shows the production ramping up through the spring.
+
+### Climatologies and anomalies
+
+Let's have a quick look at anomalies, say for oxygen at the bottom of the water
+column, adapting the examples from the [BCCM
+vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm.html). Again,
+see that vignette for extra details.
+
+So let's ask: how do the anomalies of bottom oxygen for
+April and September in 2010 and 2018, look compared to a climatology (for each
+month) from 1993 to 2010 (the full range of years currently available).
+
+We can easily load the model results and calculate the anomalies for a
+climatology (see `?calc_clim` to obtain the climatology also):
+```{r, anomalies}
+bottom_oxygen <- bccm_bottom_oxygen_full()
+anom <- calc_anom(bottom_oxygen,
+                  clim_years = 1993:2010,
+                  time_period_return = c("Apr", "Sep"),
+                  years_return = c(2010, 2018))
+anom
+```
+```{r, anomaliesplot, fig.width = 8, fig.height = 8}
+plot(anom,
+     months.plot = c("Apr", "Sep"),
+     years.plot = c(2010, 2018),
+     eez = FALSE)
+```
+
+So some areas are relatively oxygen rich (green) in these months compared to the
+same areas from 1993 to 2010, whereas others are lower in oxygen (red). This
+varies spatially and by month. Along the coast there looks to be more oxygen
+than normal in April 2010, generally a bit less in September 2010, and even less
+in April and September 2018.
+
+See the [BCCM
+vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm.html)
+for further example calculations, which hopefully stimulate your own ideas.
+
+## Reference
+
+Peña, M.A., Fine, I. and Callendar, W. 2019. Interannual variability in primary
+production and shelf-offshore transport of nutrients along the northeast Pacific
+Ocean margin. Deep-Sea Research II, doi:10.1016/j.dsr2.2019.104637.

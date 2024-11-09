@@ -118,7 +118,7 @@ Similar calculations are done for the `_mean` (the mean daily mean), `_max` (the
 daily means), and `_std` (the standard deviation of the daily means), replacing
 the word 'minimum' in the fourth bullet point. And the same calculations are done for salinity.
 
-So, `hotssea_avg0to30m_temperature_min` is the depth-integrated mean(over the
+So, `hotssea_avg0to30m_temperature_min` is the depth-integrated mean (over the
 top 30 m) of each modelled depths' minimum (over the month) daily mean
 temperature. And `hotssea_bottom_salinity_sd` is the
 the bottom cell's standard deviation (over the month) of daily mean
@@ -168,7 +168,7 @@ daily mean temperature:
 hot <- hotssea_avg0to30m_temperature_max()
 ```
 Note the `()`. The `hotssea_avg0to30m_temperature_max()` function assigns the
-output to our designated variable simply names `hot`.
+output to our designated variable simply named `hot`.
 
 If you have not already previously downloaded the results it
 will first download them into your cache folder (i.e. it will get just the

@@ -99,29 +99,29 @@ The values highlighed above with **Updated monthly** have been updated
 each month since the release of pacea, as documented in the
 [NEWS](NEWS.md), which it is advisable to check when you update your
 pacea installation (see below). Since the initial release we have also
-(in order):
+(latest first):
 
--   updated the estimates of Pacific Hake abundance and recruitment with
-    values from the 2024 assessment (retaining the original estimates
-    from the 2023 assessments for reproducibility); see the
+-   added Pacific Herring stock assessment results, for spawning stock
+    biomass and age-2 recruitment for each of the five major stock
+    assessment regions; see the
     [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
     vignette.
 
--   added zooplankton biomass anomalies for the Strait of Georgia, with
-    a new vignette:
-    [zooplankton.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/zooplankton.html).
+-   added helper function `a()`, shorthand for `as.data.frame()`, see
+    examples in `?a`.
 
 -   extended calculations of the Aleutian Low Pressure Index (ALPI) up
     to 2022; they were originally only available to 2015. The Aleutian
     Low was mentioned in several talks at the 2024 State of the Pacific
     Ocean meeting, motivating us to update the values here.
 
--   added helper function `a()`, shorthand for `as.data.frame()`, see
-    examples in `?a`.
+-   added zooplankton biomass anomalies for the Strait of Georgia, with
+    a new vignette:
+    [zooplankton.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/zooplankton.html).
 
--   added Pacific Herring stock assessment results, for spawning stock
-    biomass and age-2 recruitment for each of the five major stock
-    assessment regions; see the
+-   updated the estimates of Pacific Hake abundance and recruitment with
+    values from the 2024 assessment (retaining the original estimates
+    from the 2023 assessments for reproducibility); see the
     [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
     vignette.
 
@@ -342,9 +342,9 @@ If you use `pacea` in your work then please cite it as (NOTE this has
 been updated since the original release):
 
 Edwards A.M., Tai T.C., Watson J., Peña M.A., Hilborn A., Hannah C.G.,
-Rooper C.N., and Flynn K.L. (2024). pacea: An R package of Pacific
-ecosystem information to help facilitate an ecosystem approach to
-fisheries management. <https://github.com/pbs-assess/pacea>,
+Rooper C.N., Flynn K.L., and Oldford, G.L. (2024). pacea: An R package
+of Pacific ecosystem information to help facilitate an ecosystem
+approach to fisheries management. <https://github.com/pbs-assess/pacea>,
 <https://zenodo.org/doi/10.5281/zenodo.13840804>
 
 You may wish to add the date you installed it (using

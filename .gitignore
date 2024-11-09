@@ -96,6 +96,11 @@ data-raw/zooplankton/kelly-emails.txt
 data-raw/depth/S102_S111sample/
 data-raw/depth/S102andS111.zip
 
+data-raw/hotssea/hotssea-original/
+data-raw/hotssea/hotssea-version-1.02.3/
+data-raw/hotssea/hotssea-version-1.02.4/
+data-raw/hotssea/testing-importing.R
+
 data/older-data/test_grid_10.rda
 data/older-data/test_grid_2.rda
 data/older-data/test_grid_20.rda
@@ -106,3 +111,9 @@ data/older-data/test_grid_20.rda
 /data-raw/depth/GEBCO_Grid_documentation.pdf
 /data-raw/depth/GEBCO_Grid_terms_of_use.pdf
 /data-raw/depth/gebco_2023_n58.0_s42.0_w-146.0_e-117.0.nc
+
+vignettes/bccm-full-figs-cache/
+vignettes/bccm_full_cache/
+vignettes/hotssea-figs-cache/
+vignettes/hotssea-cache/
+vignettes/oisst_month_grid26.rds
