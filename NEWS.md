@@ -5,6 +5,11 @@ Developers: for some general tips for writing good bullets see https://style.tid
 
 ## Updates by date
 
+* 2024-11-12 Major update: added results from the Hindcast of the Salish Sea
+(HOTSSea) physical oceanography model; added results from the BCCM model over
+its full original domain; added depths for the `grid26` model domain; updated
+citation info to add Greig Oldford.
+
 * 2024-09-25 Update citation info (increment year to 2024, add Kelsey Flynn as
   co-author) and obtain a DOI. See README or run `citation("pacea")`.
 

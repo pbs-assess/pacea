@@ -63,8 +63,10 @@ Currently, pacea contains:
    temperature based on data from `r nrow(buoy_metadata)` buoys. **Updated monthly.**
 
  - outputs from the spatial British Columbia continental margin (BCCM) model, the coupled
-   physical-biogeochemical model by Peña et al. (2019). Variables are for 40,580 spatial cells across Canada's Pacific
-     Exclusive Economic Zone, and are given as 27 years of monthly means (from
+   physical-biogeochemical model by Peña et al. (2019). Variables are available
+   for (a) 40,580 spatial cells across Canada's Pacific
+   Exclusive Economic Zone, and **NEW** (b) 161,025 spatial cells across a larger
+   domain, extending into US waters. Variables are given as 27 years of monthly means (from
    1993 to 2019). The variables are:
    - dissolved oxygen concentration
    - pH
@@ -86,6 +88,18 @@ Currently, pacea contains:
      lubridate::year(min(oisst_month$start_date)))` to `r paste(lubridate::month(max(oisst_month$start_date), label = TRUE),
      lubridate::year(max(oisst_month$start_date)))`. **Updated monthly.**
 
+- outputs from the Hindcast of the Salish Sea (HOTSSea) physical oceanography model that
+  recreates conditions throughout the Salish Sea from 1980 to 2018 [(Oldford et
+  al., in review)](https://doi.org/10.5194/gmd-2024-58). Statistics regarding
+  temperature and salinity are available at the same 2 km x 2 km spatial
+  resolution as the full BCCM results. Specifically, values of minimum, mean, maximum, and
+  standard deviation (over each month) are available for:
+   - sea surface
+   - 0-30 m integration
+   - 30-150 m integration
+   - 150 m to the sea bottom
+   - sea bottom.
+
 - 9 climatic and oceanographic indices, such as the Pacific Decadal Oscillation
    and those related to El Niño. **Updated monthly.**
 
@@ -100,18 +114,24 @@ Currently, pacea contains:
 Plotting and helper functions are provided, and demonstrated in the detailed vignettes. All
 data and model outputs are fully documented and referenced.
 
-Peña, M.A., Fine, I. and Callendar, W. (2019). Interannual variability in
-primary production and shelf-offshore transport of nutrients along the northeast
-Pacific Ocean margin. Deep-Sea Research II, doi:10.1016/j.dsr2.2019.104637.
-https://www.sciencedirect.com/science/article/pii/S0967064519300220
-
-
 ## What's new (since the original release)?
 
 The values highlighed above with **Updated monthly** have been updated each
 month since the release of pacea, as documented in the [NEWS](NEWS.md), which it
 is advisable to check when you update your pacea installation (see below). Since the initial release we have
-also (latest first):
+also added the following in response to user requests (some are documented in
+the Issues, with latest first):
+
+- added results from the Hindcast of the Salish Sea (HOTSSea) physical oceanography model that
+  recreates conditions throughout the Salish Sea from 1980 to 2018. See the new [hotssea vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/hotssea.html)
+
+- added results from the BCCM model over its full original domain (rather than
+  just restricted to Canada's Exclusive Economic Zone), see the new [bccm_full vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm_full.html)
+
+- added depths for the `grid26` model domain, see `?grid26_depth`
+
+- updated citation information (incremented the year, added a DOI through Zenodo, and added two new co-authors:
+  Kelsey Flynn and Greig Oldford), see `citation("pacea") or scroll down below.
 
 - added Pacific Herring stock assessment results, for spawning stock biomass and
   age-2 recruitment for each of the five major stock assessment regions; see the
@@ -191,7 +211,7 @@ plot(pdo)
 ```{r oisstmakefig, eval = FALSE, echo = FALSE}
 png(paste0(here::here(), "/man/figures/README-oisst.png"),
     width = 670,   # 670 matches size from running from a chunk
-    height = 670)
+    height = 480)
 plot(oisst_month,
      months.plot = "June",
      years.plot = c(2022, 2023))
@@ -588,3 +608,13 @@ https://www.quantitative-biology.ca/git-and-github.html#save-our-template-.gitco
 You can put those into your `.gitconfig` file if you like.
 
 This can help understanding on branches: https://www.atlassian.com/git/tutorials/using-branches/git-merge
+
+Oldford, G.L., Jarníková, T., Christensen, V., and Dunphy, M. (in review).
+HOTSSea v1: a NEMO-based physical Hindcast of the Salish Sea (1980–2018)
+supporting ecosystem model
+development. Preprint. https://doi.org/10.5194/gmd-2024-58 .
+
+Peña, M.A., Fine, I. and Callendar, W. (2019). Interannual variability in
+primary production and shelf-offshore transport of nutrients along the northeast
+Pacific Ocean margin. Deep-Sea Research II, doi:10.1016/j.dsr2.2019.104637.
+https://www.sciencedirect.com/science/article/pii/S0967064519300220
