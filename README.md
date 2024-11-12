@@ -7,7 +7,9 @@ which builds the .html that can be viewed locally (but isn't pushed to GitHub;
 GitHub uses README.md to make the page you see on GitHub).
 
 Figures - to update a figure, manually run the piece of code that makes
-the .png file. See notes below (and Issue #44).
+the .png file. See notes below (and Issue #44). Make the png resolutions the same in
+each direction, at least for multi-panel plots, as seemed a bit blurry when I
+hadn't (primary production and hotssea at least).
 -->
 
 # pacea <img src="man/figures/logo.png" align="right" height="138" />
@@ -34,8 +36,8 @@ formats in R, and provide helpful plotting functions. All data sets
 include documentation regarding the original sources and authors, who
 should be cited and consulted as appropriate.
 
-Please continue reading through this README file, and see the vignettes
-to get you started.
+Please continue reading through this README file, and especially see the
+vignettes section get started.
 
 ## What is in pacea?
 
@@ -125,7 +127,7 @@ pacea installation (see below). Since the initial release we have also
     [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
     vignette.
 
-## Brief examples of some questions that can be quickly investigated
+## Brief examples of some questions that can be quickly visualised (see vignettes for full details)
 
 **How does this year’s sea surface temperature (red curve) in West Dixon
 Entrance compare to previous years, based on the buoy there?**
@@ -167,7 +169,8 @@ plot(oisst_month,
 <img src="man/figures/README-oisst.png" style="width:80.0%" />
 
 **How did the upper 40m of dissolved oxygen differ between January and
-June, in 2015 (using BCCM ROMS output)?**
+June, in 2015 (using BCCM results restricted to Canada’s Exclusive
+Economic Zone)?**
 
 ``` r
 plot(bccm_avg0to40m_oxygen(force = TRUE),
@@ -176,6 +179,48 @@ plot(bccm_avg0to40m_oxygen(force = TRUE),
 ```
 
 <img src="man/figures/README-bccm.png" style="width:80.0%" />
+
+**How did depth-integrated primary production vary spatially and with
+each month throughout 2018, using the BCCM results for its full spatial
+domain?**
+
+``` r
+plot(bccm_primaryproduction_full(),
+     months = 1:12)
+```
+
+<img src="man/figures/README-bccm_full.png" style="width:100.0%" />
+
+**How did estimated maximum (over each month) depth-integrated
+temperature over the top 30 m change in the Salish Sea for January and
+September in three different years?**
+
+``` r
+plot(hotssea_avg0to30m_temperature_max(),
+     months = c("January", "September"),
+     years = c(1995, 2010, 2018),
+     eez = FALSE)
+```
+
+<img src="man/figures/README-hotssea.png" style="width:100.0%" />
+
+**How has estimated Pacific Herring recruitment changed over time in
+each of the five major assessment regions?**
+
+``` r
+plot(herring_recruitment)
+```
+
+<img src="man/figures/README-herring.png" style="width:80.0%" />
+
+**How has estimated Pacific Hake spawning biomass (from California to
+BC) changed through time?**
+
+``` r
+plot(hake_biomass)
+```
+
+<img src="man/figures/README-hake.png" style="width:80.0%" />
 
 **What is the estimated abundance of Pacific Harbour Seals for each of
 seven regions?**
@@ -253,7 +298,13 @@ run them locally you may get more up-to-date values):
 -   [oisst.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/oisst.html)
     OISST data and calculations and associated plotting functions.
 -   [bccm.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm.html)
-    BCCM model results, calculations, and associated plotting functions.
+    BCCM model results restricted to Canada’s Exclusive Economic Zone,
+    calculations, and associated plotting functions.
+-   [bccm_full.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm_full.html)
+    BCCM model results over the full model domain, calculations, and
+    associated plotting functions.
+-   [hotssea.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/hotssea.html)
+    HOTSSea model results and associated plotting functions.
 -   [zooplankton.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/zooplankton.html)
     Zooplankton anomalies for the Strait of Georgia, calculations, and
     associated plotting functions.

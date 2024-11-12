@@ -52,7 +52,8 @@ The model grid is approximately 1.5 km in horizontal resolution and has a width 
 of ~450 km (132 cells x 299 cells) and was rotated 29° counter clockwise to true north to
 align with the axis of the Strait of Georgia. For pacea, results were translated
 onto a north-south aligned grid of 2 km resolution (all such calculations are in
-https://github.com/pbs-assess/data-raw/hotssea/hotssea-data-interpolation.R).
+https://github.com/pbs-assess/data-raw/hotssea/hotssea-data-interpolation.R),
+resulting in 6165 spatial cells.
 The vertical grid for the HOTSSea model is divided into 40 vertical levels that
 increase in resolution at the surface. Monthly averages of variables over several
 specified depth ranges are included in pacea, for every month from January 1980 to
@@ -137,6 +138,9 @@ could be calculated (contact us).
 
 Model depths vary by grid cell, usually only slightly at the surface.
 So variables are therefore processed accounting for varying depth levels.
+See the help file for any HOTSSea variable
+(e.g. `?hotssea_surface_salinity_min`) for explicit details of depth resolution,
+including how surface values were calculated.
 
 ### Downloading all HOTSSea results
 

@@ -60,6 +60,16 @@ results. Basically:
 - variable names are appended with `_full`
 - plotting and analysis functions should still work on the `_full` variables.
 
+Deciding if you need the `_full` outputs or just the original over Canada's EEZ:
+
+- use the original if you want OISST data on its original grid (unrelated to
+BCCM grid) over the EEZ, and/or BCCM over EEZ, and don't want to do
+spatiotemporal modelling involve both of those or also involving HOTSSea output
+(it is okay for you if the BCCM and HOTSSea grids do not overlap) -- use existing variables
+- if you want anything else, like OISST or BCCM extended to a larger domain,
+  HOTSSea and/or OISST and/or BCCM on the same grid (especially for
+  spatiotemporal analyses) - use the new BCCM `_full` variables described here.
+
 ## Available variables
 
 ```{r packages}

@@ -70,6 +70,40 @@
 #' calculations; in particular the `*statistic* is calculated for all cells
 #' before the depth averaging is performed.
 #'
+#' Explicit details of the vertical resolution of the original HOTSSea model
+#' results are as follows (also see Oldford et al., in review). The vertical
+#' grid for HOTSSea v1 is divided into 40 vertical levels that are gradually
+#' stretched to achieve higher resolution at the surface, ranging from 1 m
+#' vertical resolution in the upper 10 m to approximately 27 m widths at the
+#' deepest level (~420 m). When time-dynamic variation is ignored, the 'surface'
+#' '0-4 m' depth range is more precisely the 0-4.0000467 m depth range, the
+#' '0-30 m' depth range is more precisely the 0-31.101 m depth range, and the
+#' '0-150 m' depth range is more precisely the 0-147.089 m. Although depth
+#' interpolation schemes may be used to extract model outputs from precise
+#' depths, these schemes introduce biases, are potentially computationally
+#' costly, and are unlikely to change the extracted values enough to be worth it
+#' when working at monthly time scales. In addition, the thickness of each layer
+#' is proportionally scaled at each time-step as sea surface height changes
+#' using a nonlinear free-surface scheme referred to as the 'variable volume
+#' option' in the NEMO model framework. The datum heights of model outputs
+#' therefore vary dynamically in space and time because the NEMO model vertical
+#' depth level widths vary dynamically with sea surface height. For example, if
+#' sea surface height varies on the order of seconds or minutes due to, say,
+#' wind-driven wave action, then hourly, daily, and monthly model depths are
+#' time-integrated means for a given grid cells. The 'variable volume option' is
+#' another reason why a simpler approach than depth interpolation was used when
+#' extracting and wrangling HOTSSea v1 model outputs.
+
+#' 'Surface' is defined in the monthly mean HOTSSea v1 outputs as 0 to ~4 m
+#' (rather than, say 0 to ~1 m) because model biases are most pronounced at the
+#' shallowest depth (0 to ~1 m). On the monthly scale, conditions throughout the
+#' model domain are generally similar between 0.5 m and 4 m (mean
+#' depth-integrated differences of approximately < 0.25 Celcius and 0.2 PSU) and
+#' biases > 2 m are substantially lower. Vertical averaging of model results
+#' from 0 to 4 m was therefore chosen based on analyses of spatial-temporal
+#' model performance to lessen the impact of model error - more in-depth
+#' analyses are given in Oldford et al. (in review).
+#'
 #' @format A simple features dataframe.
 #'
 #' @param update Logical. Would you like to check for a newer version of the layer?
