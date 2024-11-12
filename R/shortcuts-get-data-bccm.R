@@ -13,6 +13,8 @@
 #'
 #' BCCM data were interpolated to a 2km x 2km inshore grid and a 6km x 6km offshore grid. Data provided are monthly means that span from 1993-2019. Each column represents a distinct 'year_month' combination (e.g. 2010_4).
 #'
+#' Surface values represent values at the centre of the top BCCM grid cell. These
+#'   top cells span depths that vary with the bathymetry, from 0.2 to 1.6 m.
 #'
 #' \describe{
 #'   \code{bccm_*depth*_oxygen()} Dissolved oxygen measured as mmol-oxygen m^-3\cr
