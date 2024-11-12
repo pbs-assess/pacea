@@ -1408,7 +1408,12 @@
 
 #' Geospatial pacea grid - BC coastline grid template with depth data
 #'
-#' TODO Needs updating, plus vignette, see Issue. A simple features object of the grid used for interpolation of British Columbia continental margin (BCCM) model. The grid is divided into two regions with differing resolutions: a higher resolution inshore 2km x 2km grid and lower resolution offshore 6km x 6km grid. The boundary between the two regions is created using the 200m isobath along the continental shelf.
+#' TODO Needs updating, plus vignette, when we have time; see Issue 48. A simple
+#' features object of the grid used for interpolation of British Columbia
+#' continental margin (BCCM) model. The grid is divided into two regions with
+#' differing resolutions: a higher resolution inshore 2km x 2km grid and lower
+#' resolution offshore 6km x 6km grid. The boundary between the two regions is
+#' created using the 200m isobath along the continental shelf.
 #'
 #' TODOGrid cells were removed where the overlapped land using the 'bc_coast' shapefile in pacea. The grid only covers the Canadian Pacific EEZ region with a 10km buffer.
 #'
