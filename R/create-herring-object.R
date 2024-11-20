@@ -3,16 +3,14 @@
 ##' Used in `data-raw/herring/herring.R` to create data objects; not really
 ##' needed by `pacea` users.
 
-##' @param assess_yr The year of the assessment (yielding stock status in that year).
+##' @param assess_yr year of assessment
+##' @param region herring region
+##' @param herring_dir directory for herring results
 ##' @author Andrew Edwards
 ##' @return List of recruitment and biomass objects, to then be saved in package.
-##' @examples
-##' \dontrun{
-##' }
 ##' @export
 create_herring_object <- function(assess_yr,    # nocov start
-                                  region,       # because need local files and
-                                                # not a user function anyway
+                                  region,       # because need local files and not a user function anyway
                                   herring_dir = NULL){
 
   if(is.null(herring_dir)){

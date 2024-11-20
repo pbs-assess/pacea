@@ -7,7 +7,11 @@
 create_herring_object(assess_yr, region, herring_dir = NULL)
 }
 \arguments{
-\item{assess_yr}{The year of the assessment (yielding stock status in that year).}
+\item{assess_yr}{year of assessment}
+
+\item{region}{herring region}
+
+\item{herring_dir}{directory for herring results}
 }
 \value{
 List of recruitment and biomass objects, to then be saved in package.
@@ -15,10 +19,6 @@ List of recruitment and biomass objects, to then be saved in package.
 \description{
 Used in `data-raw/herring/herring.R` to create data objects; not really
 needed by `pacea` users.
-}
-\examples{
-\dontrun{
-}
 }
 \author{
 Andrew Edwards
