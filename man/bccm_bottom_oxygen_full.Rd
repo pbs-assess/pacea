@@ -248,6 +248,9 @@ The 22 objects available are desribed below as their respective functions;
 
 If you get an error see [bccm_all_variables_full()].
 
+Surface values represent values at the centre of the top BCCM grid cell. These
+  top cells span depths that vary with the bathymetry, from 0.2 to 1.6 m.
+
 \describe{
   \code{bccm_*depth*_oxygen_full()} Dissolved oxygen measured as mmol-oxygen m^-3\cr
   \code{bccm_*depth*_salinity_full()} Salinity in ppt\cr
