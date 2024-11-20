@@ -11,7 +11,7 @@ get_zenodo_data(
   force = FALSE,
   version = "01",
   cache_subfolder,
-  zenodo_doi = "10.5281/zenodo.14019141",
+  zenodo_doi = "10.5281/zenodo.14027261",
   timeout_value = 7200
 )
 }
@@ -56,6 +56,18 @@ HOTSSea and full BCCM model results have been wrangled from the original
  [hotssea_surface_salinity_min()] and [bccm_bottom_temperature_full()].
 }
 \details{
+Notes to keep track (for developers): The Zenodo links are:
+ - 14019141 will always point to the latest version
+ - 14019142 is the test ones at 200 km resolution
+ - 14027261 is the latest version uploaded to Zenodo, and what we want.
+Sohttps://doi.org/10.5281/zenodo.14019141 does go
+ to https://zenodo.org/records/14027261, but when people try it seems that
+ the zen4R code is ending
+ up at the ...142 version (using the token in a different way maybe). So,
+ given ...141 wasn't working here for the default, am changing it to ...261
+ and so it will need manually updating in future if we update (or increment
+ the version number).
+
 Based on [get_bccm_data()], but getting from Zenodo not `pacea-data/`.
 }
 \examples{

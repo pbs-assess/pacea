@@ -1,7 +1,8 @@
 #' Download all 40 HOTSSea model results from Zenodo to a local drive.
 #'
 #' This downloads (in parallel by default) all 40 HOTSSea model results from
-#' https://zenodo.org/records/14019142 to your local folder given by
+#' https://zenodo.org/records/14027261 (as specified in [get_zenodo_data()] to
+#' your local folder given by
 #' `paste0(pacea_cache(), "/hotssea")`. Each file is around 3-9Mb, and so downloading them all may
 #' take a few minutes or possibly longer. You can check your cache
 #' folder for progress to see them appearing there. The download is done in
