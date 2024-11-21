@@ -70,6 +70,8 @@ Imports:
     doParallel,
     foreach,
     ggplot2,
+    grDevices,
+    graphics,
     httr,
     lubridate (>= 1.8.0),
     magrittr (>= 2.0.1),
@@ -82,6 +84,7 @@ Imports:
     tidyr,
     tibble,
     usethis,
+    utils,
     zen4R
 RoxygenNote: 7.2.3
 Remotes: github::pbs-assess/gfiphc
