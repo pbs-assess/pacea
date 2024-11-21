@@ -115,5 +115,7 @@ data/older-data/test_grid_20.rda
 vignettes/bccm-full-figs-cache/
 vignettes/bccm_full_cache/
 vignettes/hotssea-figs-cache/
-vignettes/hotssea-cache/
+vignettes/hotssea_cache/
 vignettes/oisst_month_grid26.rds
+
+inst/Pacea_Final.ai

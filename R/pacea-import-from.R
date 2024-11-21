@@ -1,4 +1,4 @@
-#' pacea package dplyr-related things
+#' pacea package importFrom requirements
 #'
 #' Adapting from https://github.com/pbs-assess/gfiphc/blob/master/R/gfiphc.R
 #' (see that if get issues with column names within dplyr functions for what to
@@ -9,7 +9,7 @@
 #' here to then go into NAMESPACE
 #'
 #' @docType package
-#' @name pacea
+#' @name pacea_import_from
 #' @importFrom dplyr filter mutate summarise select group_by n arrange ungroup
 #' @importFrom dplyr inner_join left_join right_join anti_join full_join
 #' @importFrom dplyr semi_join row_number
