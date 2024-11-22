@@ -662,6 +662,58 @@ if(FALSE){      # Change to TRUE if we want to update, though it'd probably be
   # }
 }
 
+# North Pacific Current Bifurcation Index. Updated annually, but maybe just
+#  check each month (in case older values change at all).
+download.file("https://raw.githubusercontent.com/michaelmalick/bifurcation-index/refs/heads/main/share/bifurcation_index.csv",
+              destfile = "bi.csv",
+              mode="wb",
+              quiet = FALSE)
+
+# Can't use read_table as , separated without spaces
+bi_new <- read.csv("bi.csv",
+                   comment.char = "#") %>%
+  as_tibble() %>%
+  dplyr::rename("value" = "bifurcation_index") %>%
+  dplyr::mutate(anomaly = standardise(value))
+
+# Add in anomalies based on standardising up to 2010 and up to 2024 (and then
+#  continuing onwards, so people still have values that they used for analyses
+#  when pacea gets updated).
+bi_new <- dplyr::mutate(bi_new,
+                        anomaly_2024 = standardise(value,
+                                                   range = 1:which(bi_new$year == 2024)))
+
+expect_equal(bi_new$anomaly,
+             bi_new$anomaly_2024)
+
+expect_equal(mean(bi_new$anomaly), 0)
+expect_equal(sd(bi_new$anomaly), 1)
+
+stopifnot("New year of values, need to add a new column anomaly_<year>" = max(bi_new$year) == 2024)
+
+class(bi_new) <- c("pacea_index",
+                   class(bi_new))
+
+attr(bi_new, "axis_name") <- "North Pacific Current Bifurcation Index"
+
+check_index_changed(bi, bi_new)
+tail(bi)
+tail(bi_new)
+
+if(check_index_changed(bi, bi_new)){
+  par(mfrow=c(2,1))
+  plot(bi, main = "Currently in pacea")
+  plot(bi_new, main = "Updated")
+
+  # Absolute historical values should not change
+  expect_equal(bi[1:(nrow(bi)), "value"],
+               bi_new[1:(nrow(bi)), "value" ])
+
+  bi <- bi_new
+  usethis::use_data(bi,
+                    overwrite = TRUE)
+}
+
 # pacea_indices - saving data frame of all indices and ranges to easily see, and
 #  automatically include in vignette. Ordering by start year (did with arrange
 #  then redoing myself for ease of adding things in).
@@ -679,7 +731,9 @@ pacea_indices <-
            "npgo", "North Pacific Gyre Oscillation", "monthly", min(npgo$year), max(npgo$year),
            "ao", "Arctic Oscillation", "monthly", min(ao$year), max(ao$year),
            "soi", "Southern Oscillation Index", "monthly", min(soi$year), max(soi$year),
-           "mei", "Multivariate El Niño Southern Oscillation Index", "monthly", min(mei$year), max(mei$year)) %>%
+           "mei", "Multivariate El Niño Southern Oscillation Index", "monthly",
+           min(mei$year), max(mei$year),
+           "bi", "North Pacific Bifurcation Index", "annual", min(bi$year), max(bi$year),) %>%
   arrange(`Start year`)
 
 # if(pacea_indices_new != pacea_indices){   # couldn't figure out, or using expect_equal
