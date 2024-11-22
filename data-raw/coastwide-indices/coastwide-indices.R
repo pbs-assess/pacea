@@ -609,10 +609,9 @@ class(ao_new) <- c("pacea_index",
 
 attr(ao_new, "axis_name") <- "Arctic Oscillation"
 
+check_index_changed(ao, ao_new)
 tail(ao)
 tail(ao_new)
-
-check_index_changed(ao, ao_new)
 
 if(check_index_changed(ao, ao_new)){
   expect_equal(ao,
