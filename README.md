@@ -91,8 +91,9 @@ Currently, pacea contains:
     -   150 m to the sea bottom
     -   sea bottom.
 
--   9 climatic and oceanographic indices, such as the Pacific Decadal
-    Oscillation and those related to El Niño. **Updated monthly.**
+-   10 climatic and oceanographic indices, such as the Pacific Decadal
+    Oscillation and those related to El Niño. **Updated monthly, new one
+    added.**
 
 -   estimates of abundances for Harbour Seals.
 
@@ -114,6 +115,11 @@ each month since the release of pacea, as documented in the
 pacea installation (see below). Since the initial release we have also
 added the following in response to user requests (some are documented in
 the Issues, with latest first):
+
+-   added Mike Malick’s oceanographic index: `bi`, the North Pacific
+    Current Bifurcation Index; see the [indices
+    vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/indices.html)
+    and `?bi`
 
 -   added results from the Hindcast of the Salish Sea (HOTSSea) physical
     oceanography model that recreates conditions throughout the Salish
@@ -306,6 +312,7 @@ knitr::kable(pacea_indices)
 | npgo        | North Pacific Gyre Oscillation                  | monthly    |       1950 |     2024 |
 | ao          | Arctic Oscillation                              | monthly    |       1950 |     2024 |
 | soi         | Southern Oscillation Index                      | monthly    |       1951 |     2024 |
+| bi          | North Pacific Bifurcation Index                 | annual     |       1967 |     2024 |
 | mei         | Multivariate El Niño Southern Oscillation Index | monthly    |       1979 |     2024 |
 
 ## Vignettes

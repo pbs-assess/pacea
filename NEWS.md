@@ -5,6 +5,9 @@ Developers: for some general tips for writing good bullets see https://style.tid
 
 ## Updates by date
 
+* 2024-11-25 New oceanographic index: `bi`, the North Pacific Current
+  Bifurcation Index. See README and the indices vignette.
+
 * 2024-11-21 Monthly updates for `oisst_7day`, `oisst_month`, `buoy_sst` (2725
   new daily means), and indices `ao`, `mei`, `oni`, and `pdo`. And 'tis the season.
 
