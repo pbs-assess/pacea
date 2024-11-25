@@ -22,6 +22,9 @@ knitr::opts_chunk$set(
 )
 ```
 
+**This is now updated to include the North Pacific Current Bifurcation Index
+(`bi`). And was re-run on the above date to update all indices in the plots below.**
+
 ## Oceanic Niño Index
 
 ```{r setup}
@@ -174,6 +177,9 @@ plot(ao)
 
 plot(soi)
 
+plot(bi,
+     lwd = lwd_val)
+
 plot(mei)
 ```
 
@@ -218,6 +224,10 @@ plot(ao,
 plot(soi,
      xlim = x_lim,
      smooth_over_year = TRUE,
+     lwd = lwd_val)
+
+plot(bi,
+     xlim = x_lim,
      lwd = lwd_val)
 
 plot(mei,
