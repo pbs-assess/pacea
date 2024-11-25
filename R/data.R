@@ -1453,3 +1453,83 @@
 #' @source Oldford et al., 2024.
 #' Generated from running `data-raw/data-key/data-list.R`
 "hotssea_data"
+
+##' BI -- North Pacific Current Bifurcation Index
+##'
+##' The North Pacific Current Bifurcation Index is an annual index indicating
+##' the north-south variation of where the North Pacific Current bifurcates into
+##' the northward-flowing Alaska Current and the sourthward-flowing California Current.
+##'
+##' The North Pacific Current Bifurcation Index (BI) was developed by Malick et
+##' al. (2017), who found that a northward-shifted bifurcation was associated
+##' with increased salmon productivity in British Columbia and Washington State
+##' waters. The BI is calculated by generating annual trajectories for 215
+##' simulated drifters.
+##' Simulated drifters were released annually on 1st February and locations were
+##' tracked until 30th June, to reflect ocean conditions relevant to
+##' seaward-migrating juvenile salmon.
+##'
+##' The BI for each year is calculated by first calculating the
+##' proportion of the 215 simulated drifters that ended up south of their starting
+##' latitude for that year. A high proportion of drifters ending south of
+##' their starting location indicates a northward-shifted bifurcation (the
+##' southward-flowing California Current is starting further north). A low
+##' proportion of drifters ending south of their starting location indicates a
+##' southward-shifted bifurcation (the southward-flowing California Current is
+##' starting further south). The index is standardised by subtracting by the
+##' time-series mean and dividing by the standard deviation. We provide absolute
+##' numbers (the proportions, given by column `value`) in the pacea data object `bi` , as
+##' well as the standardised index (column `anomaly`).
+##'
+##' Since the standardisation of the index will change as new years are added
+##' (because the mean and standard deviation will get recalculated with the
+##' longer time series), we also include a column `anomaly_2024` for the
+##' anomalies calculated based on the proportions up to 2024, and will add
+##' `anomaly_2025` etc. in future years. Therefore users can specify a
+##' definitive anomaly index so that their analyses will not change when pacea
+##' is updated in the future (or you can just refer to `anomaly` so that it does
+##' change -- you just need to be aware of this). Users can also use
+##' `pacea::standardise()` to standardise to any specified range; see [?standardise].
+##'
+##' Values are updated annually by Michael Malick, and the values used here
+##' are taken from his .csv file on GitHub:
+##' https://github.com/michaelmalick/bifurcation-index/blob/main/share/bifurcation_index.csv.
+##' Note that restricting the standardisation to only use the years up to and
+##' including 2010 gives slight changes to the original index shown Malick et
+##' al. (2017) because when first updating the index (in 2020) after
+##' publication, a new landmask file was required (used to truncate drifter
+##' tracks when they hit land) that had slightly different spatial resolution.
+##'
+##' Some of the above was adapted from Malick et al. (2017). See that for full
+##' details, plus the code at
+##' https://github.com/michaelmalick/bifurcation-index/. Thanks to Mike for
+##' helpful discussions.
+##'
+##' Malick, M.J., et al. 2017. Effects of the North Pacific Current on the
+##' productivity of 163 Pacific salmon stocks. Fisheries Oceanography
+##' 26:268--281. https://doi.org/10.1111/fog.12190
+##'
+##' @format A tibble also of class `pacea_index` with columns:
+##' \describe{
+##'   \item{year:}{year of value}
+##'   \item{value:}{absolute value of the proportion of the 215 simulated
+##'   drifters that ended up south of their starting latitude in that year}
+##'   \item{anomaly:}{standarised index of the `value` time series calculated by
+##'   subtracting the mean and dividing by the standard deviation of the `value`
+##'   time series. Note that numbers willchange in subsequent
+##'   updates -- see Details}
+##'   \item{anomaly_2024:}{standarised index of the `value` time series calculated by
+##'   subtracting the mean and dividing by the standard deviation of the `value`
+##'   time series, with the mean and standard deviation restricted to years up
+##'   to and including 2024. The anomalies for years up to 2024 will not change
+##'   in subsequent updates since the tandardisation is fixed; later years will
+##'   be added (but will not affect the standardisation). See Details.}
+##'  }
+##' @examples
+##' \dontrun{
+##' bi
+##' plot(bi)
+##' }
+##' @author Andrew Edwards
+##' @source Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
+"bi"

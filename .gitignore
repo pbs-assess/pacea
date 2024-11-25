@@ -13,6 +13,7 @@ lib/
 /data-raw/coastwide-indices/AO.dat
 /data-raw/coastwide-indices/PDO.dat
 /data-raw/coastwide-indices/SOI.dat
+data-raw/coastwide-indices/bi.csv
 
 data-raw/coastwide-indices/alpi-surry/alpi-from-chris-later.R
 data-raw/coastwide-indices/alpi-surry/alpi-values-from-chris-orig.txt
