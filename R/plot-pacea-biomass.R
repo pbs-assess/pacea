@@ -99,7 +99,15 @@ plot.pacea_biomass <- function(obj,
                  obj_lub[[value]], # [[]] returns a vector not a tibble
                  xlab = xlab,
                  ylab = ylab,
-                 ...)
+                 type = median_type,
+                 pch = median_pch,
+                 col = median_line_col,
+                 lty = median_line_lty,
+                 lwd = median_line_lwd,,
+                 ...)      # for hake age-1 (no error) it's easier to see them
+                           # joined up,
+                           # even though it's really recruitment which I prefer
+                           # to not join
   }
 
   if(attr(obj_lub, "axis_name") == "Pacific Hake spawning biomass (million t)"){

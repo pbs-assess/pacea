@@ -712,18 +712,15 @@
 ##' from California to British Columbia.
 ##'
 ##' See `?hake_recruitment` for further details and references, and explanations
-##' of `hake_total_biomass_age_1_2024`.
+##' of `hake_total_biomass_age_1_2024`. Credible intervals were not easily
+##' available but may be included in future updates.
 ##'
 ##' @format A tibble also of class `pacea_biomass` with columns:
 ##' \describe{
 ##'   \item{year:}{year of the estimate of total age-1 biomass (all females and
 ##'   males), where the estimate is for the start of the year}
-##'   \item{low:}{low end (2.5th percentile) of the 95\% credible interval for
-##'   age-1 biomass; not available (easily) so `NA` for all years}
 ##'   \item{median:}{median estimate of age-1 biomass, in thousands of tonnes at
 ##'   the start of the year}
-##'   \item{high:}{high end (97.5th percentile) of the 95\% credible interval for
-##'   age-1 biomass; not available (easily) so `NA` for all years}
 ##'  }
 ##'
 ##' @examples
