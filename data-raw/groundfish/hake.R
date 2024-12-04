@@ -108,7 +108,6 @@ if(check_index_changed(hake_recruitment_over_2010,
   plot(hake_recruitment_over_2010)
 }
 
-
 # Recruitment scaled by R0
 
 hake_recruitment_over_R0_new <- readRDS(paste0(hake_dir,
@@ -142,6 +141,42 @@ if(check_index_changed(hake_recruitment_over_R0,
   plot(hake_recruitment_over_R0)
 }
 
+# Recruitment deviations
+
+hake_recruitment_deviations_new <- readRDS(paste0(hake_dir,
+                                                  "hake_recruitment_deviations_",
+                                                  assess_yr,
+                                                  ".rds"))
+
+hake_recruitment_deviations_new <- filter(hake_recruitment_deviations_new,
+                                          year > 1965)   # 1966 is first year of model
+
+class(hake_recruitment_deviations_new) <- c("pacea_recruitment",
+                                            class(hake_recruitment_deviations_new))
+
+attr(hake_recruitment_deviations_new, "axis_name") <-
+  "Pacific Hake recruitment deviations"
+
+# Keep if statement so okay to run multiple times
+check_index_changed(hake_recruitment_deviations,
+                    hake_recruitment_deviations_new)
+
+if(check_index_changed(hake_recruitment_deviations,
+                       hake_recruitment_deviations_new)){
+  hake_recruitment_deviations <- hake_recruitment_deviations_new
+
+  assign(paste0("hake_recruitment_deviations_", assess_yr),
+         hake_recruitment_deviations_new)
+
+  usethis::use_data(hake_recruitment_deviations,
+                    overwrite = TRUE)
+
+  create_data(paste0("hake_recruitment_deviations_", assess_yr),
+              get(paste0("hake_recruitment_deviations_", assess_yr)))
+
+  plot(hake_recruitment_deviations)
+}
+
 # Spawning biomass
 
 hake_biomass_new <- readRDS(paste0(hake_dir,
@@ -173,4 +208,37 @@ if(check_index_changed(hake_biomass,
               get(paste0("hake_biomass_", assess_yr)))
 
   plot(hake_biomass)
+}
+
+# Total biomass of age-1 hake
+
+hake_total_biomass_age_1_new <- readRDS(paste0(hake_dir,
+                                               "hake_total_biomass_age_1_",
+                                               assess_yr,
+                                               ".rds"))
+
+class(hake_total_biomass_age_1_new) <- c("pacea_biomass",
+                                         class(hake_total_biomass_age_1_new))
+
+attr(hake_total_biomass_age_1_new, "axis_name") <-
+  "Pacific Hake total biomass of age-1 fish (thousand t)"
+
+# Keep if statement so okay to run multiple times
+check_index_changed(hake_total_biomass_age_1,
+                    hake_total_biomass_age_1_new)
+
+if(check_index_changed(hake_total_biomass_age_1,
+                       hake_total_biomass_age_1_new)){
+  hake_total_biomass_age_1 <- hake_total_biomass_age_1_new
+
+  assign(paste0("hake_total_biomass_age_1_", assess_yr),
+         hake_total_biomass_age_1_new)
+
+  usethis::use_data(hake_total_biomass_age_1,
+                    overwrite = TRUE)
+
+  create_data(paste0("hake_total_biomass_age_1_", assess_yr),
+              get(paste0("hake_total_biomass_age_1_", assess_yr)))
+
+  plot(hake_total_biomass_age_1)
 }

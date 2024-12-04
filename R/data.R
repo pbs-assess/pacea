@@ -703,6 +703,42 @@
 ##' @rdname hake_biomass
 "hake_biomass_2024"
 
+##' Pacific Hake annual total biomass of age-1 fish as estimated by
+##' the most recent (2024) stock assessment.
+##'
+##' The Pacific Hake stock is managed and assessed through an Agreement between
+##' Canada and the United States. These estimates comes from the most
+##' recent joint stock assessment, and, importantly, are for the coastwide stock
+##' from California to British Columbia.
+##'
+##' See `?hake_recruitment` for further details and references, and explanations
+##' of `hake_total_biomass_age_1_2024`.
+##'
+##' @format A tibble also of class `pacea_biomass` with columns:
+##' \describe{
+##'   \item{year:}{year of the estimate of total age-1 biomass (all females and
+##'   males), where the estimate is for the start of the year}
+##'   \item{low:}{low end (2.5th percentile) of the 95\% credible interval for
+##'   age-1 biomass; not available (easily) so `NA` for all years}
+##'   \item{median:}{median estimate of age-1 biomass, in thousands of tonnes at
+##'   the start of the year}
+##'   \item{high:}{high end (97.5th percentile) of the 95\% credible interval for
+##'   age-1 biomass; not available (easily) so `NA` for all years}
+##'  }
+##'
+##' @examples
+##' \dontrun{
+##' hake_total_biomass_age_1
+##' plot(hake_total_biomass_age_1)
+##' }
+##' @author Andrew Edwards
+##' @source Generated from Andy running (in the hake repository)
+##'   `pacea_save()` and then here `data-raw/groundfish/hake.R`.
+"hake_total_biomass_age_1"
+
+##' @rdname hake_total_biomass_age_1
+"hake_total_biomass_age_1_2024"
+
 ##' Pacific Hake annual age-0 recruitments divided by recruitments in 2010, as
 ##' estimated by the most recent stock assessment.
 ##'
@@ -788,6 +824,42 @@
 
 ##' @rdname hake_recruitment_over_R0
 "hake_recruitment_over_R0_2024"
+
+##' Pacific Hake annual log-scale age-0 recruitment deviations from the
+##' stock-recruitment curve, as estimated by the most recent stock assessment.
+##'
+##' For each Markov chain Monte Carlo (MCMC) sample there is an estimated
+##' recruitment (in each year), plus a stock-recruitment-relationship value
+##' based on that MCMC sample's estimate of steepness, unfished recruitment,
+##' and spawning biomass. The difference (estimated minus
+##' stock-recruitment-relationship value) is the deviation, which is given on a natural log scale.
+##' Values are given for 1966 (initial year of the model) onwards.
+##'
+##' See `?hake_recruitment` for further details and reference regarding hake,
+##' and explanations of `hake_recruitment_deviations_2024` etc.
+##'
+##' @format A tibble also of class `pacea_recruitment` with columns:
+##' \describe{
+##'   \item{year:}{year of the estimate of the recruitment deviation}
+##'   \item{low:}{low end (2.5th percentile) of the 95\% credible interval for
+##'   the log-scale recruitment deviation, unitless}
+##'   \item{median:}{median estimate of log-scale recruitment deviation, unitless}
+##'   \item{high:}{high end (97.5th percentile) of the 95\% credible interval for
+##'   the log-scale recruitment deviation, unitless}
+##'  }
+##'
+##' @examples
+##' \dontrun{
+##' hake_recruitment_deviations
+##' plot(hake_recruitment_deviations)
+##' }
+##' @author Andrew Edwards
+##' @source Generated from Andy running (in the hake repository)
+##'   `pacea_save()` and then here `data-raw/groundfish/hake.R`.
+"hake_recruitment_deviations"
+
+##' @rdname hake_recruitment_deviations
+"hake_recruitment_deviations_2024"
 
 
 #' BC coastline
@@ -1458,7 +1530,7 @@
 ##'
 ##' The North Pacific Current Bifurcation Index is an annual index indicating
 ##' the north-south variation of where the North Pacific Current bifurcates into
-##' the northward-flowing Alaska Current and the sourthward-flowing California Current.
+##' the northward-flowing Alaska Current and the southward-flowing California Current.
 ##'
 ##' The North Pacific Current Bifurcation Index (BI) was developed by Malick et
 ##' al. (2017), who found that a northward-shifted bifurcation was associated
