@@ -15,7 +15,7 @@
   y_tick_by = 0.25,
   y_tick_start = NULL,
   y_tick_end = NULL,
-  y_tick_max_number = 200,
+  y_tick_max_number = 50,
   x_tick_extra_years = 200,
   start_decade_ticks = lubridate::ymd("1800-01-01", truncated = 2),
   event_years = NULL,
@@ -54,9 +54,10 @@ corresponding `date` is for 1st January of each year.}
   \item{"plain":}{just a plain line}
 }}
 
-\item{y_tick_by}{increment for y-axis ticks (for [plot.pacea_biomass()] gets
+\item{y_tick_by}{increment for y-axis ticks; gets
 overwritten in `add_tickmarks()` if this yields more than
-`y_tick_max_number` tickmarks.}
+`y_tick_max_number` tickmarks. If using [plot.pacea_biomass()] the default
+of 1 gets automatically changed to 0.25 for `plot(hake_biomass)`.}
 
 \item{y_tick_start}{where to start y-axis tickmarks, set automatically if not
 specified (may need to occasionally specify)}

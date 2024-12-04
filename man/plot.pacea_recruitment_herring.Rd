@@ -36,9 +36,10 @@ five-panel plot; for single-panel just specific `mar`; see `?par`}
 
 \item{oma_all_regions}{similar to `mar_all_regions`}
 
-\item{y_tick_by}{increment for y-axis ticks (for [plot.pacea_biomass()] gets
+\item{y_tick_by}{increment for y-axis ticks; gets
 overwritten in `add_tickmarks()` if this yields more than
-`y_tick_max_number` tickmarks.}
+`y_tick_max_number` tickmarks. If using [plot.pacea_biomass()] the default
+of 1 gets automatically changed to 0.25 for `plot(hake_biomass)`.}
 
 \item{title}{if `NULL` then no figure title (using `main()`), if `full` (the
 default) then spell out the Stock Assessment Region, and if `short` then

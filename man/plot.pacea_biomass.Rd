@@ -14,6 +14,7 @@
   start_decade_ticks = lubridate::ymd("1800-01-01", truncated = 2),
   style = "no_uncertainty",
   y_max = NULL,
+  y_tick_max_number = 50,
   uncertainty_shade_col = rgb(0, 0, 1, 0.1),
   uncertainty_line_col = "blue",
   uncertainty_line_lty = 3,
@@ -37,9 +38,10 @@ if showing uncertainties (likely always `median`)}
 \item{ylab}{y-axis label, the default is an attribute of the `pacea_index`
 object.}
 
-\item{y_tick_by}{increment for y-axis ticks (for [plot.pacea_biomass()] gets
+\item{y_tick_by}{increment for y-axis ticks; gets
 overwritten in `add_tickmarks()` if this yields more than
-`y_tick_max_number` tickmarks.}
+`y_tick_max_number` tickmarks. If using [plot.pacea_biomass()] the default
+of 1 gets automatically changed to 0.25 for `plot(hake_biomass)`.}
 
 \item{x_tick_extra_years}{number of extra years to expand around the range
 of data for which to add annual tick marks (does not expand the axis); in
@@ -55,6 +57,8 @@ of `obj`}
 
 \item{y_max}{maximum y value for certain types of plot (use this if you get
 an error when specifying `ylim`)}
+
+\item{y_tick_max_number}{maximum number of y tickmarks.}
 
 \item{uncertainty_shade_col}{colour of shading for uncertainty}
 

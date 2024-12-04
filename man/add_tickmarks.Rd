@@ -9,7 +9,7 @@ add_tickmarks(
   y_tick_by,
   y_tick_start,
   y_tick_end,
-  y_tick_max_number = 200,
+  y_tick_max_number = 50,
   x_tick_extra_years,
   start_decade_ticks
 )
@@ -18,9 +18,10 @@ add_tickmarks(
 \item{obj_lub}{obj a `pacea_index` object, which is a time series, with a date
 column that is the lubridate `date` class.}
 
-\item{y_tick_by}{increment for y-axis ticks (for [plot.pacea_biomass()] gets
+\item{y_tick_by}{increment for y-axis ticks; gets
 overwritten in `add_tickmarks()` if this yields more than
-`y_tick_max_number` tickmarks.}
+`y_tick_max_number` tickmarks. If using [plot.pacea_biomass()] the default
+of 1 gets automatically changed to 0.25 for `plot(hake_biomass)`.}
 
 \item{y_tick_start}{where to start y-axis tickmarks, set automatically if not
 specified (may need to occasionally specify)}
