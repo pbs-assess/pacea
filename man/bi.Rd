@@ -31,7 +31,7 @@ bi
 \description{
 The North Pacific Current Bifurcation Index is an annual index indicating
 the north-south variation of where the North Pacific Current bifurcates into
-the northward-flowing Alaska Current and the sourthward-flowing California Current.
+the northward-flowing Alaska Current and the southward-flowing California Current.
 }
 \details{
 The North Pacific Current Bifurcation Index (BI) was developed by Malick et

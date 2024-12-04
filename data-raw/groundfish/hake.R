@@ -217,6 +217,15 @@ hake_total_biomass_age_1_new <- readRDS(paste0(hake_dir,
                                                assess_yr,
                                                ".rds"))
 
+if(!is.na(hake_total_biomass_age_1_new[1, "low"])){
+  stop("Can remove the next lines it seems as now have uncertainties")
+}
+
+# Removing these makes plot(hake_total_biomass_age_1) automatically work
+hake_total_biomass_age_1_new <- dplyr::select(hake_total_biomass_age_1_new,
+                                              -c("low",
+                                                 "high"))
+
 class(hake_total_biomass_age_1_new) <- c("pacea_biomass",
                                          class(hake_total_biomass_age_1_new))
 

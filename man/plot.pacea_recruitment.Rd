@@ -14,6 +14,7 @@
   start_decade_ticks = lubridate::ymd("1800-01-01", truncated = 2),
   style = "no_uncertainty",
   uncertainty_bar_col = "blue",
+  y_min = NULL,
   y_max = NULL,
   add_line_at_1 = FALSE,
   add_line_at_1_col = "darkgreen",
@@ -33,7 +34,9 @@ if showing uncertainties (likely always `median`)}
 \item{ylab}{y-axis label, the default is an attribute of the `pacea_index`
 object.}
 
-\item{y_tick_by}{increment for y-axis ticks}
+\item{y_tick_by}{increment for y-axis ticks (for [plot.pacea_biomass()] gets
+overwritten in `add_tickmarks()` if this yields more than
+`y_tick_max_number` tickmarks.}
 
 \item{x_tick_extra_years}{number of extra years to expand around the range
 of data for which to add annual tick marks (does not expand the axis); in
@@ -50,8 +53,10 @@ of `obj`}
 \item{uncertainty_bar_col}{colour for uncertainty bars for certain types of
 plot (e.g. estimated fish recruitment)}
 
-\item{y_max}{maximum y value for certain types of plot (use this if you get
-an error when specifying `ylim`)}
+\item{y_min, y_max}{minimum or maximum y value for certain types of plot
+(specify this instead of `ylim`); recruitment deviations are positive and
+negative and so if not specified this will create symmetric y-axis
+(`y_min` = - `y_max`).}
 
 \item{add_line_at_1}{whether to add a horizontal line at 1 (only sensible for scaled recruitments)}
 
@@ -79,6 +84,8 @@ plot(hake_recruitment,
               lubridate::dmy(01012040))) # to expand x-axis
 plot(hake_recruitment_over_2010)  # automatically changes style of plot
                                   #  if 'over' is in the object name
+plot(hake_recruitment_deviations) # automatically plots with symmetric
+                                  #  y-axis like in the assessment
 }
 }
 \author{

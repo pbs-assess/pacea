@@ -3,7 +3,7 @@
 \name{plot_with_uncertainty_discrete}
 \alias{plot_with_uncertainty_discrete}
 \title{Plot medians with uncertainty bars, such as for stock assessment
-recruitment; internal function called from `plot.pacea_recruitment()`.}
+recruitment; called from `plot.pacea_recruitment()`.}
 \usage{
 plot_with_uncertainty_discrete(
   obj_lub,
@@ -12,6 +12,7 @@ plot_with_uncertainty_discrete(
   ylab,
   x_tick_extra_years,
   uncertainty_bar_col,
+  y_min = 0,
   y_max,
   add_line_at_1,
   add_line_at_1_col,
@@ -23,7 +24,7 @@ plot_with_uncertainty_discrete(
 \item{obj_lub}{obj a `pacea_recruitment` object, which is a time series, with a date
 column that is the lubridate `date` class. Can be absolute or relative
 recruitment (scaled by a particular year's recruitment or by assumed
-unfished equilibrium recruitment).}
+unfished equilibrium recruitment) or recruitment deviations.}
 
 \item{value}{the column to plot if no uncertainties, or what to plot as dots
 if showing uncertainties (likely always `median`)}
@@ -41,8 +42,10 @@ the default big here.}
 \item{uncertainty_bar_col}{colour for uncertainty bars for certain types of
 plot (e.g. estimated fish recruitment)}
 
-\item{y_max}{maximum y value for certain types of plot (use this if you get
-an error when specifying `ylim`)}
+\item{y_min, y_max}{minimum or maximum y value for certain types of plot
+(specify this instead of `ylim`); recruitment deviations are positive and
+negative and so if not specified this will create symmetric y-axis
+(`y_min` = - `y_max`).}
 
 \item{add_line_at_1}{whether to add a horizontal line at 1 (only sensible for scaled recruitments)}
 

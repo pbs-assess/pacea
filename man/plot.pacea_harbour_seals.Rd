@@ -45,7 +45,9 @@ eight panel plot (keep `region = NULL`).}
 \item{ylab}{y-axis label, the default is an attribute of the `pacea_index`
 object.}
 
-\item{y_tick_by}{increment for y-axis ticks}
+\item{y_tick_by}{increment for y-axis ticks (for [plot.pacea_biomass()] gets
+overwritten in `add_tickmarks()` if this yields more than
+`y_tick_max_number` tickmarks.}
 
 \item{x_tick_extra_years}{number of extra years to expand around the range
 of data for which to add annual tick marks (does not expand the axis); in

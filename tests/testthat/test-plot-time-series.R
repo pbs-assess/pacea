@@ -68,6 +68,7 @@ test_that("recruitment plotting works with various options", {
                         y_max = 100))
   expect_invisible(plot(hake_recruitment_over_2010))
   expect_invisible(plot(hake_recruitment_over_R0))
+  expect_invisible(plot(hake_recruitment_deviations))
 })
 
 # Adapting some of that for hake_biomass

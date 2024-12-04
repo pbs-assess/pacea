@@ -45,6 +45,7 @@ plot.pacea_biomass <- function(obj,
                                                                    truncated = 2),
                                style = "no_uncertainty",
                                y_max = NULL,
+                               y_tick_max_number = 50,
                                uncertainty_shade_col = rgb(0, 0, 1, .1),
                                uncertainty_line_col = "blue",
                                uncertainty_line_lty = 3,
@@ -101,10 +102,17 @@ plot.pacea_biomass <- function(obj,
                  ...)
   }
 
+  if(attr(obj_lub, "axis_name") == "Pacific Hake spawning biomass (million t)"){
+    if(y_tick_by == 1){
+      y_tick_by <- 0.25
+    }
+  }
+
   add_tickmarks(obj_lub,
                 y_tick_by = y_tick_by,
                 y_tick_start = 0,
                 y_tick_end = ceiling(par("usr")[4]),
+                y_tick_max_number = y_tick_max_number,
                 x_tick_extra_years = x_tick_extra_years,
                 start_decade_ticks = start_decade_ticks)
 }

@@ -24,10 +24,14 @@
 ##'   Report style plots}
 ##'   \item{"plain":}{just a plain line}
 ##' }
-##' @param y_tick_by increment for y-axis ticks
+##' @param y_tick_by increment for y-axis ticks; gets
+##'   overwritten in `add_tickmarks()` if this yields more than
+##'   `y_tick_max_number` tickmarks. If using [plot.pacea_biomass()] the default
+##'   of 1 gets automatically changed to 0.25 for `plot(hake_biomass)`.
 ##' @param y_tick_start where to start y-axis tickmarks, set automatically if not
 ##'   specified (may need to occasionally specify)
 ##' @param y_tick_end where to end y-axis tickmars, as for `y_tick_start`
+##' @param y_tick_max_number maximum number of y tickmarks.
 ##' @param x_tick_extra_years number of extra years to expand around the range
 ##'   of data for which to add annual tick marks (does not expand the axis); in
 ##'   hindsight could have simplified this in `add_tickmarks()`, but just made
@@ -92,6 +96,7 @@ plot.pacea_index <- function(obj,
                              y_tick_by = 0.25,
                              y_tick_start = NULL,
                              y_tick_end = NULL,
+                             y_tick_max_number = 50,
                              x_tick_extra_years = 200,
                              start_decade_ticks = lubridate::ymd("1800-01-01",
                                                                  truncated = 2),
@@ -146,6 +151,7 @@ plot.pacea_index <- function(obj,
                 y_tick_by = y_tick_by,
                 y_tick_start = y_tick_start,
                 y_tick_end = y_tick_end,
+                y_tick_max_number = y_tick_max_number,
                 x_tick_extra_years = x_tick_extra_years,
                 start_decade_ticks = start_decade_ticks)
 

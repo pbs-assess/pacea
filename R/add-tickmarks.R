@@ -18,6 +18,7 @@ add_tickmarks <- function(obj_lub,
                           y_tick_by,
                           y_tick_start,
                           y_tick_end,
+                          y_tick_max_number = 50,
                           x_tick_extra_years,
                           start_decade_ticks){
   min <- min(lubridate::floor_date(obj_lub$date,
@@ -58,6 +59,16 @@ add_tickmarks <- function(obj_lub,
   # that nothing got messed up. Though if they look funny people should just
   # change y_tick_by, which has default 0.25 for indices, which likely just works
   # as they are standardised.
+  # For plot.pacea_biomass() default y_tick_by is 1 which has worked fine,
+  # except for age-1 hake since max is about 1200 (x1000 tons). So tweaking
+  # here with a new argument y_tick_max_number.
+
+  while(length(seq(y_tick_start,
+                   y_tick_end,
+                   by = y_tick_by)) > y_tick_max_number){
+    y_tick_by <- y_tick_by*10
+  }
+
   axis(2,
        seq(y_tick_start,
            y_tick_end,
