@@ -105,7 +105,7 @@ Currently, pacea contains:
 
 - estimates of abundances for Harbour Seals.
 
-- estimates of spawning stock biomass and annual recruitments for Pacific Hake
+- estimates of biomass and annual recruitments for Pacific Hake
   and Pacific Herring. **Updated annually.**
 
 - zooplankton biomass anomalies in the Strait of Georgia, for 25
@@ -120,20 +120,27 @@ The values highlighed above with **Updated monthly** have been updated each
 month since the release of pacea, as documented in the [NEWS](NEWS.md), which it
 is advisable to check when you update your pacea installation (see below). Since the initial release we have
 also added the following in response to user requests (some are documented in
-the Issues, with latest first):
+the Issues) with latest first:
+
+- for Pacific Hake, added estimates of total biomass of age-1 fish and
+  recruitment deviations (required updating some plotting and tickmark functions
+  which should all
+  still be back compatible); see the
+  [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
+  vignette.
 
 - added Mike Malick's oceanographic index: `bi`, the North Pacific Current
   Bifurcation Index; see the [indices
   vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/indices.html)
-  and `?bi`
+  and `?bi`.
 
 - added results from the Hindcast of the Salish Sea (HOTSSea) physical oceanography model that
-  recreates conditions throughout the Salish Sea from 1980 to 2018. See the new [hotssea vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/hotssea.html)
+  recreates conditions throughout the Salish Sea from 1980 to 2018. See the new [hotssea vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/hotssea.html).
 
 - added results from the BCCM model over its full original domain (rather than
-  just restricted to Canada's Exclusive Economic Zone), see the new [bccm_full vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm_full.html)
+  just restricted to Canada's Exclusive Economic Zone), see the new [bccm_full vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm_full.html).
 
-- added depths for the `grid26` model domain, see `?grid26_depth`
+- added depths for the `grid26` model domain, see `?grid26_depth`.
 
 - updated citation information (incremented the year, added a DOI through Zenodo, and added two new co-authors:
   Kelsey Flynn and Greig Oldford), see `citation("pacea") or scroll down below.

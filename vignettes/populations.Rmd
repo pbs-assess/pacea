@@ -9,10 +9,10 @@ vignette: >
 date: "Last rendered on `r format(Sys.time(), '%d %B, %Y')`"
 ---
 
-<!-- To build either run
+```{r, eval = FALSE, echo = FALSE}
 rmarkdown::render("populations.Rmd")
- or click the knit button in RStudio -->
-
+# or click the knit button in RStudio
+```
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -40,9 +40,12 @@ the relevant sections below.
 NEW (since original release of pacea): we have updated the Pacific Hake
 estimates with those from the 2024 assessment, but retained the 2023
 assessment's estimates within the package (as `hake_biomass_2023` etc.). See
-below and the help files for more details. And Pacific Herring was added in May 2024.
+below and the help files for more details. Also added total biomass of age-1
+hake and recruitment deviations. And Pacific Herring was added in May 2024.
 
 ## Pacific Hake {#hake}
+
+### Pacific Hake biomass
 
 The hake biomass time series is saved as a `tibble` in `pacea`, as simply:
 ```{r hakebiomass}
@@ -73,6 +76,22 @@ such that the above command `plot(hake_biomass)` first looks to use our tailored
 `plot.pacea_biomass()`, which gives the style of plot shown above. We use this
 approach for `hake_recruitment` and various other objects in `pacea`, to enable
 easy default plotting. All functions have help files, for example `?plot.pacea_biomass`.
+
+We now also include the total biomass of age-1 hake, due to its potential influence on
+hake recruitment [Vestfals et
+al. (2023)](https://doi.org/10.1111/fog.12634). Note this is total female and
+male biomass (not spawning only like `hake_biomass`), and credible intervals
+are not current easily available.
+```{r hakeage1}
+hake_total_biomass_age_1
+tail(hake_total_biomass_age_1)
+```
+for which units are thousands of tonnes, and our default plot is
+```{r hakeage1plot}
+plot(hake_total_biomass_age_1)
+```
+
+### Pacific Hake recruitment
 
 The `hake_recruitment` object contains annual estimates of recruitment of age-0
 fish
@@ -122,6 +141,16 @@ tail(hake_recruitment_over_R0)
 plot(hake_recruitment_over_R0)
 ```
 
+Also now available are the log-scale recruitment deviations from the stock-recruitment
+curve (see `?hake_recruitment_deviations`), which are sometimes used to look for
+environmental drivers, e.g. [Vestfals et
+al. (2023)](https://doi.org/10.1111/fog.12634):
+```{r hakerecdevs}
+hake_recruitment_deviations
+tail(hake_recruitment_deviations)
+plot(hake_recruitment_deviations)
+```
+
 ### Updates due to new stock assessments
 
 Note that the Pacific Hake stock assessment is conducted annually at the start of each year,
@@ -139,7 +168,7 @@ and `hake_biomass_2024` for the spawning biomass estimates from the 2023 and
 2024 assessments. Similarly, we also save `hake_recruitment_2023`,
 `hake_recruitment_2024`, `hake_recruitment_over_2010_2023`,
 `hake_recruitment_over_2010_2024`, `hake_recruitment_over_R0_2023`, and
-`hake_recruitment_over_R0_2024`, plus later years once they become
+`hake_recruitment_over_R0_2024`, plus similar objects and later years once they become
 available. See `?hake_recruitment` for details and references. The above
 examples will work on all these objects, for example, the values and plot shown
 in the previous code chunk, but based on the 2023 assessment results, are:

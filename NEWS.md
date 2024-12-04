@@ -5,6 +5,10 @@ Developers: for some general tips for writing good bullets see https://style.tid
 
 ## Updates by date
 
+* 2024-12-04 Added Pacific Hake age-1 total biomass and recruitment deviations,
+  and necessarily updated several plotting and tickmark functions (should all be back
+  compatible).
+
 * 2024-11-25 New oceanographic index: `bi`, the North Pacific Current
   Bifurcation Index. See README and the indices vignette.
 
