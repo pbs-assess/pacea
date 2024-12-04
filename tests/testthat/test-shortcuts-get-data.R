@@ -33,10 +33,11 @@ test_that("shortcuts work", {
   expect_error(bccm_primaryproduction(force = "testDataFunctions"))
 })
 
+# This failed locally for Andy (when doing test(), but not running
+# individually). Think it's the timeout issue; see README. Works okay on GitHub.
 test_that("Download all bccm data works", {
   bccm_all_variables()
   data1_dir <- paste0(pacea_cache(),"/test_data_01.rds")
   expect_equal(file.exists(data1_dir), TRUE)
   unlink(data1_dir)
 })
-

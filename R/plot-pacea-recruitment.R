@@ -124,7 +124,6 @@ plot.pacea_recruitment <- function(obj,
     y_min = 0
   }
 
-
   if(style == "uncertainty"){
     plot_with_uncertainty_discrete(obj_lub,
                                    value = value,
@@ -138,6 +137,10 @@ plot.pacea_recruitment <- function(obj,
                                    add_line_at_1_lty = add_line_at_1_lty,
                                    ...)
   } else {
+    if(is.null(y_max)){
+      y_max <- max(obj_lub[[value]])
+    }
+
     plot.default(obj_lub$date,
                  obj_lub[[value]], # [[]] returns a vector not a tibble
                  xlab = xlab,
