@@ -14,8 +14,10 @@
 ##'   of `obj`
 ##' @param uncertainty_bar_col colour for uncertainty bars for certain types of
 ##'   plot (e.g. estimated fish recruitment)
-##' @param y_max maximum y value for certain types of plot (use this if you get
-##'   an error when specifying `ylim`)
+##' @param y_min,y_max minimum or maximum y value for certain types of plot
+##'   (specify this instead of `ylim`); recruitment deviations are positive and
+##'   negative and so if not specified this will create symmetric y-axis
+##'   (`y_min` = - `y_max`).
 ##' @param add_line_at_1 whether to add a horizontal line at 1 (only sensible for scaled recruitments)
 ##' @param add_line_at_1_col colour for line at 1
 ##' @param add_line_at_1_lty line type of line at 1
@@ -33,6 +35,8 @@
 ##'               lubridate::dmy(01012040))) # to expand x-axis
 ##' plot(hake_recruitment_over_2010)  # automatically changes style of plot
 ##'                                   #  if 'over' is in the object name
+##' plot(hake_recruitment_deviations) # automatically plots with symmetric
+##'                                   #  y-axis like in the assessment
 ##' }
 plot.pacea_recruitment <- function(obj,
                                    value = "median",
@@ -44,6 +48,7 @@ plot.pacea_recruitment <- function(obj,
                                                                  truncated = 2),
                                    style = "no_uncertainty",
                                    uncertainty_bar_col = "blue",
+                                   y_min = NULL,
                                    y_max = NULL,
                                    add_line_at_1 = FALSE,
                                    add_line_at_1_col = "darkgreen",
@@ -62,15 +67,18 @@ plot.pacea_recruitment <- function(obj,
     style = "uncertainty"
   }
 
+
   if(grepl("over_2010", deparse(substitute(obj)))){
     add_line_at_1 = TRUE
     # Set these defaults if user hasn't changed from default
     if(uncertainty_bar_col == "blue"){
       uncertainty_bar_col = "red"
     }
+
     if(is.null(y_max)){
       y_max = 1.2
     }
+
     if(y_tick_by == 1){
       y_tick_by = 0.1
     }
@@ -82,11 +90,40 @@ plot.pacea_recruitment <- function(obj,
     if(uncertainty_bar_col == "blue"){
       uncertainty_bar_col = "red"
     }
+
     if(is.null(y_max)){
       y_max = 10
     }
     # y_tick_by 1 = default is fine
   }
+
+  if(grepl("hake_recruitment_deviations", deparse(substitute(obj)))){
+    # Set these defaults if user hasn't changed from default
+
+    max_abs_range <- dplyr::select(obj,
+                                   where(is.numeric),
+                                   -"year") %>%
+      range(na.rm = TRUE) %>%
+      abs() %>%
+      max()
+
+    if(is.null(y_min)){
+      y_min <- - max_abs_range
+  }
+
+    if(is.null(y_max)){
+      y_max <- max_abs_range
+    }
+    if(y_tick_by == 1){
+      y_tick_by = 0.5
+    }
+  }
+
+  # Start at 0 for non-deviation plots (if y_min not specified)
+  if(is.null(y_min)){
+    y_min = 0
+  }
+
 
   if(style == "uncertainty"){
     plot_with_uncertainty_discrete(obj_lub,
@@ -94,6 +131,7 @@ plot.pacea_recruitment <- function(obj,
                                    xlab = xlab,
                                    ylab = ylab,
                                    uncertainty_bar_col = uncertainty_bar_col,
+                                   y_min = y_min,
                                    y_max = y_max,
                                    add_line_at_1 = add_line_at_1,
                                    add_line_at_1_col = add_line_at_1_col,
@@ -104,6 +142,8 @@ plot.pacea_recruitment <- function(obj,
                  obj_lub[[value]], # [[]] returns a vector not a tibble
                  xlab = xlab,
                  ylab = ylab,
+                 ylim = c(y_min,
+                          y_max),
                  ...)
   }
 
@@ -113,4 +153,14 @@ plot.pacea_recruitment <- function(obj,
                 y_tick_end = ceiling(par("usr")[4]),
                 x_tick_extra_years = x_tick_extra_years,
                 start_decade_ticks = start_decade_ticks)
+
+  # Add tickmarks in negative direction (for recruitment deviations)
+  if(y_min < 0){
+    axis(2,
+         seq(0,
+             floor(par("usr")[3]),
+             by = - y_tick_by),
+         labels = FALSE,
+         tcl = -0.2)
+  }
 }

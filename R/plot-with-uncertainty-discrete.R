@@ -1,5 +1,5 @@
 ##' Plot medians with uncertainty bars, such as for stock assessment
-##' recruitment; internal function called from `plot.pacea_recruitment()`.
+##' recruitment; called from `plot.pacea_recruitment()`.
 ##'
 ##' Used for data for which the years are kind of discrete and so should not be
 ##' joined up (like for recruitment, as opposed to biomass); helps distinguish
@@ -9,8 +9,9 @@
 ##' @param obj_lub obj a `pacea_recruitment` object, which is a time series, with a date
 ##'   column that is the lubridate `date` class. Can be absolute or relative
 ##'   recruitment (scaled by a particular year's recruitment or by assumed
-##'   unfished equilibrium recruitment).
+##'   unfished equilibrium recruitment) or recruitment deviations.
 ##' @inherit plot.pacea_recruitment
+##' @export
 ##' @return plot of time series with median as circle and bars for uncertainty.
 ##' @author Andrew Edwards
 ##' @examples
@@ -23,6 +24,7 @@ plot_with_uncertainty_discrete <- function(obj_lub,
                                            ylab,
                                            x_tick_extra_years,
                                            uncertainty_bar_col,
+                                           y_min = 0,
                                            y_max,
                                            add_line_at_1,
                                            add_line_at_1_col,
@@ -38,7 +40,7 @@ plot_with_uncertainty_discrete <- function(obj_lub,
        xlab = xlab,
        ylab = ylab,
        pch = 20,
-       ylim = c(0, y_max),   # specifying ylim in main plot call won't override this
+       ylim = c(y_min, y_max),   # specifying ylim in main plot call won't override this
        ...)
 
   abline(h = 0, col = "lightgrey")

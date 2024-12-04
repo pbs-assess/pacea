@@ -51,6 +51,13 @@ add_tickmarks <- function(obj_lub,
        labels = FALSE,
        tcl = -0.3)
 
+  # y-axis; not certain these are guaranteed to include 0, may need to add
+  # something; see end of plot.pacea_recruiment() for adding in negative
+  # tickmarks when starting at 0. Should really be automated here, but
+  # plot.pacea_index() code relies on all this, so would take a bit of checking
+  # that nothing got messed up. Though if they look funny people should just
+  # change y_tick_by, which has default 0.25 for indices, which likely just works
+  # as they are standardised.
   axis(2,
        seq(y_tick_start,
            y_tick_end,
