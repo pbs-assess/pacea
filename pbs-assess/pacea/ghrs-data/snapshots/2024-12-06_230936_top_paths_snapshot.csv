@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,49,18
+/pbs-assess/pacea/tree/main,10,5
+/pbs-assess/pacea/tree/dev-andy,10,1
+/pbs-assess/pacea/blob/main/man/figures/logo.png,3,2
+/pbs-assess/pacea/tree/main/data-raw,3,2
+/pbs-assess/pacea/commits/dev-andy,3,1
+/pbs-assess/pacea/issues/66,3,1
+/pbs-assess/pacea/tree/main/data,2,2
+/pbs-assess/pacea/tree/main/R/older-functions,2,2
+/pbs-assess/pacea/tree/main/vignettes,2,2
