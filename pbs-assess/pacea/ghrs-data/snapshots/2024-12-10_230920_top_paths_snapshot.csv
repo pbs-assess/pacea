@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,32,16
+/pbs-assess/pacea/tree/main,11,4
+/pbs-assess/pacea/tree/dev-andy,9,1
+/pbs-assess/pacea/tree/main/data,5,4
+/pbs-assess/pacea/tree/main/data-raw,5,3
+/pbs-assess/pacea/tree/main/R/older-functions,2,2
+/pbs-assess/pacea/actions/runs/12165671848/job/33930188551,2,1
+/pbs-assess/pacea/tree/main/R,2,1
+/pbs-assess/PACea,1,1
+/pbs-assess/pacea/blob/main/data-raw/groundfish/hake.R,1,1
