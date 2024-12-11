@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,28,15
+/pbs-assess/pacea/tree/main,15,4
+/pbs-assess/pacea/tree/dev-andy,9,1
+/pbs-assess/pacea/tree/main/data-raw,7,4
+/pbs-assess/pacea/tree/main/R,5,2
+/pbs-assess/pacea/tree/main/data,4,3
+/pbs-assess/pacea/tree/main/R/older-functions,3,3
+/pbs-assess/pacea/tree/main/vignettes,2,2
+/pbs-assess/pacea/actions/runs/12165671848/job/33930188551,2,1
+/pbs-assess/pacea/tree/main/data-raw/herring,2,1
