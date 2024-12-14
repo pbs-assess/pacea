@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,31,16
+/pbs-assess/pacea/tree/main,20,5
+/pbs-assess/pacea/tree/dev-andy,9,1
+/pbs-assess/pacea/tree/main/data-raw,8,5
+/pbs-assess/pacea/tree/main/R,6,3
+/pbs-assess/pacea/tree/main/data,4,3
+/pbs-assess/pacea/blob/main/R/create-herring-object.R,4,2
+/pbs-assess/pacea/tree/main/R/older-functions,3,3
+/pbs-assess/pacea/tree/main/data-raw/herring,3,2
+/pbs-assess/pacea/blob/main/data-raw/herring/herring.R,2,2
