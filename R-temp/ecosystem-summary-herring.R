@@ -1,5 +1,6 @@
 ##' Some example ideas for a species-specific Ecosystem Summary. Currently
-##' ignored in .Rbuildignore as developing.
+##' ignored in .Rbuildignore as developing. Splitting into species-specific
+##' ones, to avoid having one giant function.
 ##'
 ##' Doing a herring example for now, based on Jennifer's manuscript.
 ##' Figure 11 gives the indicators that were identified in one or more
