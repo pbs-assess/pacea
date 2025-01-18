@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,66,24
+/pbs-assess/pacea/tree/main,10,2
+/pbs-assess/pacea/commits,5,2
+/pbs-assess/pacea/blob/main/data-raw/hotssea/hotssea-data-interpolation.R,4,2
+/pbs-assess/pacea/commits/main,4,1
+/pbs-assess/pacea/blob/main/data-raw/roms/roms-data-interpolation-full.R,2,2
+/pbs-assess/pacea/blob/main/README.Rmd,2,2
+/pbs-assess/pacea/commit/2275b5e5dae878bc7c326174c7370a6cbfb338de,2,2
+/pbs-assess/pacea/tree/main/data-raw,2,2
+/pbs-assess/pacea/blob/main/man/figures/README-bccm_full.png,2,1
