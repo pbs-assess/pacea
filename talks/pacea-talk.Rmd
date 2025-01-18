@@ -25,6 +25,7 @@ header-includes:
   - \usepackage{colortbl}
   - \usepackage{booktabs}
   - \usepackage{multirow}
+  - \usepackage{cancel}
 classoption: "aspectratio=169"
 # This affects font sizes in figures also:
 fontsize: 12pt
@@ -80,12 +81,27 @@ orchid
 -->
 
 ```{r, setup, include = FALSE}
-long_talk <- TRUE    # if FALSE then chunks with eval=long_talk will not be
-                     # evaluated, as we are writing a shorter version
+# load_all()    # Do this the first time and if update the package while writing
+# the talk. Have commented as it reloads each time, which isn't necessary.
+library(dplyr)
+library(tibble)
+library(kableExtra)
+
+long_talk <- FALSE    # if FALSE then chunks with eval=long_talk will not be
+                      # evaluated, as we are writing a shorter version
+
+long_motivation <- FALSE  # whether to include the original longer motivation
+                         # slides (EAFM, Brianna chat, gslea, open data, why R,
+                         # why github). Opposite is
+                         # short_motivation summarising some of that (or set
+                         # FALSE here if not wanted).
+short_motivation <- !long_motivation
+
 explain_assessment <- FALSE  # set to TRUE for two slides explaining stock assessment
 
 more_details <- FALSE        # set to TRUE for some of the more detailed slides
                              # (setting FALSE for national EAFM talk)
+
 
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -94,15 +110,12 @@ knitr::opts_chunk$set(
   fig.width = 6,
   fig.height = 4,
   fig.align = "center",
-  out.width = "60%"
+  out.width = "60%",
   #out.height = 400
+  cache = TRUE,
+  cache_path = "pacea-talk-cache/",
+  fig.path = "pacea-talk-cache-figs/"
 )
-
-# load_all()    # Do this the first time and if update the package while writing
-# the talk. Have commented as it reloads each time, which isn't necessary.
-library(dplyr)
-library(tibble)
-library(kableExtra)
 
 options(pillar.print_max = 6,   # number of rows to show for a tibble
         pillar.print_min = 6)
@@ -122,7 +135,7 @@ colorize <- function(x, color){
 
 ```{r coverpage, echo=FALSE, out.width = "100%"}
 knitr::include_graphics(paste0(here::here(),
-                               "/talks/talks-manual-figures/pacea-title-slide-eafmwg-national.png"))
+                               "/talks/talks-manual-figures/pacea-title-slide-dfo-noaa-seattle-2025.png"))
 ```
 
 ```{r introduction, child = "introduction.Rmd"}

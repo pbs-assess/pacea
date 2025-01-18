@@ -31,7 +31,8 @@ Add logo. Add references.
 
 --
 Potential high-level DMC (PAC RDG level) five-minute talk, think Andy T would
-actually give it. Sent to Steve, 1/11/24
+actually give it. Sent to Steve, 1/11/24. DOn't think it ever happened, maybe
+was just mentioned somewhere.
 
 pacea: an R package of Pacific ecosystem information to help facilitate an
 ecosystem approach to fisheries management.
@@ -44,3 +45,7 @@ types of information (e.g. outputs from oceanographic models, temperatures from
 buoys, zooplankton biomass anomalies), together with plotting and analytical
 functions.
 - Package authors are from StAR, OSD, and ESD.
+
+--
+For NOAA/DFO Seattle 2025, 10 min talk
+"New Canadian and US data added to pacea"
