@@ -1,7 +1,7 @@
 ---
 title: "pacea"
-subtitle: "an R package of Pacific ecosystem information to help facilitate an ecosystem approach to fisheries management"
-author: "Andrew Edwards and Travis Tai"
+subtitle: "New Canadian and US information added to pacea (since last year)"
+author: "Andrew Edwards"
 output:
   beamer_presentation:
     theme: Singapore
@@ -88,8 +88,13 @@ library(tibble)
 library(kableExtra)
 
 long_talk <- FALSE    # if FALSE then chunks with eval=long_talk will not be
-                      # evaluated, as we are writing a shorter version
+                      # evaluated, as we are writing a shorter version. Now
+                      # doing two versions of sections, since was getting in a
+                      # mess trying to switch individual chunks.
+short_talk <- !long_talk
 
+# Some of the chunks will need fixing if TRUE, can do if needed. Or maybe just
+# simplify things. no time right now (doing dfo/noaa 2025 talk).
 long_motivation <- FALSE  # whether to include the original longer motivation
                          # slides (EAFM, Brianna chat, gslea, open data, why R,
                          # why github). Opposite is
@@ -138,23 +143,31 @@ knitr::include_graphics(paste0(here::here(),
                                "/talks/talks-manual-figures/pacea-title-slide-dfo-noaa-seattle-2025.png"))
 ```
 
-```{r introduction, child = "introduction.Rmd"}
+<!-- Getting in a mess with trying to be too clever. Just make _short versions -->
+<!-- of each to get it done. Keep chunk names the same between them, so will -->
+<!-- have to delete cache when switching -->
+
+```{r introduction, child = "introduction.Rmd", eval = long_talk}
 ```
 
-```{r buoys, child = "buoys.Rmd"}
+```{r introductionshort, child = "introduction_short.Rmd", eval = short_talk}
 ```
 
-```{r indices, child = "indices.Rmd"}
+
+```{r buoys, child = "buoys.Rmd", eval = TRUE}
 ```
 
-```{r populations, child = "populations.Rmd"}
+```{r indices, child = "indices.Rmd", eval = long_talk}
 ```
 
-```{r oisst, child = "oisst.Rmd"}
+```{r populations, child = "populations.Rmd", eval = long_talk}
 ```
 
-```{r bccm, child = "bccm.Rmd"}
+```{r oisst, child = "oisst.Rmd", eval = long_talk}
 ```
 
-```{r summary, child = "summary.Rmd"}
+```{r bccm, child = "bccm.Rmd", eval = long_talk}
+```
+
+```{r summary, child = "summary.Rmd", eval = long_talk}
 ```

@@ -110,7 +110,8 @@ approach data matrix R-package. R package version 0.1 https://github.com/duplise
 ```
 
 <!-- just manually comment out if don't want, trying to automate was getting a -->
-<!-- bit too clever, especially with cacheing --.
+<!-- bit too clever, especially with cacheing -->
+
 ## Motivation
 
 - push to include ecosystem information in advice to fisheries managers
