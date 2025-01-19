@@ -1,0 +1,19 @@
+# Indices
+
+## Climatic and oceanographic indices
+
+Various climate and oceanographic indices are currently included in pacea:
+
+```{r indicestable, echo=FALSE}
+
+kableExtra::kable(pacea_indices, "latex", booktabs = TRUE) %>%
+  kableExtra::kable_styling(latex_options = c("scale_down", "striped"))
+```
+
+## New index
+
+Now includes Mike Malick's North Pacific Current Bifurcation Index:
+
+```{r biplot}
+plot(bi, lwd = 6)
+```

@@ -159,6 +159,9 @@ knitr::include_graphics(paste0(here::here(),
 ```{r indices, child = "indices.Rmd", eval = long_talk}
 ```
 
+```{r indicesshort, child = "indices-short.Rmd", eval = short_talk}
+```
+
 ```{r populations, child = "populations.Rmd", eval = long_talk}
 ```
 
