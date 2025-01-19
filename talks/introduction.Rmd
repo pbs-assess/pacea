@@ -13,7 +13,7 @@
 
 - DFO's Competitive Science Research Fund for funding (project 21-FS-03-13).
 
-```{asis, echo = explain_assessment}
+```{r, asis, echo = explain_assessment}
 ## What is a stock assessment?
 
 - Collect data from surveys and commercial fisheries, including ages of fish
@@ -28,7 +28,7 @@ plot(hake_biomass,
      y_max = 3.5)
 ```
 
-```{asis, echo = explain_assessment}
+```{r, asis, echo = explain_assessment}
 ## What is a stock assessment?
 
 Advice often in the form of 'decision tables' that indicate probabilities of future events given
@@ -44,7 +44,7 @@ different catches:
 ```
 
 <!-- if long_motivation = TRUE colorize here needs fixing, or just unmake it a chunk -->
-```{asis, echo = long_motivation}
+```{r, asis, echo = long_motivation}
 ## Motivation
 
 - Revised Fisheries Act: “... the Minister shall take into account the environmental conditions affecting a fish stock."
@@ -72,7 +72,7 @@ knitr::include_graphics(paste0(here::here(),
                                "/talks/talks-manual-figures/motivation-1.png"))
 ```
 
-```{asis, echo = long_motivation}
+```{r, asis, echo = long_motivation}
 ##
 ```
 ```{r motivation2, echo=FALSE, out.width = "100%", eval = long_motivation}
@@ -80,14 +80,10 @@ knitr::include_graphics(paste0(here::here(),
                                "/talks/talks-manual-figures/motivation-2.png"))
 ```
 
-```{asis, echo = long_motivation}
+```{r, asis, echo = long_motivation}
 ## Motivation (based on a true story)
 
 A search for sea surface temperature yields an overwhelming number (341) of choices:
-```
-
-```{r exit}
-# knitr::knit_exit()
 ```
 
 ```{r motivation4, echo=FALSE, out.width = "90%", eval = long_motivation}
@@ -95,7 +91,7 @@ knitr::include_graphics(paste0(here::here(),
                                "/talks/talks-manual-figures/motivation3.png"))
 ```
 
-```{asis, echo = long_motivation}
+```{r, asis, echo = long_motivation}
 Likely requires extensive data wrangling to be usable, which usually takes way,
 way, longer than anticipated.
 
@@ -126,7 +122,7 @@ approach data matrix R-package. R package version 0.1 https://github.com/duplise
 \normalsize
 ```
 
-```{asis, echo = short_motivation}
+```{r, asis, echo = short_motivation}
 ## Motivation
 
 - push to include ecosystem information in advice to fisheries managers
@@ -157,7 +153,7 @@ approach data matrix R-package. R package version 0.1 https://github.com/duplise
 - All data (except oceanographic model output) is saved within the package, no further downloading
   required, so not relying on external websites being functional.
 
-```{asis, echo = long_motivation}
+```{r, asis, echo = long_motivation}
 ## Why an R package on GitHub?
 
 - Can host freely on GitHub: https://github.com/pbs-assess/pacea
@@ -172,7 +168,7 @@ knitr::include_graphics(paste0(here::here(),
                                "/talks/talks-manual-figures/github-screenshot-small.png"))
 ```
 
-```{asis, echo = long_motivation}
+```{r, asis, echo = long_motivation}
 - 'Passing' badge: ensures package can build in R.
 
 - 'codecov' is the amount of the code that is covered by unit tests, which help weed
@@ -188,7 +184,7 @@ knitr::include_graphics(paste0(here::here(),
                                "/talks/talks-manual-figures/gslmap.plain-1.png"))
 ```
 
-```{asis, echo = long_motivation}
+```{r, asis, echo = long_motivation}
 But it became non-trivial to decide on regions, and we decided to explicitly include
 spatial information, especially regarding outputs of the biogeochemical model.
 ```
@@ -219,8 +215,4 @@ Currently, pacea contains (`r colorize("red is updated/new since last year's mee
 - estimates of spawning stock biomass and annual recruitments for
  `r colorize("Pacific Hake", "red")` and `r colorize("Pacific Herring", "red")`
 
-- `r colorize("zooplankton biomass anomalies in the Strait of Georgia for
-     25 species groups", "red")`
-
-
-HERE - next add details of new things
+- `r colorize("zooplankton biomass anomalies in the Strait of Georgia for 25 species groups", "red")`
