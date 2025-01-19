@@ -8,9 +8,7 @@ Physical biogeochemical oceanographic model
 
 - Curvilinear grid at 3km x 3km resolution
 
-- Interpolated to regular grid
-
-- Clipped to Canada's Pacific EEZ
+- We interpolate to regular grids
 
 \
 Model output provided by Angelica Peña at the Institute of Ocean Sciences (Fisheries and
@@ -22,19 +20,31 @@ Peña, M.A., Fine, I. and Callendar, W. 2019. Interannual variability in primary
 \normalsize
 
 
-## Nearest neighbour linear interpolation
+## Mapping to grids
 
-Curvilinear --> regular grid
+Original mapping:
 
-- Inshore (2 x 2km) and offshore (6 x 6km)
+- clipped to Canada's Pacific Exclusive Economic Zone
 
-- Nearest neighbour interpolation
+- Inshore (2 km x 2 km) and offshore (6 km x 6 km)
 
-  - Performace = RMSE error
+- 40,480 cells
 
-- `r colorize("40,480 cells", "red")`
+- Monthly from 1993-2019
 
-- `r colorize("Monthly from 1993-2019", "red")`
+New additional mapping:
+
+- `r colorize("covers full domain (into US waters)", "red")`
+
+- `r colorize("2 km x 2km grid throughout", "red")`
+
+- `r colorize("161,025 cells", "red")`
+
+- Monthly from 1993-2019
+
+- `r colorize("New grid also used for HOTSSea outputs, and has interpolated
+  depths", "red")`
+
 
 ## Available variables
 
@@ -56,11 +66,18 @@ For applicable variables these are given for
    - sea bottom.
 
 
-## List of available variables
+## List of available variables (original just Canada)
 bccm_data for available variables
 ```{r bccm_data list}
 bccm_data
 ```
+
+## List of available variables (full domain)
+bccm\_data\_full for available variables
+```{r bccm_data_full list}
+bccm_data_full
+```
+
 
 ## Downloading data locally
 The data are saved as `sf` (simple feature) objects in a separate GitHub repository `pacea-data` (https://github.com/pbs-assess/pacea-data).
