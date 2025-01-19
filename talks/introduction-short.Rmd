@@ -1,0 +1,56 @@
+# Introduction
+
+
+## Motivation
+
+- push to include ecosystem information in advice to fisheries managers
+
+- availability of data and model output is the leading impediment
+  - where to find it, wrangling it (e.g netCDF into R), understanding it
+  - Open Data is great, but have to convert raw data into
+  `r colorize("usable information", "red")`
+
+- Primary audience is DFO stock assessment scientists, but usable by anyone
+  (with a minimal working knowledge of R)
+
+## Availability
+
+- Hosted free on Github at https://github.com/pbs-assess/pacea
+
+- Easy installation:
+
+\textcolor{red}{\texttt{remotes::install\_github("pbs-assess/pacea")}}
+
+- All vignettes are rendered on github for easy learning, custom plotting files,
+  help for everything, fully open source
+
+- All data (except oceanographic model output) is saved within the package, no further downloading
+  required, so not relying on external websites being functional
+
+## `pacea` objects (climatic/oceanographic)
+
+Currently, pacea contains (`r colorize("red is updated/new since last year's meeting", "red")`):
+
+- $\cancel{204,039}$ `r colorize(format(nrow(buoy_sst), big.mark = ","), "red")` calculations of daily sea surface
+   temperature based on data from `r nrow(buoy_metadata)` buoys
+
+- outputs from the spatial British Columbia continental margin (BCCM) model,
+   `r colorize("now expanded from just Canada's EEZ to include the full model domain,
+   down to Columbia River", "red")`
+
+- `r colorize("outputs from the spatial Hindcast of the Salish Sea (HOTSSea)
+  physical oceanography model, 1980-2018", "red")`
+
+- NOAA's spatial Optimum Interpolation Sea Surface Temperature (OISST) record
+  `r colorize("updated monthly", "red")`
+
+- $\cancel{9}$ `r colorize(nrow(pacea_indices), "red")` climatic and oceanographic indices, such as the Pacific Decadal Oscillation and those related to El Niño
+
+## `pacea` objects (biological)
+
+- estimates of abundances for Harbour Seals
+
+- estimates of spawning stock biomass and annual recruitments for
+ `r colorize("Pacific Hake", "red")` and `r colorize("Pacific Herring", "red")`
+
+- `r colorize("zooplankton biomass anomalies in the Strait of Georgia for 25 species groups", "red")`

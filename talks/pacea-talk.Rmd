@@ -150,11 +150,10 @@ knitr::include_graphics(paste0(here::here(),
 ```{r introduction, child = "introduction.Rmd", eval = long_talk}
 ```
 
-```{r introductionshort, child = "introduction_short.Rmd", eval = short_talk}
+```{r introductionshort, child = "introduction-short.Rmd", eval = short_talk}
 ```
 
-
-```{r buoys, child = "buoys.Rmd", eval = TRUE}
+```{r buoys, child = "buoys.Rmd", eval = long_talk}
 ```
 
 ```{r indices, child = "indices.Rmd", eval = long_talk}
