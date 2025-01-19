@@ -1,0 +1,28 @@
+# Populations
+
+## Zooplankton in the Strait of Georgia (new)
+
+Biomass anomalies of zooplankton biomass from 1996 onwards from
+
+Perry et al. (2021), as extended by Kelly Young each year for DFO's
+
+State of the Pacific Ocean Report.
+```{r zooplankton}
+zooplankton_sog
+```
+
+## Zooplankton in the Strait of Georgia (new)
+
+Default plot of anomalies of total biomass:
+```{r zooplot}
+plot(zooplankton_sog)
+```
+
+## Zooplankton in the Strait of Georgia
+
+Or plot anomalies for a specific species group:
+
+```{r zooplot2}
+plot(zooplankton_sog,
+     species_group = "cladocera")
+```

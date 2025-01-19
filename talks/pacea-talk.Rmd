@@ -165,6 +165,10 @@ knitr::include_graphics(paste0(here::here(),
 ```{r populations, child = "populations.Rmd", eval = long_talk}
 ```
 
+```{r populationsshort, child = "populations-short.Rmd", eval = short_talk}
+```
+
+
 ```{r oisst, child = "oisst.Rmd", eval = long_talk}
 ```
 
