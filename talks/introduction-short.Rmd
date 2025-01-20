@@ -13,6 +13,11 @@
 - Primary audience is DFO stock assessment scientists, but usable by anyone
   (with a minimal working knowledge of R)
 
+\
+
+\centering pacea: An R package of Pacific ecosystem information to help facilitate an
+ecosystem approach to fisheries management
+
 ## Availability
 
 - Hosted free on Github at https://github.com/pbs-assess/pacea

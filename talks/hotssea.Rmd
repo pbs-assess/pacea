@@ -34,6 +34,7 @@ plot(hotssea_avg30to150m_temperature_max())
 
 ![](talks-manual-figures/hotssea-plot.png){width=60%}
 
+<!--
 ## File storage solutions
 
 - original BCCM results saved in separate GitHub repo: `pacea-data`
@@ -48,3 +49,4 @@ supporting ecosystem model
 development. *Geoscientific Model
 Development*. https://doi.org/10.5194/gmd-2024-58 .
 \normalsize
+-->

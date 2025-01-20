@@ -156,6 +156,16 @@ knitr::include_graphics(paste0(here::here(),
 ```{r buoys, child = "buoys.Rmd", eval = long_talk}
 ```
 
+```{r bccm, child = "bccm.Rmd", eval = long_talk}
+```
+
+```{r bccmshort, child = "bccm-short.Rmd", eval = short_talk}
+```
+
+
+```{r hotssea, child = "hotssea.Rmd"}
+```
+
 ```{r indices, child = "indices.Rmd", eval = long_talk}
 ```
 
@@ -169,15 +179,6 @@ knitr::include_graphics(paste0(here::here(),
 ```
 
 ```{r oisst, child = "oisst.Rmd", eval = long_talk}
-```
-
-```{r bccm, child = "bccm.Rmd", eval = long_talk}
-```
-
-```{r bccmshort, child = "bccm-short.Rmd", eval = short_talk}
-```
-
-```{r hotssea, child = "hotssea.Rmd"}
 ```
 
 ```{r ecosystemsummary, child = "ecosystem-summary.Rmd", eval = FALSE}

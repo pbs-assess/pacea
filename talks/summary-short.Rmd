@@ -34,14 +34,10 @@
  - installation:
    \textcolor{red}{\texttt{remotes::install\_github("pbs-assess/pacea")}}
 
-\
-
 \begin{center}
 \includegraphics[width = 2cm]{"../man/figures/logo.png"}\\
 \emph{We wrangle the data so you don't have to}
 \end{center}
-
-\
 
 ```{r citation, eval=FALSE}
 citation("pacea")
@@ -53,4 +49,5 @@ Edwards AM, Tai TC, Watson J, Peña MA, Hilborn A, Hannah CG, Rooper CN, Flynn
   https://github.com/pbs-assess/pacea.
 ```
 
-(good luck in the competition)
+\hfill \tiny good luck in the competition
+\normalsize
