@@ -6,9 +6,9 @@ Physical biogeochemical oceanographic model
 
 - Regional Ocean Modelling Systen (ROMS)
 
-- Curvilinear grid at 3km x 3km resolution
+- curvilinear grid at 3km x 3km resolution
 
-- We interpolate to regular grids
+- we interpolate to regular grids
 
 \
 Model output provided by Angelica Peña at the Institute of Ocean Sciences (Fisheries and
@@ -25,13 +25,13 @@ Original mapping:
 
 - clipped to Canada's Pacific Exclusive Economic Zone
 
-- Inshore (2 km x 2 km) and offshore (6 km x 6 km)
+- inshore (2 km x 2 km) and offshore (6 km x 6 km)
 
 - 40,480 cells
 
-- Monthly from 1993-2019
+- monthly from 1993-2019
 
-New additional mapping:
+New additional mapping `r colorize("(request from Lisa last year)", "red")`:
 
 - `r colorize("covers full domain (into US waters)", "red")`
 
@@ -39,9 +39,11 @@ New additional mapping:
 
 - `r colorize("161,025 cells", "red")`
 
-- Monthly from 1993-2019
+- monthly from 1993-2019
 
-- `r colorize("New grid also used for HOTSSea outputs, and has interpolated
+- huge filesizes required hosting outputs on Zenodo not GitHub
+
+- `r colorize("new grid also used for HOTSSea outputs, and has interpolated
   depths", "red")`
 
 
@@ -89,8 +91,12 @@ plot(bccm_primaryproduction())
 plot(bccm_primaryproduction_full())
 ```
 
+<!--
+pdf was getting locked and could refresh pacea-talk.pdf, can with this not -->
+<!-- done. COuld do it manually.
 ## Built in plotting - monthly primary production through 2018
+-->
 
-```{r bccmplot2}
+```{r bccmplot2, echo = FALSE, eval = FALSE}
 plot(bccm_primaryproduction_full(), months = 1:12)
 ```

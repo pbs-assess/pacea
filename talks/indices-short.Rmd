@@ -4,11 +4,33 @@
 
 Various climate and oceanographic indices are currently included in pacea:
 
-```{r indicestable, echo=FALSE}
-
+```{r indicestable, echo=FALSE, eval=FALSE}
+# Used to create tex that is copied below and red added to
 kableExtra::kable(pacea_indices, "latex", booktabs = TRUE) %>%
   kableExtra::kable_styling(latex_options = c("scale_down", "striped"))
 ```
+
+\begin{table}
+\centering
+\resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
+\begin{tabular}{lllrr}
+\toprule
+Object & Description & Resolution & Start year & End year\\
+\midrule
+\cellcolor{gray!10}{pdo} & \cellcolor{gray!10}{Pacific Decadal Oscillation} & \cellcolor{gray!10}{monthly} & \cellcolor{gray!10}{1854} & \cellcolor{gray!10}{\textcolor{red}{2024}}\\
+npi\_monthly & North Pacific Index (monthly) & monthly & 1899 & \textcolor{red}{2024}\\
+\cellcolor{gray!10}{npi\_annual} & \cellcolor{gray!10}{North Pacific Index (annual)} & \cellcolor{gray!10}{annual} & \cellcolor{gray!10}{1899} & \cellcolor{gray!10}{\textcolor{red}{2024}}\\
+alpi & Aleutian Low Pressure Index & annual & 1900 & \textcolor{red}{2022}\\
+\cellcolor{gray!10}{oni} & \cellcolor{gray!10}{Oceanic Niño Index} & \cellcolor{gray!10}{monthly} & \cellcolor{gray!10}{1950} & \cellcolor{gray!10}{\textcolor{red}{2024}}\\
+\addlinespace
+npgo & North Pacific Gyre Oscillation & monthly & 1950 & \textcolor{red}{2024}\\
+\cellcolor{gray!10}{ao} & \cellcolor{gray!10}{Arctic Oscillation} & \cellcolor{gray!10}{monthly} & \cellcolor{gray!10}{1950} & \cellcolor{gray!10}{\textcolor{red}{2024}}\\
+soi & Southern Oscillation Index & monthly & 1951 & \textcolor{red}{2024}\\
+\cellcolor{gray!10}{\textcolor{red}{bi}} & \cellcolor{gray!10}{\textcolor{red}{North Pacific Bifurcation Index}} & \cellcolor{gray!10}{\textcolor{red}{annual}} & \cellcolor{gray!10}{\textcolor{red}{1967}} & \cellcolor{gray!10}{\textcolor{red}{2024}}\\
+mei & Multivariate El Niño Southern Oscillation Index & monthly & 1979 & \textcolor{red}{2024}\\
+\bottomrule
+\end{tabular}}
+\end{table}
 
 ## New index
 

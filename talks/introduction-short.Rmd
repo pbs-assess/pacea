@@ -3,34 +3,39 @@
 
 ## Motivation
 
+\centering pacea: An R package of Pacific ecosystem information to help facilitate an
+ecosystem approach to fisheries management
+\
+
 - push to include ecosystem information in advice to fisheries managers
 
-- availability of data and model output is the leading impediment
+- leading impediment: availability of data and model output
   - where to find it, wrangling it (e.g netCDF into R), understanding it
   - Open Data is great, but have to convert raw data into
   `r colorize("usable information", "red")`
 
-- Primary audience is DFO stock assessment scientists, but usable by anyone
+- primary audience is DFO stock assessment scientists, but usable by anyone
   (with a minimal working knowledge of R)
 
-\
-
-\centering pacea: An R package of Pacific ecosystem information to help facilitate an
-ecosystem approach to fisheries management
 
 ## Availability
 
-- Hosted free on Github at https://github.com/pbs-assess/pacea
+- hosted free on GitHub at https://github.com/pbs-assess/pacea
 
-- Easy installation:
+- easy installation:
 
-\textcolor{red}{\texttt{remotes::install\_github("pbs-assess/pacea")}}
+\
 
-- All vignettes are rendered on github for easy learning, custom plotting files,
+\centering \textcolor{red}{\texttt{remotes::install\_github("pbs-assess/pacea")}}
+
+\
+
+- all vignettes are rendered on GitHub for easy learning, custom plotting files,
   help for everything, fully open source
 
-- All data (except oceanographic model output) is saved within the package, no further downloading
-  required, so not relying on external websites being functional
+- all data (except oceanographic model output) is saved within the package
+  - no further downloading required
+  - not relying on external websites being functional
 
 ## `pacea` objects (climatic/oceanographic)
 
