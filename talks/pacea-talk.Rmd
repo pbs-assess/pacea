@@ -171,11 +171,11 @@ knitr::include_graphics(paste0(here::here(),
 ```{r oisst, child = "oisst.Rmd", eval = long_talk}
 ```
 
-<!-- for NOAA talk using the long one and updating with extended domain, since -->
-<!-- want to talk longer about it-->
-```{r bccm, child = "bccm.Rmd", eval = TRUE}
+```{r bccm, child = "bccm.Rmd", eval = long_talk}
 ```
 
+```{r bccmshort, child = "bccm-short.Rmd", eval = short_talk}
+```
 
 ```{r summary, child = "summary.Rmd", eval = long_talk}
 ```
