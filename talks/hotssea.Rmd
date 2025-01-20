@@ -1,0 +1,40 @@
+# HOTSSea
+
+- Hindcast of the Salish Sea (HOTSSea)
+- physical ocean model from 1980 to 2018 [Oldford et al., (*Geoscientific Model
+Development*, in press)](https://doi.org/10.5194/gmd-2024-58).
+- pacea includes temperature and salinty
+- mapped to same 2 km x 2km grid as `bccm_full` (slight overlap in domain)
+- 6,165 spatial cells
+- every month from January 1980 to December 2018
+- various depth ranges
+- monthly statistics (`min`, `mean`, `max`, `std`)
+- saved in the same format as BCCM and OISST output (so same plotting
+  etc. functions can be used)
+
+## Available variables
+HOTSSea objects in pacea are (40 in total):
+```{r hotssea}
+hotssea_data
+```
+
+## Example plot
+
+```{r hotsseaplot, fig.width = 12}
+plot(hotssea_avg30to150m_temperature_max())
+```
+
+## File storage solutions
+
+- original BCCM results saved in separate GitHub repo: `pacea-data`
+- full BCCM and HOTSSea results are much larger, so saved on Zenodo
+- get automatically downloaded and locally cached when users first need them
+
+\
+\footnotesize
+Oldford, G.L., Jarníková, T., Christensen, V., and Dunphy, M. (in press).
+HOTSSea v1: a NEMO-based physical Hindcast of the Salish Sea (1980–2018)
+supporting ecosystem model
+development. *Geoscientific Model
+Development*. https://doi.org/10.5194/gmd-2024-58 .
+\normalsize

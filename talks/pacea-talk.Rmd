@@ -177,5 +177,14 @@ knitr::include_graphics(paste0(here::here(),
 ```{r bccmshort, child = "bccm-short.Rmd", eval = short_talk}
 ```
 
+```{r hotssea, child = "hotssea.Rmd"}
+```
+
+```{r ecosystemsummary, child = "ecosystem-summary.Rmd", eval = FALSE}
+```
+
 ```{r summary, child = "summary.Rmd", eval = long_talk}
+```
+
+```{r acknowledgments, child = "acknowledgments.Rmd", eval = FALSE}
 ```
