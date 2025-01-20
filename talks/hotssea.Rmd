@@ -20,9 +20,19 @@ hotssea_data
 
 ## Example plot
 
-```{r hotsseaplot, fig.width = 12}
+```{r hotsseaplot, echo = FALSE}
+# plot(hotssea_avg30to150m_temperature_max())   # goes off bottom of screen
+png(paste0(here::here(), "/talks/talks-manual-figures/hotssea-plot.png"),
+    width = 670,   # 670 matches size from running from a chunk
+    height = 480)
+plot(hotssea_avg30to150m_temperature_max())
+dev.off()
+```
+```{r hotsseaplot2, eval = FALSE}
 plot(hotssea_avg30to150m_temperature_max())
 ```
+
+![](talks-manual-figures/hotssea-plot.png){width=60%}
 
 ## File storage solutions
 

@@ -1,0 +1,56 @@
+# Summary
+
+## Current uses of pacea (that we know about)
+
+ - Spiny Dogfish: understanding declines over the past 20 years
+
+ - shrimp: impact of including environmental variables on predicting distributions
+
+ - humpback whales and porpoises: environmental covariates in species distribution models
+
+ - Pacific Saury assessment: finding links between two basin-scale indices and process errors, directly supporting Canada's North Pacific Fisheries
+   Commission commitments
+
+ - Petrale Sole stock assessment
+
+ - State of the Pacific Ocean meeting Mar 2024
+
+## Acknowledgments
+
+- `r colorize("Co-authors: Joe Watson, Angelica Peña, Andrea Hilborn, Charles
+  Hannah, Chris Rooper,", "blue")`
+  `r colorize("Kelsey Flynn, and Greig Oldford.", "red")`
+
+- Jessica Nephin, Lindsay Davidson, Strahan Tucker,
+  Brianna Wright, Patrick Thompson, Matt Grinnell, Jaclyn Cleary,
+  Sean Anderson, Philina English, Chris Grandin, Jennifer Boldt, and others.
+
+- DFO's Competitive Science Research Fund for funding (project 21-FS-03-13).
+
+## Installation
+
+ - https://github.com/pbs-assess/pacea
+
+ - installation:
+   \textcolor{red}{\texttt{remotes::install\_github("pbs-assess/pacea")}}
+
+\
+
+\begin{center}
+\includegraphics[width = 2cm]{"../man/figures/logo.png"}\\
+\emph{We wrangle the data so you don't have to}
+\end{center}
+
+\
+
+```{r citation, eval=FALSE}
+citation("pacea")
+
+Edwards AM, Tai TC, Watson J, Peña MA, Hilborn A, Hannah CG, Rooper CN, Flynn
+  KL, Oldford GL (2024). "pacea: An R package of Pacific ecosystem
+  information to help facilitate an ecosystem approach to fisheries
+  management."
+  https://github.com/pbs-assess/pacea.
+```
+
+(good luck in the competition)

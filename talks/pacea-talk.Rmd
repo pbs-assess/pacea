@@ -186,5 +186,5 @@ knitr::include_graphics(paste0(here::here(),
 ```{r summary, child = "summary.Rmd", eval = long_talk}
 ```
 
-```{r acknowledgments, child = "acknowledgments.Rmd", eval = FALSE}
+```{r summaryshort, child = "summary-short.Rmd", eval = short_talk}
 ```

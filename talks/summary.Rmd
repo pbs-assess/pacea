@@ -74,6 +74,7 @@ knitr::include_graphics(paste0(here::here(),
      a new `Issue` (allows others to see, and maybe answer, your question)
 ```
 
+<!-- see short version for maybe more -->
 ## Current uses of pacea (that we know about)
 
  - Spiny Dogfish: understanding declines over the past 20 years
