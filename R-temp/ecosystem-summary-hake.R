@@ -32,7 +32,6 @@
 ##' }
 ecosystem_summary_hake <- function(max_year = 2024){
 
-
   # Going to have to generate anomalies, and so just need medians, at least for now
   herring_competition <- dplyr::filter(herring_spawning_biomass,
                                        region == "WCVI") %>%
@@ -49,10 +48,12 @@ ecosystem_summary_hake <- function(max_year = 2024){
 #  plot(bi)
 #  plot(hake_total_biomass_age_1)
 
-  # Should generalise for adding more on.
-  min_year <- max(min(herring_competition$year),
-                  min(bi$year),
-                  min(hake_total_biomass_age_1$year))
+  # Should generalise for adding more on. Think we should restrict each to the
+  # full range of hake recruitment years. TODO need tweaking regarding year of effect.
+  min_year <- min(hake_recruitment$year)
+    #max(min(herring_competition$year),
+    #              min(bi$year),
+    #              min(hake_total_biomass_age_1$year))
 
   # Decide to calculate anomalies for only the time period given? I think so as
   # that's what would be used in any analysis. Call each an index.
@@ -63,18 +64,20 @@ ecosystem_summary_hake <- function(max_year = 2024){
     dplyr::mutate(anomaly = standardise(median))
   class(herring_index) <- class(oni)  # so a pacea_index for plotting
 
-  # bi can just use as is since it's all being used
-  expect_equal(min(bi$year),
-               min_year)
-  bi_index  <- bi
+  # bi can just use as is since it's all being used. TODO think about year effect
+  #expect_equal(min(bi$year),
+  #             min_year)
+  bi_index  <- dplyr::filter(bi,
+                             year >= min_year)
 
   hake_index <- dplyr::filter(hake_total_biomass_age_1,
                               year >= min_year) %>%
     dplyr::mutate(anomaly = standardise(median))
   class(hake_index) <- class(oni)
 
-  par(mfrow = c(3,1))
+  par(mfrow = c(4,1))
   lwd_index <- 16
+  plot(hake_recruitment)
   plot(herring_index, lwd = lwd_index)
   plot(bi_index, lwd = lwd_index)
   plot(hake_index, lwd = lwd_index)
