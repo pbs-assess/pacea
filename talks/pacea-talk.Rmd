@@ -181,9 +181,6 @@ knitr::include_graphics(paste0(here::here(),
 ```{r oisst, child = "oisst.Rmd", eval = long_talk}
 ```
 
-```{r ecosystemsummary, child = "ecosystem-summary.Rmd", eval = FALSE}
-```
-
 ```{r summary, child = "summary.Rmd", eval = long_talk}
 ```
 

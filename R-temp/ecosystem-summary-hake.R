@@ -22,7 +22,7 @@
 ##'
 ##' Might be simpler to tailor
 ##'   each species-specific function, and not have lots of if statements.
-##' @param species species of interest, might need stock also.
+##' @param max_year maximum year to consider (TODO)
 ##' @return
 ##' @export
 ##' @author Andrew Edwards
@@ -64,7 +64,11 @@ ecosystem_summary_hake <- function(max_year = 2024){
     dplyr::mutate(anomaly = standardise(median))
   class(herring_index) <- class(oni)  # so a pacea_index for plotting
 
-  # bi can just use as is since it's all being used. TODO think about year effect
+# TODO - need to figure out shifting of years. x-axis should be the year of
+ #  influenced age-0 hake recruitment
+# TODO and flip axes
+
+
   #expect_equal(min(bi$year),
   #             min_year)
   bi_index  <- dplyr::filter(bi,
@@ -75,52 +79,59 @@ ecosystem_summary_hake <- function(max_year = 2024){
     dplyr::mutate(anomaly = standardise(median))
   class(hake_index) <- class(oni)
 
+  x_lim <- c(lubridate::dmy(paste0("0101", 1965)),
+             lubridate::dmy(paste0("0101", max_year)))  # TODO automate
   par(mfrow = c(4,1))
   lwd_index <- 16
-  plot(hake_recruitment)
-  plot(herring_index, lwd = lwd_index)
-  plot(bi_index, lwd = lwd_index)
-  plot(hake_index, lwd = lwd_index)
+  plot(hake_recruitment,
+       xlim = x_lim,
+       xlab = "",
+       ylab = "")   # Else too much info; putting it into mtext
+  mtext("Hake age-0 recruitment (billions of fish)", side = 3, adj = 0, cex = 0.7,
+        line = 0.3)
+  plot(herring_index, lwd = lwd_index,
+       xlim = x_lim,
+       xlab = "",
+       ylab = "")
+  mtext("Pacific Herring spawning biomass off WCVI - increases competition, lower recruitment next year",
+        side = 3, adj = 0, cex = 0.7, line = 0.3)
 
-HERE - need to figure out shifting of years. x-axis should be the year of
-  influenced age-0 hake recruitment
+  plot(bi_index, lwd = lwd_index,
+       xlim = x_lim,
+       xlab = "",
+       ylab = "")
+  mtext("North Pacific Current Bifurcation Index - poorer feeding conditions BC/WA/OR, lower recruitment next year",
+        side = 3, adj = 0, cex = 0.7, line = 0.3)
 
+  plot(hake_index, lwd = lwd_index,
+       xlim = x_lim,
+       xlab = "Year",
+       ylab = "")
 
+  mtext("Hake total biomass of age-1 fish - predation on age-0 fish",
+        side = 3, adj = 0, cex = 0.7, line = 0.3)
 
-
-
-
-
-  x_lim = c(lubridate::dmy(paste0("0101", min(years))),   # day-month-year
-            lubridate::dmy(paste0("0101", max(years))))
-
-  plot(herring_recruitment,
-       region = "HG",
-       xlim = x_lim)
-
-  plot(pdo,
-       xlim = x_lim)
-
+  # Earlier temperature ideas:
   # For quickness for now, let's just look at buoy data for buoys within the
   #  study area defined in the manuscript.
   # For now just eyeballing which buoys to use, easiest to id by names:
-  names_hg <- c("Central Dixon Entrance",
-                "South Moresby",   # is maybe just outside, but relevant?
-                "North Hecate Strait",
-                "South Hecate Strait",
-                "West Sea Otter",
-                "East Dellwood Knolls") # also maybe just outside
+  ## names_hg <- c("Central Dixon Entrance",
+  ##               "South Moresby",   # is maybe just outside, but relevant?
+  ##               "North Hecate Strait",
+  ##               "South Hecate Strait",
+  ##               "West Sea Otter",
+  ##               "East Dellwood Knolls") # also maybe just outside
 
-  stn_id_hg <- dplyr::filter(buoy_metadata,
-                             name %in% names_hg)$stn_id  # not necessarily in
-                                        # same order as stn_id_hg. Though think
-                                        # will be given how I first listed the
-                                        # names above. TODO
+  ## stn_id_hg <- dplyr::filter(buoy_metadata,
+  ##                            name %in% names_hg)$stn_id  # not necessarily in
+  ##                                       # same order as stn_id_hg. Though think
+  ##                                       # will be given how I first listed the
+  ##                                       # names above. TODO
 
-  buoy_sst_hg <- dplyr::filter(buoy_sst,
-                               stn_id %in% stn_id_hg)   # generalise variable
-                                        # names at some point to not be HG
-                                        # specific TODO
+  ## buoy_sst_hg <- dplyr::filter(buoy_sst,
+  ##                              stn_id %in% stn_id_hg)   # generalise variable
+  ##                                       # names at some point to not be HG
+  ##                                       # specific TODO
 
   # Usual style of plot:
   #for(i in 1:length(stn_id_hg)){
@@ -128,27 +139,30 @@ HERE - need to figure out shifting of years. x-axis should be the year of
   #       stn_id = stn_id_hg[1]) %>% print()
   #}
 
-  # Want to calculate mean for each time period
-  buoy_sst_hg_spring <- list()
-  for(i in 1:length(stn_id_hg)){
-    buoy_sst_hg_spring[[i]] <-
-      dplyr::filter(buoy_sst_hg,
-                    stn_id %in% stn_id_hg[i],
-                    lubridate::month(date) %in% c(3, 4, 5)) %>%
-      dplyr::mutate(year = lubridate::year(date)) %>%
-      dplyr::group_by(year) %>%
-      summarise(mean = mean(sst,
-                            na.rm = TRUE))
+  ## # Want to calculate mean for each time period
+  ## buoy_sst_hg_spring <- list()
+  ## for(i in 1:length(stn_id_hg)){
+  ##   buoy_sst_hg_spring[[i]] <-
+  ##     dplyr::filter(buoy_sst_hg,
+  ##                   stn_id %in% stn_id_hg[i],
+  ##                   lubridate::month(date) %in% c(3, 4, 5)) %>%
+  ##     dplyr::mutate(year = lubridate::year(date)) %>%
+  ##     dplyr::group_by(year) %>%
+  ##     summarise(mean = mean(sst,
+  ##                           na.rm = TRUE))
 
-    # TODO add a check for how many days in the period, like in quality control
-    # for buoy_sst.
+  ##   # TODO add a check for how many days in the period, like in quality control
+  ##   # for buoy_sst.
 
-    plot(buoy_sst_hg_spring[[i]],
-         xlim = range(years),
-         main = paste0("Mean spring SST, ",
-                       names_hg[i]),
-         type = "o")
+  ##   plot(buoy_sst_hg_spring[[i]],
+  ##        xlim = range(years),
+  ##        main = paste0("Mean spring SST, ",
+  ##                      names_hg[i]),
+  ##        type = "o")
 
-  }
-
+  ## }
+  #return(list(herring_index = herring_index,
+  #            bi_index = bi_index,
+  #            hake_index= hake_index,
+  #            x_lim = x_lim))
 }

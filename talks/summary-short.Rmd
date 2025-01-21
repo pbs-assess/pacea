@@ -15,6 +15,26 @@
 
  - State of the Pacific Ocean meeting Mar 2024
 
+## Ecosystem summaries
+
+Idea is to head towards stock-specific functions like (draft version):
+
+```{r, ecosumplot, echo = FALSE}
+# Before moving into R/
+source(paste0(here::here(),
+              "/R-temp/ecosystem-summary-hake.R"))
+png(paste0(here::here(), "/talks/talks-manual-figures/ecosystem-summary-hake.png"),
+    width = 670,   # 670 matches size from running from a chunk
+    height = 480)
+ecosystem_summary_hake()
+dev.off()
+```
+
+```{r, ecosum, eval = FALSE}
+ecosystem_summary_hake()
+```
+![](talks-manual-figures/ecosystem-summary-hake.png){width=40%}
+
 ## Acknowledgments
 
 - `r colorize("Co-authors: Joe Watson, Angelica Peña, Andrea Hilborn, Charles
