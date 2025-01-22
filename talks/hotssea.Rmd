@@ -4,7 +4,7 @@
 - physical ocean model from 1980 to 2018 [Oldford et al., (*Geoscientific Model
 Development*, in press)](https://doi.org/10.5194/gmd-2024-58).
 - pacea includes temperature and salinty
-- mapped to same 2 km x 2km grid as `bccm_full` (slight overlap in domain)
+- mapped to same 2 km x 2 km grid as `bccm_full` (slight overlap in domain)
 - 6,165 spatial cells
 - every month from January 1980 to December 2018
 - various depth ranges
@@ -43,16 +43,18 @@ hotssea_data
 
 ## Example plot
 
-```{r hotsseaplot, echo = FALSE}
+```{r hotsseaplot, echo = FALSE, include = FALSE}
 # plot(hotssea_avg30to150m_temperature_max())   # goes off bottom of screen
 png(paste0(here::here(), "/talks/talks-manual-figures/hotssea-plot.png"),
     width = 670,   # 670 matches size from running from a chunk
     height = 480)
-plot(hotssea_avg30to150m_temperature_max())
+# plot(hotssea_avg30to150m_temperature_max())
+plot(hotssea_surface_salinity_max())
 dev.off()
 ```
+
 ```{r hotsseaplot2, eval = FALSE}
-plot(hotssea_avg30to150m_temperature_max())
+plot(hotssea_surface_salinity_max())
 ```
 
 ![](talks-manual-figures/hotssea-plot.png){width=60%}

@@ -5,6 +5,7 @@
 
 \centering pacea: An R package of Pacific ecosystem information to help facilitate an
 ecosystem approach to fisheries management
+
 \
 
 - push to include ecosystem information in advice to fisheries managers
@@ -44,15 +45,23 @@ Currently, pacea contains (`r colorize("red is updated/new since last year's mee
 - $\cancel{204,039}$ `r colorize(format(nrow(buoy_sst), big.mark = ","), "red")` calculations of daily sea surface
    temperature based on data from `r nrow(buoy_metadata)` buoys
 
+\pause
+
 - outputs from the spatial British Columbia continental margin (BCCM) model,
    `r colorize("now expanded from just Canada's EEZ to include the full model domain,
-   down to Columbia River", "red")`
+   extending into US waters", "red")`
+
+\pause
 
 - `r colorize("outputs from the spatial Hindcast of the Salish Sea (HOTSSea)
-  physical oceanography model, 1980-2018", "red")`
+  physical oceanography model (including Puget Sound), 1980-2018", "red")`
+
+\pause
 
 - NOAA's spatial Optimum Interpolation Sea Surface Temperature (OISST) record
   `r colorize("updated monthly", "red")`
+
+\pause
 
 - $\cancel{9}$ `r colorize(nrow(pacea_indices), "red")` climatic and oceanographic indices, such as the Pacific Decadal Oscillation and those related to El Niño
 

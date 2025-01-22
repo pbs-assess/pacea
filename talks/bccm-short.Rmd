@@ -6,13 +6,12 @@ Physical biogeochemical oceanographic model
 
 - Regional Ocean Modelling Systen (ROMS)
 
-- curvilinear grid at 3km x 3km resolution
+- curvilinear grid at 3 km x 3 km resolution
 
 - we interpolate to regular grids
 
 \
-Model output provided by Angelica Peña at the Institute of Ocean Sciences (Fisheries and
-Oceans Canada).
+Model output provided by Angelica Peña (DFO)
 
 \
 \footnotesize
@@ -31,11 +30,13 @@ Original mapping:
 
 - monthly from 1993-2019
 
+\pause
+
 New additional mapping `r colorize("(request from Lisa last year)", "red")`:
 
 - `r colorize("covers full domain (into US waters)", "red")`
 
-- `r colorize("2 km x 2km grid throughout", "red")`
+- `r colorize("2 km x 2 km grid throughout", "red")`
 
 - `r colorize("161,025 cells", "red")`
 

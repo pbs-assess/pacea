@@ -23,6 +23,7 @@
 ##' Might be simpler to tailor
 ##'   each species-specific function, and not have lots of if statements.
 ##' @param max_year maximum year to consider (TODO)
+##' @param par_mar vector for `par(mar)` TODO
 ##' @return
 ##' @export
 ##' @author Andrew Edwards
@@ -30,8 +31,10 @@
 ##' \dontrun{
 ##'
 ##' }
-ecosystem_summary_hake <- function(max_year = 2024){
-
+ecosystem_summary_hake <- function(max_year = 2024,
+                                   lwd_index = 8,
+                                   par_mar = c(2, 3, 1.2, 1),
+                                   par_mgp = c(2, 1, 0)){
   # Going to have to generate anomalies, and so just need medians, at least for now
   herring_competition <- dplyr::filter(herring_spawning_biomass,
                                        region == "WCVI") %>%
@@ -81,8 +84,8 @@ ecosystem_summary_hake <- function(max_year = 2024){
 
   x_lim <- c(lubridate::dmy(paste0("0101", 1965)),
              lubridate::dmy(paste0("0101", max_year)))  # TODO automate
-  par(mfrow = c(4,1))
-  lwd_index <- 16
+  par(mfrow = c(4,1),
+      mar = par_mar)
   plot(hake_recruitment,
        xlim = x_lim,
        xlab = "",
@@ -105,11 +108,12 @@ ecosystem_summary_hake <- function(max_year = 2024){
 
   plot(hake_index, lwd = lwd_index,
        xlim = x_lim,
-       xlab = "Year",
+       xlab = "",
        ylab = "")
 
   mtext("Hake total biomass of age-1 fish - predation on age-0 fish",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
+  mtext("Year", side = 1, line = 3)
 
   # Earlier temperature ideas:
   # For quickness for now, let's just look at buoy data for buoys within the
