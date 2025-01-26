@@ -8,7 +8,7 @@
 # Not re-run in 2024 since changing create_data_hake() -> create_data(), but
 # should work.
 load_all()
-assess_yr <- 2024       # Year of the hake assessment; update each year
+assess_yr <- 2025       # Year of the hake assessment; update each year
 
 # The hake-2024/*.rds files are built automatically from (Andy or Chris Grandin)
 #  running `pacea_save()` in the hake-assessment repo after having just built the document.

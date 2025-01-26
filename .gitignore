@@ -47,6 +47,10 @@ data-raw/coastwide-indices/alpi-update.png
 /data-raw/groundfish/hake_recruitment_new.rda
 /data-raw/groundfish/hake_biomass_new.rda
 /data-raw/groundfish/hake-2024/*.rds
+/data-raw/groundfish/hake-2025/*.rds
+/data-raw/groundfish/hake-2026/*.rds
+/data-raw/groundfish/hake-2027/*.rds
+/data-raw/groundfish/hake-2028/*.rds
 
 /data-raw/dummy.txt
 
