@@ -1,5 +1,7 @@
 ##' Ecosystem summary for Pacific Hake. Currently
-##' ignored in .Rbuildignore as developing.
+##' ignored in .Rbuildignore as developing. Need to write proper help once
+##' assessment done. TODO. Keeping pacea and GLORYS ones separate for now as
+##' ranges of years differ.
 ##'
 ##' Flipping anomaly (+/-) for some variables so that +ve is good for hake recuitment, as per table
 ##' in 2025 draft hake assessment. Need to document properly.
@@ -18,6 +20,8 @@
 ##'  * PRED-age0-age1-hake - predation on age-0 hake by age-1 hake (so predation
 ##' in 2024 is due to age-1 in 2024). In the 3rd top model not the top one. But
 ##' show it as we have it.
+##' NPGO_pre (Table A1 has pre and _AS but just go with calling it pre for
+##' now). Shows up in Table 2.
 ##'
 ##' Do not yet have:
 ##' * EKE May-Sep (which is the most influential driver)
@@ -82,7 +86,28 @@ ecosystem_summary_hake <- function(max_year = 2024,
     dplyr::mutate(year = year + 1,
                   anomaly = standardise(anomaly))
 
-  # shift years by 1 like herring and then resntdardise
+  # shift years by 1 like herring, average over Apr-Sep as in Vestfals, and then restandardise
+  pdo_pre_index  <- dplyr::filter(pdo,
+                                  year >= min_year - 1,
+                                  month %in% 4:9) %>%
+    dplyr::group_by(year) %>%
+    dplyr::summarise(anomaly = mean(anomaly)) %>%
+    dplyr::mutate(year = year + 1,
+                  anomaly = standardise(anomaly))
+  class(pdo_pre_index) <- class(oni)  # so a pacea_index for plotting
+
+  # shift years by 1 like herring, average over Apr-Sep as in Vestfals, and then restandardise
+  npgo_pre_index  <- dplyr::filter(npgo,
+                                   year >= min_year - 1,
+                                   month %in% 4:9) %>%
+    dplyr::group_by(year) %>%
+    dplyr::summarise(anomaly = mean(anomaly)) %>%
+    dplyr::mutate(year = year + 1,
+                  anomaly = standardise(anomaly))
+  class(npgo_pre_index) <- class(oni)  # so a pacea_index for plotting
+
+
+  # shift years by 1 like herring, take log (as in Vestfals)  and then restandardise
   hake_age1_index <- dplyr::filter(hake_total_biomass_age_1,
                               year >= min_year - 1) %>%
     dplyr::mutate(year = year + 1,
@@ -91,7 +116,7 @@ ecosystem_summary_hake <- function(max_year = 2024,
 
   x_lim <- c(lubridate::dmy(paste0("0101", 1965)),
              lubridate::dmy(paste0("0101", max_year)))  # TODO automate
-  par(mfrow = c(4,1),
+  par(mfrow = c(6,1),
       mar = par_mar)
   plot(hake_recruitment,
        xlim = x_lim,
@@ -119,6 +144,22 @@ ecosystem_summary_hake <- function(max_year = 2024,
        ylim = rev(range(bi_index$anomaly)),
        y_axis_reverse = TRUE)
   mtext("North Pacific Current Bifurcation Index - poorer feeding conditions BC/WA/OR, lower recruitment next year",
+        side = 3, adj = 0, cex = 0.7, line = 0.3)
+
+  plot(pdo_pre_index, lwd = lwd_index,
+       xlim = x_lim,
+       xlab = "",
+       ylab = "",
+       ylim = rev(range(pdo_pre_index$anomaly)),
+       y_axis_reverse = TRUE)
+  mtext("Pacific Decadal Oscillation preconditioning index - lower general production, lower recruitment next year",
+        side = 3, adj = 0, cex = 0.7, line = 0.3)
+
+  plot(npgo_pre_index, lwd = lwd_index,
+       xlim = x_lim,
+       xlab = "",
+       ylab = "")
+  mtext("North Pacific Gyre Oscillation preconditioning index - higher general production, higher recruitment next year",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
 
   plot(hake_age1_index, lwd = lwd_index,
