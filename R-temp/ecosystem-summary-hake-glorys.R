@@ -167,7 +167,7 @@ ecosystem_summary_hake_glorys <- function(max_year = 2024,
        ylab = "",
        ylim = rev(range(mld_late_larv_index$anomaly)),
        y_axis_reverse = TRUE)
-  mtext("Mean mixed layer depth (Mar-Jun) - TODO figure out",
+  mtext("Mean mixed layer depth during late larval stage (Mar-Jun) - shallower reduces recruitment",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
 
   plot(mld_yolk_index, lwd = lwd_index,
@@ -176,7 +176,7 @@ ecosystem_summary_hake_glorys <- function(max_year = 2024,
        ylab = "",
        ylim = rev(range(mld_yolk_index$anomaly)),
        y_axis_reverse = TRUE)
-  mtext("Mean location of mixed layer depth (Jan-Apr)",
+  mtext("Mean mixed layer depth during yolk stage (Jan-Apr) - shallower reduces recruitment",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
   mtext("Year", side = 1, line = 3)
 }

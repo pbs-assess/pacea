@@ -108,11 +108,12 @@ ecosystem_summary_hake <- function(max_year = 2024,
 
 
   # shift years by 1 like herring, take log (as in Vestfals)  and then restandardise
-  hake_age1_index <- dplyr::filter(hake_total_biomass_age_1,
+  hake_log_age1_index <- dplyr::filter(hake_total_biomass_age_1,
                               year >= min_year - 1) %>%
     dplyr::mutate(year = year + 1,
-                  anomaly = standardise(median))
-  class(hake_age1_index) <- class(oni)
+                  log_median = log(median),
+                  anomaly = standardise(log_median))
+  class(hake_log_age1_index) <- class(oni)
 
   x_lim <- c(lubridate::dmy(paste0("0101", 1965)),
              lubridate::dmy(paste0("0101", max_year)))  # TODO automate
@@ -162,14 +163,14 @@ ecosystem_summary_hake <- function(max_year = 2024,
   mtext("North Pacific Gyre Oscillation preconditioning index - higher general production, higher recruitment next year",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
 
-  plot(hake_age1_index, lwd = lwd_index,
+  plot(hake_log_age1_index, lwd = lwd_index,
        xlim = x_lim,
        xlab = "",
        ylab = "",
-       ylim = rev(range(hake_age1_index$anomaly)),
+       ylim = rev(range(hake_log_age1_index$anomaly)),
        y_axis_reverse = TRUE)
 
-  mtext("Hake total biomass of age-1 fish - predation on age-0 fish",
+  mtext("Hake total log biomass of age-1 fish - predation on age-0 fish",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
   mtext("Year", side = 1, line = 3)
 
