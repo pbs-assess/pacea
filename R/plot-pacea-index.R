@@ -27,7 +27,9 @@
 ##' @param y_tick_by increment for y-axis ticks; gets
 ##'   overwritten in `add_tickmarks()` if this yields more than
 ##'   `y_tick_max_number` tickmarks. If using [plot.pacea_biomass()] the default
-##'   of 1 gets automatically changed to 0.25 for `plot(hake_biomass)`.
+##'   of 1 gets automatically changed to 0.25 for `plot(hake_biomass)`. If
+##'   `y_axis_reverse` is TRUE then the negative of `y_tick_by` (which should
+##'   always be positive) is passed onto `add_tickmarks()`.
 ##' @param y_tick_start where to start y-axis tickmarks, set automatically if not
 ##'   specified (may need to occasionally specify)
 ##' @param y_tick_end where to end y-axis tickmars, as for `y_tick_start`
@@ -105,6 +107,7 @@ plot.pacea_index <- function(obj,
                              event_pch = 20,
                              event_cex = 3,
                              event_col = "grey",
+                             y_axis_reverse = FALSE,
                              ...
                              ){
   stopifnot("value must be a column of the pacea_index object" =
@@ -115,6 +118,10 @@ plot.pacea_index <- function(obj,
 
   stopifnot("event_lub needs to be a Date class (created using lubridate); can use event_years instead for annual events" =
               "Date" %in% class(event_lub) | is.null(event_lub))
+
+  if(y_axis_reverse){
+    y_tick_by = - y_tick_by
+  }
 
   obj_lub <- lubridate_pacea_series(obj = obj,
                                     smooth_over_year = smooth_over_year)

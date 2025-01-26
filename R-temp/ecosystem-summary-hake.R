@@ -1,6 +1,11 @@
 ##' Ecosystem summary for Pacific Hake. Currently
 ##' ignored in .Rbuildignore as developing.
 ##'
+##' Flipping anomaly (+/-) for some variables so that +ve is good for hake recuitment, as per table
+##' in 2025 draft hake assessment. Need to document properly.
+##'   Also shifting years based on that table. # year (x-axis) is the year of
+##'  influenced age-0 hake recruitment
+##'
 ##' Using the drivers we have that were found by
 ##' Vestfals et al. These are currently (from Figure 7):
 ##'  * age-2+ herring spawning? biomass off WCVI (increased competition with herring on summer
@@ -61,26 +66,28 @@ ecosystem_summary_hake <- function(max_year = 2024,
   # Decide to calculate anomalies for only the time period given? I think so as
   # that's what would be used in any analysis. Call each an index.
   # TODO make a function for this, since will get used repeatedly. And check if
-  # min year is min_year then no need to re-standardise
+  # min year is min_year then no need to re-standardise.
+  # year becomes year that hake recruitment is influenced.
   herring_index <- dplyr::filter(herring_competition,
-                                 year >= min_year) %>%
-    dplyr::mutate(anomaly = standardise(median))
+                                 year >= min_year - 1) %>%  # -1 since going to
+                                        # increment next.
+    dplyr::mutate(year = year + 1,
+                  anomaly = standardise(median))
   class(herring_index) <- class(oni)  # so a pacea_index for plotting
 
-# TODO - need to figure out shifting of years. x-axis should be the year of
- #  influenced age-0 hake recruitment
-# TODO and flip axes
 
-
-  #expect_equal(min(bi$year),
-  #             min_year)
+  # shift years by 1 like herring and then restandardise
   bi_index  <- dplyr::filter(bi,
-                             year >= min_year)
+                             year >= min_year - 1) %>%
+    dplyr::mutate(year = year + 1,
+                  anomaly = standardise(anomaly))
 
-  hake_index <- dplyr::filter(hake_total_biomass_age_1,
-                              year >= min_year) %>%
-    dplyr::mutate(anomaly = standardise(median))
-  class(hake_index) <- class(oni)
+  # shift years by 1 like herring and then resntdardise
+  hake_age1_index <- dplyr::filter(hake_total_biomass_age_1,
+                              year >= min_year - 1) %>%
+    dplyr::mutate(year = year + 1,
+                  anomaly = standardise(median))
+  class(hake_age1_index) <- class(oni)
 
   x_lim <- c(lubridate::dmy(paste0("0101", 1965)),
              lubridate::dmy(paste0("0101", max_year)))  # TODO automate
@@ -92,24 +99,34 @@ ecosystem_summary_hake <- function(max_year = 2024,
        ylab = "")   # Else too much info; putting it into mtext
   mtext("Hake age-0 recruitment (billions of fish)", side = 3, adj = 0, cex = 0.7,
         line = 0.3)
+
   plot(herring_index, lwd = lwd_index,
        xlim = x_lim,
        xlab = "",
-       ylab = "")
+       ylab = "",
+       ylim = rev(range(herring_index$anomaly)),   # TODO add to
+                                        # plot.pacea_index and test everything,
+                                        # so don't need to specify this if
+                                        # y_axis_revers = TRUE
+       y_axis_reverse = TRUE)
   mtext("Pacific Herring spawning biomass off WCVI - increases competition, lower recruitment next year",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
 
   plot(bi_index, lwd = lwd_index,
        xlim = x_lim,
        xlab = "",
-       ylab = "")
+       ylab = "",
+       ylim = rev(range(bi_index$anomaly)),
+       y_axis_reverse = TRUE)
   mtext("North Pacific Current Bifurcation Index - poorer feeding conditions BC/WA/OR, lower recruitment next year",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
 
-  plot(hake_index, lwd = lwd_index,
+  plot(hake_age1_index, lwd = lwd_index,
        xlim = x_lim,
        xlab = "",
-       ylab = "")
+       ylab = "",
+       ylim = rev(range(hake_age1_index$anomaly)),
+       y_axis_reverse = TRUE)
 
   mtext("Hake total biomass of age-1 fish - predation on age-0 fish",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
@@ -167,6 +184,6 @@ ecosystem_summary_hake <- function(max_year = 2024,
   ## }
   #return(list(herring_index = herring_index,
   #            bi_index = bi_index,
-  #            hake_index= hake_index,
+  #            hake_age1_index= hake_age1_index,
   #            x_lim = x_lim))
 }
