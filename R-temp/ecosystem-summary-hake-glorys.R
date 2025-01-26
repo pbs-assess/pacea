@@ -94,23 +94,6 @@ ecosystem_summary_hake_glorys <- function(max_year = 2024,
   class(mld_yolk_index) <- class(oni)
 
 
-
-
-
-
-  # Going to have to generate anomalies, and so just need medians, at least for now
-  herring_competition <- dplyr::filter(herring_spawning_biomass,
-                                       region == "WCVI") %>%
-    dplyr::select(c("year",
-                    "median"))
-
-
-  bi
-
-  hake_total_biomass_age_1  # only had median
-
-
-
   # Should generalise for adding more on. Think we should restrict each to the
   # full range of hake recruitment years. TODO need tweaking regarding year of effect.
   min_year <- min(glorys_new$year)
@@ -146,10 +129,13 @@ ecosystem_summary_hake_glorys <- function(max_year = 2024,
   plot(temp_spawn_index, lwd = lwd_index,
        xlim = x_lim,
        xlab = "",
-       ylab = "")
+       ylab = "",
+       ylim = rev(range(temp_spawn_index$anomaly)),
+       y_axis_reverse = TRUE)
   mtext("Mean temperature during spawning - fish less likely to spawn when higher",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
 
+  # TODO not sure which way this goes
   plot(ssh_jac_index, lwd = lwd_index,
        xlim = x_lim,
        xlab = "",
@@ -160,30 +146,37 @@ ecosystem_summary_hake_glorys <- function(max_year = 2024,
   plot(ast_eggs_index, lwd = lwd_index,
        xlim = x_lim,
        xlab = "",
-       ylab = "")
-  mtext("Net along-shore transport - increased northward advection away from juvenile nursery areas decreases recruitment TODO check",
+       ylab = "",
+       ylim = rev(range(ast_eggs_index$anomaly)),
+       y_axis_reverse = TRUE)
+  mtext("Net along-shore transport - increased northward advection away from juvenile nursery areas decreases recruitment",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
 
   plot(pu_late_larv_index, lwd = lwd_index,
        xlim = x_lim,
        xlab = "",
-       ylab = "")
+       ylab = "",
+       ylim = rev(range(pu_late_larv_index$anomaly)),
+       y_axis_reverse = TRUE)
   mtext("Strength of poleward current - increased northward advection away from juvenile nursery areas decreases recruitment",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
 
   plot(mld_late_larv_index, lwd = lwd_index,
        xlim = x_lim,
        xlab = "",
-       ylab = "")
-  mtext("Mean location of mixed layer depth (Mar-Jun) - TODO figure out",
-# larvae aggregate at base of mixed layer so mixed layer depth may limit how far they rise in the water column affecting later transport",
+       ylab = "",
+       ylim = rev(range(mld_late_larv_index$anomaly)),
+       y_axis_reverse = TRUE)
+  mtext("Mean mixed layer depth (Mar-Jun) - TODO figure out",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
 
   plot(mld_yolk_index, lwd = lwd_index,
        xlim = x_lim,
        xlab = "",
-       ylab = "")
-  mtext("Mean location of mixed layer depth (Jan-Apr) - TODO figure out",
+       ylab = "",
+       ylim = rev(range(mld_yolk_index$anomaly)),
+       y_axis_reverse = TRUE)
+  mtext("Mean location of mixed layer depth (Jan-Apr)",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
   mtext("Year", side = 1, line = 3)
 }
