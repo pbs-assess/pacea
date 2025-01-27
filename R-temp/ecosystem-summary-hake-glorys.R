@@ -34,11 +34,12 @@
 ##' \dontrun{
 ##'
 ##' }
-ecosystem_summary_hake_glorys <- function(max_year = 2024,
-                                          lwd_index = 8,
+ecosystem_summary_hake_glorys <- function(max_year = 2024,   # though does to 2026
+                                          lwd_index = 6,  # 8 was good on screen
                                           par_mar = c(2, 3, 1.2, 1),
+                                          par_oma = c(1.5, 0, 0, 0),
                                           par_mgp = c(2, 1, 0)){
-
+  # See ecosystem-summary-hake.R for explanations of those.
 
   glorys_new <- read.csv("DATA_Combined_glorys_hake_UW_for_Andy.csv") %>%
     tibble::as_tibble()
@@ -117,10 +118,13 @@ ecosystem_summary_hake_glorys <- function(max_year = 2024,
   x_lim <- c(lubridate::dmy(paste0("0101", min_year)),
              lubridate::dmy(paste0("0101", max_year)))  # TODO automate
   par(mfrow = c(7,1),
-      mar = par_mar)
+      mar = par_mar,
+      oma = par_oma,
+      mgp = par_mgp)
 
   plot(hake_recruitment,
        xlim = x_lim,
+       y_max = max(dplyr::filter(hake_recruitment, year >= min_year)$high),
        xlab = "",
        ylab = "")   # Else too much info; putting it into mtext
   mtext("Hake age-0 recruitment (billions of fish)", side = 3, adj = 0, cex = 0.7,
@@ -135,30 +139,30 @@ ecosystem_summary_hake_glorys <- function(max_year = 2024,
   mtext("Mean temperature during spawning - fish less likely to spawn when higher",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
 
-  # TODO not sure which way this goes
-  plot(ssh_jac_index, lwd = lwd_index,
-       xlim = x_lim,
-       xlab = "",
-       ylab = "")
-  mtext("Average sea-surface height (off California from Jan-Apr) - TODO not sure",
-        side = 3, adj = 0, cex = 0.7, line = 0.3)
-
   plot(ast_eggs_index, lwd = lwd_index,
        xlim = x_lim,
        xlab = "",
        ylab = "",
        ylim = rev(range(ast_eggs_index$anomaly)),
        y_axis_reverse = TRUE)
-  mtext("Net along-shore transport - increased northward advection away from juvenile nursery areas decreases recruitment",
+  mtext("Net along-shore transport - increased northward advection reduces recruitment",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
 
-  plot(pu_late_larv_index, lwd = lwd_index,
+  plot(mld_yolk_index, lwd = lwd_index,
        xlim = x_lim,
        xlab = "",
        ylab = "",
-       ylim = rev(range(pu_late_larv_index$anomaly)),
+       ylim = rev(range(mld_yolk_index$anomaly)),
        y_axis_reverse = TRUE)
-  mtext("Strength of poleward current - increased northward advection away from juvenile nursery areas decreases recruitment",
+  mtext("Mean mixed layer depth during yolk stage (Jan-Apr) - shallower reduces recruitment",
+        side = 3, adj = 0, cex = 0.7, line = 0.3)
+
+  # TODO not sure which way
+  plot(ssh_jac_index, lwd = lwd_index,
+       xlim = x_lim,
+       xlab = "",
+       ylab = "")
+  mtext("Average sea-surface height (off California from Jan-Apr) - TODO not sure",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
 
   plot(mld_late_larv_index, lwd = lwd_index,
@@ -170,13 +174,14 @@ ecosystem_summary_hake_glorys <- function(max_year = 2024,
   mtext("Mean mixed layer depth during late larval stage (Mar-Jun) - shallower reduces recruitment",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
 
-  plot(mld_yolk_index, lwd = lwd_index,
+  plot(pu_late_larv_index, lwd = lwd_index,
        xlim = x_lim,
        xlab = "",
        ylab = "",
-       ylim = rev(range(mld_yolk_index$anomaly)),
+       ylim = rev(range(pu_late_larv_index$anomaly)),
        y_axis_reverse = TRUE)
-  mtext("Mean mixed layer depth during yolk stage (Jan-Apr) - shallower reduces recruitment",
+  mtext("Strength of poleward undercurrent - increased northward advection reduces recruitment",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
-  mtext("Year", side = 1, line = 3)
+
+  mtext("Year of hake recruitment", side = 1, line = 2)
 }
