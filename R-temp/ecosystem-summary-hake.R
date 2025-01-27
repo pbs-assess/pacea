@@ -41,9 +41,17 @@
 ##'
 ##' }
 ecosystem_summary_hake <- function(max_year = 2024,
-                                   lwd_index = 8,
+                                   lwd_index = 6,   # 8 was good on screen
                                    par_mar = c(2, 3, 1.2, 1),
+                                   par_oma = c(1.5, 0, 0, 0),
                                    par_mgp = c(2, 1, 0)){
+  # From https://stackoverflow.com/questions/13239986/avoid-wasting-space-when-placing-multiple-aligned-plots-onto-one-page
+  # par(mfrow = c(2, 2),     # 2x2 layout
+  #    oma = c(2, 2, 0, 0), # two rows of text at the outer left and bottom margin
+  #  mar = c(1, 1, 0, 0), # space for one row of text at ticks and to separate plots
+  #  mgp = c(2, 1, 0),    # axis label at 2 rows distance, tick labels at 1 row
+  #  xpd = NA)            # allow content to protrude into outer margin (and beyond)
+
   # Going to have to generate anomalies, and so just need medians, at least for now
   herring_competition <- dplyr::filter(herring_spawning_biomass,
                                        region == "WCVI") %>%
@@ -62,7 +70,7 @@ ecosystem_summary_hake <- function(max_year = 2024,
 
   # Should generalise for adding more on. Think we should restrict each to the
   # full range of hake recruitment years. TODO need tweaking regarding year of effect.
-  min_year <- min(hake_recruitment$year)
+  min_year <- min(hake_recruitment_deviations$year)
     #max(min(herring_competition$year),
     #              min(bi$year),
     #              min(hake_total_biomass_age_1$year))
@@ -118,7 +126,10 @@ ecosystem_summary_hake <- function(max_year = 2024,
   x_lim <- c(lubridate::dmy(paste0("0101", 1965)),
              lubridate::dmy(paste0("0101", max_year)))  # TODO automate
   par(mfrow = c(6,1),
-      mar = par_mar)
+      mar = par_mar,
+      oma = par_oma,
+      mgp = par_mgp)
+
   plot(hake_recruitment,
        xlim = x_lim,
        xlab = "",
@@ -172,7 +183,8 @@ ecosystem_summary_hake <- function(max_year = 2024,
 
   mtext("Hake total log biomass of age-1 fish - predation on age-0 fish",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
-  mtext("Year", side = 1, line = 3)
+
+  mtext("Year of hake recruitment", side = 1, line = 2)
 
   # Earlier temperature ideas:
   # For quickness for now, let's just look at buoy data for buoys within the
