@@ -1,5 +1,6 @@
 # Make figures for 2025 hake assessment
 
+load_all()
 source("ecosystem-summary-hake.R")
 source("ecosystem-summary-hake-glorys.R")
 

@@ -162,7 +162,7 @@ ecosystem_summary_hake_glorys <- function(max_year = 2024,   # though does to 20
        xlim = x_lim,
        xlab = "",
        ylab = "")
-  mtext("Average sea-surface height (off California from Jan-Apr) - TODO not sure",
+  mtext("Average sea-surface height (off California from Jan-Apr) - higher increases recruitment",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
 
   plot(mld_late_larv_index, lwd = lwd_index,
