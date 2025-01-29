@@ -133,10 +133,8 @@ ecosystem_summary_hake_glorys <- function(max_year = 2024,   # though does to 20
   plot(temp_spawn_index, lwd = lwd_index,
        xlim = x_lim,
        xlab = "",
-       ylab = "",
-       ylim = rev(range(temp_spawn_index$anomaly)),
-       y_axis_reverse = TRUE)
-  mtext("Mean temperature during spawning - fish less likely to spawn when higher",
+       ylab = "")
+  mtext("Mean temperature during spawning - when higher fish are less likely spawn but larvae grow quicker*",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
 
   plot(ast_eggs_index, lwd = lwd_index,
@@ -157,7 +155,6 @@ ecosystem_summary_hake_glorys <- function(max_year = 2024,   # though does to 20
   mtext("Mean mixed layer depth during yolk stage (Jan-Apr) - shallower reduces recruitment",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
 
-  # TODO not sure which way
   plot(ssh_jac_index, lwd = lwd_index,
        xlim = x_lim,
        xlab = "",
@@ -168,9 +165,7 @@ ecosystem_summary_hake_glorys <- function(max_year = 2024,   # though does to 20
   plot(mld_late_larv_index, lwd = lwd_index,
        xlim = x_lim,
        xlab = "",
-       ylab = "",
-       ylim = rev(range(mld_late_larv_index$anomaly)),
-       y_axis_reverse = TRUE)
+       ylab = "")
   mtext("Mean mixed layer depth during late larval stage (Mar-Jun) - shallower reduces recruitment",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
 

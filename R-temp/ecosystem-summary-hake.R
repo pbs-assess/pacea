@@ -115,10 +115,10 @@ ecosystem_summary_hake <- function(max_year = 2024,
   class(npgo_pre_index) <- class(oni)  # so a pacea_index for plotting
 
 
-  # shift years by 1 like herring, take log (as in Vestfals)  and then restandardise
+  # no shifting, take log (as in Vestfals)  and then restandardise
   hake_log_age1_index <- dplyr::filter(hake_total_biomass_age_1,
-                              year >= min_year - 1) %>%
-    dplyr::mutate(year = year + 1,
+                              year >= min_year) %>%
+    dplyr::mutate(year = year,
                   log_median = log(median),
                   anomaly = standardise(log_median))
   class(hake_log_age1_index) <- class(oni)
@@ -181,7 +181,7 @@ ecosystem_summary_hake <- function(max_year = 2024,
        ylim = rev(range(hake_log_age1_index$anomaly)),
        y_axis_reverse = TRUE)
 
-  mtext("Hake total log biomass of age-1 fish - predation on age-0 fish",
+  mtext("Hake total log biomass of age-1 fish - more predation on age-0 fish lowers recruitment that year",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
 
   mtext("Year of hake recruitment", side = 1, line = 2)
