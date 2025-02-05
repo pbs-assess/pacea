@@ -55,6 +55,7 @@ if(!DL_ALL_DATA){
   
   # set start date from start of year of latest date in oisst_7day data
   # this ensures that each calendar week is calculated correctly
+  # need to revise when the year changes over
   timechar <- "T12:00:00Z"
   data_enddate <- max(oisst_7day_orig$end_date)
   #start_date <- paste0(data_enddate + 1, timechar)
