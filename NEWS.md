@@ -5,6 +5,8 @@ Developers: for some general tips for writing good bullets see https://style.tid
 
 ## Updates by date
 
+* 2024-02-05 Monthly updates for indices `ao`, `oni`, `pdo`, `soi`.
+
 * 2024-12-04 Added Pacific Hake age-1 total biomass and recruitment deviations,
   and necessarily updated several plotting and tickmark functions (should all be back
   compatible).
