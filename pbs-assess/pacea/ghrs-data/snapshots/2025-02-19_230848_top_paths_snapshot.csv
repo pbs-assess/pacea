@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,26,16
+/pbs-assess/pacea/tree/main/data,7,5
+/pbs-assess/pacea/tree/main,7,3
+/pbs-assess/pacea/tree/main/data-raw,2,2
+/pbs-assess/pacea/blob/main/data/hotssea_data.rda,1,1
+/pbs-assess/pacea/blob/main/data/hotssea_poly.rda,1,1
+/pbs-assess/pacea/blob/main/R/plot-pacea-anom.R,1,1
+/pbs-assess/pacea/blob/main/R/plot-pacea-biomass-herring.R,1,1
+/pbs-assess/pacea/tree/main/data-raw/buoys,1,1
+/pbs-assess/pacea/tree/main/data-raw/herring,1,1
