@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,28,16
+/pbs-assess/pacea/tree/main/data,9,6
+/pbs-assess/pacea/tree/main,7,4
+/pbs-assess/pacea/tree/main/data-raw,3,3
+/pbs-assess/pacea/tree/main/R,3,2
+/pbs-assess/pacea/blob/main/data/hotssea_data.rda,1,1
+/pbs-assess/pacea/blob/main/data/hotssea_poly.rda,1,1
+/pbs-assess/pacea/blob/main/data/oni.rda,1,1
+/pbs-assess/pacea/blob/main/man/figures/README-herring.png,1,1
+/pbs-assess/pacea/blob/main/R/create-data.R,1,1
