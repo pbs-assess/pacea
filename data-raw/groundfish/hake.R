@@ -251,3 +251,38 @@ if(check_index_changed(hake_total_biomass_age_1,
 
   plot(hake_total_biomass_age_1)
 }
+
+# Biomass at age of hake (all ages, so a tibble not an index)
+
+hake_total_biomass_at_age_new <- readRDS(paste0(hake_dir,
+                                                  "hake_total_biomass_at_age_",
+                                                  assess_yr,
+                                                  ".rds"))
+
+# No real appropriate class yet, so don't assign one, but worth doing to make a
+# nice plot; no time right now.
+# class(hake_total_biomass_at_age_new) <- c("pacea_biomass",
+#                                           class(hake_total_biomass_at_age_new))
+
+attr(hake_total_biomass_at_age_new, "axis_name") <-
+  "Pacific Hake total biomass at age (thousand t)"
+
+# Keep if statement so okay to run multiple times
+check_index_changed(hake_total_biomass_at_age,
+                    hake_total_biomass_at_age_new)
+
+if(check_index_changed(hake_total_biomass_at_age,
+                       hake_total_biomass_at_age_new)){
+  hake_total_biomass_at_age <- hake_total_biomass_at_age_new
+
+  assign(paste0("hake_total_biomass_at_age_", assess_yr),
+         hake_total_biomass_at_age_new)
+
+  usethis::use_data(hake_total_biomass_at_age,
+                    overwrite = TRUE)
+
+  create_data(paste0("hake_total_biomass_at_age_", assess_yr),
+              get(paste0("hake_total_biomass_at_age_", assess_yr)))
+
+  plot(hake_total_biomass_at_age)
+}
