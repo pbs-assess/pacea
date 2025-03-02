@@ -1,0 +1,22 @@
+# HOTSSea
+
+## Hindcast of the Salish Sea (HOTSSea)
+
+- physical ocean model from 1980 to 2018 ([Oldford et al.,
+  2025](https://doi.org/10.5194/gmd-2024-58))
+- e.g. max surface salinity in April 2018:
+```{r hotsseaplot, echo = FALSE, include = FALSE}
+# plot(hotssea_avg30to150m_temperature_max())   # goes off bottom of screen
+png(paste0(here::here(), "/talks/talks-manual-figures/hotssea-plot.png"),
+    width = 670,   # 670 matches size from running from a chunk
+    height = 480)
+# plot(hotssea_avg30to150m_temperature_max())
+plot(hotssea_surface_salinity_max())
+dev.off()
+```
+
+```{r hotsseaplot2, eval = FALSE}
+plot(hotssea_surface_salinity_max())
+```
+
+![](talks-manual-figures/hotssea-plot.png){width=60%}

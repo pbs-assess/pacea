@@ -1,28 +1,28 @@
 # Populations
 
-## Zooplankton in the Strait of Georgia (new)
+## Zooplankton in the Strait of Georgia
 
-Anomalies of zooplankton biomass from 1996 onwards from
+- Anomalies of zooplankton biomass since 1996 (Perry et al. ,2021)
 
-Perry et al. (2021), as extended by Kelly Young each year for DFO's
+- extended by Kelly Young each year for SOPO
 
-State of the Pacific Ocean Report.
-```{r zooplankton}
-zooplankton_sog
-```
-
-## Zooplankton in the Strait of Georgia (new)
-
-Default plot of anomalies of total biomass:
 ```{r zooplot}
 plot(zooplankton_sog)
 ```
 
-## Zooplankton in the Strait of Georgia (new)
+## Zooplankton in the Strait of Georgia
 
-Or plot anomalies for a specific species group:
+Or for a specific species group:
 
 ```{r zooplot2}
 plot(zooplankton_sog,
      species_group = "cladocera")
+```
+
+## Pacific Herring biomass (five stocks)
+
+New and updating annually from stock assessments (Cleary et al.):
+```{r herringbiomassplot}
+plot(herring_spawning_biomass,
+     region = "HG")
 ```

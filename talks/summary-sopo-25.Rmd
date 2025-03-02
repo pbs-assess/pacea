@@ -1,0 +1,62 @@
+# Summary
+
+## Other updates
+
+- $\cancel{204,373}$ `r colorize(format(nrow(buoy_sst), big.mark = ","), "red")` calculations of daily sea surface
+   temperature based on data from `r nrow(buoy_metadata)` buoys
+
+\pause
+
+- outputs from the spatial British Columbia continental margin (BCCM) model,
+   `r colorize("now expanded from just Canada's EEZ to include the full model domain,
+   extending into US waters", "red")`
+
+- NOAA's spatial Optimum Interpolation Sea Surface Temperature (OISST) record
+  `r colorize("updated monthly", "red")`
+
+- estimates of abundances for Harbour Seals (will be updated from next assessment)
+
+
+## Ecosystem summaries
+
+Idea is to head towards stock-specific functions like (Johnson et al., 2025):
+
+```{r, ecosumplot, echo = FALSE}
+# Before moving into R/
+source(paste0(here::here(),
+              "/R-temp/ecosystem-summary-hake.R"))
+# png(paste0(here::here(), "/talks/talks-manual-figures/ecosystem-summary-hake.png"),
+#    width = 400,   # 670 px matches size from running from a chunk
+#    height = 360)  # 480
+
+#ecosystem_summary_hake()
+#dev.off()
+```
+
+```{r, ecosum, fig.height = 4.2}
+ecosystem_summary_hake()
+```
+
+## Installation
+
+ - https://github.com/pbs-assess/pacea
+
+ - can read vignettes online
+
+ <!-- - installation:
+   \textcolor{red}{\texttt{remotes::install\_github("pbs-assess/pacea")}}  -->
+
+\begin{center}
+\includegraphics[width = 2cm]{"../man/figures/logo.png"}\\
+\emph{We wrangle the data so you don't have to}
+\end{center}
+
+```{r citation, eval=FALSE}
+citation("pacea")
+
+Edwards AM, Tai TC, Watson J, Peña MA, Hilborn A, Hannah CG, Rooper CN, Flynn
+  KL, Oldford GL (2024). "pacea: An R package of Pacific ecosystem
+  information to help facilitate an ecosystem approach to fisheries
+  management."
+  https://github.com/pbs-assess/pacea.
+```
