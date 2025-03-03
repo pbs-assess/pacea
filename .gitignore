@@ -87,6 +87,8 @@ talks/uvicEdwards11.ppt
 talks/pacea-talk-cache-figs/
 talks/pacea-talk_cache/
 
+talks/*cache*/
+
 data-raw/herring/
 data-raw/lighthouses/BC_Lightstations_and_Other_Sample_Sites_V2.csv
 data-raw/lighthouses/Data_-_Active_Sites_New.zip
