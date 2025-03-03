@@ -1,6 +1,6 @@
 ---
 title: "pacea"
-subtitle: "New infomation added to pacea since, and thanks to, last year's SOPO"
+subtitle: "New infomation added to pacea since (and thanks to) last year's SOPO"
 author: "Andrew Edwards"
 output:
   beamer_presentation:
@@ -143,7 +143,7 @@ colorize <- function(x, color){
 
 ```{r coverpage, echo=FALSE, out.width = "100%"}
 knitr::include_graphics(paste0(here::here(),
-                               "/talks/talks-manual-figures/pacea-title-slide-dfo-noaa-seattle-2025.png"))
+                               "/talks/talks-manual-figures/pacea-title-slide-sopo-2025.png"))
 ```
 
 <!-- Getting in a mess with trying to be too clever. Just make _short versions -->
@@ -155,6 +155,13 @@ knitr::include_graphics(paste0(here::here(),
 
 ```{r introductionshort, child = "introduction-short.Rmd", eval = long_talk}
 ```
+
+# pacea
+
+\centering pacea: An R package of Pacific ecosystem information to help facilitate an
+ecosystem approach to fisheries management
+
+
 
 ```{r buoys, child = "buoys.Rmd", eval = long_talk}
 ```

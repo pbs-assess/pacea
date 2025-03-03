@@ -7,6 +7,8 @@
 
 \pause
 
+- bathymetry data
+
 - outputs from the spatial British Columbia continental margin (BCCM) model,
    `r colorize("now expanded from just Canada's EEZ to include the full model domain,
    extending into US waters", "red")`
