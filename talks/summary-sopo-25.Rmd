@@ -1,27 +1,28 @@
-# Summary
-
+<!--
 ## Other updates
 
 - $\cancel{204,373}$ `r colorize(format(nrow(buoy_sst), big.mark = ","), "red")` calculations of daily sea surface
    temperature based on data from `r nrow(buoy_metadata)` buoys
 
-\pause
-
-- bathymetry data
-
-- outputs from the spatial British Columbia continental margin (BCCM) model,
-   `r colorize("now expanded from just Canada's EEZ to include the full model domain,
-   extending into US waters", "red")`
-
 - NOAA's spatial Optimum Interpolation Sea Surface Temperature (OISST) record
   `r colorize("updated monthly", "red")`
 
+\pause
+
+- `r colorize("expanded", "red")`  British Columbia continental margin (BCCM) model outputs
+   `r colorize("to include the full model domain and 2x2 km resolution", "red")`
+
+
+- `r colorize("bathymetry data", "red")`
+
 - estimates of abundances for Harbour Seals (will be updated from next assessment)
 
+- code for `r colorize("3d printing", "red")` of biomass-at-age
+-->
 
-## Ecosystem summaries
+# Ecosystem summaries
 
-Idea is to head towards stock-specific functions like (Johnson et al., 2025):
+Stock-specific ecosystem summary (e.g., Johnson et al. 2025):
 
 ```{r, ecosumplot, echo = FALSE}
 # Before moving into R/
@@ -35,11 +36,14 @@ source(paste0(here::here(),
 #dev.off()
 ```
 
-```{r, ecosum, fig.height = 4.2}
+```{r, ecosumfunc, echo = TRUE, eval = FALSE}
 ecosystem_summary_hake()
 ```
+```{r, ecosum, echo = FALSE, fig.height = 4.2}
+ecosystem_summary_hake(short_talk_version = TRUE)
+```
 
-## Installation
+# Installation
 
  - https://github.com/pbs-assess/pacea
 

@@ -31,8 +31,17 @@
 ##'
 ##' Might be simpler to tailor
 ##'   each species-specific function, and not have lots of if statements.
-##' @param max_year maximum year to consider (TODO)
+##' @param max_year maximum year to consider (TODO), xlim is then one less (but
+##'   plots further). Default is NULL which then does
+##'   `max(hake_recruitment$year)` (which was 2025 for 2025 assessment)
 ##' @param par_mar vector for `par(mar)` TODO
+##' @param short_talk_version short version explicitly (for now) for SOPO 2025
+##'   talk, only plots hake age-0, herring, bifurcation index, npgo
+##' @param rec_devs_zero_final_years number of years at the end for which
+##'   recruitment deviations were set to zero in the assessment model, and so
+##'   are not influenced by data; now not plotting anything for those (for hake
+##'   2025 assessment we did plot them, but outside of that it makes sense not
+##'   to, to make the point that we do not know anything about the cohort size).
 ##' @return
 ##' @export
 ##' @author Andrew Edwards
@@ -40,17 +49,32 @@
 ##' \dontrun{
 ##'
 ##' }
-ecosystem_summary_hake <- function(max_year = 2024,
+ecosystem_summary_hake <- function(max_year = NULL,
                                    lwd_index = 6,   # 8 was good on screen
                                    par_mar = c(2, 3, 1.2, 1),
                                    par_oma = c(1.5, 0, 0, 0),
-                                   par_mgp = c(2, 1, 0)){
+                                   par_mgp = c(2, 1, 0),
+                                   short_talk_version = FALSE,
+                                   rec_devs_zero_final_years = 3){
   # From https://stackoverflow.com/questions/13239986/avoid-wasting-space-when-placing-multiple-aligned-plots-onto-one-page
   # par(mfrow = c(2, 2),     # 2x2 layout
   #    oma = c(2, 2, 0, 0), # two rows of text at the outer left and bottom margin
   #  mar = c(1, 1, 0, 0), # space for one row of text at ticks and to separate plots
   #  mgp = c(2, 1, 0),    # axis label at 2 rows distance, tick labels at 1 row
   #  xpd = NA)            # allow content to protrude into outer margin (and beyond)
+
+  if(is.null(max_year)){
+    max_year <- max(hake_recruitment$year)
+  }
+
+  x_lim <- c(lubridate::dmy(paste0("0101", 1965)),
+             lubridate::dmy(paste0("0101", max_year - 1)))
+
+  # Do not plot the last rec_devs_zero_final_years, since these have not been
+  #  estimated from data
+  hake_recruitment_to_plot <- dplyr::filter(hake_recruitment,
+                                            year < max_year - rec_devs_zero_final_years + 1)
+
 
   # Going to have to generate anomalies, and so just need medians, at least for now
   herring_competition <- dplyr::filter(herring_spawning_biomass,
@@ -123,14 +147,15 @@ ecosystem_summary_hake <- function(max_year = 2024,
                   anomaly = standardise(log_median))
   class(hake_log_age1_index) <- class(oni)
 
-  x_lim <- c(lubridate::dmy(paste0("0101", 1965)),
-             lubridate::dmy(paste0("0101", max_year)))  # TODO automate
-  par(mfrow = c(6,1),
+  par(mfrow = c(ifelse(short_talk_version,
+                       4,
+                       6),
+                1),
       mar = par_mar,
       oma = par_oma,
       mgp = par_mgp)
 
-  plot(hake_recruitment,
+  plot(hake_recruitment_to_plot,
        xlim = x_lim,
        xlab = "",
        ylab = "")   # Else too much info; putting it into mtext
@@ -158,14 +183,16 @@ ecosystem_summary_hake <- function(max_year = 2024,
   mtext("North Pacific Current Bifurcation Index - poorer feeding conditions BC/WA/OR, lower recruitment next year",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
 
-  plot(pdo_pre_index, lwd = lwd_index,
-       xlim = x_lim,
-       xlab = "",
-       ylab = "",
-       ylim = rev(range(pdo_pre_index$anomaly)),
-       y_axis_reverse = TRUE)
-  mtext("Pacific Decadal Oscillation preconditioning index - lower general production, lower recruitment next year",
-        side = 3, adj = 0, cex = 0.7, line = 0.3)
+  if(!short_talk_version){
+    plot(pdo_pre_index, lwd = lwd_index,
+         xlim = x_lim,
+         xlab = "",
+         ylab = "",
+         ylim = rev(range(pdo_pre_index$anomaly)),
+         y_axis_reverse = TRUE)
+    mtext("Pacific Decadal Oscillation preconditioning index - lower general production, lower recruitment next year",
+          side = 3, adj = 0, cex = 0.7, line = 0.3)
+  }
 
   plot(npgo_pre_index, lwd = lwd_index,
        xlim = x_lim,
@@ -174,15 +201,17 @@ ecosystem_summary_hake <- function(max_year = 2024,
   mtext("North Pacific Gyre Oscillation preconditioning index - higher general production, higher recruitment next year",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
 
-  plot(hake_log_age1_index, lwd = lwd_index,
-       xlim = x_lim,
-       xlab = "",
-       ylab = "",
-       ylim = rev(range(hake_log_age1_index$anomaly)),
-       y_axis_reverse = TRUE)
+  if(!short_talk_version){
+    plot(hake_log_age1_index, lwd = lwd_index,
+         xlim = x_lim,
+         xlab = "",
+         ylab = "",
+         ylim = rev(range(hake_log_age1_index$anomaly)),
+         y_axis_reverse = TRUE)
 
-  mtext("Hake total log biomass of age-1 fish - more predation on age-0 fish lowers recruitment that year",
-        side = 3, adj = 0, cex = 0.7, line = 0.3)
+    mtext("Hake total log biomass of age-1 fish - more predation on age-0 fish lowers recruitment that year",
+          side = 3, adj = 0, cex = 0.7, line = 0.3)
+  }
 
   mtext("Year of hake recruitment", side = 1, line = 2)
 

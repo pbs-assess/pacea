@@ -2,21 +2,12 @@
 
 ## Zooplankton in the Strait of Georgia
 
-- Anomalies of zooplankton biomass since 1996 (Perry et al. ,2021)
+- anomalies of zooplankton biomass since 1996 (Perry et al., 2021)
 
-- extended by Kelly Young each year for SOPO
+- extended by Kelly Young each year for SOPO; 25 species groups
 
 ```{r zooplot}
 plot(zooplankton_sog)
-```
-
-## Zooplankton in the Strait of Georgia
-
-Or for a specific species group:
-
-```{r zooplot2}
-plot(zooplankton_sog,
-     species_group = "cladocera")
 ```
 
 ## Pacific Herring biomass (five stocks)
