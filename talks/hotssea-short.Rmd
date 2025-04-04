@@ -20,3 +20,24 @@ plot(hotssea_surface_salinity_max())
 ```
 
 ![](talks-manual-figures/hotssea-plot.png){width=60%}
+
+```{r hotsseaplotforreport, eval = FALSE, echo = FALSE}
+png(paste0(here::here(), "/talks/talks-manual-figures/hotssea-plot-for-sopo-25-report-2.png"),
+    width = 670,   # 670 matches size from running from a chunk
+    height = 480,  # 480 for 2x2
+    res = 100)     # default is 72, actually increases font size, so tweak as desired
+plot(hotssea_bottom_temperature_max(),
+     months = c("January", "September"),
+     years = 2010,
+     eez = FALSE)
+dev.off()
+
+pdf(paste0(here::here(), "/talks/talks-manual-figures/hotssea-plot-for-sopo-25-report-2.pdf"),
+    width = 2,
+    height = 3)
+plot(hotssea_bottom_temperature_max(),
+     months = c("January", "September"),
+     years = 2010,
+     eez = FALSE)
+dev.off()
+```
