@@ -5,6 +5,10 @@ Developers: for some general tips for writing good bullets see https://style.tid
 
 ## Updates by date
 
+* 2025-04-04 Update indices `ao`, `mei`, `pdo`, `npgo`, and `soi`, and
+  `buoy_sst`. Had some warnings when converting dates for `buoy_sst` that may or
+  may no have been occurring before, so let me know if you spot anything strange.
+
 * 2025-02-25 Update indices `ao`, `mei`, `oni`, `pdo`, and `soi`, some now up to
   2025.
 

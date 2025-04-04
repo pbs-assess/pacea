@@ -720,6 +720,8 @@ if(check_index_changed(bi, bi_new)){
 # Can skip this if nothing above has changed at all, and only really needed when
 #  end year changes. Git doesn't detect changes though if nothing has actually changed.
 
+pacea_indices    # Show what we currently have saved in package
+
 pacea_indices <-
   dplyr::tribble(
            ~Object, ~Description, ~Resolution, ~`Start year`, ~`End year`,

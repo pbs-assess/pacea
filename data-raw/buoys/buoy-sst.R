@@ -92,6 +92,14 @@ dfo_data <- as_tibble(dfo_data_raw) %>%
          latitude < 60,
          sstp_flags %in% use_flags | is.na(sstp_flags))
 
+# 4/3/25 get this, not sure if had that before:
+#Warning message:
+# There was 1 warning in `mutate()`.
+# In argument: `time = with_tz(ymd_hms(time), "Etc/GMT+8")`.
+# Caused by warning:
+#  49469 failed to parse.
+
+
 dfo_data       # 3.666 million rows when removing pre-1991 . Every few minutes has,
                #  a value, but that's for all stations
                # 3.768 million rows when not removing pre-1991. So 100,000 more rows.
@@ -173,10 +181,12 @@ dfo_daily_mean <- dfo_daily_mean_enough_two_hours %>%
          sst)                # reorder columns
 
 dfo_daily_mean
+max(dfo_daily_mean$date)
 # 158,012 rows up to 2023-08-23
 # 158,638            2023-11-09
 # 159,407            2023-02-17  # max(dfo_daily_mean$date)
 # 160,467            2024-07-30
+# 161,166            2025-03-17
 
 # Before doing two-hour quality control had less, not sure how many (can test by
 #  changing num_two_hour_intervals_required)
