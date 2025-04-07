@@ -92,7 +92,7 @@ dfo_data <- as_tibble(dfo_data_raw) %>%
          latitude < 60,
          sstp_flags %in% use_flags | is.na(sstp_flags))
 
-# 4/3/25 get this, not sure if had that before:
+# 4/4/25 get this, not sure if had that before:
 #Warning message:
 # There was 1 warning in `mutate()`.
 # In argument: `time = with_tz(ymd_hms(time), "Etc/GMT+8")`.
@@ -958,6 +958,13 @@ summary(buoy_sst)
 # This update adds in
 nrow(buoy_sst_new) - nrow(buoy_sst)
 #  new daily means. Could use in commit message.
+
+# Had some warnings (4/4/2025) so checking that past values haven't changed.
+# buoy_sst_new_overlap <- group_by(buoy_sst_new,
+#                                  date,
+#                                  stn_id)
+# buoy_sst_new_overlap %>% summarise(unique(sst))  # Need to work on.
+
 
 stop("Do some quick thinking before updating.")  # Could add in code like for indices
 
