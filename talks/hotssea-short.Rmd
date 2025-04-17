@@ -65,7 +65,8 @@ hotssea_data
 ```
 \pause
 
-`hotssea_avg0to30m_temperature_min` is, for each month and spatial cell, the depth-integrated mean (over the top 30 m) of each modelled depths’ minimum (over the month) daily mean temperature.
+`hotssea_avg0to30m_temperature_min`:  for each month and spatial
+cell, is the depth-integrated mean (over the top 30 m) of each modelled depth's minimum (over the month) daily mean temperature.
 
 <!-- # 14 hotssea_avg0to30m_temperature_mean
 # 15 hotssea_avg0to30m_temperature_max

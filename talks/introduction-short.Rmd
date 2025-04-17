@@ -33,12 +33,12 @@
 
 \pause
 
-- Ensures proper documentation of data objects and functions (helps users).
+- Ensures proper documentation of data objects and functions.
 
-- Custom plotting files, help files for everything, fully open source.
+- Vignettes that walk users through various features,
+  `r colorize("already rendered on GitHub", color = "blue")`.
 
-- Include vignettes that walk users through various features (already rendered
-  on GitHub).
+- Custom plotting files, fully open source.
 
 \pause
 

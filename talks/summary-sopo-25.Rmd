@@ -45,7 +45,7 @@ ecosystem_summary_hake(short_talk_version = TRUE)
 
 # Coming soon -- future projections
 
-- Projections downscaled from IPCC forecasts using Angelica's (?) ROMS model
+- Projections downscaled from IPCC forecasts using Angelica's ROMS model
 - On a 1/64th degree grid
 - Surface and bottom temperatures
 - Done by Trond Kristiansen et al., contract through Robyn Forrest
