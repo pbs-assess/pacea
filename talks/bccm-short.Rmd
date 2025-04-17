@@ -36,15 +36,20 @@ plot(bccm_primaryproduction_full())
 
 ## Built in plotting - primary production throughout  2018
 
-```{r bccmplotfullyear, fig.height = 5}
+```{r bccmplotfullyear, eval = FALSE}
 plot(bccm_primaryproduction_full(), months = c(1, 4, 7, 10))
 ```
+![](talks-manual-figures/bccm-four-panel-plot.png){width=60%}
 
-
-<!--
-pdf was getting locked, 12 months doesn't fit
--->
-
+```{r bccmplotfullyearpng, eval = FALSE, echo = FALSE}
+png(paste0(here::here(), "/talks/talks-manual-figures/bccm-four-panel-plot.png"),
+    width = 670,   # 670 matches size from running from a chunk
+    height = 480,  # 480 for 2x2
+    res = 100)     # default is 72, actually increases font size, so tweak as desired
+plot(bccm_primaryproduction_full(),
+     months = c(1, 4, 7, 10))
+dev.off()
+```
 
 ## Available variables
 

@@ -55,5 +55,15 @@ functions.
 - Package authors are from StAR, OSD, and ESD.
 
 --
-For NOAA/DFO Seattle 2025, 10 min talk
-"New Canadian and US data added to pacea"
+For NOAA/DFO Seattle 2025, 10 min talk, write up:
+
+Collaborators: Andrew Edwards (DFO), Kristin Marshall (NOAA), Mary Hunsicker (NOAA), and pacea and hake authors listed below.
+
+Outputs: Edwards A.M., Tai T.C., Watson J., Peña M.A., Hilborn A., Hannah C.G., Rooper C.N., Flynn K.L., and Oldford, G.L. (2024). pacea: An R package of Pacific ecosystem information to help facilitate an ecosystem approach to fisheries management. https://github.com/pbs-assess/pacea
+
+Appendix H of Johnson K.F., Edwards A.M., Berger A.M., Grandin C.J., and Wetzel C.R. (2025). Status of the Pacific Hake (whiting) stock in U.S. and Canadian waters in 2025. Prepared by the Joint Technical Committee of the U.S. and Canada Pacific Hake/Whiting Agreement, National Marine Fisheries Service and Fisheries and Oceans Canada. 286 p.
+
+Outcomes: New model outputs added to the pacea R package in response to last year’s meeting. A hake-specific ecosystem summary included in the US-Canada Pacific Hake stock assessment for the first time.
+
+The leading cause of ecosystem information not being used in DFO stock assessments is the availability of such information. To help alleviate this DFO scientists have built the R package pacea. While the primary audience is DFO stock assessors, the package is open source and freely available to anyone interested, and so was presented at the 2024 meeting. This prompted a request from Lisa Crozier (NOAA) to extend outputs from the British Columbia Continental
+Margin Model all the way down to the Washington and Oregon border (the Columbia River), for use in salmon studies, rather than just restricting outputs to the Canadian Exclusive Economic Zone as originally done. This has been achieved. Other additions since last year include outputs from the Hindcast of the Salish Sea physical oceanography model, the North Pacific Bifurcation Index, zooplankton biomass anomalies in the Strait of Georgia, and stock assessment outputs for Pacific Herring and Pacific Hake. Some of these were included in the new hake-specific ecosystem summary appendix in the joint US-Canada Pacific Hake stock assessment. Also included for the first time was a risk table that documents ecosystem and climate factors potentially affecting hake productivity and uncertainty. This table was based on the framework outlined by the  California Current Integrated Ecosystem Assessment team.https://www.pcouncil.org/documents/2024/07/review-material-cciea-team-report-on-fep-initiative-4.pdf/.
