@@ -1,5 +1,13 @@
 Also see CSRF report, NOAA/DFO Sidney meeting report, and SOPO 2024 report.
 
+talks
+*****
+pacea-talk.Rmd is the main one, got a bit fancy with switches for a long and
+short talk, so made:
+pacea-talk-sopo-25-update.Rmd for SOPO 25.
+Using that as a template for:
+pacea-talk-short.Rmd for FUTURE Habitat talk plus Molecular Genetics section meeting.
+
 National EAFM seminar for 9th May 2024 (and add links to email): [see email to
 Mary and Susan, 18th April 2024, in which I tweaked this and embedded references]
 

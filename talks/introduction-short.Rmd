@@ -3,41 +3,46 @@
 
 ## Motivation
 
-\centering pacea: An R package of Pacific ecosystem information to help facilitate an
-ecosystem approach to fisheries management
+- Revised Fisheries Act: “... the Minister shall take into account the environmental conditions affecting a fish stock."
 
-\
+- `r colorize("Yet <50\\% of DFO’s stock assessments use environmental data", "blue")`
 
-- push to include ecosystem information in advice to fisheries managers
+\pause
 
-- leading impediment: availability of data and model output
-  - where to find it, wrangling it (e.g netCDF into R), understanding it
-  - Open Data is great, but have to convert raw data into
-  `r colorize("usable information", "red")`
+- Only 28% of assessments in Pacific Region use environmental data
 
-- primary audience is DFO stock assessment scientists, but usable by anyone
-  (with a minimal working knowledge of R)
+- `r colorize("Leading cause of not using environmental data is availability of the data:", "red")`
+  - `r colorize("where")` to find it
+  - `r colorize("wrangling")` it (e.g netCDF into R)
+  - `r colorize("understanding")` it
 
+- Open Data is great, but have to convert raw data into `r colorize("usable information", "red")`
 
-## Availability
+## Why an R package?
 
-- hosted free on GitHub at https://github.com/pbs-assess/pacea
+- R is the computer programming language most widely used by DFO stock assessment
+  scientists (the primary audience).
 
-- easy installation:
+- An R package is the standard way to share code (and data).
 
-\
+- Easy installation:
 
-\centering \textcolor{red}{\texttt{remotes::install\_github("pbs-assess/pacea")}}
+\textcolor{red}{\texttt{remotes::install\_github("pbs-assess/pacea")}}
 
-\
+\pause
 
-- all vignettes are rendered on GitHub for easy learning, custom plotting files,
-  help for everything, fully open source
+- Ensures proper documentation of data objects and functions (helps users).
 
-- all data (except oceanographic model output) is saved within the package
+- Custom plotting files, help files for everything, fully open source.
+
+- Include vignettes that walk users through various features (already rendered
+  on GitHub).
+
+- All data (except oceanographic model output) is saved within the package
   - no further downloading required
-  - not relying on external websites being functional
+  - not relying on external websites being functional.
 
+<!--
 ## `pacea` objects (climatic/oceanographic)
 
 Currently, pacea contains (`r colorize("red is updated/new since last year's meeting", "red")`):
@@ -73,3 +78,4 @@ Currently, pacea contains (`r colorize("red is updated/new since last year's mee
  `r colorize("Pacific Hake", "red")` and `r colorize("Pacific Herring", "red")`
 
 - `r colorize("zooplankton biomass anomalies in the Strait of Georgia for 25 species groups", "red")`
+-->

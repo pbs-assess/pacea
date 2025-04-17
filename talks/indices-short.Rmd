@@ -5,7 +5,8 @@
 Various climate and oceanographic indices are currently included in pacea:
 
 ```{r indicestable, echo=FALSE, eval=FALSE}
-# Used to create tex that is copied below and red added to
+# Used to create tex that is copied below and red added to; just manually check
+#  pacea_indices to update
 kableExtra::kable(pacea_indices, "latex", booktabs = TRUE) %>%
   kableExtra::kable_styling(latex_options = c("scale_down", "striped"))
 ```
@@ -23,7 +24,7 @@ npi\_monthly & North Pacific Index (monthly) & monthly & 1899 & \textcolor{red}{
 alpi & Aleutian Low Pressure Index & annual & 1900 & \textcolor{red}{2022}\\
 \cellcolor{gray!10}{oni} & \cellcolor{gray!10}{Oceanic Niño Index} & \cellcolor{gray!10}{monthly} & \cellcolor{gray!10}{1950} & \cellcolor{gray!10}{\textcolor{red}{2024}}\\
 \addlinespace
-npgo & North Pacific Gyre Oscillation & monthly & 1950 & \textcolor{red}{2024}\\
+npgo & North Pacific Gyre Oscillation & monthly & 1950 & \textcolor{red}{2025}\\
 \cellcolor{gray!10}{ao} & \cellcolor{gray!10}{Arctic Oscillation} & \cellcolor{gray!10}{monthly} & \cellcolor{gray!10}{1950} & \cellcolor{gray!10}{\textcolor{red}{2025}}\\
 soi & Southern Oscillation Index & monthly & 1951 & \textcolor{red}{2025}\\
 \cellcolor{gray!10}{\textcolor{red}{bi}} & \cellcolor{gray!10}{\textcolor{red}{North Pacific Bifurcation Index}} & \cellcolor{gray!10}{\textcolor{red}{annual}} & \cellcolor{gray!10}{\textcolor{red}{1967}} & \cellcolor{gray!10}{\textcolor{red}{2024}}\\
@@ -32,6 +33,7 @@ mei & Multivariate El Niño Southern Oscillation Index & monthly & 1979 & \textc
 \end{tabular}}
 \end{table}
 
+<!--
 ## New index
 
 Now includes Mike Malick's North Pacific Current Bifurcation Index:
@@ -39,3 +41,4 @@ Now includes Mike Malick's North Pacific Current Bifurcation Index:
 ```{r biplot}
 plot(bi, lwd = 6)
 ```
+-->

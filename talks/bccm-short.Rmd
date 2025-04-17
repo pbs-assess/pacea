@@ -4,39 +4,13 @@
 
 Physical biogeochemical oceanographic model
 
+- Peña et al. (2019) [Deep-Sea Research II](doi:10.1016/j.dsr2.2019.104637)
+
 - Regional Ocean Modelling Systen (ROMS)
 
 - curvilinear grid at 3 km x 3 km resolution
 
-- we interpolate to regular grids
-
-\
-Model output provided by Angelica Peña (DFO)
-
-\
-\footnotesize
-Peña, M.A., Fine, I. and Callendar, W. 2019. Interannual variability in primary production and shelf-offshore transport of nutrients along the northeast Pacific Ocean margin. Deep-Sea Research II, doi:10.1016/j.dsr2.2019.104637.
-\normalsize
-
-## Mapping to grids
-
-Original mapping:
-
-- clipped to Canada's Pacific Exclusive Economic Zone
-
-- inshore (2 km x 2 km) and offshore (6 km x 6 km)
-
-- 40,480 cells
-
-- monthly from 1993-2019
-
-\pause
-
-New additional mapping `r colorize("(request from Lisa last year)", "red")`:
-
-- `r colorize("covers full domain (into US waters)", "red")`
-
-- `r colorize("2 km x 2 km grid throughout", "red")`
+- we interpolate to regular `r colorize("2 km x 2km grid")`
 
 - `r colorize("161,025 cells", "red")`
 
@@ -44,9 +18,15 @@ New additional mapping `r colorize("(request from Lisa last year)", "red")`:
 
 - huge filesizes required hosting outputs on Zenodo not GitHub
 
-- `r colorize("new grid also used for HOTSSea outputs, and has interpolated
-  depths", "red")`
+<!-- - `r colorize("new grid also used for HOTSSea outputs, and has interpolated
+  depths", "red")` -->
 
+<!--
+\
+\footnotesize
+Peña, M.A., Fine, I. and Callendar, W. 2019. Interannual variability in primary production and shelf-offshore transport of nutrients along the northeast Pacific Ocean margin. Deep-Sea Research II, doi:10.1016/j.dsr2.2019.104637.
+\normalsize
+-->
 
 ## Available variables
 
@@ -68,36 +48,25 @@ For applicable variables these are given for
    - sea bottom.
 
 
-## List of available variables (original just Canada)
-bccm_data for available variables
-```{r bccm_data list}
-bccm_data
-```
-
-## List of available variables (full domain)
+## List of available variables (full domain; Canadian EEZ also available)
 bccm\_data\_full for available variables
 ```{r bccm_data_full list}
 bccm_data_full
 ```
 
-## Built in plotting - primary production in Canadian waters
-
-```{r bccmplot}
-plot(bccm_primaryproduction())
-```
-
-## Built in plotting - primary production in Canadian waters
+## Built in plotting - primary production in April 2018
 
 ```{r bccmplotfull}
 plot(bccm_primaryproduction_full())
 ```
 
-<!--
-pdf was getting locked and could refresh pacea-talk.pdf, can with this not -->
-<!-- done. COuld do it manually.
-## Built in plotting - monthly primary production through 2018
--->
+## Built in plotting - primary production throughout  2018
 
-```{r bccmplot2, echo = FALSE, eval = FALSE}
-plot(bccm_primaryproduction_full(), months = 1:12)
+```{r bccmplotfullyear, fig.height = 5}
+plot(bccm_primaryproduction_full(), months = c(1, 4, 7, 10))
 ```
+
+
+<!--
+pdf was getting locked, 12 months doesn't fit
+-->
