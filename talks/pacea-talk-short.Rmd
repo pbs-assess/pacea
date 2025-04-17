@@ -1,7 +1,7 @@
 ---
 title: "pacea"
 subtitle: "pacea: An R package of Pacific ecosystem information to help facilitate an ecosystem approach to fisheries management"
-author: "Andrew Edwards"
+author: "Andrew Edwards and Travis Tai"
 output:
   beamer_presentation:
     theme: Singapore
