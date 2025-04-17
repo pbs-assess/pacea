@@ -156,7 +156,7 @@ colorize <- function(x, color = "red"){
 
 ```{r coverpage, echo=FALSE, out.width = "100%"}
 knitr::include_graphics(paste0(here::here(),
-                               "/talks/talks-manual-figures/pacea-title-slide-sopo-2025.png"))
+                               "/talks/talks-manual-figures/pacea-title-slide-future-habitat-2025.png"))
 ```
 
 <!-- Getting in a mess with trying to be too clever. Just make _short versions -->
@@ -195,7 +195,7 @@ ecosystem approach to fisheries management
 ```{r populations, child = "populations.Rmd", eval = long_talk}
 ```
 
-```{r populationsshort, child = "populations-short.Rmd", eval = short_talk}
+```{r populationsshort, child = "populations-short.Rmd", eval = long_talk}
 ```
 
 ```{r indices, child = "indices.Rmd", eval = long_talk}

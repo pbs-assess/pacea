@@ -22,7 +22,7 @@
 
 # Ecosystem summaries
 
-Stock-specific ecosystem summary (e.g., Johnson et al. 2025):
+Stock-specific ecosystem summary -- [Johnson et al. (2025)](https://s3.amazonaws.com/media.fisheries.noaa.gov/2025-02/Status-Pacific-Hake-whiting-US-and-Canadian-waters-2025.pdf)
 
 ```{r, ecosumplot, echo = FALSE}
 # Before moving into R/
@@ -42,6 +42,38 @@ ecosystem_summary_hake()
 ```{r, ecosum, echo = FALSE, fig.height = 4.2}
 ecosystem_summary_hake(short_talk_version = TRUE)
 ```
+
+# Coming soon -- future projections
+
+- Projections downscaled from IPCC forecasts using Angelica's (?) ROMS model
+- On a 1/64th degree grid
+- Surface and bottom temperatures
+- Done by Trond Kristiansen et al., contract through Robyn Forrest
+
+\pause
+
+Three future socio-economic pathways:
+
+- SSP1-RCP2.6 -- `r colorize("sustainable development")`
+- SSP2-RCP4.5 -- `r colorize("middle-of-the-road development")`
+- SSP5-RCP8.5 -- `r colorize("fossil fueled development")`
+
+\pause
+
+Think we will have monthly averages, corresponding to time periods:
+
+- 2021-2040
+- 2041-2060
+- 2080-2090
+- or maybe just 2050 and 2090
+
+## Other information
+
+```{r otherinfo, echo=FALSE, out.width = "100%"}
+knitr::include_graphics(paste0(here::here(),
+                               "/talks/talks-manual-figures/pacea-montage.png"))
+```
+
 
 # Installation
 
