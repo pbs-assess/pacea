@@ -4,7 +4,7 @@
 
 Physical biogeochemical oceanographic model
 
-- Peña et al. (2019) [Deep-Sea Research II](doi:10.1016/j.dsr2.2019.104637)
+- [Peña et al. (2019)](doi:10.1016/j.dsr2.2019.104637), *Deep-Sea Research II*.
 
 - Regional Ocean Modelling Systen (ROMS)
 
@@ -28,6 +28,24 @@ Peña, M.A., Fine, I. and Callendar, W. 2019. Interannual variability in primary
 \normalsize
 -->
 
+## Built in plotting - primary production in April 2018
+
+```{r bccmplotfull}
+plot(bccm_primaryproduction_full())
+```
+
+## Built in plotting - primary production throughout  2018
+
+```{r bccmplotfullyear, fig.height = 5}
+plot(bccm_primaryproduction_full(), months = c(1, 4, 7, 10))
+```
+
+
+<!--
+pdf was getting locked, 12 months doesn't fit
+-->
+
+
 ## Available variables
 
 The variables are:
@@ -46,27 +64,3 @@ For applicable variables these are given for
    - 40-100 m integration
    - 100 m to the sea bottom
    - sea bottom.
-
-
-## List of available variables (full domain; Canadian EEZ also available)
-bccm\_data\_full for available variables
-```{r bccm_data_full list}
-bccm_data_full
-```
-
-## Built in plotting - primary production in April 2018
-
-```{r bccmplotfull}
-plot(bccm_primaryproduction_full())
-```
-
-## Built in plotting - primary production throughout  2018
-
-```{r bccmplotfullyear, fig.height = 5}
-plot(bccm_primaryproduction_full(), months = c(1, 4, 7, 10))
-```
-
-
-<!--
-pdf was getting locked, 12 months doesn't fit
--->

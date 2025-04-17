@@ -3,7 +3,7 @@
 ## Hindcast of the Salish Sea (HOTSSea)
 
 - physical ocean model from 1980 to 2018 ([Oldford et al.,
-  2025](https://doi.org/10.5194/gmd-2024-58))
+2025](https://doi.org/10.5194/gmd-2024-58))
 - e.g. max surface salinity in April 2018:
 ```{r hotsseaplot, echo = FALSE, include = FALSE}
 # plot(hotssea_avg30to150m_temperature_max())   # goes off bottom of screen
@@ -41,3 +41,37 @@ plot(hotssea_bottom_temperature_max(),
      eez = FALSE)
 dev.off()
 ```
+
+## Available variables
+
+HOTSSea objects in pacea are (40 in total):
+```{r hotssea, eval = FALSE}
+hotssea_data
+
+           data_name
+1  hotssea_surface_salinity_min
+2  hotssea_surface_salinity_mean
+3  hotssea_surface_salinity_max
+4  hotssea_surface_salinity_std
+5  hotssea_surface_temperature_min
+6  hotssea_surface_temperature_mean
+7  hotssea_surface_temperature_max
+8  hotssea_surface_temperature_std
+9  hotssea_avg0to30m_salinity_min
+10 hotssea_avg0to30m_salinity_mean
+11 hotssea_avg0to30m_salinity_max
+12 hotssea_avg0to30m_salinity_std
+13 hotssea_avg0to30m_temperature_min
+```
+\pause
+
+`hotssea_avg0to30m_temperature_min` is, for each month and spatial cell, the depth-integrated mean (over the top 30 m) of each modelled depths’ minimum (over the month) daily mean temperature.
+
+<!-- # 14 hotssea_avg0to30m_temperature_mean
+# 15 hotssea_avg0to30m_temperature_max
+# 16 hotssea_avg0to30m_temperature_std
+# 17 hotssea_avg30to150m_salinity_min
+# 18 hotssea_avg30to150m_salinity_mean
+19 hotssea_avg30to150m_salinity_max
+20 hotssea_avg30to150m_salinity_std
+# See hotssea.Rmd if want the remaining ones -->

@@ -7,14 +7,16 @@
 
 - `r colorize("Yet <50\\% of DFO’s stock assessments use environmental data", "blue")`
 
-\pause
+- Only 28% in Pacific Region
 
-- Only 28% of assessments in Pacific Region use environmental data
+\pause
 
 - `r colorize("Leading cause of not using environmental data is availability of the data:", "red")`
   - `r colorize("where")` to find it
   - `r colorize("wrangling")` it (e.g netCDF into R)
   - `r colorize("understanding")` it
+
+\pause
 
 - Open Data is great, but have to convert raw data into `r colorize("usable information", "red")`
 
@@ -37,6 +39,8 @@
 
 - Include vignettes that walk users through various features (already rendered
   on GitHub).
+
+\pause
 
 - All data (except oceanographic model output) is saved within the package
   - no further downloading required
