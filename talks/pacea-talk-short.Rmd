@@ -1,0 +1,217 @@
+---
+title: "pacea"
+subtitle: "pacea: An R package of Pacific ecosystem information to help facilitate an ecosystem approach to fisheries management"
+author: "Andrew Edwards"
+output:
+  beamer_presentation:
+    theme: Singapore
+    colortheme: orchid
+    # Second-level headings create new slide
+    slide_level: 2
+    toc: false
+    # fig_height: 5
+    # fig_width: 8
+    keep_tex: yes
+    includes:
+      in_header: latex-topmatter.tex
+    # toc_depth: 1
+    #  title_page_image: "../man/figures/logo.png"
+    #  title_page_image_height_in: 1
+    #  title_page_image_width_in: 2
+header-includes:
+  - \titlegraphic{\includegraphics[width = 1cm]{"../man/figures/logo.png"}}
+  - \AtBeginSubsection{}
+  - \AtBeginSection{}
+  - \usepackage{colortbl}
+  - \usepackage{booktabs}
+  - \usepackage{multirow}
+  - \usepackage{cancel}
+classoption: "aspectratio=169"
+# This affects font sizes in figures also:
+fontsize: 12pt
+urlcolor: blue
+---
+
+<!-- Versions:
+
+pacea-talk.Rmd is the main one, got a bit fancy with switches for a long and
+  short talk, so I made:
+pacea-talk-sopo-25-update.Rmd for SOPO 25
+ Using that as a template for:
+pacea-talk-short.Rmd for FUTURE Habitat talk plus Molecular Genetics section
+  meeting.
+Suggest going forward with the long one and short one.
+Note that results and figures are cached.
+
+-->
+
+<!-- To build:
+
+load_all()      # as necessary, then
+
+rmarkdown::render("pacea-talk-short.Rmd")
+
+or click the knit button in RStudio
+
+Note the first slide below creates the title slide (on page 2), from a
+   powerpoint slide saved as .png.
+
+See the long_talk = FALSE and other options in first chunk.
+
+When talk is finished save the .pdf with a new name
+(e.g. pacea-release-talk-dfo.pdf, pacea-release-talk-uvic.pdf) and commit the
+.pdf, so we can just keep the single set of .Rmd code. Also link the pdf talk
+from README.Rmd.
+-->
+
+<!-- trying different themes from https://mpetroff.net/files/beamer-theme-matrix/
+theme:
+Copenhagen - too much at bottom
+Frankfurt - shows progress bar at top (play with colours though), nothing at bottom.
+Luebeck - awful (lists sections vertically at the top)
+metropolis - too many borders
+Rochester - slide title is in top border, but that's really big
+Singapore - used for hake, slide title does take up a bit of room, looks good with lily
+
+colortheme:
+dolphin - black top bar for Frankfurt
+lily
+orchid
+-->
+
+<!-- Font size options, put any of these before text or chunk, then put
+     \normalsize afterwards to continue
+\tiny
+\scriptsize
+\footnotesize
+\small
+\normalsize
+\large
+\Large
+\LARGE
+\huge
+\Huge
+-->
+
+```{r, setup, include = FALSE}
+# For simplicity just making a standalone master file for this short 5 minute talk, else
+# gets a bit too complicated
+
+# load_all()    # Do this the first time and if update the package while writing
+# the talk. Have commented as it reloads each time, which isn't necessary.
+library(dplyr)
+library(tibble)
+library(kableExtra)
+
+long_talk <- FALSE    # if FALSE then chunks with eval=long_talk will not be
+                      # evaluated, as we are writing a shorter version. Now
+                      # doing two versions of sections, since was getting in a
+                      # mess trying to switch individual chunks.
+short_talk <- !long_talk
+
+# Some of the chunks will need fixing if TRUE, can do if needed. Or maybe just
+# simplify things. no time right now (doing dfo/noaa 2025 talk).
+long_motivation <- FALSE  # whether to include the original longer motivation
+                         # slides (EAFM, Brianna chat, gslea, open data, why R,
+                         # why github). Opposite is
+                         # short_motivation summarising some of that (or set
+                         # FALSE here if not wanted).
+short_motivation <- !long_motivation
+
+explain_assessment <- FALSE  # set to TRUE for two slides explaining stock assessment
+
+more_details <- FALSE        # set to TRUE for some of the more detailed slides
+                             # (setting FALSE for national EAFM talk)
+
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "",
+  global.par = TRUE,  # set par values to be global (once changed)
+  fig.width = 6,
+  fig.height = 4,
+  fig.align = "center",
+  out.width = "60%",
+  #out.height = 400
+  cache = TRUE,
+  cache_path = "pacea-talk-short-cache/",
+  fig.path = "pacea-talk-short-cache-figs/"
+)
+
+options(pillar.print_max = 6,   # number of rows to show for a tibble
+        pillar.print_min = 6)
+par("mai" = c(1.02, 0.82, 0.3, 0.42))   # default is 1.02 0.82 0.82 0.42
+
+# https://bookdown.org/yihui/rmarkdown-cookbook/font-color.html . For example:
+# `r colorize("hello", "blue")`
+colorize <- function(x, color = "red"){
+  if(knitr::is_latex_output()) {
+    sprintf("\\textcolor{%s}{%s}", color, x)
+  } else if(knitr::is_html_output()) {
+    sprintf("<span style='color: %s;'>%s</span>", color,
+      x)
+  } else x
+}
+```
+
+```{r coverpage, echo=FALSE, out.width = "100%"}
+knitr::include_graphics(paste0(here::here(),
+                               "/talks/talks-manual-figures/pacea-title-slide-sopo-2025.png"))
+```
+
+<!-- Getting in a mess with trying to be too clever. Just make _short versions -->
+<!-- of each to get it done. Keep chunk names the same between them, so will -->
+<!-- have to delete cache when switching -->
+
+```{r introduction, child = "introduction.Rmd", eval = long_talk}
+```
+
+```{r introductionshort, child = "introduction-short.Rmd", eval = short_talk}
+```
+
+<!--
+# pacea
+
+\centering pacea: An R package of Pacific ecosystem information to help facilitate an
+ecosystem approach to fisheries management
+-->
+
+
+```{r buoys, child = "buoys.Rmd", eval = long_talk}
+```
+
+```{r bccm, child = "bccm.Rmd", eval = long_talk}
+```
+
+```{r bccmshort, child = "bccm-short.Rmd", eval = short_talk}
+```
+
+```{r hotssea, child = "hotssea.Rmd", eval = long_talk}
+```
+
+```{r hotssea, child = "hotssea-short.Rmd", eval = short_talk}
+```
+
+```{r populations, child = "populations.Rmd", eval = long_talk}
+```
+
+```{r populationsshort, child = "populations-short.Rmd", eval = short_talk}
+```
+
+```{r indices, child = "indices.Rmd", eval = long_talk}
+```
+
+```{r indicesshort, child = "indices-short.Rmd", eval = short_talk}
+```
+
+```{r oisst, child = "oisst.Rmd", eval = long_talk}
+```
+
+```{r summary, child = "summary.Rmd", eval = long_talk}
+```
+
+```{r summaryshort, child = "summary-short.Rmd", eval = long_talk}
+```
+
+```{r summaryshort, child = "summary-sopo-25.Rmd", eval = short_talk}
+```
