@@ -18,16 +18,6 @@ Physical biogeochemical oceanographic model
 
 - huge filesizes required hosting outputs on Zenodo not GitHub
 
-<!-- - `r colorize("new grid also used for HOTSSea outputs, and has interpolated
-  depths", "red")` -->
-
-<!--
-\
-\footnotesize
-Peña, M.A., Fine, I. and Callendar, W. 2019. Interannual variability in primary production and shelf-offshore transport of nutrients along the northeast Pacific Ocean margin. Deep-Sea Research II, doi:10.1016/j.dsr2.2019.104637.
-\normalsize
--->
-
 ## Built in plotting - primary production in April 2018
 
 ```{r bccmplotfull}
@@ -36,15 +26,17 @@ plot(bccm_primaryproduction_full())
 
 ## Built in plotting - primary production throughout  2018
 
-```{r bccmplotfullyear, fig.height = 5}
-plot(bccm_primaryproduction_full(), months = c(1, 4, 7, 10))
+![](talks-manual-figures/bccm-four-panel-plot.png){width=60%}
+
+```{r bccmplotfullyearpng, eval = FALSE, echo = FALSE}
+png(paste0(here::here(), "/talks/talks-manual-figures/bccm-four-panel-plot.png"),
+    width = 670,   # 670 matches size from running from a chunk
+    height = 480,  # 480 for 2x2
+    res = 100)     # default is 72, actually increases font size, so tweak as desired
+plot(bccm_primaryproduction_full(),
+     months = c(1, 4, 7, 10))
+dev.off()
 ```
-
-
-<!--
-pdf was getting locked, 12 months doesn't fit
--->
-
 
 ## Available variables
 
