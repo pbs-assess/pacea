@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,43,21
+/pbs-assess/pacea/tree/main,10,2
+/pbs-assess/pacea/tree/main/data,8,4
+/pbs-assess/pacea/issues/75,6,3
+/pbs-assess/pacea/issues,4,1
+/pbs-assess/pacea/tree/main/vignettes,4,1
+/pbs-assess/pacea/tree/main/data-raw,3,2
+/pbs-assess/pacea/blob/main/data/npgo.rda,2,2
+/pbs-assess/pacea/blob/main/data-raw/roms/roms-data-interpolation-full.R,2,2
+/pbs-assess/pacea/issues/48,2,2
