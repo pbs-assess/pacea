@@ -6,9 +6,10 @@ Physical biogeochemical oceanographic model
 
 - [Peña et al. (2019)](doi:10.1016/j.dsr2.2019.104637), *Deep-Sea Research II*.
 
-- Regional Ocean Modelling Systen (ROMS)
+<!-- - Regional Ocean Modelling Systen (ROMS)
 
 - curvilinear grid at 3 km x 3 km resolution
+-->
 
 - we interpolate to regular `r colorize("2 km x 2km grid")`
 
@@ -25,6 +26,11 @@ plot(bccm_primaryproduction_full())
 ```
 
 ## Built in plotting - primary production throughout  2018
+
+```{r bccmplotfull2, eval = FALSE}
+plot(bccm_primaryproduction_full(),
+     months = c(1, 4, 7, 10))
+```
 
 ![](talks-manual-figures/bccm-four-panel-plot.png){width=60%}
 

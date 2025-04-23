@@ -43,6 +43,7 @@ ecosystem_summary_hake()
 ecosystem_summary_hake(short_talk_version = TRUE)
 ```
 
+<!--
 # Coming soon -- future projections
 
 - Projections downscaled from IPCC forecasts using Angelica's ROMS model
@@ -66,6 +67,8 @@ Think we will have monthly averages, corresponding to time periods:
 - 2041-2060
 - 2080-2090
 - or maybe just 2050 and 2090
+
+-->
 
 ## Other information
 

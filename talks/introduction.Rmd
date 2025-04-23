@@ -1,48 +1,55 @@
-# Introduction
+# Motivation
 
-```{r, eval = FALSE, echo = explain_assessment}
-## What is a stock assessment?
+##
 
-- Collect data from surveys and commercial fisheries, including ages of fish
-- Data inform statistical population models to estimate historical biomass
-- Models provide advice to fisheries managers
-
-Pacific Hake assessment from 2023, estimate the historical population size:
+```{r motivation1, echo=FALSE, out.width = "100%", eval = long_motivation}
+knitr::include_graphics(paste0(here::here(),
+                               "/talks/talks-manual-figures/motivation-1.png"))
 ```
 
-```{r hakeintro, echo = FALSE, eval = explain_assessment}
-plot(hake_biomass,
-     y_max = 3.5)
+##
+
+```{r motivation2, echo=FALSE, out.width = "100%", eval = long_motivation}
+knitr::include_graphics(paste0(here::here(),
+                               "/talks/talks-manual-figures/motivation-2.png"))
 ```
 
-```{r, results = "asis", eval = explain_assessment, echo = explain_assessment}
-## What is a stock assessment?
+## Motivation (based on a true story)
 
-Advice often in the form of 'decision tables' that indicate probabilities of future events given
-different catches:
+A search for sea surface temperature yields an overwhelming number (341) of choices:
 
-| Catch (t) in 2023 | Probability spawning biomass declines from 2023 to 2024 | Probability spawning biomass in 2024 falls below 40% of unfished biomass |
-| ----------------: | ------------------------------------------------------: | -----------------------------------------------------------------------: |
-| 0 | 50% | 2% |
-| 180,000 | 72% | 3% |
-| 225,000 | 75% | 3% |
-| 320,000 | 78% | 3% |
-| 430,000 | 85% | 5% |
+```{r motivation4, echo=FALSE, out.width = "90%", eval = long_motivation}
+knitr::include_graphics(paste0(here::here(),
+                               "/talks/talks-manual-figures/motivation3.png"))
 ```
 
-<!-- if long_motivation = TRUE colorize here needs fixing, or just unmake it a chunk -->
-```{r, eval = FALSE, echo = long_motivation}
+\pause
+
+Likely requires extensive data wrangling to be usable, which usually takes way,
+way, longer than anticipated.
+
+So the SST analysis did not happen.
+
 ## Motivation
 
 - Revised Fisheries Act: “... the Minister shall take into account the environmental conditions affecting a fish stock."
 
 - `r colorize("Yet <50\\% of DFO’s stock assessments currently use environmental data.", "blue")`
 
-- Only 28% of assessments in Pacific Region use environmental data.
+- Only 28% of assessments in Pacific Region.
 
 - `r colorize("Leading cause of not using environmental data is availability of the data.", "red")`
 
-  \
+\pause
+
+- Open Data is great, but can be hard to
+  `r colorize("convert raw data into usable information", "red")`.
+
+- Primary audience is DFO stock assessment scientists, but usable by anyone
+  (with a minimal working knowledge of R).
+
+<!--
+\
 
 \footnotesize
 
@@ -50,40 +57,10 @@ Kulka DW, Thompson S, Cogliati K, Olmstead M, Austin D, Pepin D. (2022). An Acco
 https://publications.gc.ca/collections/collection_2022/mpo-dfo/Fs97-6-3473-eng.pdf
 
 \normalsize
+-->
 
-##
-```
 
-```{r motivation1, echo=FALSE, out.width = "100%", eval = long_motivation}
-knitr::include_graphics(paste0(here::here(),
-                               "/talks/talks-manual-figures/motivation-1.png"))
-```
-
-```{r, eval = FALSE, echo = long_motivation}
-##
-```
-```{r motivation2, echo=FALSE, out.width = "100%", eval = long_motivation}
-knitr::include_graphics(paste0(here::here(),
-                               "/talks/talks-manual-figures/motivation-2.png"))
-```
-
-```{r, eval = FALSE, echo = long_motivation}
-## Motivation (based on a true story)
-
-A search for sea surface temperature yields an overwhelming number (341) of choices:
-```
-
-```{r motivation4, echo=FALSE, out.width = "90%", eval = long_motivation}
-knitr::include_graphics(paste0(here::here(),
-                               "/talks/talks-manual-figures/motivation3.png"))
-```
-
-```{r, eval = FALSE, echo = long_motivation}
-Likely requires extensive data wrangling to be usable, which usually takes way,
-way, longer than anticipated.
-
-So the SST analysis did not happen.
-
+<!--
 ## Motivation
 
 - Initial motivation was Dan Duplisea's `gslea` package for the Gulf of St. Lawrence.
@@ -107,10 +84,12 @@ Duplisea et al. (2020). gslea: the Gulf of St Lawrence ecosystem
 approach data matrix R-package. R package version 0.1 https://github.com/duplisea/gslea
 
 \normalsize
-```
+-->
 
 <!-- just manually comment out if don't want, trying to automate was getting a -->
-<!-- bit too clever, especially with cacheing --.
+<!-- bit too clever, especially with cacheing -->
+
+<!--
 ## Motivation
 
 - push to include ecosystem information in advice to fisheries managers
@@ -121,8 +100,37 @@ approach data matrix R-package. R package version 0.1 https://github.com/duplise
 
 - Primary audience is DFO stock assessment scientists, but usable by anyone
   (with a minimal working knowledge of R).
+-->
 
 
+## What is a stock assessment?
+
+- We collect data from surveys and commercial fisheries, including ages of fish
+- Data inform statistical population models to estimate historical biomass
+\pause
+- Models provide advice to fisheries managers
+
+Pacific Hake assessment from 2025, estimate the historical population size:
+
+```{r hakeintro, echo = FALSE, eval = explain_assessment}
+plot(hake_biomass,
+     y_max = 3.5)
+```
+
+## What is a stock assessment?
+
+Advice often in the form of 'decision tables' that indicate probabilities of future events given
+different catches:
+
+| Catch (t) in 2025 | Probability spawning biomass declines from 2025 to 2026 | Probability spawning biomass in 2026 falls below 40% of unfished biomass |
+| ----------------: | ------------------------------------------------------: | -----------------------------------------------------------------------: |
+| 0 | 89% | 11% |
+| 150,000 | 100% | 17% |
+| 300,000 | 100% | 23% |
+| 450,000 | 100% | 30% |
+
+
+<!--
 ## Why an R package?
 
 - R is the computer programming language most widely used by stock assessment scientists.
@@ -140,23 +148,28 @@ approach data matrix R-package. R package version 0.1 https://github.com/duplise
 
 - All data (except oceanographic model output) is saved within the package, no further downloading
   required, so not relying on external websites being functional.
+-->
 
-```{r, eval = FALSE, echo = long_motivation}
+<!--
 ## Why an R package on GitHub?
+
+- R is the computer programming language most widely used by stock assessment scientists.
 
 - Can host freely on GitHub: https://github.com/pbs-assess/pacea
 
-- Standard way to collaborate on code.
+- Easy installation:
+
+\textcolor{red}{\texttt{remotes::install\_github("pbs-assess/pacea")}}
 
 - Code is completely open source: transparent, traceable, and transferable.
-```
 
 ```{r whyR, echo=FALSE, out.width="40%", eval = long_motivation}
 knitr::include_graphics(paste0(here::here(),
                                "/talks/talks-manual-figures/github-screenshot-small.png"))
 ```
+-->
 
-```{r, eval = FALSE, echo = long_motivation}
+```{r, eval = FALSE, echo = FALSE}
 - 'Passing' badge: ensures package can build in R.
 
 - 'codecov' is the amount of the code that is covered by unit tests, which help weed
@@ -167,15 +180,16 @@ knitr::include_graphics(paste0(here::here(),
 Started thinking about ecosystem assessment regions like in gslea:
 ```
 
-```{r gslea, echo=FALSE, out.width="50%", eval = long_motivation}
+```{r gslea, echo=FALSE, out.width="50%", eval = FALSE}
 knitr::include_graphics(paste0(here::here(),
                                "/talks/talks-manual-figures/gslmap.plain-1.png"))
 ```
 
-```{r, eval = FALSE, echo = long_motivation}
+```{r, eval = FALSE, echo = FALSE}
 But it became non-trivial to decide on regions, and we decided to explicitly include
 spatial information, especially regarding outputs of the biogeochemical model.
 ```
+<!--
 
 ## `pacea` objects (climatic/oceanographic)
 
@@ -204,3 +218,4 @@ Currently, pacea contains (`r colorize("red is updated/new since last year's mee
  `r colorize("Pacific Hake", "red")` and `r colorize("Pacific Herring", "red")`
 
 - `r colorize("zooplankton biomass anomalies in the Strait of Georgia for 25 species groups", "red")`
+-->

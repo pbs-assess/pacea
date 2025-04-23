@@ -111,14 +111,14 @@ short_talk <- !long_talk
 
 # Some of the chunks will need fixing if TRUE, can do if needed. Or maybe just
 # simplify things. no time right now (doing dfo/noaa 2025 talk).
-long_motivation <- FALSE  # whether to include the original longer motivation
+long_motivation <- TRUE  # whether to include the original longer motivation
                          # slides (EAFM, Brianna chat, gslea, open data, why R,
                          # why github). Opposite is
                          # short_motivation summarising some of that (or set
                          # FALSE here if not wanted).
 short_motivation <- !long_motivation
 
-explain_assessment <- FALSE  # set to TRUE for two slides explaining stock assessment
+explain_assessment <- TRUE   # set to TRUE for two slides explaining stock assessment
 
 more_details <- FALSE        # set to TRUE for some of the more detailed slides
                              # (setting FALSE for national EAFM talk)
@@ -156,17 +156,18 @@ colorize <- function(x, color = "red"){
 
 ```{r coverpage, echo=FALSE, out.width = "100%"}
 knitr::include_graphics(paste0(here::here(),
-                               "/talks/talks-manual-figures/pacea-title-slide-future-habitat-2025.png"))
+                               "/talks/talks-manual-figures/pacea-title-slide-molecular-genetics-2025.png"))
 ```
 
 <!-- Getting in a mess with trying to be too clever. Just make _short versions -->
 <!-- of each to get it done. Keep chunk names the same between them, so will -->
 <!-- have to delete cache when switching -->
+<!-- Note that introduction is manually switched -->
 
-```{r introduction, child = "introduction.Rmd", eval = long_talk}
+```{r introduction, child = "introduction.Rmd", eval = TRUE}
 ```
 
-```{r introductionshort, child = "introduction-short.Rmd", eval = short_talk}
+```{r introductionshort, child = "introduction-short.Rmd", eval = FALSE}
 ```
 
 <!--
@@ -180,6 +181,9 @@ ecosystem approach to fisheries management
 ```{r buoys, child = "buoys.Rmd", eval = long_talk}
 ```
 
+```{r buoysshort, child = "buoys-short.Rmd", eval = short_talk}
+```
+
 ```{r bccm, child = "bccm.Rmd", eval = long_talk}
 ```
 
@@ -189,19 +193,19 @@ ecosystem approach to fisheries management
 ```{r hotssea, child = "hotssea.Rmd", eval = long_talk}
 ```
 
-```{r hotssea, child = "hotssea-short.Rmd", eval = short_talk}
+```{r hotssea, child = "hotssea-short.Rmd", eval = long_talk}
 ```
 
 ```{r populations, child = "populations.Rmd", eval = long_talk}
 ```
 
-```{r populationsshort, child = "populations-short.Rmd", eval = long_talk}
+```{r populationsshort, child = "populations-short.Rmd", eval = short_talk}
 ```
 
 ```{r indices, child = "indices.Rmd", eval = long_talk}
 ```
 
-```{r indicesshort, child = "indices-short.Rmd", eval = short_talk}
+```{r indicesshort, child = "indices-short.Rmd", eval = long_talk}
 ```
 
 ```{r oisst, child = "oisst.Rmd", eval = long_talk}

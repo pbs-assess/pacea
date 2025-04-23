@@ -1,0 +1,46 @@
+# Buoys
+
+```{asis, echo = long_talk}
+## Sea surface temperature
+
+Andrea Hilborn (IOS) maintains
+https://github.com/IOS-OSD-DPG/Pacific_SST_Monitoring
+which is updated weekly to show recent SST from various sources for the Northeast Pacific (and anomalies
+and marine heatwave information).
+
+  \
+```
+```{r andreapage, echo=FALSE, out.width = "80%", eval = long_talk}
+knitr::include_graphics(paste0(here::here(),
+                               "/inst/andrea-github.png"))
+```
+
+
+## Sea surface temperature data from buoys
+
+Data from `r nrow(buoy_metadata)` buoys maintained by DFO/ECCC (Environment and
+Climate Change Canada), hosted through CIOOS (Canadian Integrated Ocean
+Observing System).
+
+```{r buoysmap, echo=FALSE, out.width = "50%"}
+knitr::include_graphics(paste0(here::here(),
+                               "/man/figures/buoys_map.png"))
+```
+
+## Sea surface temperature data from buoys
+
+The data are saved as a `tibble` in `pacea`:
+```{r buoysdata}
+buoy_sst
+```
+\pause
+```{r buoysdata2}
+tail(buoy_sst)
+```
+
+## Sea surface temperature data from buoys
+
+Plot data from a single buoy for all years, the default is for buoy C46205:
+```{r buoysplot}
+plot(buoy_sst)
+```
