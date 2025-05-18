@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,48,23
+/pbs-assess/pacea/issues/57,24,9
+/pbs-assess/pacea/tree/main/data,9,7
+/pbs-assess/pacea/tree/main,8,7
+/pbs-assess/pacea/tree/main/data-raw,8,4
+/pbs-assess/PACea,6,5
+/pbs-assess/pacea/tree/main/R,5,5
+/pbs-assess/pacea/tree/main/data-raw/grids,5,3
+/pbs-assess/pacea/blob/616c4e1b452ada9581bf641e6ac1ec9262fd3b3c/data-raw/depth/depth.R,5,2
+/pbs-assess/pacea/blob/main/data-raw/grids/create-grid.R,5,2
