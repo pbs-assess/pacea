@@ -8,6 +8,8 @@
 #' And from the 'Consider adding' output from check(vignettes = FALSE), adding
 #' here to then go into NAMESPACE
 #'
+#' @docType package
+#' @name pacea_import_from
 #' @importFrom dplyr filter mutate summarise select group_by n arrange ungroup
 #' @importFrom dplyr inner_join left_join right_join anti_join full_join
 #' @importFrom dplyr semi_join row_number
@@ -19,6 +21,4 @@
 #' @importFrom graphics abline axis lines mtext par plot.default points polygon segments
 #' @importFrom stats approx setNames
 #' @importFrom utils tail type.convert
-
-#' @keywords internal
-"_PACKAGE"
+NULL
