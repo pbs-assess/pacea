@@ -37,6 +37,8 @@ plot.pacea_stanom <- function(x,
                               eez = TRUE,
                               ...) {
 
+  requireNamespace("terra", quietly = TRUE)
+
   # create new names for plot
   month_table <- data.frame(month.name = month.name,
                             month.abb = month.abb,
