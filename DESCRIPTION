@@ -88,6 +88,7 @@ Imports:
     utils,
     zen4R
 RoxygenNote: 7.3.2
+Roxygen: list(markdown = TRUE)
 Remotes: github::pbs-assess/gfiphc
 Suggests:
     rmarkdown,
