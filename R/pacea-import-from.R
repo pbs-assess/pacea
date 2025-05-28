@@ -28,3 +28,4 @@ NULL
 #' @name pacea
 #' @keywords internal
 "_PACKAGE"
+NULL
