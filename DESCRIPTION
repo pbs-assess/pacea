@@ -73,15 +73,18 @@ Imports:
     ggplot2,
     grDevices,
     graphics,
+    gstat,
     httr,
     lubridate (>= 1.8.0),
     magrittr (>= 2.0.1),
+    methods,
     pals,
     parallel,
     rappdirs,
     rlang (>= 0.4.11),
     sf (>= 1.0.10),
     stats,
+    terra,
     tidyr,
     tibble,
     usethis,
@@ -111,9 +114,6 @@ Suggests:
     exactextractr (>= 0.7.1),
     Matrix,
     testthat (>= 3.0.0),
-    terra,
-    gstat,
-    methods,
     here
 VignetteBuilder: knitr
 Config/testthat/edition: 3
