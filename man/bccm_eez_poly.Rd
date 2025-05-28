@@ -6,7 +6,6 @@
 \alias{inshore_poly}
 \alias{offshore_poly}
 \alias{hotssea_poly}
-\alias{bccm_hotssea_poly}
 \title{Polygons masking layers for BC waters}
 \format{
 A simple features polygon dataframe.
@@ -17,8 +16,6 @@ A simple features polygon dataframe.
   \item{hotssea_poly}{HOTSSea domain}
   \item{bccm_hotssea_poly}{combined full BCCM and HOTSSea domains}
 }
-
-An object of class \code{sf} (inherits from \code{data.frame}) with 1 rows and 1 columns.
 
 An object of class \code{sf} (inherits from \code{data.frame}) with 1 rows and 1 columns.
 
@@ -38,8 +35,6 @@ inshore_poly
 offshore_poly
 
 hotssea_poly
-
-bccm_hotssea_poly
 }
 \description{
 Simple features objects of BCCM ROMS data, inshore, and offshore regions of

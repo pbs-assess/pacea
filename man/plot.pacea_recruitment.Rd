@@ -37,7 +37,9 @@ object.}
 \item{y_tick_by}{increment for y-axis ticks; gets
 overwritten in `add_tickmarks()` if this yields more than
 `y_tick_max_number` tickmarks. If using [plot.pacea_biomass()] the default
-of 1 gets automatically changed to 0.25 for `plot(hake_biomass)`.}
+of 1 gets automatically changed to 0.25 for `plot(hake_biomass)`. If
+`y_axis_reverse` is TRUE then the negative of `y_tick_by` (which should
+always be positive) is passed onto `add_tickmarks()`.}
 
 \item{x_tick_extra_years}{number of extra years to expand around the range
 of data for which to add annual tick marks (does not expand the axis); in
