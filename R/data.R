@@ -938,10 +938,6 @@
 #' @rdname bccm_eez_poly
 "hotssea_poly"
 
-#' @rdname bccm_eez_poly
-"bccm_hotssea_poly"
-
-
 ##' Metadata regarding buoys for sea surface temperature.
 ##'
 ##' Details regarding the buoys that are used for the data in
