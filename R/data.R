@@ -571,7 +571,7 @@
 
 
 ##' Pacific Hake annual age-0 recruitments as estimated by the most recent
-##' (2024) stock assessment.
+##' (2025) stock assessment.
 ##'
 ##' The Pacific Hake stock is managed and assessed through an Agreement between
 ##' Canada and the United States. The recruitment estimates come from the most
@@ -609,9 +609,10 @@
 ##'
 ##' Historical estimates of recruitment and biomass will change from stock assessment to stock
 ##' assessment, and so we use `hake_recruitment` to represent
-##' the results from the most recent assessment (currently 2024), and also save
-##' `hake_recruitment_2024` and `hake_recruitment_2023` for the results from
-##' the 2024 and 2023 assessments (the 2023 results were the first ones included
+##' the results from the most recent assessment (currently 2025), and also save
+##' `hake_recruitment_2025`, `hake_recruitment_2024`,
+##' and `hake_recruitment_2023` for the results from
+##' the 2025, 2024, and 2023 assessments (the 2023 results were the first ones included
 ##' in `pacea`). This is so that you can always refer to a specific set of
 ##' assessment results (rather than have your analyses change because you have
 ##' updated `pacea` and we have replaced `hake_recruitment` with results from a
@@ -638,6 +639,15 @@
 ##' Fisheries and Oceans Canada. 246 p.
 ##' https://media.fisheries.noaa.gov/2024-02/hake-assessment-2024.pdf
 ##'
+##' The 2025 assessment is:
+##'
+##' Johnson, K.F., A.M. Edwards, A.M. Berger, C.J. Grandin, and C.R. Wetzel.
+##' 2025. Status of the Pacific Hake (whiting) stock in U.S. and Canadian
+##' waters in 2025. Prepared by the Joint Technical Committee of the U.S. and
+##' Canada Pacific Hake/Whiting Agreement, National Marine Fisheries Service and
+##' Fisheries and Oceans Canada. 286
+##' p.https://s3.amazonaws.com/media.fisheries.noaa.gov/2025-02/Status-Pacific-Hake-whiting-US-and-Canadian-waters-2025.pdf
+
 ##' @format A tibble also of class `pacea_recruitment` with columns:
 ##' \describe{
 ##'   \item{year:}{year of the recruitment estimate}
@@ -664,8 +674,11 @@
 ##' @rdname hake_recruitment
 "hake_recruitment_2024"
 
+##' @rdname hake_recruitment
+"hake_recruitment_2025"
+
 ##' Pacific Hake annual spawning stock biomass (females only) as estimated by
-##' the most recent (2024) stock assessment.
+##' the most recent (2025) stock assessment.
 ##'
 ##' The Pacific Hake stock is managed and assessed through an Agreement between
 ##' Canada and the United States. The spawning stock biomass (mature females) estimates come from the most
@@ -673,7 +686,7 @@
 ##' from California to British Columbia.
 ##'
 ##' See `?hake_recruitment` for further details and references, and explanations
-##' of `hake_biomass_2024` and `hake_biomass_2023`.
+##' of `hake_biomass_2025`, `hake_biomass_2024`, and `hake_biomass_2023`.
 ##'
 ##' @format A tibble also of class `pacea_biomass` with columns:
 ##' \describe{
@@ -703,8 +716,11 @@
 ##' @rdname hake_biomass
 "hake_biomass_2024"
 
+##' @rdname hake_biomass
+"hake_biomass_2025"
+
 ##' Pacific Hake annual total biomass of age-1 fish as estimated by
-##' the most recent (2024) stock assessment.
+##' the most recent (2025) stock assessment.
 ##'
 ##' The Pacific Hake stock is managed and assessed through an Agreement between
 ##' Canada and the United States. These estimates comes from the most
@@ -712,7 +728,7 @@
 ##' from California to British Columbia.
 ##'
 ##' See `?hake_recruitment` for further details and references, and explanations
-##' of `hake_total_biomass_age_1_2024`. Credible intervals were not easily
+##' of `hake_total_biomass_age_1_2025` and `hake_total_biomass_age_1_2024`. Credible intervals were not easily
 ##' available but may be included in future updates.
 ##'
 ##' @format A tibble also of class `pacea_biomass` with columns:
@@ -735,6 +751,9 @@
 
 ##' @rdname hake_total_biomass_age_1
 "hake_total_biomass_age_1_2024"
+
+##' @rdname hake_total_biomass_age_1
+"hake_total_biomass_age_1_2025"
 
 ##' Pacific Hake annual age-0 recruitments divided by recruitments in 2010, as
 ##' estimated by the most recent stock assessment.
@@ -783,6 +802,9 @@
 ##' @rdname hake_recruitment_over_2010
 "hake_recruitment_over_2010_2024"
 
+##' @rdname hake_recruitment_over_2010
+"hake_recruitment_over_2010_2025"
+
 ##' Pacific Hake annual age-0 recruitments divided by unfished
 ##' equilibrium recruitment, as estimated by the most recent stock assessment.
 ##'
@@ -822,6 +844,9 @@
 ##' @rdname hake_recruitment_over_R0
 "hake_recruitment_over_R0_2024"
 
+##' @rdname hake_recruitment_over_R0
+"hake_recruitment_over_R0_2025"
+
 ##' Pacific Hake annual log-scale age-0 recruitment deviations from the
 ##' stock-recruitment curve, as estimated by the most recent stock assessment.
 ##'
@@ -858,6 +883,8 @@
 ##' @rdname hake_recruitment_deviations
 "hake_recruitment_deviations_2024"
 
+##' @rdname hake_recruitment_deviations
+"hake_recruitment_deviations_2025"
 
 #' BC coastline
 #'

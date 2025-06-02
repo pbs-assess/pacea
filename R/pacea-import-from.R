@@ -8,8 +8,7 @@
 #' And from the 'Consider adding' output from check(vignettes = FALSE), adding
 #' here to then go into NAMESPACE
 #'
-#' @docType package
-#' @name pacea_import_from
+## usethis namespace: start
 #' @importFrom dplyr filter mutate summarise select group_by n arrange ungroup
 #' @importFrom dplyr inner_join left_join right_join anti_join full_join
 #' @importFrom dplyr semi_join row_number
@@ -21,4 +20,11 @@
 #' @importFrom graphics abline axis lines mtext par plot.default points polygon segments
 #' @importFrom stats approx setNames
 #' @importFrom utils tail type.convert
+## usethis namespace: end
 NULL
+
+#' pacea: an R package of Pacific ecosystem information to help facilitate an
+#'   ecosystem approach to fisheries management
+#' @name pacea
+#' @keywords internal
+"_PACKAGE"
