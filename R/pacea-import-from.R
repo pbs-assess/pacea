@@ -8,6 +8,7 @@
 #' And from the 'Consider adding' output from check(vignettes = FALSE), adding
 #' here to then go into NAMESPACE
 #'
+#' @name pacea_import_from
 ## usethis namespace: start
 #' @importFrom dplyr filter mutate summarise select group_by n arrange ungroup
 #' @importFrom dplyr inner_join left_join right_join anti_join full_join
