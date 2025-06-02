@@ -1604,7 +1604,7 @@
 "bi"
 
 
-##' @title coastline_northamerica
+##' @title coastline_north_america
 ##' @description coastline of Canada, the US, Geenland, and St Pierre et Miquelon
 ##' @format A data frame with 72 rows and 4 variables:
 ##' \describe{
@@ -1615,10 +1615,10 @@
 ##'}
 ##' @author Remi Daigle
 ##' @source Generated from running `data-raw/coastline/coastline-northamerica.R`.
-"coastline_northamerica"
+"coastline_north_america"
 
 
-##' @title northamericaeez
+##' @title north_america_eez
 ##' @description eez of Canada, the US, Greenland, and St Pierre et Miquelon
 ##' @format A data frame with 4 rows and 2 variables:
 ##' \describe{
@@ -1626,5 +1626,5 @@
 ##'   \item{\code{geometry}}{list A list of geometries representing the EEZ, in the form of `sf` objects. Each geometry is a polygon representing the EEZ of the #respective country or territory.} 
 ##'}
 ##' @author Remi Daigle
-##' @source Generated from running `data-raw/coastline/coastline-northamerica.R`
-"northamericaeez"
+##' @source Generated from running `data-raw/coastline/northamericaeez.R`
+"north_america_eez"

@@ -4,15 +4,15 @@ require(dplyr)
 
 id <- c(8493,8456,8438,8494)
 
-northamericaeez <- gaz_search(id) |> 
+north_america_eez <- gaz_search(id) |> 
   select(preferredGazetteerName) |> 
   mutate(geometry=gaz_geometry(id)) |> 
   st_as_sf()
 
-usethis::use_data(northamericaeez, overwrite = TRUE)
+usethis::use_data(north_america_eez, overwrite = TRUE)
 
-sinew::makeOxygen(northamericaeez)
+sinew::makeOxygen(north_america_eez)
 
-# ggplot(northamericaeez) +
+# ggplot(north_america_eez) +
 #   geom_sf() +
 #   coord_sf(xlim = c(-80, -30), ylim = c(35, 70), expand = FALSE)

@@ -12,6 +12,8 @@
 #' @param eez logical. Should BC EEZ layer be plotted?
 #' @param ... other arguments to be passed on, but not currently used (`?ggplot`
 #'   says the same thing); this should remove a R-CMD-check warning.
+#' @param north_america logical. Should the North American coastline be plotted? Default is `FALSE`.
+#' @param north_america_eez logical. Should the North American EEZ be plotted? Default is `FALSE`.
 #'
 #' @return plot of the spatial data to the current device (returns nothing)
 #'
@@ -33,8 +35,8 @@ plot.pacea_st <- function(x,
                           years.plot = c(2018),
                           bc = TRUE,
                           eez = TRUE,
-                          northamerica = FALSE,
-                          northamerica_eez = FALSE,
+                          north_america = FALSE,
+                          north_america_eez = FALSE,
                           ...) {
 
   # month reference table
@@ -166,14 +168,14 @@ plot.pacea_st <- function(x,
   }
   
   # north american eez and coastline layers
-  if(northamerica == TRUE){
+  if(north_america == TRUE){
     tplot <- tplot +
-      geom_sf(data = coastline_northamerica, fill = NA, lty = "dotted")
+      geom_sf(data = coastline_north_america, fill = NA, lty = "dotted")
   }
   
-  if(northamerica_eez == TRUE){
+  if(north_america_eez == TRUE){
     tplot <- tplot +
-      geom_sf(data = northamericaeez, fill = "darkgrey")
+      geom_sf(data = north_america_eez, fill = "darkgrey")
   }
 
   if(restrict_plot){
