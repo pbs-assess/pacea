@@ -1602,3 +1602,29 @@
 ##' @author Andrew Edwards
 ##' @source Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
 "bi"
+
+
+##' @title coastline_northamerica
+##' @description coastline of Canada, the US, Geenland, and St Pierre et Miquelon
+##' @format A data frame with 72 rows and 4 variables:
+##' \describe{
+##'   \item{\code{admin}}{character The administrative region of the coastline, e.g. "Canada", "USA", "Greenland", "St Pierre et Miquelon"}
+##'   \item{\code{name_en}}{character The name of the province or state in English, e.g. "British Columbia", "Alaska", "Newfoundland and Labrador"}
+##'   \item{\code{name_fr}}{character The name of the province or state in French, e.g. "Colombie-Britannique", "Alaska", "Terre-Neuve-et-Labrador"}
+##'   \item{\code{geometry}}{list A list of geometries representing the coastline, in the form of `sf` objects. Each geometry is a polygon or a line representing #the coastline of the respective administrative region.} 
+##'}
+##' @author Remi Daigle
+##' @source Generated from running `data-raw/coastline/coastline-northamerica.R`.
+"coastline_northamerica"
+
+
+##' @title northamericaeez
+##' @description eez of Canada, the US, Greenland, and St Pierre et Miquelon
+##' @format A data frame with 4 rows and 2 variables:
+##' \describe{
+##'   \item{\code{preferredGazetteerName}}{character The preferred name of the Exclusive Economic Zone (EEZ) in English, e.g. "Canada", "United States of America", "Greenland", "St Pierre et Miquelon"}
+##'   \item{\code{geometry}}{list A list of geometries representing the EEZ, in the form of `sf` objects. Each geometry is a polygon representing the EEZ of the #respective country or territory.} 
+##'}
+##' @author Remi Daigle
+##' @source Generated from running `data-raw/coastline/coastline-northamerica.R`
+"northamericaeez"

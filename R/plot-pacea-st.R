@@ -33,6 +33,8 @@ plot.pacea_st <- function(x,
                           years.plot = c(2018),
                           bc = TRUE,
                           eez = TRUE,
+                          northamerica = FALSE,
+                          northamerica_eez = FALSE,
                           ...) {
 
   # month reference table
@@ -161,6 +163,17 @@ plot.pacea_st <- function(x,
   if(bc == TRUE){
     tplot <- tplot +
       geom_sf(data = bc_coast, fill = "darkgrey")
+  }
+  
+  # north american eez and coastline layers
+  if(northamerica == TRUE){
+    tplot <- tplot +
+      geom_sf(data = coastline_northamerica, fill = NA, lty = "dotted")
+  }
+  
+  if(northamerica_eez == TRUE){
+    tplot <- tplot +
+      geom_sf(data = northamericaeez, fill = "darkgrey")
   }
 
   if(restrict_plot){
