@@ -376,17 +376,17 @@ hotssea_bottom_temperature_std(
 
 \item{ask}{Logical. Should the user be asked before downloading the data to local cache? Defaults to the value of interactive().}
 
-\item{force}{Logical. Should download of data be forced? Overrides `ask` argument if TRUE.}
+\item{force}{Logical. Should download of data be forced? Overrides \code{ask} argument if TRUE.}
 
 \item{version}{character Version number of data as saved on Zenodo. Only
 currently works for "01" as that's all that is currently available.}
 
 \item{cache_subfolder}{character. Subfolder to put or look for the objects;
-defaults to `hotssea` and it is best to stick with this. The objects will
-be put in your `paste0(pacea::pacea_cache(), cache_subfolder)` directory.}
+defaults to \code{hotssea} and it is best to stick with this. The objects will
+be put in your \code{paste0(pacea::pacea_cache(), cache_subfolder)} directory.}
 }
 \value{
-`sf` data object requested.
+\code{sf} data object requested.
 }
 \description{
 Loading and/or downloading model output from HOTSsea physical hindcast of the
@@ -394,7 +394,7 @@ Salish Sea model. Loads it into your R environment from your local cache, and if
 it has not been previously downloaded will first download it from Zenodo
 into your local cache.
 To download all HOTSsea model output in one go (recommended), first use the
-  function [hotssea_all_variables()]. See the hotssea vignette for further explanations.
+function \code{\link[=hotssea_all_variables]{hotssea_all_variables()}}. See the hotssea vignette for further explanations.
 }
 \details{
 The Hindcast of the Salish Sea (HOTSSea) is a physical ocean model that
@@ -406,7 +406,7 @@ and can examine areas with few observations. Results indicate that some
 seasons and areas are warming faster than others. HOTSSea was developed using
 the Nucleus for European Modelling of the Ocean (NEMO)
 engine, and temperature and salinty outputs are included in pacea (from version
- 1 of HOTSSea).
+1 of HOTSSea).
 
 The HOTSSea outputs in pacea are adapted from results
 provided by Greig Oldford (Fisheries and Oceans Canada). For model details see
@@ -417,47 +417,47 @@ should be consulted for any clarifications and uses of the results.
 The following 40 functions serve to download specific individual ocean
 calculations related to temperature or salinity from the HOTSSea model. If a
 variable has already been downloaded, the function will load data from the
-`hotssea` subfolder in the user's
-`pacea_cache()` folder into user's local R environment. Each file is around
+\code{hotssea} subfolder in the user's
+\code{pacea_cache()} folder into user's local R environment. Each file is around
 3-9 Mb, but should not take long to download.
 
 The 40 variables available are desribed below as their respective
-functions. The variables are listed in the object `hotssea_data`.
-The variables are stored on Zenodo, with [get_zenodo_data()]
+functions. The variables are listed in the object \code{hotssea_data}.
+The variables are stored on Zenodo, with \code{\link[=get_zenodo_data]{get_zenodo_data()}}
 automatically taking care of the DOI address for the one-time download.
 #'
 #'
 \describe{
-  \code{hotssea_*depth*_temperature()_*statistic*} Temperature in oC\cr
-  \code{hotssea_*depth*_salinity()} Salinity in PSU\cr
+\code{hotssea_*depth*_temperature()_*statistic*} Temperature in oC\cr
+\code{hotssea_*depth*_salinity()} Salinity in PSU\cr
 }
 
 NOTE:\cr
 \code{*depth*} must be replaced by one of the following depth categories:
 
 \describe{
-  \code{surface}{sea surface, the top model cell at that location}\cr
-  \code{avg0to30m}{depth-integrated average over 0-30 m}\cr
-  \code{avg30to150m}{depth-integrated average over 30-150 m}\cr
-  \code{150toBot} {depth-integrated from 150 m to the bottom cell}\cr
-  \code{bottom}{sea bottom, the bottom model cell at that location}
+\code{surface}{sea surface, the top model cell at that location}\cr
+\code{avg0to30m}{depth-integrated average over 0-30 m}\cr
+\code{avg30to150m}{depth-integrated average over 30-150 m}\cr
+\code{150toBot} {depth-integrated from 150 m to the bottom cell}\cr
+\code{bottom}{sea bottom, the bottom model cell at that location}
 }
 
 #' \code{*statistic*} must be replaced by one of the following statistics:
 
 \describe{
-  \code{min}{minimum daily mean over the month}\cr
-  \code{mean}{mean daily mean over the month}\cr
-  \code{max}{maximum daily mean over the month}\cr
-  \code{std} {standard deviation of the daily means for the month}\cr
+\code{min}{minimum daily mean over the month}\cr
+\code{mean}{mean daily mean over the month}\cr
+\code{max}{maximum daily mean over the month}\cr
+\code{std} {standard deviation of the daily means for the month}\cr
 }
 
 The five permissable depth values for four types of statistics for both
 temperature and salinity yield the 40 different combinations.
-For example, `hotssea_avg0to30m_temperature_max()` refers to the mean (over
+For example, \code{hotssea_avg0to30m_temperature_max()} refers to the mean (over
 the top 30 m) of each modelled depths' maximum (over the month) daily mean
 temperature. See the hotssea vignette for explicit explanation of these
-calculations; in particular the `*statistic* is calculated for all cells
+calculations; in particular the `\emph{statistic} is calculated for all cells
 before the depth averaging is performed.
 
 Explicit details of the vertical resolution of the original HOTSSea model

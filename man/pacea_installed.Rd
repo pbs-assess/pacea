@@ -2,17 +2,17 @@
 % Please edit documentation in R/pacea-installed.R
 \name{pacea_installed}
 \alias{pacea_installed}
-\title{Check the date of the last local installation of `pacea`}
+\title{Check the date of the last local installation of \code{pacea}}
 \usage{
 pacea_installed()
 }
 \value{
 Prints text giving days since last local installation, and directs
-  users to website to check the latest updates on GitHub.
+users to website to check the latest updates on GitHub.
 }
 \description{
-Run this and then compare the date with the recent updates of `pacea`, given
-by the dates of the commits at `https://github.com/pbs-assess/pacea/commits/main`
+Run this and then compare the date with the recent updates of \code{pacea}, given
+by the dates of the commits at \verb{https://github.com/pbs-assess/pacea/commits/main}
 }
 \examples{
 \dontrun{

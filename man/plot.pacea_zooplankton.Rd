@@ -15,41 +15,41 @@
 )
 }
 \arguments{
-\item{obj}{a `pacea_zooplankton` object, which is a tibble with columns
-giving `year`, `num_samples` (number of samples), `volume_filtered`,
-`total_biomass`, and then 24 species groups of zooplankton (see
-`?zooplankton_sog`, currently the only zooplankton data in pacea).}
+\item{obj}{a \code{pacea_zooplankton} object, which is a tibble with columns
+giving \code{year}, \code{num_samples} (number of samples), \code{volume_filtered},
+\code{total_biomass}, and then 24 species groups of zooplankton (see
+\code{?zooplankton_sog}, currently the only zooplankton data in pacea).}
 
-\item{species_group}{which column of `obj` to plot, either `total_biomass`
-(the default) or one of the 24 species groups described in `?zooplankton_sog`.}
+\item{species_group}{which column of \code{obj} to plot, either \code{total_biomass}
+(the default) or one of the 24 species groups described in \code{?zooplankton_sog}.}
 
-\item{xlab}{x-axis label, defaults to `Year`}
+\item{xlab}{x-axis label, defaults to \code{Year}}
 
-\item{ylab}{y-axis label, if `NULL` (the default) then automatically selects
-the `axis_name` corresponding to `species_group` in the object
-`zooplankton_sog_axis_names`. User can also just provide their own label.}
+\item{ylab}{y-axis label, if \code{NULL} (the default) then automatically selects
+the \code{axis_name} corresponding to \code{species_group} in the object
+\code{zooplankton_sog_axis_names}. User can also just provide their own label.}
 
 \item{lwd}{line thickness to plot the anomalies, defaults to 15 since these
 are annual; likely needs tweaking depending on the size of the final
 figure.}
 
-\item{mgp_val}{mgp value for `par()`, first value is slightly less than the
+\item{mgp_val}{mgp value for \code{par()}, first value is slightly less than the
 default to fit the superscripts in okay. Resets to existing value after plotting.}
 
-\item{...}{optional arguments passed onto `plot.pacea_index()` and
-`plot()`. Note that the x-axis is constructed using a lubridate `date`
-object, so `xlim` needs to be a  `date` object (see `plot.pacea_index()` example).}
+\item{...}{optional arguments passed onto \code{plot.pacea_index()} and
+\code{plot()}. Note that the x-axis is constructed using a lubridate \code{date}
+object, so \code{xlim} needs to be a  \code{date} object (see \code{plot.pacea_index()} example).}
 }
 \value{
 plot of the time series to the current device (returns nothing)
 }
 \description{
 Temporal plot for one of the columns of a pacea zooplankton
-(`pacea_zooplankton`) object, as defined in `?zooplankton_sog`. The specified
-`species_group` gets passed onto `plot.pacea_index()` as the anomaly to be
+(\code{pacea_zooplankton}) object, as defined in \code{?zooplankton_sog}. The specified
+\code{species_group} gets passed onto \code{plot.pacea_index()} as the anomaly to be
 plotted, and yields a correctly automated y-axis label (that can be user-specified if
 desired). Other options specified here also get passed onto
-`plot.pacea_index()` and `plot()`, such as for display style, adding in
+\code{plot.pacea_index()} and \code{plot()}, such as for display style, adding in
 times of other events, etc. See examples and zooplankton vignette, as well as the
 climatic and oceanographic indices vignette.
 }

@@ -7,11 +7,11 @@
 \method{plot}{pacea_oi}(x, weeks.plot, months.plot, years.plot, bc = TRUE, eez = TRUE, ...)
 }
 \arguments{
-\item{x}{a OISST `pacea_oi` object, which is an `sf` object.}
+\item{x}{a OISST \code{pacea_oi} object, which is an \code{sf} object.}
 
 \item{weeks.plot}{numeric vector to indicate which weeks to plot. Defaults to current week (or most recent) available.}
 
-\item{months.plot}{character or numeric vector to indicate which months to plot (e.g. `c(1, 2)`, `c("April", "may")`, `c(1, "April")`). Defaults to current month (or most recent) available.}
+\item{months.plot}{character or numeric vector to indicate which months to plot (e.g. \code{c(1, 2)}, \code{c("April", "may")}, \code{c(1, "April")}). Defaults to current month (or most recent) available.}
 
 \item{years.plot}{numeric vector to indicate which years to plot. Defaults to current year (or most recent) available.}
 
@@ -19,14 +19,14 @@
 
 \item{eez}{logical. Should BC EEZ layer be plotted?}
 
-\item{...}{other arguments to be passed on, but not currently used (`?ggplot`
+\item{...}{other arguments to be passed on, but not currently used (\code{?ggplot}
 says the same thing); this should remove a R-CMD-check warning.}
 }
 \value{
 plot of the spatial data to the current device (returns nothing)
 }
 \description{
-Plot for NOAA OISST sf objects using `ggplot()`. A quick visualization of data, specifying month(s) and year(s). For more options and configurable plots see vignette.
+Plot for NOAA OISST sf objects using \code{ggplot()}. A quick visualization of data, specifying month(s) and year(s). For more options and configurable plots see vignette.
 }
 \examples{
 \dontrun{

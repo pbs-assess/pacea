@@ -7,23 +7,23 @@
 \title{Optimal interpolation SST}
 \format{
 \describe{
-  \item{year}{Year}
-  \item{week}{Calendar week}
-  \item{month}{Calendar month}
-  \item{sst}{Mean sea surface temperature, SST (deg C)}
-  \item{sst_sd}{Standard deviation of SST}
-  \item{sst_n}{Sample size of SST}
-  \item{start_date}{Start date of mean SST estimate}
-  \item{end_date}{End date of mean SST estimate}
+\item{year}{Year}
+\item{week}{Calendar week}
+\item{month}{Calendar month}
+\item{sst}{Mean sea surface temperature, SST (deg C)}
+\item{sst_sd}{Standard deviation of SST}
+\item{sst_n}{Sample size of SST}
+\item{start_date}{Start date of mean SST estimate}
+\item{end_date}{End date of mean SST estimate}
 }
-`oisst_7day` An object of class sf with 2051650 rows and 8 columns.
+\code{oisst_7day} An object of class sf with 2051650 rows and 8 columns.
 
-`oisst_month` An object of class sf with 464350 rows and 8 columns.
+\code{oisst_month} An object of class sf with 464350 rows and 8 columns.
 }
 \source{
 https://www.ncei.noaa.gov/products/optimum-interpolation-sst
 
-Generated from running `data-raw/erddap/OISST.R`.
+Generated from running \code{data-raw/erddap/OISST.R}.
 }
 \usage{
 oisst_7day
@@ -33,8 +33,8 @@ oisst_month
 \description{
 Simple features objects of NOAA's Optimal Interpolation SST
 \describe{
-  \item{oisst_7day}{7-day mean sea surface temperature (deg C)}
-  \item{oisst_month}{Monthly mean sea surface temperature in (deg C)}
+\item{oisst_7day}{7-day mean sea surface temperature (deg C)}
+\item{oisst_month}{Monthly mean sea surface temperature in (deg C)}
 }
 }
 \details{

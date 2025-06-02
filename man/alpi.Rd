@@ -5,22 +5,22 @@
 \alias{alpi}
 \title{ALPI - Aleutian Low Pressure Index}
 \format{
-A tibble also of class `pacea_index` with columns:
+A tibble also of class \code{pacea_index} with columns:
 \describe{
-  \item{year:}{year of value}
-  \item{anomaly:}{the area of the Aleutian Low is calculated as the mean area of the North Pacific with sea level
+\item{year:}{year of value}
+\item{anomaly:}{the area of the Aleutian Low is calculated as the mean area of the North Pacific with sea level
 pressure less than or equal to 100.5 kPa, where the mean is over the four
 monthly values from December to March (the value for 2015 corresponds to
-December 2014 to March 2015). The `anomaly` given here is the resulting ALPI
+December 2014 to March 2015). The \code{anomaly} given here is the resulting ALPI
 calculated as the anomaly of the area of the Aleutian Low from the long-term
 (1950-1997) mean of \eqn{5.524183 \times 10^6 \mbox{km}^2}. Values are
-  those in Table 4 of King and Surry (2015), and units of ALPI
+those in Table 4 of King and Surry (2015), and units of ALPI
 are \eqn{10^6 \mbox{km}^2}.}
 }
 }
 \source{
 Generated from running
-  `data-raw/coastwide-indices/coastwide-indices.R` and then (once) `data-raw/coastwide-indices/alpi-update.R`
+\code{data-raw/coastwide-indices/coastwide-indices.R} and then (once) \code{data-raw/coastwide-indices/alpi-update.R}
 }
 \usage{
 alpi

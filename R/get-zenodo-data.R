@@ -22,7 +22,7 @@
 #'  and so it will need manually updating in future if we update (or increment
 #'  the version number).
 #'
-#' Based on [get_bccm_data()], but getting from Zenodo not `pacea-data/`.
+#' Based on [get_pacea_data()], but getting from Zenodo not `pacea-data/`.
 #'
 #' @param layer Name of the data object.
 #' @param update Logical. Would you like to check for a newer version of the layer?

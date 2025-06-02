@@ -6,7 +6,7 @@
 ##' The Oceanic Niño Index (ONI) is a 3-month running
 ##' mean of sea surface temperature (SST) anomalies in the Niño 3.4 region
 ##' (5 deg N to 5 deg S, 120 deg W to 170 deg W) plotted on
-##' the center month. The SST anomalies are calculated based on 30-year base
+##' the centre month. The SST anomalies are calculated based on 30-year base
 ##' periods that are updated every 5 years, which accounts for global warming
 ##' and some of the decadal-scale SST variability (as seen in the Pacific
 ##' Decadal Oscillation index).
@@ -30,9 +30,9 @@
 ##' the initial "real time" value is posted. Therefore, the most recent ONI
 ##' values should be considered an estimate.
 ##' On the site, Warm (red) and cold (blue) periods are based on a threshold of
-##' +/- 0.5 deg C for the Oceanic Niño Index (ONI) [3 month running mean of
+##' +/- 0.5 deg C for the Oceanic Niño Index (ONI), using a 3-month running mean of
 ##' ERSST.v5 SST anomalies in the Niño 3.4 region (5 deg N-5 deg S, 120 deg W
-##' -170 deg W)], based on centered 30-year base periods updated every 5 years.
+##' -170 deg W), based on centered 30-year base periods updated every 5 years.
 ##' For historical purposes, periods of below and above normal SSTs are colored in
 ##' blue and red (on the website) when the threshold is met for a minimum of 5
 ##' consecutive overlapping seasons. The ONI is one measure of the El
@@ -94,8 +94,8 @@
 ##' system. The NPI was generally positive from 1950 to 1976, and generally
 ##' negative (red) from 1977 to 2008; a change than can be attributed to the
 ##' strengthening of the Aleutian Low Pressure system after 1977. From 2008 to
-##' present [2021], the NPI was mostly positive, due to weaker Aleutian
-##' Lows. The NPI anomaly, plotted in Figure 7-2 [of Ross and Robert (2022)],
+##' 2021, the NPI was mostly positive, due to weaker Aleutian
+##' Lows. The NPI anomaly, plotted in Figure 7-2 of Ross and Robert (2022),
 ##' was calculated from the NPI by removing the 1950-2018 mean.
 ##'
 ##' Associated code adapted from code generously shared by Chris Rooper.
@@ -1585,7 +1585,7 @@
 ##' definitive anomaly index so that their analyses will not change when pacea
 ##' is updated in the future (or you can just refer to `anomaly` so that it does
 ##' change -- you just need to be aware of this). Users can also use
-##' `pacea::standardise()` to standardise to any specified range; see [?standardise].
+##' `standardise()` to standardise to any specified range.
 ##'
 ##' Values are updated annually by Michael Malick, and the values used here
 ##' are taken from his .csv file on GitHub:

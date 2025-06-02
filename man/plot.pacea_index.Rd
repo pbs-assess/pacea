@@ -23,52 +23,55 @@
   event_pch = 20,
   event_cex = 3,
   event_col = "grey",
+  y_axis_reverse = FALSE,
   ...
 )
 }
 \arguments{
-\item{obj}{a `pacea_index` object, which is a time series.}
+\item{obj}{a \code{pacea_index} object, which is a time series.}
 
-\item{value}{which column of `obj` to plot}
+\item{value}{which column of \code{obj} to plot}
 
 \item{xlab}{x-axis label}
 
-\item{ylab}{y-axis label, the default is an attribute of the `pacea_index`
+\item{ylab}{y-axis label, the default is an attribute of the \code{pacea_index}
 object.}
 
 \item{smooth_over_year}{logical to smooth monthly values over each calendar
-year (as per Tetjana Ross' plots, see `?oni` for reference). Note that the
-corresponding `date` is for 1st January of each year.}
+year (as per Tetjana Ross' plots, see \code{?oni} for reference). Note that the
+corresponding \code{date} is for 1st January of each year.}
 
-\item{type}{usual argument for `plot()`}
+\item{type}{usual argument for \code{plot()}}
 
 \item{style}{what style of plot:
 \describe{
-  \item{"red_blue_bar":}{for red bars above 0 and
-  blue bars below 0, but may need to manually adjust the thickness `lwd` for
-  width of bars to look good for your specific plot}
-  \item{"red_blue":}{for a line with filled in colouring for red above 0 and
-  blue below 0}
-  \item{"goa":}{TODO (not implemented yet) for Gulf of Alaska Ecosystem
-  Report style plots}
-  \item{"plain":}{just a plain line}
+\item{"red_blue_bar":}{for red bars above 0 and
+blue bars below 0, but may need to manually adjust the thickness \code{lwd} for
+width of bars to look good for your specific plot}
+\item{"red_blue":}{for a line with filled in colouring for red above 0 and
+blue below 0}
+\item{"goa":}{TODO (not implemented yet) for Gulf of Alaska Ecosystem
+Report style plots}
+\item{"plain":}{just a plain line}
 }}
 
 \item{y_tick_by}{increment for y-axis ticks; gets
-overwritten in `add_tickmarks()` if this yields more than
-`y_tick_max_number` tickmarks. If using [plot.pacea_biomass()] the default
-of 1 gets automatically changed to 0.25 for `plot(hake_biomass)`.}
+overwritten in \code{add_tickmarks()} if this yields more than
+\code{y_tick_max_number} tickmarks. If using \code{\link[=plot.pacea_biomass]{plot.pacea_biomass()}} the default
+of 1 gets automatically changed to 0.25 for \code{plot(hake_biomass)}. If
+\code{y_axis_reverse} is TRUE then the negative of \code{y_tick_by} (which should
+always be positive) is passed onto \code{add_tickmarks()}.}
 
 \item{y_tick_start}{where to start y-axis tickmarks, set automatically if not
 specified (may need to occasionally specify)}
 
-\item{y_tick_end}{where to end y-axis tickmars, as for `y_tick_start`}
+\item{y_tick_end}{where to end y-axis tickmars, as for \code{y_tick_start}}
 
 \item{y_tick_max_number}{maximum number of y tickmarks.}
 
 \item{x_tick_extra_years}{number of extra years to expand around the range
 of data for which to add annual tick marks (does not expand the axis); in
-hindsight could have simplified this in `add_tickmarks()`, but just made
+hindsight could have simplified this in \code{add_tickmarks()}, but just made
 the default big here.}
 
 \item{start_decade_ticks}{where to start tickmarks for decades (defaults to
@@ -79,27 +82,27 @@ shark) to add to the plot (sensible for rare-ish events, to quickly see if
 they coincide with the values of the index);
 points will be shown for 1st July (Oh Canada!) of the given year, and at
 the value of the index to make it easy to quickly spot any
-correlation. Assumes `event_years` values are unique.
-For more control instead use `event_lub`.}
+correlation. Assumes \code{event_years} values are unique.
+For more control instead use \code{event_lub}.}
 
-\item{event_lub}{dates of events as lubridate objects (only `event_years` or
-`event_lub` can be specified). Assumes `event_lub` values are unique.}
+\item{event_lub}{dates of events as lubridate objects (only \code{event_years} or
+\code{event_lub} can be specified). Assumes \code{event_lub} values are unique.}
 
-\item{event_pch}{`pch` for events}
+\item{event_pch}{\code{pch} for events}
 
-\item{event_cex}{`cex` for events}
+\item{event_cex}{\code{cex} for events}
 
-\item{event_col}{`col` for events}
+\item{event_col}{\code{col} for events}
 
-\item{...}{optional arguments passed onto `plot()`. Note that the x-axis is
-constructed using a lubridate `date` object, so `xlim` needs to be a
-`date` object (see example).}
+\item{...}{optional arguments passed onto \code{plot()}. Note that the x-axis is
+constructed using a lubridate \code{date} object, so \code{xlim} needs to be a
+\code{date} object (see example).}
 }
 \value{
 plot of the time series to the current device (returns nothing)
 }
 \description{
-Temporal plot for a pacea index (`pacea_index`) object, with options for
+Temporal plot for a pacea index (\code{pacea_index}) object, with options for
 display style, and adding in times of other events (to ask questions such as
 'does this rare event coincide with El Niño?'). See examples and vignette.
 }

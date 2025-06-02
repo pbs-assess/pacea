@@ -3,26 +3,26 @@
 \name{plot_red_blue}
 \alias{plot_red_blue}
 \title{Plot the red/blue style of anomaly plot, linearly interpolating to make
-smooth (needed when crossing x-axis); internal function called from `plot-pacea_index()`.}
+smooth (needed when crossing x-axis); internal function called from \code{plot-pacea_index()}.}
 \usage{
 plot_red_blue(obj_lub, value, xlab, ylab, type, ...)
 }
 \arguments{
-\item{obj_lub}{obj a `pacea_index` object, which is a time series, with a date
-column that is the lubridate `date` class.}
+\item{obj_lub}{obj a \code{pacea_index} object, which is a time series, with a date
+column that is the lubridate \code{date} class.}
 
-\item{value}{which column of `obj` to plot}
+\item{value}{which column of \code{obj} to plot}
 
 \item{xlab}{x-axis label}
 
-\item{ylab}{y-axis label, the default is an attribute of the `pacea_index`
+\item{ylab}{y-axis label, the default is an attribute of the \code{pacea_index}
 object.}
 
-\item{type}{usual argument for `plot()`}
+\item{type}{usual argument for \code{plot()}}
 
-\item{...}{optional arguments passed onto `plot()`. Note that the x-axis is
-constructed using a lubridate `date` object, so `xlim` needs to be a
-`date` object (see example).}
+\item{...}{optional arguments passed onto \code{plot()}. Note that the x-axis is
+constructed using a lubridate \code{date} object, so \code{xlim} needs to be a
+\code{date} object (see example).}
 }
 \value{
 plot of time series

@@ -16,7 +16,7 @@
 )
 }
 \arguments{
-\item{x}{an OISST `pacea_oianom` object; output from using `calc_anom()` of `oisst_7day` or `oisst_month` data}
+\item{x}{an OISST \code{pacea_oianom} object; output from using \code{calc_anom()} of \code{oisst_7day} or \code{oisst_month} data}
 
 \item{weeks.plot}{weeks to plot. Defaults to current week (if available)}
 
@@ -24,13 +24,13 @@
 
 \item{years.plot}{years to plot. Defaults to current year (if available)}
 
-\item{clim.dat}{climatology data, obtained from using `calc_clim()`. If used, contours of deviations from climatology mean will be plotted}
+\item{clim.dat}{climatology data, obtained from using \code{calc_clim()}. If used, contours of deviations from climatology mean will be plotted}
 
 \item{bc}{logical. Should BC coastline layer be plotted? Can only be plotted with one plot layer.}
 
 \item{eez}{logical. Should BC EEZ layer be plotted? Can only be plotted with one plot layer.}
 
-\item{...}{other arguments to be passed on, but not currently used (`?ggplot`
+\item{...}{other arguments to be passed on, but not currently used (\code{?ggplot}
 says the same thing); this should remove a R-CMD-check warning.}
 }
 \value{

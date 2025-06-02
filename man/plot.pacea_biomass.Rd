@@ -27,36 +27,38 @@
 )
 }
 \arguments{
-\item{obj}{a `pacea_biomass` object, which is a time series. Function
+\item{obj}{a \code{pacea_biomass} object, which is a time series. Function
 will run on other objects (not give an error) but is not tested on those.}
 
 \item{value}{the column to plot if no uncertainties, or what to plot as dots
-if showing uncertainties (likely always `median`)}
+if showing uncertainties (likely always \code{median})}
 
 \item{xlab}{x-axis label}
 
-\item{ylab}{y-axis label, the default is an attribute of the `pacea_index`
+\item{ylab}{y-axis label, the default is an attribute of the \code{pacea_index}
 object.}
 
 \item{y_tick_by}{increment for y-axis ticks; gets
-overwritten in `add_tickmarks()` if this yields more than
-`y_tick_max_number` tickmarks. If using [plot.pacea_biomass()] the default
-of 1 gets automatically changed to 0.25 for `plot(hake_biomass)`.}
+overwritten in \code{add_tickmarks()} if this yields more than
+\code{y_tick_max_number} tickmarks. If using \code{\link[=plot.pacea_biomass]{plot.pacea_biomass()}} the default
+of 1 gets automatically changed to 0.25 for \code{plot(hake_biomass)}. If
+\code{y_axis_reverse} is TRUE then the negative of \code{y_tick_by} (which should
+always be positive) is passed onto \code{add_tickmarks()}.}
 
 \item{x_tick_extra_years}{number of extra years to expand around the range
 of data for which to add annual tick marks (does not expand the axis); in
-hindsight could have simplified this in `add_tickmarks()`, but just made
+hindsight could have simplified this in \code{add_tickmarks()}, but just made
 the default big here.}
 
 \item{start_decade_ticks}{where to start tickmarks for decades (defaults to
 1800 as hard to automate)}
 
-\item{style}{`no_uncertainty` for plain time series without uncertainty,
-gets overridden to have uncertainty bars if `low` and `high` are columns
-of `obj`}
+\item{style}{\code{no_uncertainty} for plain time series without uncertainty,
+gets overridden to have uncertainty bars if \code{low} and \code{high} are columns
+of \code{obj}}
 
 \item{y_max}{maximum y value for certain types of plot (use this if you get
-an error when specifying `ylim`)}
+an error when specifying \code{ylim})}
 
 \item{y_tick_max_number}{maximum number of y tickmarks.}
 
@@ -66,7 +68,7 @@ an error when specifying `ylim`)}
 
 \item{uncertainty_line_lty}{lty of line for uncertainty}
 
-\item{median_type}{`type` of plot ("o", "p", etc.) for medians}
+\item{median_type}{\code{type} of plot ("o", "p", etc.) for medians}
 
 \item{median_pch}{pch for median}
 
@@ -76,17 +78,17 @@ an error when specifying `ylim`)}
 
 \item{median_line_lwd}{lwd for median}
 
-\item{...}{further options passed onto `plot.default()`}
+\item{...}{further options passed onto \code{plot.default()}}
 }
 \value{
 plot of the time series as median with bars showing uncertainty (if
-  `low` and `high` are columns of `obj) to the current device; returns nothing.
+\code{low} and \code{high} are columns of `obj) to the current device; returns nothing.
 }
 \description{
 Temporal plot for a pacea biomass time series (of class
-`pacea_biomass`) object. The `style` option here (unlike for
-`plot.pacea_index()` defaults to `no_uncertainty` and gets changed to
-`uncertainty` if `low` and `high` are columns of `obj`.
+\code{pacea_biomass}) object. The \code{style} option here (unlike for
+\code{plot.pacea_index()} defaults to \code{no_uncertainty} and gets changed to
+\code{uncertainty} if \code{low} and \code{high} are columns of \code{obj}.
 }
 \examples{
 \dontrun{

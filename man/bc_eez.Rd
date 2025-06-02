@@ -8,7 +8,7 @@
 A simple features polygon dataframe.
 }
 \source{
-Generated from running `data-raw/coastline/coastline-eez.R`.
+Generated from running \code{data-raw/coastline/coastline-eez.R}.
 }
 \usage{
 bc_eez

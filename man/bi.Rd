@@ -5,25 +5,25 @@
 \alias{bi}
 \title{BI -- North Pacific Current Bifurcation Index}
 \format{
-A tibble also of class `pacea_index` with columns:
+A tibble also of class \code{pacea_index} with columns:
 \describe{
-  \item{year:}{year of value}
-  \item{value:}{absolute value of the proportion of the 215 simulated
-  drifters that ended up south of their starting latitude in that year}
-  \item{anomaly:}{standarised index of the `value` time series calculated by
-  subtracting the mean and dividing by the standard deviation of the `value`
-  time series. Note that numbers willchange in subsequent
-  updates -- see Details}
-  \item{anomaly_2024:}{standarised index of the `value` time series calculated by
-  subtracting the mean and dividing by the standard deviation of the `value`
-  time series, with the mean and standard deviation restricted to years up
-  to and including 2024. The anomalies for years up to 2024 will not change
-  in subsequent updates since the tandardisation is fixed; later years will
-  be added (but will not affect the standardisation). See Details.}
- }
+\item{year:}{year of value}
+\item{value:}{absolute value of the proportion of the 215 simulated
+drifters that ended up south of their starting latitude in that year}
+\item{anomaly:}{standarised index of the \code{value} time series calculated by
+subtracting the mean and dividing by the standard deviation of the \code{value}
+time series. Note that numbers willchange in subsequent
+updates -- see Details}
+\item{anomaly_2024:}{standarised index of the \code{value} time series calculated by
+subtracting the mean and dividing by the standard deviation of the \code{value}
+time series, with the mean and standard deviation restricted to years up
+to and including 2024. The anomalies for years up to 2024 will not change
+in subsequent updates since the tandardisation is fixed; later years will
+be added (but will not affect the standardisation). See Details.}
+}
 }
 \source{
-Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
+Generated from running \code{data-raw/coastwide-indices/coastwide-indices.R}.
 }
 \usage{
 bi
@@ -52,18 +52,18 @@ proportion of drifters ending south of their starting location indicates a
 southward-shifted bifurcation (the southward-flowing California Current is
 starting further south). The index is standardised by subtracting by the
 time-series mean and dividing by the standard deviation. We provide absolute
-numbers (the proportions, given by column `value`) in the pacea data object `bi` , as
-well as the standardised index (column `anomaly`).
+numbers (the proportions, given by column \code{value}) in the pacea data object \code{bi} , as
+well as the standardised index (column \code{anomaly}).
 
 Since the standardisation of the index will change as new years are added
 (because the mean and standard deviation will get recalculated with the
-longer time series), we also include a column `anomaly_2024` for the
+longer time series), we also include a column \code{anomaly_2024} for the
 anomalies calculated based on the proportions up to 2024, and will add
-`anomaly_2025` etc. in future years. Therefore users can specify a
+\code{anomaly_2025} etc. in future years. Therefore users can specify a
 definitive anomaly index so that their analyses will not change when pacea
-is updated in the future (or you can just refer to `anomaly` so that it does
+is updated in the future (or you can just refer to \code{anomaly} so that it does
 change -- you just need to be aware of this). Users can also use
-`pacea::standardise()` to standardise to any specified range; see [?standardise].
+\code{standardise()} to standardise to any specified range.
 
 Values are updated annually by Michael Malick, and the values used here
 are taken from his .csv file on GitHub:

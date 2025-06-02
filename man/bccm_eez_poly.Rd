@@ -11,11 +11,11 @@
 \format{
 A simple features polygon dataframe.
 \describe{
-  \item{bccm_eez_poly}{BC EEZ boundary witha 10km buffer and clipped with BCCM data output boundary}
-  \item{inshore_poly}{inshore (continental shelf) region of bccm_eez_poly}
-  \item{offshore_poly}{offshore (deep seafloor) region of bccm_eez_poly}
-  \item{hotssea_poly}{HOTSSea domain}
-  \item{bccm_hotssea_poly}{combined full BCCM and HOTSSea domains}
+\item{bccm_eez_poly}{BC EEZ boundary witha 10km buffer and clipped with BCCM data output boundary}
+\item{inshore_poly}{inshore (continental shelf) region of bccm_eez_poly}
+\item{offshore_poly}{offshore (deep seafloor) region of bccm_eez_poly}
+\item{hotssea_poly}{HOTSSea domain}
+\item{bccm_hotssea_poly}{combined full BCCM and HOTSSea domains}
 }
 
 An object of class \code{sf} (inherits from \code{data.frame}) with 1 rows and 1 columns.
@@ -27,8 +27,8 @@ An object of class \code{sf} (inherits from \code{data.frame}) with 1 rows and 1
 An object of class \code{sf} (inherits from \code{data.frame}) with 1 rows and 1 columns.
 }
 \source{
-Generated from running `data-raw/grids/make-mask-layer.R`,
-  `..../make-mask-layer-hotssea.R`, or `..../make-mask-layer-full.R`
+Generated from running \code{data-raw/grids/make-mask-layer.R},
+\code{..../make-mask-layer-hotssea.R}, or \code{..../make-mask-layer-full.R}
 }
 \usage{
 bccm_eez_poly

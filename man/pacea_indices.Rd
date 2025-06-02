@@ -7,15 +7,15 @@
 \format{
 A tibble with columns:
 \describe{
-  \item{Object:}{name in pacea (use ?<object> for help file}
-  \item{Description:}{Long name}
-  \item{Resolution:}{Monthly or annual resolution}
-  \item{Start year:}{Start year of time series}
-  \item{End year:}{End year of time series}
+\item{Object:}{name in pacea (use ?\if{html}{\out{<object>}} for help file}
+\item{Description:}{Long name}
+\item{Resolution:}{Monthly or annual resolution}
+\item{Start year:}{Start year of time series}
+\item{End year:}{End year of time series}
 }
 }
 \source{
-Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
+Generated from running \code{data-raw/coastwide-indices/coastwide-indices.R}.
 }
 \usage{
 pacea_indices

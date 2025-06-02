@@ -4,27 +4,32 @@
 \name{hake_total_biomass_age_1}
 \alias{hake_total_biomass_age_1}
 \alias{hake_total_biomass_age_1_2024}
+\alias{hake_total_biomass_age_1_2025}
 \title{Pacific Hake annual total biomass of age-1 fish as estimated by
-the most recent (2024) stock assessment.}
+the most recent (2025) stock assessment.}
 \format{
-A tibble also of class `pacea_biomass` with columns:
+A tibble also of class \code{pacea_biomass} with columns:
 \describe{
-  \item{year:}{year of the estimate of total age-1 biomass (all females and
-  males), where the estimate is for the start of the year}
-  \item{median:}{median estimate of age-1 biomass, in thousands of tonnes at
-  the start of the year}
- }
+\item{year:}{year of the estimate of total age-1 biomass (all females and
+males), where the estimate is for the start of the year}
+\item{median:}{median estimate of age-1 biomass, in thousands of tonnes at
+the start of the year}
+}
 
 An object of class \code{pacea_biomass} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 59 rows and 2 columns.
+
+An object of class \code{pacea_biomass} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 60 rows and 2 columns.
 }
 \source{
 Generated from Andy running (in the hake repository)
-  `pacea_save()` and then here `data-raw/groundfish/hake.R`.
+\code{pacea_save()} and then here \code{data-raw/groundfish/hake.R}.
 }
 \usage{
 hake_total_biomass_age_1
 
 hake_total_biomass_age_1_2024
+
+hake_total_biomass_age_1_2025
 }
 \description{
 The Pacific Hake stock is managed and assessed through an Agreement between
@@ -33,8 +38,8 @@ recent joint stock assessment, and, importantly, are for the coastwide stock
 from California to British Columbia.
 }
 \details{
-See `?hake_recruitment` for further details and references, and explanations
-of `hake_total_biomass_age_1_2024`. Credible intervals were not easily
+See \code{?hake_recruitment} for further details and references, and explanations
+of \code{hake_total_biomass_age_1_2025} and \code{hake_total_biomass_age_1_2024}. Credible intervals were not easily
 available but may be included in future updates.
 }
 \examples{

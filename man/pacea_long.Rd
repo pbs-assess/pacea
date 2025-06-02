@@ -24,7 +24,7 @@ pacea_wide(data, names_from = c("year", "month"), values_from = "value")
 pacea spatiotemporal data in long/wide format
 }
 \description{
-Simplified function for users, taking the `tidyr::pivot_longer` and `tidyr::pivot_wider` functions to transform pacea.st data into long or wide format for simpler data manipulation, summarising, and plotting. Writted to only work with 'pacea.st' (spatiotemporal) data.
+Simplified function for users, taking the \code{tidyr::pivot_longer} and \code{tidyr::pivot_wider} functions to transform pacea.st data into long or wide format for simpler data manipulation, summarising, and plotting. Writted to only work with 'pacea.st' (spatiotemporal) data.
 }
 \examples{
 \dontrun{

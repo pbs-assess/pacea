@@ -7,21 +7,21 @@
 check_index_changed(old, new, alpi = FALSE)
 }
 \arguments{
-\item{old}{original object (of class `pacea_index`, `pacea_recruitment`,
-`pacea_biomass`, or `pacea_recruitment_herring`) saved in pacea}
+\item{old}{original object (of class \code{pacea_index}, \code{pacea_recruitment},
+\code{pacea_biomass}, or \code{pacea_recruitment_herring}) saved in pacea}
 
 \item{new}{newly downloaded and wrangled object (must also be one of the above classes)}
 
-\item{alpi}{logical if checking the `alpi` object, as comparing axis name
+\item{alpi}{logical if checking the \code{alpi} object, as comparing axis name
 does not work because it is convoluted. See
-`data-raw/coastwide-indices/alpi-update.R` for use.}
+\code{data-raw/coastwide-indices/alpi-update.R} for use.}
 }
 \value{
 logical if the object has changed (and we would then want to resave it)
 }
 \description{
 If index has changed from the saved one then save the new version. Only used
-for updating data (see files in `data-raw`).
+for updating data (see files in \code{data-raw}).
 }
 \examples{
 \dontrun{

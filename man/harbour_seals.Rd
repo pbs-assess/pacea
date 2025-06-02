@@ -5,25 +5,25 @@
 \alias{harbour_seals}
 \title{Estimated abundance of Pacific Harbour Seals in each of seven regions}
 \format{
-A tibble also of class `pacea_harbour_seals` with columns:
+A tibble also of class \code{pacea_harbour_seals} with columns:
 \describe{
-  \item{date:}{Date of the GAM estimate of abundance; there is a time step
-  of about 250 days in the GAM, hence some years have more than one value
-  and so we give a date rather than a year}
-  \item{region:}{the region that the estimate corresponds to; one of SOG,
-  WCVI, QCS, DP, CMC, NMC, HG, or Coastwide}
-  \item{low:}{low end of the estimate of abundance, defined as
-  the upper value of the 95% confidence interval (calculated on the log
-  scale) from the GAM}
-  \item{mean:}{mean estimate of abundance, numbers of seals (in that region)}
-  \item{high:}{high end of the estimate of abundance, defined as
-   the lower value of the 95% confidence interval (calculated on the log
-  scale) from the GAM}
- }
+\item{date:}{Date of the GAM estimate of abundance; there is a time step
+of about 250 days in the GAM, hence some years have more than one value
+and so we give a date rather than a year}
+\item{region:}{the region that the estimate corresponds to; one of SOG,
+WCVI, QCS, DP, CMC, NMC, HG, or Coastwide}
+\item{low:}{low end of the estimate of abundance, defined as
+the upper value of the 95\% confidence interval (calculated on the log
+scale) from the GAM}
+\item{mean:}{mean estimate of abundance, numbers of seals (in that region)}
+\item{high:}{high end of the estimate of abundance, defined as
+the lower value of the 95\% confidence interval (calculated on the log
+scale) from the GAM}
+}
 }
 \source{
 Estimates provided by Strahan Tucker, then wrangled and imported using
-  `data-raw/mammals/harbour-seals/harbour-seals.R`.
+\code{data-raw/mammals/harbour-seals/harbour-seals.R}.
 }
 \usage{
 harbour_seals
@@ -44,17 +44,16 @@ abundance was calculated for seven regions: the Strait of Georgia (SOG),
 West Coast Vancouver Island (WCVI), Queen Charlotte Strait (QCS), Discovery
 Passage (DP), Central Mainland Coast (CMC), Northern Mainland Coast (NMC),
 and Haida Gwaii (HG); see Figure 1 of DFO (2022) for a map showing the
-regions. The coastwide estimates are also given (labelled `Coastwide` so the
+regions. The coastwide estimates are also given (labelled \code{Coastwide} so the
 plot title is capitalised), for which the means are calculated as the sum of
-the regions' means and the `low` and `high` values as TODO ???
-
+the regions' means and the \code{low} and \code{high} values as TODO ???
 
 The estimated abundances
 were calculated using Generalised Additive Models (GAMs), and are included here
 (reproducing the trends shown in Figure 3 of DFO, 2022). See that figure to see
 the amount of data available in each region; these data can be added to
-`pacea` if desired -- please let us know. The final year of data in each
-region is saved in the object `harbour_seals_data_final_year`.
+\code{pacea} if desired -- please let us know. The final year of data in each
+region is saved in the object \code{harbour_seals_data_final_year}.
 
 For further details see DFO (2022), from which some of the above text was
 adapted. Full details of the underlying modelling should be available in the
@@ -66,8 +65,8 @@ DFO. 2022. Stock Assessment of Pacific Harbour Seals (\emph{Phoca vitulina richa
 Report. 2022/034.
 https://www.dfo-mpo.gc.ca/csas-sccs/Publications/SAR-AS/2022/2022_034-eng.html
 
-See also: `harbour_seals_data_final_year` for the year of the final data for
-  each region.
+See also: \code{harbour_seals_data_final_year} for the year of the final data for
+each region.
 }
 \examples{
 \dontrun{

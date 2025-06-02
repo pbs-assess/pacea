@@ -15,24 +15,26 @@ add_tickmarks(
 )
 }
 \arguments{
-\item{obj_lub}{obj a `pacea_index` object, which is a time series, with a date
-column that is the lubridate `date` class.}
+\item{obj_lub}{obj a \code{pacea_index} object, which is a time series, with a date
+column that is the lubridate \code{date} class.}
 
 \item{y_tick_by}{increment for y-axis ticks; gets
-overwritten in `add_tickmarks()` if this yields more than
-`y_tick_max_number` tickmarks. If using [plot.pacea_biomass()] the default
-of 1 gets automatically changed to 0.25 for `plot(hake_biomass)`.}
+overwritten in \code{add_tickmarks()} if this yields more than
+\code{y_tick_max_number} tickmarks. If using \code{\link[=plot.pacea_biomass]{plot.pacea_biomass()}} the default
+of 1 gets automatically changed to 0.25 for \code{plot(hake_biomass)}. If
+\code{y_axis_reverse} is TRUE then the negative of \code{y_tick_by} (which should
+always be positive) is passed onto \code{add_tickmarks()}.}
 
 \item{y_tick_start}{where to start y-axis tickmarks, set automatically if not
 specified (may need to occasionally specify)}
 
-\item{y_tick_end}{where to end y-axis tickmars, as for `y_tick_start`}
+\item{y_tick_end}{where to end y-axis tickmars, as for \code{y_tick_start}}
 
 \item{y_tick_max_number}{maximum number of y tickmarks.}
 
 \item{x_tick_extra_years}{number of extra years to expand around the range
 of data for which to add annual tick marks (does not expand the axis); in
-hindsight could have simplified this in `add_tickmarks()`, but just made
+hindsight could have simplified this in \code{add_tickmarks()}, but just made
 the default big here.}
 
 \item{start_decade_ticks}{where to start tickmarks for decades (defaults to
@@ -43,8 +45,8 @@ adds tickmarks to an existing plot
 }
 \description{
 Add sensible smaller (unlabelled) tickmarks to both axes of an existing
-pacea temporal plot. Called from `plot.pacea_index()`,
-`plot.pacea_recruitment()` etc. Is exported but unlikely to be needed externally.
+pacea temporal plot. Called from \code{plot.pacea_index()},
+\code{plot.pacea_recruitment()} etc. Is exported but unlikely to be needed externally.
 }
 \examples{
 \dontrun{

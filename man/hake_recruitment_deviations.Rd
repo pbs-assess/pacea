@@ -4,29 +4,34 @@
 \name{hake_recruitment_deviations}
 \alias{hake_recruitment_deviations}
 \alias{hake_recruitment_deviations_2024}
+\alias{hake_recruitment_deviations_2025}
 \title{Pacific Hake annual log-scale age-0 recruitment deviations from the
 stock-recruitment curve, as estimated by the most recent stock assessment.}
 \format{
-A tibble also of class `pacea_recruitment` with columns:
+A tibble also of class \code{pacea_recruitment} with columns:
 \describe{
-  \item{year:}{year of the estimate of the recruitment deviation}
-  \item{low:}{low end (2.5th percentile) of the 95\% credible interval for
-  the log-scale recruitment deviation, unitless}
-  \item{median:}{median estimate of log-scale recruitment deviation, unitless}
-  \item{high:}{high end (97.5th percentile) of the 95\% credible interval for
-  the log-scale recruitment deviation, unitless}
- }
+\item{year:}{year of the estimate of the recruitment deviation}
+\item{low:}{low end (2.5th percentile) of the 95\\% credible interval for
+the log-scale recruitment deviation, unitless}
+\item{median:}{median estimate of log-scale recruitment deviation, unitless}
+\item{high:}{high end (97.5th percentile) of the 95\\% credible interval for
+the log-scale recruitment deviation, unitless}
+}
 
 An object of class \code{pacea_recruitment} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 58 rows and 4 columns.
+
+An object of class \code{pacea_recruitment} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 57 rows and 4 columns.
 }
 \source{
 Generated from Andy running (in the hake repository)
-  `pacea_save()` and then here `data-raw/groundfish/hake.R`.
+\code{pacea_save()} and then here \code{data-raw/groundfish/hake.R}.
 }
 \usage{
 hake_recruitment_deviations
 
 hake_recruitment_deviations_2024
+
+hake_recruitment_deviations_2025
 }
 \description{
 For each Markov chain Monte Carlo (MCMC) sample there is an estimated
@@ -37,8 +42,8 @@ stock-recruitment-relationship value) is the deviation, which is given on a natu
 Values are given for 1966 (initial year of the model) onwards.
 }
 \details{
-See `?hake_recruitment` for further details and reference regarding hake,
-and explanations of `hake_recruitment_deviations_2024` etc.
+See \code{?hake_recruitment} for further details and reference regarding hake,
+and explanations of \code{hake_recruitment_deviations_2024} etc.
 }
 \examples{
 \dontrun{

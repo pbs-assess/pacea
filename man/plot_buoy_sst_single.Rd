@@ -2,23 +2,23 @@
 % Please edit documentation in R/plot-pacea-buoy.R
 \name{plot_buoy_sst_single}
 \alias{plot_buoy_sst_single}
-\title{Plot buoy SST data for a single station; called by `plot.pacea_buoy()`}
+\title{Plot buoy SST data for a single station; called by \code{plot.pacea_buoy()}}
 \usage{
 plot_buoy_sst_single(obj, year_highlight, title = NULL)
 }
 \arguments{
-\item{obj}{buoy SST data, of class `pacea_buoy_sst` for just a single station, called from `plot.pacea_buoy()`}
+\item{obj}{buoy SST data, of class \code{pacea_buoy_sst} for just a single station, called from \code{plot.pacea_buoy()}}
 
 \item{year_highlight}{numeric of the year to highlight}
 
-\item{title}{text string for title of plot; defaults to `stn_id` followed by
+\item{title}{text string for title of plot; defaults to \code{stn_id} followed by
 the buoy's name (e.g. C46146 Halibut Bank), like Andrea Hilborn has.}
 }
 \value{
 ggplot object of the plot
 }
 \description{
-Plot buoy SST data for a single station; called by `plot.pacea_buoy()`
+Plot buoy SST data for a single station; called by \code{plot.pacea_buoy()}
 }
 \examples{
 \dontrun{

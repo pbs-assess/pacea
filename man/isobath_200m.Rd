@@ -8,7 +8,7 @@
 sf multilinestring object
 }
 \source{
-Generated from running `data-raw/roms/isobath_sfline.R`.
+Generated from running \code{data-raw/roms/isobath_sfline.R}.
 }
 \usage{
 isobath_200m

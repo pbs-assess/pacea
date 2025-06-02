@@ -5,21 +5,21 @@
 \alias{ao}
 \title{AO - Arctic Oscillation}
 \format{
-A tibble also of class `pacea_index` with columns:
+A tibble also of class \code{pacea_index} with columns:
 \describe{
-  \item{year:}{year of value}
-  \item{month:}{month (1 to 12) of value}
-  \item{anomaly:}{The AO index is defined using the daily or monthly 1000 hPa
-  geopotential height anomalies from latitudes 20 deg N to 90 deg N. The anomalies
-  are projected onto the AO loading pattern, which is
-  defined as the first empirical orthogonal function of monthly mean
-  1000 hPa geopotential height during the 1979-2000 period. The time series
-  is then normalized with the monthly mean index's standard
-  deviation. Such normalised monthly anomalies are given here.}
+\item{year:}{year of value}
+\item{month:}{month (1 to 12) of value}
+\item{anomaly:}{The AO index is defined using the daily or monthly 1000 hPa
+geopotential height anomalies from latitudes 20 deg N to 90 deg N. The anomalies
+are projected onto the AO loading pattern, which is
+defined as the first empirical orthogonal function of monthly mean
+1000 hPa geopotential height during the 1979-2000 period. The time series
+is then normalized with the monthly mean index's standard
+deviation. Such normalised monthly anomalies are given here.}
 }
 }
 \source{
-Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
+Generated from running \code{data-raw/coastwide-indices/coastwide-indices.R}.
 }
 \usage{
 ao

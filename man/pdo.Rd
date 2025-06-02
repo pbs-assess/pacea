@@ -5,20 +5,20 @@
 \alias{pdo}
 \title{PDO -- Pacific Decadal Oscillation}
 \format{
-A tibble also of class `pacea_index` with columns:
+A tibble also of class \code{pacea_index} with columns:
 \describe{
-  \item{year:}{year of value}
-  \item{month:}{month (1 to 12) of value}
-  \item{anom:}{anomaly calculated as the leading empirical orthogonal
-  function of monthly sea surface temperature anomalies over the North
-  Pacific (poleward of 20 deg N) after the global average sea surface
-  temperature has been removed. Note that the final value seems amenable to
-  being recomputed when the time series is extended with further values
-  (i.e. when we update pacea).}
+\item{year:}{year of value}
+\item{month:}{month (1 to 12) of value}
+\item{anom:}{anomaly calculated as the leading empirical orthogonal
+function of monthly sea surface temperature anomalies over the North
+Pacific (poleward of 20 deg N) after the global average sea surface
+temperature has been removed. Note that the final value seems amenable to
+being recomputed when the time series is extended with further values
+(i.e. when we update pacea).}
 }
 }
 \source{
-Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
+Generated from running \code{data-raw/coastwide-indices/coastwide-indices.R}.
 }
 \usage{
 pdo

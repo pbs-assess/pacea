@@ -3,18 +3,18 @@
 \docType{data}
 \name{last_npi_annual}
 \alias{last_npi_annual}
-\title{Year-month stamp of last downloaded `npi_annual` file; not needed by users.}
+\title{Year-month stamp of last downloaded \code{npi_annual} file; not needed by users.}
 \format{
 character string
 }
 \source{
-Generated and used in `data-raw/coastwide-indices/coastwide-indices.R`.
+Generated and used in \code{data-raw/coastwide-indices/coastwide-indices.R}.
 }
 \usage{
 last_npi_annual
 }
 \description{
-Used in `data-raw/coastwide-indices/coastwide-indices.R` because each updated index is given a
+Used in \code{data-raw/coastwide-indices/coastwide-indices.R} because each updated index is given a
 new website address.
 }
 \author{

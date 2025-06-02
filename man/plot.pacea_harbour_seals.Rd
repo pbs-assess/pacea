@@ -27,39 +27,41 @@
 )
 }
 \arguments{
-\item{obj}{`pacea_harbour_seals`, as this is of class `pacea_harbour_seals`
+\item{obj}{\code{pacea_harbour_seals}, as this is of class \code{pacea_harbour_seals}
 and the plotting is tailored for this data set.}
 
 \item{region}{which region to plot for a single plot; must be one of SOG,
-WCVI, QCS, DP, CMC, NMC, HG, or coastwide. If `NULL` (the default) then do a panel
+WCVI, QCS, DP, CMC, NMC, HG, or coastwide. If \code{NULL} (the default) then do a panel
 plot showing all seven regions.}
 
 \item{value}{the column to plot as a solid line, in this case always the
-default `mean`}
+default \code{mean}}
 
 \item{include_coastwide}{logical, whether to include the coastwide population in the
-eight panel plot (keep `region = NULL`).}
+eight panel plot (keep \code{region = NULL}).}
 
 \item{xlab}{x-axis label}
 
-\item{ylab}{y-axis label, the default is an attribute of the `pacea_index`
+\item{ylab}{y-axis label, the default is an attribute of the \code{pacea_index}
 object.}
 
 \item{y_tick_by}{increment for y-axis ticks; gets
-overwritten in `add_tickmarks()` if this yields more than
-`y_tick_max_number` tickmarks. If using [plot.pacea_biomass()] the default
-of 1 gets automatically changed to 0.25 for `plot(hake_biomass)`.}
+overwritten in \code{add_tickmarks()} if this yields more than
+\code{y_tick_max_number} tickmarks. If using \code{\link[=plot.pacea_biomass]{plot.pacea_biomass()}} the default
+of 1 gets automatically changed to 0.25 for \code{plot(hake_biomass)}. If
+\code{y_axis_reverse} is TRUE then the negative of \code{y_tick_by} (which should
+always be positive) is passed onto \code{add_tickmarks()}.}
 
 \item{x_tick_extra_years}{number of extra years to expand around the range
 of data for which to add annual tick marks (does not expand the axis); in
-hindsight could have simplified this in `add_tickmarks()`, but just made
+hindsight could have simplified this in \code{add_tickmarks()}, but just made
 the default big here.}
 
 \item{start_decade_ticks}{where to start tickmarks for decades (defaults to
 1800 as hard to automate)}
 
 \item{y_max}{maximum y value for certain types of plot (use this if you get
-an error when specifying `ylim`)}
+an error when specifying \code{ylim})}
 
 \item{uncertainty_shade_col}{colour of shading for uncertainty}
 
@@ -67,7 +69,7 @@ an error when specifying `ylim`)}
 
 \item{uncertainty_line_lty}{lty of line for uncertainty}
 
-\item{median_type}{`type` of plot ("o", "p", etc.) for means (note: we have
+\item{median_type}{\code{type} of plot ("o", "p", etc.) for means (note: we have
 used median elsewhere so kept with that name, but the seal estimates are
 means not medians)}
 
@@ -79,22 +81,22 @@ means not medians)}
 
 \item{median_line_lwd}{lwd for median}
 
-\item{...}{optional arguments passed onto `plot()`. Note that the x-axis is
-constructed using a lubridate `date` object, so `xlim` needs to be a
-`date` object (see example).}
+\item{...}{optional arguments passed onto \code{plot()}. Note that the x-axis is
+constructed using a lubridate \code{date} object, so \code{xlim} needs to be a
+\code{date} object (see example).}
 }
 \value{
 plot of the time series as median with bars showing uncertainty (if
-  `low` and `high` are columns of `obj) to the current device; returns nothing.
+\code{low} and \code{high} are columns of `obj) to the current device; returns nothing.
 }
 \description{
 Default is to plot all seven regions plus the coastwide estimate, to mostly replicate
-Figure 3 of DFO (2022; see `?harbour_seals`) in a `ggplot`
+Figure 3 of DFO (2022; see \code{?harbour_seals}) in a \code{ggplot}
 style. If a single region is
 indicated then a time series plot is shown, in the same style as
-plots of object class `pacea_biomass` (such as `hake_biomass`).
+plots of object class \code{pacea_biomass} (such as \code{hake_biomass}).
 Note that the values are means and confidence intervals (not medians and
-confidence intervals like other objects); see `?harbour_seals`.
+confidence intervals like other objects); see \code{?harbour_seals}.
 }
 \examples{
 \dontrun{

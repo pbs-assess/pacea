@@ -210,65 +210,65 @@ bccm_primaryproduction_full(
 
 \item{ask}{Logical. Should the user be asked before downloading the data to local cache? Defaults to the value of interactive().}
 
-\item{force}{Logical. Should download of data be forced? Overrides `ask` argument if TRUE.}
+\item{force}{Logical. Should download of data be forced? Overrides \code{ask} argument if TRUE.}
 
 \item{version}{character Version number of data as saved on Zenodo. Only
 currently works for "01" as that's all that is currently available.}
 
 \item{cache_subfolder}{character. Subfolder to put or look for the objects;
-defaults to `hotssea` and it is best to stick with this. The objects will
-be put in your `paste0(pacea::pacea_cache(), cache_subfolder)` directory.}
+defaults to \code{hotssea} and it is best to stick with this. The objects will
+be put in your \code{paste0(pacea::pacea_cache(), cache_subfolder)} directory.}
 }
 \value{
-`sf` data object requested.
+\code{sf} data object requested.
 }
 \description{
 Loading and/or downloading British Columbia Continental Margin (BCCM) model
-  outputs for the full domain of the model (down into US waters) to local
-  drive. Use the functions without `_full` get only the values in Canada's Exclusive
-  Economic Zone. See the two BCCM vignettes.
+outputs for the full domain of the model (down into US waters) to local
+drive. Use the functions without \verb{_full} get only the values in Canada's Exclusive
+Economic Zone. See the two BCCM vignettes.
 
 To download all BCCM data for the full domain, use the function
-  [bccm_all_variables_full()], and see that help for further details about
-  the model.
+\code{\link[=bccm_all_variables_full]{bccm_all_variables_full()}}, and see that help for further details about
+the model.
 }
 \details{
 The following 22 functions serve to download specific individual ocean variables
- of the BCCM model data over its full domain, on a 2 km x 2 km grid. Each
- file is around 120 Mb, but only takes a couple of minutes (on a home
- network, may be slower from a work network because of firewalls). If a
- variable has already been downloaded, the function will simply load data from
- your `paste0(pacea_cache(), "/bccm_full"` folder into your local R environment.
+of the BCCM model data over its full domain, on a 2 km x 2 km grid. Each
+file is around 120 Mb, but only takes a couple of minutes (on a home
+network, may be slower from a work network because of firewalls). If a
+variable has already been downloaded, the function will simply load data from
+your \verb{paste0(pacea_cache(), "/bccm_full"} folder into your local R environment.
 
 The 22 objects available are desribed below as their respective functions;
-  the equivalent functions without `_full` are for the BCCM outputs
-  restricted to Canada's EEZ and on a coarser grid for the offshore. The
-  objects obtained here are stored on Zenodo, with [get_zenodo_data()]
-  automatically taking care of the DOI address for the one-time download.
+the equivalent functions without \verb{_full} are for the BCCM outputs
+restricted to Canada's EEZ and on a coarser grid for the offshore. The
+objects obtained here are stored on Zenodo, with \code{\link[=get_zenodo_data]{get_zenodo_data()}}
+automatically taking care of the DOI address for the one-time download.
 
-If you get an error see [bccm_all_variables_full()].
+If you get an error see \code{\link[=bccm_all_variables_full]{bccm_all_variables_full()}}.
 
 Surface values represent values at the centre of the top BCCM grid cell. These
-  top cells span depths that vary with the bathymetry, from 0.2 to 1.6 m.
+top cells span depths that vary with the bathymetry, from 0.2 to 1.6 m.
 
 \describe{
-  \code{bccm_*depth*_oxygen_full()} Dissolved oxygen measured as mmol-oxygen m^-3\cr
-  \code{bccm_*depth*_salinity_full()} Salinity in ppt\cr
-  \code{bccm_*depth*_temperature_full()} Temperature in oC\cr
-  \code{bccm_*depth*_ph_full()} pH\cr
-  \code{bccm_phytoplankton_full()} Total phytoplankton biomass in mmol-nitrogen m^-2\cr
-  \code{bccm_primaryproduction_full()} Total primary production in gC m^-2 d^-1
+\code{bccm_*depth*_oxygen_full()} Dissolved oxygen measured as mmol-oxygen m^-3\cr
+\code{bccm_*depth*_salinity_full()} Salinity in ppt\cr
+\code{bccm_*depth*_temperature_full()} Temperature in oC\cr
+\code{bccm_*depth*_ph_full()} pH\cr
+\code{bccm_phytoplankton_full()} Total phytoplankton biomass in mmol-nitrogen m^-2\cr
+\code{bccm_primaryproduction_full()} Total primary production in gC m^-2 d^-1
 }
 
 NOTE:\cr
 \code{*depth*} must be replaced by one of the following depth categories:
 
 \describe{
-  \code{bottom}{sea bottom}\cr
-  \code{0to40}{average between 0m and 40m depth}\cr
-  \code{40to100}{average between 40m and 100m depth}\cr
-  \code{100tobot} {:  average between 100m depth and sea bottom}\cr
-  \code{surface}{sea surface}
+\code{bottom}{sea bottom}\cr
+\code{0to40}{average between 0m and 40m depth}\cr
+\code{40to100}{average between 40m and 100m depth}\cr
+\code{100tobot} {:  average between 100m depth and sea bottom}\cr
+\code{surface}{sea surface}
 }
 }
 \examples{

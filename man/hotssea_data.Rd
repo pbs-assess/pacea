@@ -9,7 +9,7 @@ table
 }
 \source{
 Oldford et al., 2024.
-Generated from running `data-raw/data-key/data-list.R`
+Generated from running \code{data-raw/data-key/data-list.R}
 }
 \usage{
 hotssea_data

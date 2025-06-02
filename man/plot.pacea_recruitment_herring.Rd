@@ -17,11 +17,11 @@
 )
 }
 \arguments{
-\item{obj}{a `pacea_recruitment_herring` object, which is a tibble of
+\item{obj}{a \code{pacea_recruitment_herring} object, which is a tibble of
 annual recruitment estimates for each of the five herring Stock Assessment
 Regions.}
 
-\item{region}{if `NULL` (the default) then plots a panel plot of recruitment
+\item{region}{if \code{NULL} (the default) then plots a panel plot of recruitment
 for all five regions, else plots the specified region, which must be one
 of HG, PRD, CC, SOG, or WCVI.}
 
@@ -29,28 +29,30 @@ of HG, PRD, CC, SOG, or WCVI.}
 panel when plotting all five regions)}
 
 \item{y_lab}{label for y-axis (default is "Pacific Herring recruitment
-(billions of age-2 fish)", as specified by `attr(obj, "axis_name")`.}
+(billions of age-2 fish)", as specified by \code{attr(obj, "axis_name")}.}
 
-\item{mar_all_regions}{`mar` value for `par()`, may need tweaking for
-five-panel plot; for single-panel just specific `mar`; see `?par`}
+\item{mar_all_regions}{\code{mar} value for \code{par()}, may need tweaking for
+five-panel plot; for single-panel just specific \code{mar}; see \code{?par}}
 
-\item{oma_all_regions}{similar to `mar_all_regions`}
+\item{oma_all_regions}{similar to \code{mar_all_regions}}
 
 \item{y_tick_by}{increment for y-axis ticks; gets
-overwritten in `add_tickmarks()` if this yields more than
-`y_tick_max_number` tickmarks. If using [plot.pacea_biomass()] the default
-of 1 gets automatically changed to 0.25 for `plot(hake_biomass)`.}
+overwritten in \code{add_tickmarks()} if this yields more than
+\code{y_tick_max_number} tickmarks. If using \code{\link[=plot.pacea_biomass]{plot.pacea_biomass()}} the default
+of 1 gets automatically changed to 0.25 for \code{plot(hake_biomass)}. If
+\code{y_axis_reverse} is TRUE then the negative of \code{y_tick_by} (which should
+always be positive) is passed onto \code{add_tickmarks()}.}
 
-\item{title}{if `NULL` then no figure title (using `main()`), if `full` (the
-default) then spell out the Stock Assessment Region, and if `short` then
+\item{title}{if \code{NULL} then no figure title (using \code{main()}), if \code{full} (the
+default) then spell out the Stock Assessment Region, and if \code{short} then
 just use the acronym.}
 
-\item{...}{further options passed onto `plot.pacea_recruitment()` that can
-also pass onto `plot.default()`}
+\item{...}{further options passed onto \code{plot.pacea_recruitment()} that can
+also pass onto \code{plot.default()}}
 }
 \value{
 plot of the herring recruitment time series as median with bars
-  showing uncertainty, for either all regions or the specified region.
+showing uncertainty, for either all regions or the specified region.
 }
 \description{
 TODO

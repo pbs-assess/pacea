@@ -5,26 +5,29 @@
 \alias{hake_recruitment}
 \alias{hake_recruitment_2023}
 \alias{hake_recruitment_2024}
+\alias{hake_recruitment_2025}
 \title{Pacific Hake annual age-0 recruitments as estimated by the most recent
-(2024) stock assessment.}
+(2025) stock assessment.}
 \format{
-A tibble also of class `pacea_recruitment` with columns:
+A tibble also of class \code{pacea_recruitment} with columns:
 \describe{
-  \item{year:}{year of the recruitment estimate}
-  \item{low:}{low end (2.5th percentile) of the 95\% credible interval for
-  recruitment, billions of age-0 fish}
-  \item{median:}{median estimate of recruitment, billions of age-0 fish}
-  \item{high:}{high end (97.5th percentile) of the 95\% credible interval for
-  recruitment, billions of age-0 fish}
- }
+\item{year:}{year of the recruitment estimate}
+\item{low:}{low end (2.5th percentile) of the 95\\% credible interval for
+recruitment, billions of age-0 fish}
+\item{median:}{median estimate of recruitment, billions of age-0 fish}
+\item{high:}{high end (97.5th percentile) of the 95\\% credible interval for
+recruitment, billions of age-0 fish}
+}
 
 An object of class \code{pacea_recruitment} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 58 rows and 4 columns.
 
 An object of class \code{pacea_recruitment} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 59 rows and 4 columns.
+
+An object of class \code{pacea_recruitment} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 60 rows and 4 columns.
 }
 \source{
 Generated from Andy running (in the hake repository)
-  `pacea_save()` and then here `data-raw/groundfish/hake.R`.
+\code{pacea_save()} and then here \code{data-raw/groundfish/hake.R}.
 }
 \usage{
 hake_recruitment
@@ -32,6 +35,8 @@ hake_recruitment
 hake_recruitment_2023
 
 hake_recruitment_2024
+
+hake_recruitment_2025
 }
 \description{
 The Pacific Hake stock is managed and assessed through an Agreement between
@@ -49,7 +54,7 @@ warmer years compared to cool years.
 The stock is important to ecosystem dynamics in the Eastern
 Pacific Ocean due to its relatively large total biomass and potentially large
 role as both prey and predator. It has highly variable recruitment, as seen
-by typing `plot(hake_recruitment)`.
+by typing \code{plot(hake_recruitment)}.
 
 The stock is assessed as a single migratory stock, so it is important to
 realise (in the context of analyses for Canadian waters) that these estimates are for the
@@ -57,7 +62,7 @@ full coastwide stock. Results from the biannual coastwide acoustic survey show h
 biomass of age-2 and older fish in Canadian waters can vary between years
 (Figure 2 of most recent assessment).
 
-The `hake_recruitment` (and `hake_biomass`) estimates are from a Bayesian statistical catch-at-age
+The \code{hake_recruitment} (and \code{hake_biomass}) estimates are from a Bayesian statistical catch-at-age
 model, that is fit to the acoustic survey index of biomass, an index of
 age-1 fish from the survey, annual commercial catch-at-age data, and
 age-composition data from the survey and commercial fisheries.
@@ -70,16 +75,17 @@ upon the timing of the assessment relative to the most recent biannual
 survey.
 
 Historical estimates of recruitment and biomass will change from stock assessment to stock
-assessment, and so we use `hake_recruitment` to represent
-the results from the most recent assessment (currently 2024), and also save
-`hake_recruitment_2024` and `hake_recruitment_2023` for the results from
-the 2024 and 2023 assessments (the 2023 results were the first ones included
-in `pacea`). This is so that you can always refer to a specific set of
+assessment, and so we use \code{hake_recruitment} to represent
+the results from the most recent assessment (currently 2025), and also save
+\code{hake_recruitment_2025}, \code{hake_recruitment_2024},
+and \code{hake_recruitment_2023} for the results from
+the 2025, 2024, and 2023 assessments (the 2023 results were the first ones included
+in \code{pacea}). This is so that you can always refer to a specific set of
 assessment results (rather than have your analyses change because you have
-updated `pacea` and we have replaced `hake_recruitment` with results from a
+updated \code{pacea} and we have replaced \code{hake_recruitment} with results from a
 new assessment). The same holds for the other hake objects, namely
-`hake_biomass`, `hake_recruitment_over_2010`, and
-`hake_recruitment_over_R0`; i.e. each is also saved with the assessment year
+\code{hake_biomass}, \code{hake_recruitment_over_2010}, and
+\code{hake_recruitment_over_R0}; i.e. each is also saved with the assessment year
 appended.
 
 The 2023 assessment is:
@@ -99,6 +105,15 @@ the Pacific Hake (whiting) stock in U.S. and Canadian waters in
 Pacific Hake/Whiting Agreement, National Marine Fisheries Service and
 Fisheries and Oceans Canada. 246 p.
 https://media.fisheries.noaa.gov/2024-02/hake-assessment-2024.pdf
+
+The 2025 assessment is:
+
+Johnson, K.F., A.M. Edwards, A.M. Berger, C.J. Grandin, and C.R. Wetzel.
+2025. Status of the Pacific Hake (whiting) stock in U.S. and Canadian
+waters in 2025. Prepared by the Joint Technical Committee of the U.S. and
+Canada Pacific Hake/Whiting Agreement, National Marine Fisheries Service and
+Fisheries and Oceans Canada. 286
+p.https://s3.amazonaws.com/media.fisheries.noaa.gov/2025-02/Status-Pacific-Hake-whiting-US-and-Canadian-waters-2025.pdf
 }
 \examples{
 \dontrun{

@@ -8,7 +8,7 @@
 A simple features dataframe.
 }
 \source{
-Generated from running `data-raw/grids/create-grid.R`.
+Generated from running \code{data-raw/grids/create-grid.R}.
 }
 \usage{
 grid26

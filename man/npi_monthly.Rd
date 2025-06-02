@@ -5,16 +5,16 @@
 \alias{npi_monthly}
 \title{NPI -- North Pacific Index monthly values}
 \format{
-A tibble also of class `pacea_index` with columns:
+A tibble also of class \code{pacea_index} with columns:
 \describe{
-  \item{year:}{year of value}
-  \item{month:}{month (1 to 12) of value}
-  \item{val:}{absolute monthly value (average?), hPa, with an `NA` for
-  December 1944}
- }
+\item{year:}{year of value}
+\item{month:}{month (1 to 12) of value}
+\item{val:}{absolute monthly value (average?), hPa, with an \code{NA} for
+December 1944}
+}
 }
 \source{
-Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
+Generated from running \code{data-raw/coastwide-indices/coastwide-indices.R}.
 }
 \usage{
 npi_monthly
@@ -39,19 +39,19 @@ to reference the data as:
 North Pacifi Index Data provided by the Climate Analysis Section, NCAR,
 Boulder, USA, Trenberth and Hurrell (1994). Updated Regularly. Accessed DD
 Month YYYY (you can check the date that
-`npi_annual.rda` or `npi_monthly.rda` was last saved in pacea at
- https://github.com/pbs-assess/pacea/tree/main/data).
+\code{npi_annual.rda} or \code{npi_monthly.rda} was last saved in pacea at
+https://github.com/pbs-assess/pacea/tree/main/data).
 
-`npi_monthly` contains monthly absolute values. Annual average winter values
-and anomalies are in `npi_annual`.
+\code{npi_monthly} contains monthly absolute values. Annual average winter values
+and anomalies are in \code{npi_annual}.
 
-Ross and Robert (2022; see `?oni` for reference): The NPI is a useful
+Ross and Robert (2022; see \code{?oni} for reference): The NPI is a useful
 indicator of the intensity and real extent of the Aleutian Low Pressure
 system. The NPI was generally positive from 1950 to 1976, and generally
 negative (red) from 1977 to 2008; a change than can be attributed to the
 strengthening of the Aleutian Low Pressure system after 1977. From 2008 to
-present [2021], the NPI was mostly positive, due to weaker Aleutian
-Lows. The NPI anomaly, plotted in Figure 7-2 [of Ross and Robert (2022)],
+2021, the NPI was mostly positive, due to weaker Aleutian
+Lows. The NPI anomaly, plotted in Figure 7-2 of Ross and Robert (2022),
 was calculated from the NPI by removing the 1950-2018 mean.
 
 Associated code adapted from code generously shared by Chris Rooper.

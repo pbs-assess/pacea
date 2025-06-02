@@ -3,7 +3,7 @@
 \name{plot_with_uncertainty_discrete}
 \alias{plot_with_uncertainty_discrete}
 \title{Plot medians with uncertainty bars, such as for stock assessment
-recruitment; called from `plot.pacea_recruitment()`.}
+recruitment; called from \code{plot.pacea_recruitment()}.}
 \usage{
 plot_with_uncertainty_discrete(
   obj_lub,
@@ -21,31 +21,31 @@ plot_with_uncertainty_discrete(
 )
 }
 \arguments{
-\item{obj_lub}{obj a `pacea_recruitment` object, which is a time series, with a date
-column that is the lubridate `date` class. Can be absolute or relative
+\item{obj_lub}{obj a \code{pacea_recruitment} object, which is a time series, with a date
+column that is the lubridate \code{date} class. Can be absolute or relative
 recruitment (scaled by a particular year's recruitment or by assumed
 unfished equilibrium recruitment) or recruitment deviations.}
 
 \item{value}{the column to plot if no uncertainties, or what to plot as dots
-if showing uncertainties (likely always `median`)}
+if showing uncertainties (likely always \code{median})}
 
 \item{xlab}{x-axis label}
 
-\item{ylab}{y-axis label, the default is an attribute of the `pacea_index`
+\item{ylab}{y-axis label, the default is an attribute of the \code{pacea_index}
 object.}
 
 \item{x_tick_extra_years}{number of extra years to expand around the range
 of data for which to add annual tick marks (does not expand the axis); in
-hindsight could have simplified this in `add_tickmarks()`, but just made
+hindsight could have simplified this in \code{add_tickmarks()}, but just made
 the default big here.}
 
 \item{uncertainty_bar_col}{colour for uncertainty bars for certain types of
 plot (e.g. estimated fish recruitment)}
 
 \item{y_min, y_max}{minimum or maximum y value for certain types of plot
-(specify this instead of `ylim`); recruitment deviations are positive and
+(specify this instead of \code{ylim}); recruitment deviations are positive and
 negative and so if not specified this will create symmetric y-axis
-(`y_min` = - `y_max`).}
+(\code{y_min} = - \code{y_max}).}
 
 \item{add_line_at_1}{whether to add a horizontal line at 1 (only sensible for scaled recruitments)}
 
@@ -53,7 +53,7 @@ negative and so if not specified this will create symmetric y-axis
 
 \item{add_line_at_1_lty}{line type of line at 1}
 
-\item{...}{further options passed onto `plot.default()`}
+\item{...}{further options passed onto \code{plot.default()}}
 }
 \value{
 plot of time series with median as circle and bars for uncertainty.
@@ -61,7 +61,7 @@ plot of time series with median as circle and bars for uncertainty.
 \description{
 Used for data for which the years are kind of discrete and so should not be
 joined up (like for recruitment, as opposed to biomass); helps distinguish
-plots also. Adapted from `make.mcmc.recruitment.plot()` from Pacific Hake
+plots also. Adapted from \code{make.mcmc.recruitment.plot()} from Pacific Hake
 assessment.
 }
 \examples{

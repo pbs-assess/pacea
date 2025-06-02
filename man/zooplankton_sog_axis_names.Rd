@@ -7,31 +7,31 @@
 \format{
 A tibble with columns:
 \describe{
-  \item{species_group_name:}{the available values for `species_group_name`,
-  as given by the columns of `zooplankton_sog` from `total_biomass` onwards}
-  \item{axis_name :}{an expression to give a correct y label for the plots
-  (not just the `species_group_name` shorthand),
-  including getting the units (with superscripts) correct}
-  \item{in_perry_fig_s1:}{logical whether or not the species group is in the
-  20 figures shown in Figures S1 of Perry et al. (2021); see the zooplankton vignette.}
- }
+\item{species_group_name:}{the available values for \code{species_group_name},
+as given by the columns of \code{zooplankton_sog} from \code{total_biomass} onwards}
+\item{axis_name :}{an expression to give a correct y label for the plots
+(not just the \code{species_group_name} shorthand),
+including getting the units (with superscripts) correct}
+\item{in_perry_fig_s1:}{logical whether or not the species group is in the
+20 figures shown in Figures S1 of Perry et al. (2021); see the zooplankton vignette.}
+}
 }
 \source{
 Created, based on Kelly Young's descriptions, in
-  `data-raw/zooplankton/zooplankton.R`
+\code{data-raw/zooplankton/zooplankton.R}
 }
 \usage{
 zooplankton_sog_axis_names
 }
 \description{
-For automated plotting of columns of `zooplankton_sog`,
-`zooplankton_sog_axis_names` contains expressions that correctly format to
+For automated plotting of columns of \code{zooplankton_sog},
+\code{zooplankton_sog_axis_names} contains expressions that correctly format to
 give the y-axis label. Gets automatically used by
-`plot.zooplankton_index()`, which gets automatically called by
-`plot(zooplankton_sog)`. Should not really be needed by user. To see the
+\code{plot.zooplankton_index()}, which gets automatically called by
+\code{plot(zooplankton_sog)}. Should not really be needed by user. To see the
 expressions used for the axis names, type
-`zooplankton_sog_axis_names$axis_name`. Then to adapt one, find the
-appropriate one and adapt that as necessary for `ylab`, see examples and
+\code{zooplankton_sog_axis_names$axis_name}. Then to adapt one, find the
+appropriate one and adapt that as necessary for \code{ylab}, see examples and
 zooplankton vignette.
 }
 \examples{

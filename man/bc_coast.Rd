@@ -8,7 +8,7 @@
 A simple features multipolygon dataframe.
 }
 \source{
-Generated from running `data-raw/coastline/coastline-eez.R`.
+Generated from running \code{data-raw/coastline/coastline-eez.R}.
 }
 \usage{
 bc_coast

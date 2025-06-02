@@ -7,21 +7,21 @@
 \title{Pacific Herring annual age-2 recruitments as estimated by the most recent
 stock assessment, for each of the five major stock assessment regions.}
 \format{
-A tibble also of class `pacea_herring_recruitment` with columns:
+A tibble also of class \code{pacea_herring_recruitment} with columns:
 \describe{
-  \item{year:}{year of the recruitment estimate for age-2 fish}
-  \item{low:}{low end (5th percentile) of the 90\% credible interval for
-  recruitment, billions of age-2 fish}
-  \item{median:}{median estimate of recruitment, billions of age-2 fish}
-  \item{high:}{high end (95th percentile) of the 90\% credible interval for
-  recruitment, billions of age-2 fish}
- }
+\item{year:}{year of the recruitment estimate for age-2 fish}
+\item{low:}{low end (5th percentile) of the 90\\% credible interval for
+recruitment, billions of age-2 fish}
+\item{median:}{median estimate of recruitment, billions of age-2 fish}
+\item{high:}{high end (95th percentile) of the 90\\% credible interval for
+recruitment, billions of age-2 fish}
+}
 
 An object of class \code{pacea_recruitment_herring} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 355 rows and 5 columns.
 }
 \source{
-Generated from Andy running `data-raw/herring/herring.R`, which uses
-  model results provided by Matthew Grinnell.
+Generated from Andy running \code{data-raw/herring/herring.R}, which uses
+model results provided by Matthew Grinnell.
 }
 \usage{
 herring_recruitment
@@ -37,22 +37,22 @@ full stock assessments are not done for those). Results for the five major
 regions are included in pacea. The most recent assessment is DFO (2024); see
 that and references within for full details, including the map in Figure 1
 that denotes the regions. Note that recruitments are calculated for age-2
-fish, and that uncertainty is given by 90\% credible intervals, defined as
+fish, and that uncertainty is given by 90\\% credible intervals, defined as
 the 5th and 95th percentiles, (whereas the
-hake recruitments in pacea correspond to age-0 fish and 95\% credible
+hake recruitments in pacea correspond to age-0 fish and 95\\% credible
 intervals, defined as the 2.5 and 97.5 percentiles).
 }
 \details{
 Historical estimates of recruitment and biomass will change from stock assessment to stock
-assessment, and so we use `herring_recruitment` to represent
+assessment, and so we use \code{herring_recruitment} to represent
 the results from the most recent assessment (currently for the status in
 2023, with the reference being DFO 2024), and also save
-these as `herring_recruitment_2023` so that they will be preserved in future
-updates of `pacea`. This is so that you can always refer to a specific set of
+these as \code{herring_recruitment_2023} so that they will be preserved in future
+updates of \code{pacea}. This is so that you can always refer to a specific set of
 assessment results (rather than have your analyses change because you have
-updated `pacea` and we have replaced `herring_recruitment` with results from a
+updated \code{pacea} and we have replaced \code{herring_recruitment} with results from a
 new assessment). The same holds for the other herring object, namely
-`herring_spawning_biomass`; i.e. it is also saved with the assessment year
+\code{herring_spawning_biomass}; i.e. it is also saved with the assessment year
 appended.
 
 The 2023 status and results included here are given in DFO (2024):

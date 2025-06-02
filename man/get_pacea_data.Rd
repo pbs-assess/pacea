@@ -13,7 +13,7 @@ get_pacea_data(layer, update = FALSE, ask = interactive(), force = FALSE)
 
 \item{ask}{Logical. Should the user be asked before downloading the data to local cache? Defaults to the value of interactive().}
 
-\item{force}{Logical. Should download of data be forced? Overrides `ask` argument if TRUE.}
+\item{force}{Logical. Should download of data be forced? Overrides \code{ask} argument if TRUE.}
 }
 \value{
 Data object requested
@@ -22,7 +22,7 @@ Data object requested
 Large spatiotemporal pacea data files can be downloaded individually from pacea-data.
 }
 \details{
-Some large pacea data sets are stored in a GitHub repository, pacea-data, and get_pacea_data allows users to choose which data to download locally. Refer to `pacea_data` to view the data files available for download. Code adapted from 'bcmaps'
+Some large pacea data sets are stored in a GitHub repository, pacea-data, and get_pacea_data allows users to choose which data to download locally. Refer to \code{pacea_data} to view the data files available for download. Code adapted from 'bcmaps'
 }
 \examples{
 \dontrun{

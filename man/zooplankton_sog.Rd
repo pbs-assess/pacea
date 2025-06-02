@@ -5,48 +5,48 @@
 \alias{zooplankton_sog}
 \title{Zooplankton anomalies in the Strait of Georgia}
 \format{
-A tibble also of class `pacea_zooplankton` with the following
-  columns, where `total_biomass` onwards represents the annual anomaly of
-  the specified species group in \eqn{\log10 \mbox{g m}^{-2}}:
+A tibble also of class \code{pacea_zooplankton} with the following
+columns, where \code{total_biomass} onwards represents the annual anomaly of
+the specified species group in \eqn{\log10 \mbox{g m}^{-2}}:
 \describe{
-  \item{year:}{year of the calculated anomalies}
-  \item{number_samples:}{total number of samples used for the annual
-anomalies; this matches the `Total` column in Table 3 of Perry et al. (2021),
+\item{year:}{year of the calculated anomalies}
+\item{number_samples:}{total number of samples used for the annual
+anomalies; this matches the \code{Total} column in Table 3 of Perry et al. (2021),
 though only up to 2013; from 2014-2018 the numbers here are higher due to further
 samples being processed. Data from 2019 onwards were not available for the
 Perry at al. (2021) study.}
-  \item{volume_filtered:}{total volume of water filtered for all tows,
-  \eqn{\mbox{m}^3}.}
-  \item{total_biomass:}{Total biomass}
-  \item{amphipods_gammarid:}{Gammarid amphipods}
-  \item{amphipods_hyperiid:}{Hyperiid amphipods}
-  \item{benthic_larvae:}{Benthic larvae}
-  \item{calanoid_copepods_large:}{Calanoid copepods (large)}
-  \item{calanoid_copepods_medium:}{Calanoid copepods (medium)}
-  \item{calanoid_copepods_small:}{Calanoid copepods (small)}
-  \item{cephalopoda:}{Cephalopoda}
-  \item{chaetognatha:}{Chaetognatha}
-  \item{cladocera:}{Cladocera}
-  \item{ctenophora:}{Ctenophora}
-  \item{euphausiids:}{Euphausiids}
-  \item{fish:}{Larval fish}
-  \item{larvacea:}{Larvacea}
-  \item{medusae:}{Medusae}
-  \item{mysids:}{Mysids}
-  \item{natantia:}{Natantia}
-  \item{non_calanoid_copeopods:}{Non-calanoid copeopods}
-  \item{ostracoda:}{Ostracoda}
-  \item{other:}{Other taxa}
-  \item{pelagic_polychaeta:}{Pelagic polychaeta}
-  \item{pteropods:}{Pteropods}
-  \item{repantia:}{Repantia}
-  \item{scyphozoa:}{Scyphozoa}
-  \item{siphonophorae:}{Siphonophorae}
- }
+\item{volume_filtered:}{total volume of water filtered for all tows,
+\eqn{\mbox{m}^3}.}
+\item{total_biomass:}{Total biomass}
+\item{amphipods_gammarid:}{Gammarid amphipods}
+\item{amphipods_hyperiid:}{Hyperiid amphipods}
+\item{benthic_larvae:}{Benthic larvae}
+\item{calanoid_copepods_large:}{Calanoid copepods (large)}
+\item{calanoid_copepods_medium:}{Calanoid copepods (medium)}
+\item{calanoid_copepods_small:}{Calanoid copepods (small)}
+\item{cephalopoda:}{Cephalopoda}
+\item{chaetognatha:}{Chaetognatha}
+\item{cladocera:}{Cladocera}
+\item{ctenophora:}{Ctenophora}
+\item{euphausiids:}{Euphausiids}
+\item{fish:}{Larval fish}
+\item{larvacea:}{Larvacea}
+\item{medusae:}{Medusae}
+\item{mysids:}{Mysids}
+\item{natantia:}{Natantia}
+\item{non_calanoid_copeopods:}{Non-calanoid copeopods}
+\item{ostracoda:}{Ostracoda}
+\item{other:}{Other taxa}
+\item{pelagic_polychaeta:}{Pelagic polychaeta}
+\item{pteropods:}{Pteropods}
+\item{repantia:}{Repantia}
+\item{scyphozoa:}{Scyphozoa}
+\item{siphonophorae:}{Siphonophorae}
+}
 }
 \source{
 Anomalies calculated and provided by Kelly Young, then wrangled and imported using
-  `data-raw/zooplankton/zooplankton.R`
+\code{data-raw/zooplankton/zooplankton.R}
 }
 \usage{
 zooplankton_sog
@@ -68,7 +68,7 @@ Zooplankton samples have been collected at approximately 20 standardized
 stations monthly from February to October since 2015, with historic (but
 sporadic sampling effort) data going back to 1995. Biomass was calculated
 from the deep trawls, with bottom depths greater than 50 m and vertical net
-haul samples that covered over 70\% of the water column. Data were restricted
+haul samples that covered over 70\\% of the water column. Data were restricted
 to the central and northern Strait of Georgia (averaged together)
 as they have the most complete time series available.
 

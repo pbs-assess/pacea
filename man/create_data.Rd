@@ -9,18 +9,18 @@ create_data(var, val)
 \arguments{
 \item{var}{The variable name}
 
-\item{val}{The value for variable `var`}
+\item{val}{The value for variable \code{var}}
 }
 \value{
-Nothing, creates package data. See `usethis::use_data()`.
+Nothing, creates package data. See \code{usethis::use_data()}.
 }
 \description{
 Usually you have to create a variable first, and then call
- [usethis::use_data()] with the variable name as an argument and the
- package data will be created. This function just unifies that into one step,
- and allows automated naming with `paste0()`, unlike `usethis::use_data()`.
- Change name from original hake::create_data_hake(), as
- will work for any data object. See `data-raw/groundfish/hake.R` for example use.
+\code{\link[usethis:use_data]{usethis::use_data()}} with the variable name as an argument and the
+package data will be created. This function just unifies that into one step,
+and allows automated naming with \code{paste0()}, unlike \code{usethis::use_data()}.
+Change name from original hake::create_data_hake(), as
+will work for any data object. See \code{data-raw/groundfish/hake.R} for example use.
 }
 \examples{
 \dontrun{

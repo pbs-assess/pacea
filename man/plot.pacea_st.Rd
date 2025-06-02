@@ -14,9 +14,9 @@
 )
 }
 \arguments{
-\item{x}{a `pacea_st` object, which is an `sf` object}
+\item{x}{a \code{pacea_st} object, which is an \code{sf} object}
 
-\item{months.plot}{character or numeric vector to indicate which months to include (e.g. `c(1, 2)`, `c("April", "may")`, `c(1, "April")`)}
+\item{months.plot}{character or numeric vector to indicate which months to include (e.g. \code{c(1, 2)}, \code{c("April", "may")}, \code{c(1, "April")})}
 
 \item{years.plot}{vector of years to include, from 1993 to 2019}
 
@@ -24,17 +24,17 @@
 
 \item{eez}{logical. Should BC EEZ layer be plotted?}
 
-\item{...}{other arguments to be passed on, but not currently used (`?ggplot`
+\item{...}{other arguments to be passed on, but not currently used (\code{?ggplot}
 says the same thing); this should remove a R-CMD-check warning.}
 }
 \value{
 plot of the spatial data to the current device (returns nothing)
 }
 \description{
-Plot for `pacea_st` classes of objects using `ggplot()`. Objects can be BCCM
- outputs, OISST values (TODO no, but should work for the grid26 mapped values), or HOTSSEA outputs.
+Plot for \code{pacea_st} classes of objects using \code{ggplot()}. Objects can be BCCM
+outputs, OISST values (TODO no, but should work for the grid26 mapped values), or HOTSSEA outputs.
 Gives a quick visualization of data, specifying month(s) and year(s). For
- more options and configurable plots see vignette.
+more options and configurable plots see vignette.
 }
 \examples{
 \dontrun{

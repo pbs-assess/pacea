@@ -12,12 +12,12 @@ overlap(obj_1, obj_2, region = "SOG")
 \item{obj_2}{data.frame second time series}
 
 \item{region}{character corresponding the region to be used for
-  herring-related objects (of class `pacea_recruitment_herring` or
-`pacea_biomass_herring`)}
+herring-related objects (of class \code{pacea_recruitment_herring} or
+\code{pacea_biomass_herring})}
 }
 \value{
-tibble with first column `year` and the rest being the columns of
-`obj_1` and `obj_2` restricted to the overlapping years
+tibble with first column \code{year} and the rest being the columns of
+\code{obj_1} and \code{obj_2} restricted to the overlapping years
 }
 \description{
 TODO Extend to all the classes of pacea objects, and make it work on non

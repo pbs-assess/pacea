@@ -22,53 +22,55 @@ get_zenodo_data(
 
 \item{ask}{Logical. Should the user be asked before downloading the data to local cache? Defaults to the value of interactive().}
 
-\item{force}{Logical. Should download of data be forced? Overrides `ask`
+\item{force}{Logical. Should download of data be forced? Overrides \code{ask}
 argument if TRUE. Does not force a download if the file is already cached locally.}
 
 \item{version}{Character. Version number of data on Zenodo (as in what is
 appended at the end of the filenames).}
 
 \item{cache_subfolder}{Character. The folder
-`paste0(pacea::pacea_cache(), cache_subfolder)` will be
+\code{paste0(pacea::pacea_cache(), cache_subfolder)} will be
 searched first for the desired model output file, and if the no file is
 there then it will be downloaded from Zenodo into this directory. Is set to
-`hotssea` but gets automatically changed to `bccm_full` if `layer`
-contains `bccm` and `full`.}
+\code{hotssea} but gets automatically changed to \code{bccm_full} if \code{layer}
+contains \code{bccm} and \code{full}.}
 
 \item{zenodo_doi}{character. The DOI of the zenodo record to download files
-from. Default is for `hotssea` but gets automatically changed to the DOI
-for `bccm_full` if `layer` contains `bccm` and `full`.}
+from. Default is for \code{hotssea} but gets automatically changed to the DOI
+for \code{bccm_full} if \code{layer} contains \code{bccm} and \code{full}.}
 
 \item{timeout_value}{numeric Timeout (seconds) for downloading a file from
-the internet. Gets used in [zen4R::download_zenodo()].}
+the internet. Gets used in \code{\link[zen4R:download_zenodo]{zen4R::download_zenodo()}}.}
 }
 \value{
 Data object requested
 }
 \description{
 HOTSSea and full BCCM model results have been wrangled from the original
- results and are hosted on Zenodo due to large filesizes. This function
- downloads an individual file
- and puts it in the appropriate cache on a user's local computer. Users
- should use the functions that
- call this, see [hotssea_all_variables()] and [bccm_all_variables_full()],
- and also the help for invidual functions such as
- [hotssea_surface_salinity_min()] and [bccm_bottom_temperature_full()].
+results and are hosted on Zenodo due to large filesizes. This function
+downloads an individual file
+and puts it in the appropriate cache on a user's local computer. Users
+should use the functions that
+call this, see \code{\link[=hotssea_all_variables]{hotssea_all_variables()}} and \code{\link[=bccm_all_variables_full]{bccm_all_variables_full()}},
+and also the help for invidual functions such as
+\code{\link[=hotssea_surface_salinity_min]{hotssea_surface_salinity_min()}} and \code{\link[=bccm_bottom_temperature_full]{bccm_bottom_temperature_full()}}.
 }
 \details{
 Notes to keep track (for developers): The Zenodo links are:
- - 14019141 will always point to the latest version
- - 14019142 is the test ones at 200 km resolution
- - 14027261 is the latest version uploaded to Zenodo, and what we want.
+\itemize{
+\item 14019141 will always point to the latest version
+\item 14019142 is the test ones at 200 km resolution
+\item 14027261 is the latest version uploaded to Zenodo, and what we want.
 Sohttps://doi.org/10.5281/zenodo.14019141 does go
- to https://zenodo.org/records/14027261, but when people try it seems that
- the zen4R code is ending
- up at the ...142 version (using the token in a different way maybe). So,
- given ...141 wasn't working here for the default, am changing it to ...261
- and so it will need manually updating in future if we update (or increment
- the version number).
+to https://zenodo.org/records/14027261, but when people try it seems that
+the zen4R code is ending
+up at the ...142 version (using the token in a different way maybe). So,
+given ...141 wasn't working here for the default, am changing it to ...261
+and so it will need manually updating in future if we update (or increment
+the version number).
+}
 
-Based on [get_bccm_data()], but getting from Zenodo not `pacea-data/`.
+Based on \code{\link[=get_pacea_data]{get_pacea_data()}}, but getting from Zenodo not \verb{pacea-data/}.
 }
 \examples{
 \dontrun{

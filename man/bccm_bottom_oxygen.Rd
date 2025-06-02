@@ -88,44 +88,44 @@ bccm_primaryproduction(update = FALSE, ask = interactive(), force = FALSE)
 
 \item{ask}{Logical. Should the user be asked before downloading the data to local cache? Defaults to the value of interactive().}
 
-\item{force}{Logical. Should download of data be forced? Overrides `ask` argument if TRUE.}
+\item{force}{Logical. Should download of data be forced? Overrides \code{ask} argument if TRUE.}
 }
 \value{
-`sf` data object requested.
+\code{sf} data object requested.
 }
 \description{
 Loading and/or downloading British Columbia continental margin (BCCM) model data for the BC Pacific region to local drive.
 
-To download all BCCM data, use the function `bccm_all_variables()`. See help page for details (`?bccm_all_variables`).
+To download all BCCM data, use the function \code{bccm_all_variables()}. See help page for details (\code{?bccm_all_variables}).
 }
 \details{
-The following functions serve to download specific individual ocean variables of the BCCM model data. Use `bccm_all_variables()` if you would like to download all variables - see help file `?bccm_all_variables` for details. If a variable has already been downloaded, the function will load data from `pacea_cache()` folder into user's local R environment.
+The following functions serve to download specific individual ocean variables of the BCCM model data. Use \code{bccm_all_variables()} if you would like to download all variables - see help file \code{?bccm_all_variables} for details. If a variable has already been downloaded, the function will load data from \code{pacea_cache()} folder into user's local R environment.
 
 The British Columbia continental margin (BCCM) model is an ocean circulation-biogeochemical model implementation of the regional ocean modelling system (ROMS). It has a horizontal resolution of 3km x 3km and a vertical discretization based on bathymetry of 42 depth levels increasing in resolution near the surface. These modelled output data were provided by Angelica Pena and the data is further detailed in Pena et al. (2019).
 
 BCCM data were interpolated to a 2km x 2km inshore grid and a 6km x 6km offshore grid. Data provided are monthly means that span from 1993-2019. Each column represents a distinct 'year_month' combination (e.g. 2010_4).
 
 Surface values represent values at the centre of the top BCCM grid cell. These
-  top cells span depths that vary with the bathymetry, from 0.2 to 1.6 m.
+top cells span depths that vary with the bathymetry, from 0.2 to 1.6 m.
 
 \describe{
-  \code{bccm_*depth*_oxygen()} Dissolved oxygen measured as mmol-oxygen m^-3\cr
-  \code{bccm_*depth*_salinity()} Salinity in ppt\cr
-  \code{bccm_*depth*_temperature()} Temperature in oC\cr
-  \code{bccm_*depth*_ph()} pH\cr
-  \code{bccm_phytoplankton()} Total phytoplankton biomass in mmol-nitrogen m^-2\cr
-  \code{bccm_primaryproduction()} Total primary production in gC m^-2 d^-1
+\code{bccm_*depth*_oxygen()} Dissolved oxygen measured as mmol-oxygen m^-3\cr
+\code{bccm_*depth*_salinity()} Salinity in ppt\cr
+\code{bccm_*depth*_temperature()} Temperature in oC\cr
+\code{bccm_*depth*_ph()} pH\cr
+\code{bccm_phytoplankton()} Total phytoplankton biomass in mmol-nitrogen m^-2\cr
+\code{bccm_primaryproduction()} Total primary production in gC m^-2 d^-1
 }
 
 NOTE:\cr
 \code{*depth*} must be replaced by one of the following depth categories:
 
 \describe{
-  \code{bottom}{sea bottom}\cr
-  \code{0to40}{average between 0m and 40m depth}\cr
-  \code{40to100}{average between 40m and 100m depth}\cr
-  \code{100tobot} {:  average between 100m depth and sea bottom}\cr
-  \code{surface}{sea surface}
+\code{bottom}{sea bottom}\cr
+\code{0to40}{average between 0m and 40m depth}\cr
+\code{40to100}{average between 40m and 100m depth}\cr
+\code{100tobot} {:  average between 100m depth and sea bottom}\cr
+\code{surface}{sea surface}
 }
 }
 \examples{

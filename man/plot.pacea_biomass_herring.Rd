@@ -17,44 +17,46 @@
 )
 }
 \arguments{
-\item{obj}{a `pacea_biomass_herring` object, which is a tibble of
+\item{obj}{a \code{pacea_biomass_herring} object, which is a tibble of
 annual spawning biomass or total biomass estimates (TODO not yet
 implemented) for each of the five herring Stock Assessment Regions.}
 
-\item{region}{if `NULL` (the default) then plots a panel plot of biomass
+\item{region}{if \code{NULL} (the default) then plots a panel plot of biomass
 for all five regions, else plots the specified region, which must be one
 of HG, PRD, CC, SOG, or WCVI.}
 
 \item{x_lab}{label for x-axis (default is "Year", only shown for bottom
 panel when plotting all five regions)}
 
-\item{y_lab}{label for y-axis (default is specified by `attr(obj, "axis_name")`.}
+\item{y_lab}{label for y-axis (default is specified by \code{attr(obj, "axis_name")}.}
 
-\item{mar_all_regions}{`mar` value for `par()`, may need tweaking for
-five-panel plot; for single-panel just specific `mar`; see `?par`}
+\item{mar_all_regions}{\code{mar} value for \code{par()}, may need tweaking for
+five-panel plot; for single-panel just specific \code{mar}; see \code{?par}}
 
-\item{oma_all_regions}{similar to `mar_all_regions`}
+\item{oma_all_regions}{similar to \code{mar_all_regions}}
 
 \item{y_tick_by}{increment for y-axis ticks; gets
-overwritten in `add_tickmarks()` if this yields more than
-`y_tick_max_number` tickmarks. If using [plot.pacea_biomass()] the default
-of 1 gets automatically changed to 0.25 for `plot(hake_biomass)`.}
+overwritten in \code{add_tickmarks()} if this yields more than
+\code{y_tick_max_number} tickmarks. If using \code{\link[=plot.pacea_biomass]{plot.pacea_biomass()}} the default
+of 1 gets automatically changed to 0.25 for \code{plot(hake_biomass)}. If
+\code{y_axis_reverse} is TRUE then the negative of \code{y_tick_by} (which should
+always be positive) is passed onto \code{add_tickmarks()}.}
 
-\item{title}{if `NULL` then no figure title (using `main()`), if `full` (the
-default) then spell out the Stock Assessment Region, and if `short` then
+\item{title}{if \code{NULL} then no figure title (using \code{main()}), if \code{full} (the
+default) then spell out the Stock Assessment Region, and if \code{short} then
 just use the acronym.}
 
-\item{...}{further options passed onto `plot.pacea_biomass()` that can
-also pass onto `plot.default()`}
+\item{...}{further options passed onto \code{plot.pacea_biomass()} that can
+also pass onto \code{plot.default()}}
 }
 \value{
 plot of the herring biomass time series as joined up medians with
-  shaded regions showing uncertainty, for either all regions or the
-  specified region.
+shaded regions showing uncertainty, for either all regions or the
+specified region.
 }
 \description{
-Adapted slightly from `plot.pacea_recruitment_herring()`. Plots in the
-biomass style developed in `plot.pacea_biomass()`.
+Adapted slightly from \code{plot.pacea_recruitment_herring()}. Plots in the
+biomass style developed in \code{plot.pacea_biomass()}.
 }
 \examples{
 \dontrun{ TODO

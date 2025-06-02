@@ -5,21 +5,21 @@
 \alias{npi_annual}
 \title{NPI -- North Pacific Index annual values and anomalies}
 \format{
-A tibble also of class `pacea_index` with columns:
+A tibble also of class \code{pacea_index} with columns:
 \describe{
-  \item{year:}{year of value}
-  \item{val:}{absolute average winter value, hPa. The value for year $N$
-  refers to an average of the values in November  $N-1$, December $N-1$, and
-  January, February, and March for year $N$. For example, the 1999 annual
-  value contains the average of November and December 1998 and January,
-  February, and March 1999. Hence there is an `NA` for 1899 as no monthly
-  data for 1898.}
-  \item{anom:}{anomalies of the annual winter values compared to the 1925-1989 mean
-  of 1008.9 hPa, again with an `NA` for 1899 TODO check.}
+\item{year:}{year of value}
+\item{val:}{absolute average winter value, hPa. The value for year $N$
+refers to an average of the values in November  $N-1$, December $N-1$, and
+January, February, and March for year $N$. For example, the 1999 annual
+value contains the average of November and December 1998 and January,
+February, and March 1999. Hence there is an \code{NA} for 1899 as no monthly
+data for 1898.}
+\item{anom:}{anomalies of the annual winter values compared to the 1925-1989 mean
+of 1008.9 hPa, again with an \code{NA} for 1899 TODO check.}
 }
 }
 \source{
-Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
+Generated from running \code{data-raw/coastwide-indices/coastwide-indices.R}.
 }
 \usage{
 npi_annual
@@ -29,9 +29,9 @@ The North Pacific index measures interannual to decadal
 variations in atmospheric circulation across the North Pacific.
 }
 \details{
-See `?npi_monthly` for details.
+See \code{?npi_monthly} for details.
 
-`npi_annual` contains annual average winter values and anomalies.
+\code{npi_annual} contains annual average winter values and anomalies.
 }
 \examples{
 \dontrun{

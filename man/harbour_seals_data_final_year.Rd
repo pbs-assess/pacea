@@ -7,17 +7,17 @@
 \format{
 A tibble with columns:
 \describe{
-  \item{region:}{the region that the final year corresponds to; one of SOG,
-  WCVI, QCS, DP, CMC, NMC, or HG}
-  \item{final_year:}{final year of the data for that region}
- }
+\item{region:}{the region that the final year corresponds to; one of SOG,
+WCVI, QCS, DP, CMC, NMC, or HG}
+\item{final_year:}{final year of the data for that region}
+}
 }
 \usage{
 harbour_seals_data_final_year
 }
 \description{
-Used for understanding the final year of data for the estimates contained in `harbour_seals`
-(since some are projections beyond the data). Also see `?harbour_seals`.
+Used for understanding the final year of data for the estimates contained in \code{harbour_seals}
+(since some are projections beyond the data). Also see \code{?harbour_seals}.
 }
 \examples{
 \dontrun{

@@ -10,13 +10,13 @@ Peña, M.A., Fine, I. and Callendar, W. 2019. Interannual variability in primary
 bccm_all_variables()
 }
 \value{
-downloaded files to `pacea_cache()` directory
+downloaded files to \code{pacea_cache()} directory
 }
 \description{
 This function downloads all British Columbia continental margin (BCCM) model data for the BC Pacific region to local drive.
 }
 \details{
-Use `bccm_data` To view the full list of available variables. See help files for specific variables for more details on BCCM data (e.g. `?bccm_surface_oxygen`).
+Use \code{bccm_data} To view the full list of available variables. See help files for specific variables for more details on BCCM data (e.g. \code{?bccm_surface_oxygen}).
 
 CAUTION: The BCCM files are large and downloading all data may take a while.
 }

@@ -5,15 +5,15 @@
 \alias{grid26_depth}
 \title{Geospatial pacea grid - BC coastline grid template with depth data}
 \format{
-A simple features dataframe, with columns `x` (the geometry),
-  `mean_depth`, `min_depth`, and `max_depth`. Depths are negative because
-  there are a few positive ones (above sea level) along the coastlines, which
-  we will look at in more detail. NB we will make the depths all positive at
-  some point as that's more logical (well, except for donig physical
-  oceanography models).
+A simple features dataframe, with columns \code{x} (the geometry),
+\code{mean_depth}, \code{min_depth}, and \code{max_depth}. Depths are negative because
+there are a few positive ones (above sea level) along the coastlines, which
+we will look at in more detail. NB we will make the depths all positive at
+some point as that's more logical (well, except for donig physical
+oceanography models).
 }
 \source{
-Generated from running `data-raw/depth/depth.R`.
+Generated from running \code{data-raw/depth/depth.R}.
 }
 \usage{
 grid26_depth

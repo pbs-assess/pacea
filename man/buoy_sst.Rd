@@ -9,18 +9,18 @@ values) calculated with data from Environment and Climate Change Canada
 \format{
 A tibble with columns:
 \describe{
-  \item{date:}{date (of class `Date`) used to calculate the `sst`, based on
-  UTC -8 hours (i.e. Pacific Standard Time, not changing due to daylight savings)}
-  \item{stn_id:}{station identifier, which is the World Meteorolgical
-  Organisation id number
-  (https://www.ndbc.noaa.gov/faq/staid.shtml#:~:text=The%20World%20Meteorological%20Organization%20(WMO,identifier%20assigned%20by%20deployment%20location)
-  preceded by a `C`, which is how ECCC refers to them}
-  \item{sst:}{calculated mean sea surface for that day at that station
-  (based on Pacific Standard Time)}
- }
+\item{date:}{date (of class \code{Date}) used to calculate the \code{sst}, based on
+UTC -8 hours (i.e. Pacific Standard Time, not changing due to daylight savings)}
+\item{stn_id:}{station identifier, which is the World Meteorolgical
+Organisation id number
+(https://www.ndbc.noaa.gov/faq/staid.shtml#:~:text=The\%20World\%20Meteorological\%20Organization\%20(WMO,identifier\%20assigned\%20by\%20deployment\%20location)
+preceded by a \code{C}, which is how ECCC refers to them}
+\item{sst:}{calculated mean sea surface for that day at that station
+(based on Pacific Standard Time)}
+}
 }
 \source{
-Generated from running `data-raw/buoys/buoy-sst.R`.
+Generated from running \code{data-raw/buoys/buoy-sst.R}.
 }
 \usage{
 buoy_sst
@@ -36,24 +36,24 @@ All buoys are ECCC buoys, with DFO providing the historical and updated data
 for 17 of them, and ECCC providing data for the other two that started
 in October 2019 and are related to the Oceans Protection Plan.
 Data are downloaded from https://data.cioospacific.ca/erddap/ when we
-(developers) update `pacea` using `data-raw/buoys/buoy-sst.R`. That code
+(developers) update \code{pacea} using \code{data-raw/buoys/buoy-sst.R}. That code
 does a lot of wrangling of the data (so you don't have to!), such as using
 some of the flags from Kellog et al. (2021), dealing with timezones,
 ignoring pesky daylight savings time changes, and averaging over a day
 (which we will refine, see Issue #26).
 
-All data is stored in `pacea`, and will be updated monthly. Data for the
+All data is stored in \code{pacea}, and will be updated monthly. Data for the
 two buoys from ECCC seems to be available with a lag of only an hour, whereas it's a
 few days for the DFO data. If you need data as up-to-date as possible then
 contact Andrew Edwards and he can update the package. Or do the following if
-you understand it: clone the `pacea` repo from GitHub, `load_all()`, run
-`data-raw/buoys/buoy-sst.R`, and you'll have your own up-to-date version of
+you understand it: clone the \code{pacea} repo from GitHub, \code{load_all()}, run
+\code{data-raw/buoys/buoy-sst.R}, and you'll have your own up-to-date version of
 pacea. Some of the DFO-based data are in the ECCC-based data, and so there is overlap.
 We stuck with the download of the DFO data for pacea, though if you really want ECCC data to be used (as
 it's slightly more up-to-date) we can look at checking the values are the
 same and switching the workflow to used ECCC.
 
-See `buoy_metadata` for details on each buoy.
+See \code{buoy_metadata} for details on each buoy.
 
 Adapted from Andrea Hilborn's code at
 https://github.com/IOS-OSD-DPG/Pacific_SST_Monitoring/blob/main/scripts/POI_latlon.R

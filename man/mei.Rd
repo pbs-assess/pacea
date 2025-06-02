@@ -5,17 +5,17 @@
 \alias{mei}
 \title{ENSO MEI -- Multivariate ENSO Index}
 \format{
-A tibble also of class `pacea_index` with columns:
+A tibble also of class \code{pacea_index} with columns:
 \describe{
-  \item{year:}{year of value}
-  \item{month:}{month (1 to 12) of value, representing the two-month
-  calculation covering the given month and the preceding month (i.e. month 2
-  in year 2023 represents the January-February 2023 value)}
-  \item{anomaly:}{anomalies based on a reference period of 1980-2018}
- }
+\item{year:}{year of value}
+\item{month:}{month (1 to 12) of value, representing the two-month
+calculation covering the given month and the preceding month (i.e. month 2
+in year 2023 represents the January-February 2023 value)}
+\item{anomaly:}{anomalies based on a reference period of 1980-2018}
+}
 }
 \source{
-Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
+Generated from running \code{data-raw/coastwide-indices/coastwide-indices.R}.
 }
 \usage{
 mei
@@ -32,25 +32,25 @@ it's available. The source dataset (JRA-55) for the MEI V2 has been
 discontinued by the Japanese Meteorological Agency as of January 2024. We
 have switched to using the JRA3Q reanalysis which yields very similar
 results." The whole time series looks to be affected, but we have not looked
-into whether it has reverted to the original `mei` that was in earlier
-version of `pacea`, because of the following note. Andy can dig into this if
+into whether it has reverted to the original \code{mei} that was in earlier
+version of \code{pacea}, because of the following note. Andy can dig into this if
 you need.
 
 NOTE (13th Dec 2023): on NOAA's PSL website given below it was noted that there was an
 issue with one of the data sources for calculating the MEI and the values
-were therefore recalculated on 13th Dec 2023. These are now used in `pacea`, and means
-that `mei` in versions of `pacea` installed before 21st Dec 2023 will have
+were therefore recalculated on 13th Dec 2023. These are now used in \code{pacea}, and means
+that \code{mei} in versions of \code{pacea} installed before 21st Dec 2023 will have
 the old incorrect values. The whole time series looks to have been affected.
 
 The bi-monthly Multivariate ENSO index (MEI.v2) is the time series of the
 leading combined Empirical Orthogonal Function (EOF) of five different
 variables:
 \itemize{
-  \item{sea level pressure (SLP)}
-  \item{sea surface temperature (SST)}
-  \item{zonal components of the surface wind}
-  \item{meridional components of the surface wind}
-  \item{outgoing longwave radiation (OLR)}
+\item{sea level pressure (SLP)}
+\item{sea surface temperature (SST)}
+\item{zonal components of the surface wind}
+\item{meridional components of the surface wind}
+\item{outgoing longwave radiation (OLR)}
 }
 These are calculated  over the tropical Pacific basin (30 deg S to 30 deg N and
 100 deg E to 70 deg W). The EOFs are calculated for 12 overlapping
@@ -79,8 +79,7 @@ references(and is
 where the values come from). The data on that website are updated on the
 10th of each month (if source data are available). Warm and cold thresholds
 are considered as being +0.5 (warm) and -0.5 (cold) away from 0. Values are
-calculated for overlapping two-month `seasons', with, for example, February
-2023 in `pacea` representing the January-February calculation.
+calculated for overlapping two-month \verb{seasons', with, for example, February 2023 in }pacea` representing the January-February calculation.
 
 Associated code adapted from code generously shared by Chris Rooper.
 }

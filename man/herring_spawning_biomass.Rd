@@ -8,23 +8,23 @@
 estimated by the most recent stock assessment for each of the five major
 stock assessment regions.}
 \format{
-A tibble also of class `pacea_herring_biomass` with columns:
+A tibble also of class \code{pacea_herring_biomass} with columns:
 \describe{
-  \item{year:}{year of the estimate of spawning stock biomass (males and
-  females)}
-  \item{low:}{low end (5th percentile) of the 90\% credible interval for
-  biomass, units as for `median`}
-  \item{median:}{median estimate of spawning biomass, in thousands of tonnes
-  of spawning biomass}
-  \item{high:}{high end (95th percentile) of the 90\% credible interval for
-  biomass, units as for `median`}
- }
+\item{year:}{year of the estimate of spawning stock biomass (males and
+females)}
+\item{low:}{low end (5th percentile) of the 90\\% credible interval for
+biomass, units as for \code{median}}
+\item{median:}{median estimate of spawning biomass, in thousands of tonnes
+of spawning biomass}
+\item{high:}{high end (95th percentile) of the 90\\% credible interval for
+biomass, units as for \code{median}}
+}
 
 An object of class \code{pacea_biomass_herring} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 365 rows and 5 columns.
 }
 \source{
-Generated from Andy running `data-raw/herring/herring.R`, which uses
-  model results provided by Matthew Grinnell.
+Generated from Andy running \code{data-raw/herring/herring.R}, which uses
+model results provided by Matthew Grinnell.
 }
 \usage{
 herring_spawning_biomass
@@ -38,8 +38,8 @@ the assessment (DFO, 2024) spawning biomass is calculated for 2024, but that
 is a projection assuming zero catch, and so is excluded here.
 }
 \details{
-See `?herring_recruitment` for further details and references, and explanations
-of `herring_spawning_biomass_2023`.
+See \code{?herring_recruitment} for further details and references, and explanations
+of \code{herring_spawning_biomass_2023}.
 }
 \examples{
 \dontrun{

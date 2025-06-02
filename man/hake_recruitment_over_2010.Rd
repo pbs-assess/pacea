@@ -5,26 +5,29 @@
 \alias{hake_recruitment_over_2010}
 \alias{hake_recruitment_over_2010_2023}
 \alias{hake_recruitment_over_2010_2024}
+\alias{hake_recruitment_over_2010_2025}
 \title{Pacific Hake annual age-0 recruitments divided by recruitments in 2010, as
 estimated by the most recent stock assessment.}
 \format{
-A tibble also of class `pacea_recruitment` with columns:
+A tibble also of class \code{pacea_recruitment} with columns:
 \describe{
-  \item{year:}{year of the estimate of scaled recruitment}
-  \item{low:}{low end (2.5th percentile) of the 95\% credible interval for
-  the scaled recruitment, unitless}
-  \item{median:}{median estimate of scaled recruitment, unitless}
-  \item{high:}{high end (97.5th percentile) of the 95\% credible interval for
-  the scaled recruitment, unitless}
- }
+\item{year:}{year of the estimate of scaled recruitment}
+\item{low:}{low end (2.5th percentile) of the 95\\% credible interval for
+the scaled recruitment, unitless}
+\item{median:}{median estimate of scaled recruitment, unitless}
+\item{high:}{high end (97.5th percentile) of the 95\\% credible interval for
+the scaled recruitment, unitless}
+}
 
 An object of class \code{pacea_recruitment} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 58 rows and 4 columns.
 
 An object of class \code{pacea_recruitment} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 59 rows and 4 columns.
+
+An object of class \code{pacea_recruitment} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 60 rows and 4 columns.
 }
 \source{
 Generated from Andy running (in the hake repository)
-  `pacea_save()` and then here `data-raw/groundfish/hake.R`.
+\code{pacea_save()} and then here \code{data-raw/groundfish/hake.R}.
 }
 \usage{
 hake_recruitment_over_2010
@@ -32,12 +35,14 @@ hake_recruitment_over_2010
 hake_recruitment_over_2010_2023
 
 hake_recruitment_over_2010_2024
+
+hake_recruitment_over_2010_2025
 }
 \description{
 This is calculated to improve understanding when comparing recruitments
 between years. A survey of participants in the stock assessment process
 found that all but one respondent correctly inferred from the standard plot
-`plot(hake_recruitment)` that the 2014 recruitment has zero probability of
+\code{plot(hake_recruitment)} that the 2014 recruitment has zero probability of
 being as large as the (well-known large) 2010 recruitment.
 }
 \details{
@@ -49,8 +54,8 @@ For more details see Appendix H of the 2022 assessment at
 https://media.fisheries.noaa.gov/2022-02/2022-hake-assessment-post-srg.pdf.
 Figure 31 of the 2023 assessment shows the 2023 results.
 
-See `?hake_recruitment` for further details and reference regarding hake,
-and explanations of `hake_recruitment_over_2010_2023` etc.
+See \code{?hake_recruitment} for further details and reference regarding hake,
+and explanations of \code{hake_recruitment_over_2010_2023} etc.
 }
 \examples{
 \dontrun{

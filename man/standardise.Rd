@@ -10,10 +10,10 @@ standardise(x, range = 1:length(x))
 \item{x}{numeric}
 
 \item{range}{indices for which the mean and standard deviation should be
-calculated over (default is to use all of `x`)}
+calculated over (default is to use all of \code{x})}
 }
 \value{
-numeric with standardised value corresponding to each value of `x`
+numeric with standardised value corresponding to each value of \code{x}
 }
 \description{
 Standardise a vector of values to a mean of 0 and standard deviation of 1

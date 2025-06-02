@@ -17,8 +17,8 @@ create_herring_object(assess_yr, region, herring_dir = NULL)
 List of recruitment and biomass objects, to then be saved in package.
 }
 \description{
-Used in `data-raw/herring/herring.R` to create data objects; not really
-needed by `pacea` users.
+Used in \code{data-raw/herring/herring.R} to create data objects; not really
+needed by \code{pacea} users.
 }
 \author{
 Andrew Edwards

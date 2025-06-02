@@ -12,7 +12,7 @@ An object of class \code{data.frame} with 22 rows and 1 columns.
 }
 \source{
 Pena et al., 2019.
-Generated from running `data-raw/data-key/data-list.R`
+Generated from running \code{data-raw/data-key/data-list.R}
 }
 \usage{
 bccm_data
@@ -20,9 +20,9 @@ bccm_data
 bccm_data_full
 }
 \description{
-List of available BCCM data layers for download. `_full` means layers over
+List of available BCCM data layers for download. \verb{_full} means layers over
 the full original domain (extending down into US waters) and on a 2 km x 2 km
-grid everywhere. Without `_full` means the layers restricted to Canada's
+grid everywhere. Without \verb{_full} means the layers restricted to Canada's
 Exclusive Economic Zone, on a 2 km x 2 km grid inshore, and 6 km x 6km
 offshore. See the two vignettes (rendered on the GitHub site) for details.
 }

@@ -2,22 +2,22 @@
 % Please edit documentation in R/a.R
 \name{a}
 \alias{a}
-\title{Shorthand for `as.data.frame()` for printing all of a tibble.}
+\title{Shorthand for \code{as.data.frame()} for printing all of a tibble.}
 \usage{
 a(tib)
 }
 \arguments{
-\item{tib}{`tibble` to be printed to console, R Markdown file, etc.}
+\item{tib}{\code{tibble} to be printed to console, R Markdown file, etc.}
 }
 \value{
-print `a` as a data.frame, so show all the rows
+print \code{a} as a data.frame, so show all the rows
 }
 \description{
-Shorthand for `as.data.frame()` for printing all of a tibble.
+Shorthand for \code{as.data.frame()} for printing all of a tibble.
 }
 \details{
-Often want to print all of a (small) tibble, but `as.data.frame()`
-  is cumbersome.
+Often want to print all of a (small) tibble, but \code{as.data.frame()}
+is cumbersome.
 }
 \examples{
 \dontrun{

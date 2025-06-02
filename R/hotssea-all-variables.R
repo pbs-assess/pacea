@@ -10,7 +10,7 @@
 #'
 #' You can or set `variables` to "temperature" or
 #' "salinity" if you only want one of those types of model output. Or you can just download the individual files you definitely need, see
-#' [?hotssea_bottom_temperature_max]. Remember the downloading is a one-time
+#' [hotssea_bottom_temperature_max()]. Remember the downloading is a one-time
 #' exercise (hence it's desirable to get all files at once) and then
 #' you will have the files locally for all eternity (ish).
 #'
@@ -27,7 +27,7 @@
 #'
 #' Type `hotssea_data` to view the full list of available variables. See help
 #' files for specific variables for more details on HOTSSea model results, e.g.
-#' [?hotssea_bottom_temperature_max].
+#' [hotssea_bottom_temperature_max()].
 #'
 #' Also see the hotssea vignette.
 #'

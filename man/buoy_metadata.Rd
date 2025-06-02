@@ -7,28 +7,28 @@
 \format{
 A tibble with columns:
 \describe{
-  \item{wmo_id:}{World Meteorological Organisation weather station id}
-  \item{name:}{name describing the location}
-  \item{type:}{type of buoy}
-  \item{latitude:}{latitude}
-  \item{longitude:}{longitude}
-  \item{water_depth_m:}{depth of water (m) in which the buoy resides}
-  \item{col_key:}{a colour key for plotting each buoy location or data}
-  \item{stn_id:}{station id, as `C` followed by `wmo_id`, which is how
-  Environment and Climate Change Canada refers to them, and to be consistent
-  with Andrea's existing plots}
-  \item{name_key:}{`station_id` followed by `name` for labelling plots if desired}
- }
+\item{wmo_id:}{World Meteorological Organisation weather station id}
+\item{name:}{name describing the location}
+\item{type:}{type of buoy}
+\item{latitude:}{latitude}
+\item{longitude:}{longitude}
+\item{water_depth_m:}{depth of water (m) in which the buoy resides}
+\item{col_key:}{a colour key for plotting each buoy location or data}
+\item{stn_id:}{station id, as \code{C} followed by \code{wmo_id}, which is how
+Environment and Climate Change Canada refers to them, and to be consistent
+with Andrea's existing plots}
+\item{name_key:}{\code{station_id} followed by \code{name} for labelling plots if desired}
+}
 }
 \source{
-Generated from running `data-raw/buoys/buoy-metadata.R`.
+Generated from running \code{data-raw/buoys/buoy-metadata.R}.
 }
 \usage{
 buoy_metadata
 }
 \description{
 Details regarding the buoys that are used for the data in
-`buoy_sst`. Adapted from Andrea Hilborn's code at
+\code{buoy_sst}. Adapted from Andrea Hilborn's code at
 https://github.com/IOS-OSD-DPG/Pacific_SST_Monitoring/blob/main/scripts/POI_latlon.R
 }
 \examples{

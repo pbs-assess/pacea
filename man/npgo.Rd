@@ -5,21 +5,21 @@
 \alias{npgo}
 \title{NPGO -- North Pacific Gyre Oscillation}
 \format{
-A tibble also of class `pacea_index` with columns:
+A tibble also of class \code{pacea_index} with columns:
 \describe{
-  \item{year:}{year of value}
-  \item{month:}{month (1 to 12) of value}
-  \item{anomaly:}{calculated as the second dominant mode of sea-surface height
-  anomaly over the Northeast Pacific (180 deg W to 100 deg W, 25 deg N to 62
-  deg N), and then maybe converted to standard deviation units as in Figure
-  1 of Di Lorenzo et al. (2008), though the numbers do not exactly match
-  that figure (and come from Di Lorenzo's website, which
-  notes that values after 2004 were updated. This might be why
-  numbers do not seem to quite agree.}
+\item{year:}{year of value}
+\item{month:}{month (1 to 12) of value}
+\item{anomaly:}{calculated as the second dominant mode of sea-surface height
+anomaly over the Northeast Pacific (180 deg W to 100 deg W, 25 deg N to 62
+deg N), and then maybe converted to standard deviation units as in Figure
+1 of Di Lorenzo et al. (2008), though the numbers do not exactly match
+that figure (and come from Di Lorenzo's website, which
+notes that values after 2004 were updated. This might be why
+numbers do not seem to quite agree.}
 }
 }
 \source{
-Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
+Generated from running \code{data-raw/coastwide-indices/coastwide-indices.R}.
 }
 \usage{
 npgo
