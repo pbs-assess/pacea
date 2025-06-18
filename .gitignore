@@ -5,6 +5,7 @@ lib/
 *.docx
 *.nc
 *.RData
+*.zip
 
 .Rproj.user
 
@@ -120,6 +121,8 @@ data/older-data/test_grid_20.rda
 /data-raw/depth/GEBCO_Grid_documentation.pdf
 /data-raw/depth/GEBCO_Grid_terms_of_use.pdf
 /data-raw/depth/gebco_2023_n58.0_s42.0_w-146.0_e-117.0.nc
+
+data-raw/fraser-river/*.csv
 
 vignettes/bccm-full-figs-cache/
 vignettes/bccm_full_cache/
