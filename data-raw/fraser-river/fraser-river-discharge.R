@@ -140,26 +140,28 @@ fraser_discharge_mean <- select(fraser_discharge,
 class(fraser_discharge_mean) <- c("pacea_index",
                                   class(fraser_discharge_mean))
 
-attr(fraser_discharge_mean, "axis_name") <- "Fraser River discharge - daily mean"
+attr(fraser_discharge_mean, "axis_name") <-
+  "Fraser River discharge - mean of daily values"
 
 # plot.pacea_index(fraser_discharge_mean, value = "value")
 
 usethis::use_data(fraser_discharge_mean,
                   overwrite = TRUE)
 
-# Max of daily values over the month
-fraser_discharge_max <- select(fraser_discharge,
+# Max of daily values over the month, call it peak
+fraser_discharge_peak <- select(fraser_discharge,
                                -mean_for_month) %>%
   rename(value = max_for_month)
 
-class(fraser_discharge_max) <- c("pacea_index",
-                                  class(fraser_discharge_max))
+class(fraser_discharge_peak) <- c("pacea_index",
+                                  class(fraser_discharge_peak))
 
-attr(fraser_discharge_max, "axis_name") <- "Fraser River discharge - daily max"
+attr(fraser_discharge_peak, "axis_name") <-
+  "Fraser River discharge - peak of daily values"
 
-# plot.pacea_index(fraser_discharge_max, value = "value")
+# plot.pacea_index(fraser_discharge_peak, value = "value")
 
-usethis::use_data(fraser_discharge_max,
+usethis::use_data(fraser_discharge_peak,
                   overwrite = TRUE)
 
 
