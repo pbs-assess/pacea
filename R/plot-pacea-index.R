@@ -5,7 +5,9 @@
 ##' 'does this rare event coincide with El Niño?'). See examples and vignette.
 ##'
 ##' @param obj a `pacea_index` object, which is a time series.
-##' @param value which column of `obj` to plot
+##' @param value which column of `obj` to plot (for `fraser_river_mean` and
+##'   `fraser_river_peak` objects this gets automatically switched to the
+##'   "value" column, as there is no "anomaly" column).
 ##' @param xlab x-axis label
 ##' @param ylab y-axis label, the default is an attribute of the `pacea_index`
 ##'   object.
@@ -22,7 +24,8 @@
 ##'   blue below 0}
 ##'   \item{"goa":}{TODO (not implemented yet) for Gulf of Alaska Ecosystem
 ##'   Report style plots}
-##'   \item{"plain":}{just a plain line}
+##'   \item{"plain":}{just a plain line, which automaticallybecomes the default
+##'   for `fraser_river_mean` and `fraser_river_peak`}
 ##' }
 ##' @param y_tick_by increment for y-axis ticks; gets
 ##'   overwritten in `add_tickmarks()` if this yields more than
@@ -68,6 +71,10 @@
 ##' plot(npi_monthly,
 ##'      value = "value")
 ##'
+##' # For these, `value` gets automatically set to the "value" column and style to "plain".
+##' plot(fraser_discharge_max)
+##' plot(fraser_discharge_peak)
+##'
 ##' # The overlaying of events idea was inspired from a lunchtime conversation regarding a
 ##' # rare sighting of a Bluntnose Sixgill Shark by divers in Port Alberni, that garnered
 ##' # [media attention](https://www.timescolonist.com/local-news/divers-encounter-deep-water-shark-in-alberni-inlet-7102038).
@@ -110,6 +117,21 @@ plot.pacea_index <- function(obj,
                              y_axis_reverse = FALSE,
                              ...
                              ){
+  # No anomaly column for fraser_river_mean or fraser_river_peak, so change
+  #  default to ploting the 'value' column
+  if(attr(obj, "axis_name") %in%
+     c(expression(paste(plain(Fraser) *
+    " " * plain(River) * " " * plain(discharge) * " " *
+    plain(mean) * " " * plain(of) * " " * plain(daily) * " " * plain(values) *
+    ", " * m * s^-3)),
+    expression(paste(plain(Fraser) *
+    " " * plain(River) * " " * plain(discharge) * " " *
+    plain(peak) * " " * plain(of) * " " * plain(daily) * " " * plain(values) *
+    ", " * m * s^-3)))){
+    value = "value"
+    style = "plain"
+  }
+
   stopifnot("value must be a column of the pacea_index object" =
               value %in% names(obj))
 

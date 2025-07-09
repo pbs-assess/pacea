@@ -1,8 +1,9 @@
 # From Chris Rooper in Issue #57, then adapting below. Just step through line by
 # line like for indices.
-# Fraser river discharge at Hope monthly values
+# Fraser river discharge at Hope monthly values.
 # Didn't fully re-run this all from scratch after reorganising (9/7/25), but it
-# adds on to the existing saved objects now.
+# adds on to the existing saved objects now. The 2024 onwards data gets updated
+# every day, but we check to see if we have a full month added on.
 
 library(dplyr)
 library(lubridate)
@@ -139,8 +140,15 @@ if(exists("monthly_full")){     # Then it's been created again in big loop above
   class(fraser_discharge_mean) <- c("pacea_index",
                                     class(fraser_discharge_mean))
 
-  attr(fraser_discharge_mean, "axis_name") <-
-    "Fraser River discharge - mean of daily values"
+  #attr(fraser_discharge_mean, "axis_name") <-
+  #  "Fraser River discharge - mean of daily values"
+
+  # If change this then update plot.pacea_index():
+  # Copying from ALPI:
+  attr(fraser_discharge_mean, "axis_name") <- expression(paste(plain(Fraser) *
+    " " * plain(River) * " " * plain(discharge) * " " *
+    plain(mean) * " " * plain(of) * " " * plain(daily) * " " * plain(values) *
+    ", " * m * s^-3))
 
   # plot.pacea_index(fraser_discharge_mean, value = "value")
 
@@ -154,9 +162,11 @@ if(exists("monthly_full")){     # Then it's been created again in big loop above
   class(fraser_discharge_peak) <- c("pacea_index",
                                     class(fraser_discharge_peak))
 
-  attr(fraser_discharge_peak, "axis_name") <-
-    "Fraser River discharge - peak of daily values"
-
+  attr(fraser_discharge_peak, "axis_name") <- expression(paste(plain(Fraser) *
+    " " * plain(River) * " " * plain(discharge) * " " *
+    plain(peak) * " " * plain(of) * " " * plain(daily) * " " * plain(values) *
+    ", " * m * s^-3))
+                           # if change then update plot.pacea_index()
   # plot.pacea_index(fraser_discharge_peak, value = "value")
 
 } else {
