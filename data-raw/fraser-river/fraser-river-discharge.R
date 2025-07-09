@@ -1,43 +1,89 @@
 # From Chris Rooper in Issue #57, then adapting below. Just step through line by
 # line like for indices.
+# Fraser river discharge at Hope monthly values
+# Didn't fully re-run this all from scratch after reorganising (9/7/25), but it
+# adds on to the existing saved objects now.
 
 library(dplyr)
+library(lubridate)
+load_all()
 
-#Fraser river discharge at Hope monthly values
-# download.file from "https://wateroffice.ec.gc.ca/
-if(FALSE){         # not running
+# Adapting extraction up to end of 2023 from Chris's code. No need to keep
+# re-running it.
+
+# This goes up to end of 2023.
+if(FALSE){              # Change if want to rerun, not sure when would want to
   url1 <-
     paste0("https://wateroffice.ec.gc.ca/services/daily_data/csv/inline?stations[]=08MF005&parameters[]=flow&start_date=1912-01-01&end_date=",as.Date(Sys.time()))
 
   download.file(url = url1,
-                destfile = "fraserdischarge.csv")
-  FraserDischarge <- read.csv("fraserdischarge.csv",
-                              header=TRUE,
-                              skip=0)
-  FraserDischarge$Month <- format(as.Date(FraserDischarge$Date),
-                                  "%m")
-  FraserDischarge$Year <- format(as.Date(FraserDischarge$Date),
-                                 "%Y")
-  FraserDischarge <- aggregate(Value.Valeur~Month+Year,
-                               data=FraserDischarge,
-                               FUN="mean")
-  FraserDischarge <- data.frame(Year=FraserDischarge$Year,
-                                Month=FraserDischarge$Month,
-                                Indicator="FraserDischarge",
-                                Value=FraserDischarge$Value.Valeur)
+                destfile = "fraser_discharge.csv")
+  raw_full <- read.csv("fraser_discharge.csv",
+                       header=TRUE,
+                       skip=0) %>%
+    as_tibble() %>%
+    mutate_at(vars(X.ID,
+                   Parameter.Paramètre,
+                   Symbol.Symbole),
+              factor)
+  raw_full
+  summary(raw_full)      # So can remove ID and Parameter (doing below). And it
+  # starts on 1st of a month.
+
+  # Think symbol might be to do with the collection type, website doesn't seem to say
+  with_symbol <- filter(raw_full,
+                        !(Symbol.Symbole == ""))
+  with_symbol
+  with_symbol %>% tail()
+
+  # There are some of these near the end, so not sure. Just stick with them all
+  # for now.
+
+  daily_full <- mutate(raw_full,
+                       year = lubridate::year(lubridate::ymd(Date)),
+                       month = lubridate::month(lubridate::ymd(Date))) %>%
+    rename(discharge = Value.Valeur) %>%
+    select(-c(X.ID,
+              Parameter.Paramètre,
+              Symbol.Symbole))
+
+  daily_full %>% tail()
+
+  monthly_full <- summarise(group_by(daily_full,
+                                     year,
+                                     month),
+                            year = unique(year),
+                            month = unique(month),
+                            mean_for_month = mean(discharge),   # mean daily value
+                            max_for_month = max(discharge),     # max daily value
+                            num_days = n()) %>%
+    ungroup()
+
+  min(monthly_full$num_days)  # is 28, so no missing days.
+
+  monthly_full <- select(monthly_full,
+                         -"num_days")
 }
 
-# Adapting the above, which only went up to 2023. Think 2024 might still be
-# provisional, can manually get 2024 from:
+# Manually get 2024 onwards from the following (think automatically getting it
+# might still have been provisional at some point):
 
 # https://wateroffice.ec.gc.ca/download/report_e.html?dt=6&df=csv&ext=zip
+# 9/7/25 - the above link (after I messed around with the one below and changed
+# dates today) gives daily mean values to today, which is what we want. So try
+# that again going forward, maybe it's just all of them up to today.
 
-# Not sure how that knows I want station 08MF005. From
+# Not sure how that knows I want station 08MF005. FRASER RIVER AT HOPE.
+
+# From
 # https://wateroffice.ec.gc.ca/report/real_time_e.html?stn=08MF005&mode=Table&startDate=2024-01-01&endDate=2024-12-31&prm1=46&y1Max=&y1Min=&prm2=47&y2Max=&y2Min=
 # and then download.
 
-# Saved as .zip, manually unzip to here, and then:
-raw_2024 <- read.csv("08MF005_QRD_20250618T2051.csv",
+# Saved the first one as .zip, manually unzip to here, and then (updating on
+# 2025-07-09, can tell as date is in the filename:
+
+# This is 2024 onwards, could change 2024 to 2024_onwards
+raw_2024 <- read.csv("08MF005_QRD_20250709T2035.csv",
                      header = TRUE,
                      skip = 9) %>%
   as_tibble()
@@ -53,59 +99,12 @@ daily_2024 <- mutate(raw_2024,
 daily_2024
 daily_2024 %>% tail()
 
+final_day <-
+  lubridate::ceiling_date(lubridate::ymd_hms(daily_2024$Date..PST.[nrow(daily_2024)]))
+final_day           # should have today or yesterday at the end (not sure
+                    # how they calculated the mean)
+
 monthly_2024 <- summarise(group_by(daily_2024,
-                                   month),
-                          year = unique(year),
-                          month = unique(month),
-                          mean_for_month = mean(discharge),   # mean daily value
-                          max_for_month = max(discharge),     # max daily value
-                          num_days = n()) %>%
-  ungroup()        # not actually need as only grouping by one thing
-monthly_2024   # Can see min is 29, so no missing days
-
-monthly_2024 <- select(monthly_2024,
-                       -"num_days") %>%
-  relocate(year,
-           month)
-monthly_2024
-
-url1 <-
-  paste0("https://wateroffice.ec.gc.ca/services/daily_data/csv/inline?stations[]=08MF005&parameters[]=flow&start_date=1912-01-01&end_date=",as.Date(Sys.time()))
-
-download.file(url = url1,
-              destfile = "fraser_discharge.csv")
-raw_full <- read.csv("fraser_discharge.csv",
-                            header=TRUE,
-                     skip=0) %>%
-  as_tibble() %>%
-  mutate_at(vars(X.ID,
-                 Parameter.Paramètre,
-                 Symbol.Symbole),
-            factor)
-raw_full
-summary(raw_full)      # So can remove ID and Parameter (doing below). And it
-                       # starts on 1st of a month.
-
-# Think symbol might be to do with the collection type, website doesn't seem to say
-with_symbol <- filter(raw_full,
-                      !(Symbol.Symbole == ""))
-with_symbol
-with_symbol %>% tail()
-
-# There are some of these near the end, so not sure. Just stick with them all
-# for now.
-
-daily_full <- mutate(raw_full,
-                     year = lubridate::year(lubridate::ymd(Date)),
-                     month = lubridate::month(lubridate::ymd(Date))) %>%
-  rename(discharge = Value.Valeur) %>%
-  select(-c(X.ID,
-            Parameter.Paramètre,
-            Symbol.Symbole))
-
-daily_full %>% tail()
-
-monthly_full <- summarise(group_by(daily_full,
                                    year,
                                    month),
                           year = unique(year),
@@ -114,58 +113,96 @@ monthly_full <- summarise(group_by(daily_full,
                           max_for_month = max(discharge),     # max daily value
                           num_days = n()) %>%
   ungroup()
+monthly_2024   # Can see no missing days, expect (usually) final month, so
+               # remove that one if final dates isn't end of a month
 
-min(monthly_full$num_days)  # is 28, so no missing days.
+if(final_day != ceiling_date(final_day, unit = "month") - days(1)){
+  monthly_2024 <- monthly_2024[-nrow(monthly_2024), ]
+}
 
-monthly_full <- select(monthly_full,
+monthly_2024 <- select(monthly_2024,
                        -"num_days")
-
-monthly_full
-
 monthly_2024
 
-expect_equal(names(monthly_full),
-             names(monthly_2024))
+# Now combine new values to existing ones for mean
+if(exists("monthly_full")){     # Then it's been created again in big loop above
+  fraser_discharge <- rbind(monthly_full,
+                            monthly_2024)
 
-fraser_discharge <- rbind(monthly_full,
-                          monthly_2024)
+  # Mean of daily values over the month
+  fraser_discharge_mean <- select(fraser_discharge,
+                                  -max_for_month) %>%
+    rename(value = mean_for_month)    # can then use indices plotting, need
+  #  attribute for axis label for each time
+  #  series, so doing mean and max separately.
 
-# Mean of daily values over the month
-fraser_discharge_mean <- select(fraser_discharge,
-                                -max_for_month) %>%
-  rename(value = mean_for_month)    # can then use indices plotting, need
-                                    #  attribute for axis label for each time
-                                    #  series, so doing mean and max separately.
+  class(fraser_discharge_mean) <- c("pacea_index",
+                                    class(fraser_discharge_mean))
 
-class(fraser_discharge_mean) <- c("pacea_index",
-                                  class(fraser_discharge_mean))
+  attr(fraser_discharge_mean, "axis_name") <-
+    "Fraser River discharge - mean of daily values"
 
-attr(fraser_discharge_mean, "axis_name") <-
-  "Fraser River discharge - mean of daily values"
+  # plot.pacea_index(fraser_discharge_mean, value = "value")
 
-# plot.pacea_index(fraser_discharge_mean, value = "value")
+  # Max of daily values over the month, call it peak
+  fraser_discharge_peak <- select(fraser_discharge,
+                                  -mean_for_month) %>%
+    rename(value = max_for_month)    # can then use indices plotting, need
+  #  attribute for axis label for each time
+  #  series, so doing peak and max separately.
+
+  class(fraser_discharge_peak) <- c("pacea_index",
+                                    class(fraser_discharge_peak))
+
+  attr(fraser_discharge_peak, "axis_name") <-
+    "Fraser River discharge - peak of daily values"
+
+  # plot.pacea_index(fraser_discharge_peak, value = "value")
+
+} else {
+
+  # If monthly_full does not exist, just append new values to end of existing data
+
+  # Mean:
+  monthly_2024_mean <- select(monthly_2024,
+                              -max_for_month) %>%
+    rename(value = mean_for_month)
+
+  fraser_discharge_mean_new <- rbind(fraser_discharge_mean,
+                                     monthly_2024_mean) %>%   # can have duplicates
+    dplyr::distinct()                                         # remove duplicates
+
+  fraser_discharge_mean <- fraser_discharge_mean_new
+
+  # And for peak:
+  monthly_2024_peak <- select(monthly_2024,
+                              -mean_for_month) %>%
+    rename(value = max_for_month)
+
+  fraser_discharge_peak_new <- rbind(fraser_discharge_peak,
+                                     monthly_2024_peak) %>%   # can have duplicates
+    dplyr::distinct()                                         # remove duplicates
+
+  fraser_discharge_peak <- fraser_discharge_peak_new
+}
+
+fraser_discharge_mean
+
+fraser_discharge_mean %>% a() %>% tail(35)
+
+summary(fraser_discharge_mean)
 
 usethis::use_data(fraser_discharge_mean,
                   overwrite = TRUE)
 
-# Max of daily values over the month, call it peak
-fraser_discharge_peak <- select(fraser_discharge,
-                               -mean_for_month) %>%
-  rename(value = max_for_month)
+fraser_discharge_peak
 
-class(fraser_discharge_peak) <- c("pacea_index",
-                                  class(fraser_discharge_peak))
+fraser_discharge_peak %>% tail()
 
-attr(fraser_discharge_peak, "axis_name") <-
-  "Fraser River discharge - peak of daily values"
-
-# plot.pacea_index(fraser_discharge_peak, value = "value")
+summary(fraser_discharge_peak)
 
 usethis::use_data(fraser_discharge_peak,
                   overwrite = TRUE)
-
-
-
 
 stop("rest is for the help files")
 
