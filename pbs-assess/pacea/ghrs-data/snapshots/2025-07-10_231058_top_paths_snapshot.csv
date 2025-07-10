@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,48,19
+/pbs-assess/pacea/tree/main/R,11,4
+/pbs-assess/pacea/blob/main/R/get-zenodo-data.R,5,3
+/pbs-assess/pacea/issues,4,3
+/pbs-assess/pacea/issues/73,4,3
+/pbs-assess/pacea/issues/76,4,1
+/pbs-assess/pacea/tree/dev-andy,3,2
+/pbs-assess/pacea/blame/main/R/get-zenodo-data.R,2,1
+/pbs-assess/pacea/blob/25eca25c4dedfd089adecf73ed2bab189b41e8d5/NAMESPACE,2,1
+/pbs-assess/pacea/blob/25eca25c4dedfd089adecf73ed2bab189b41e8d5/R/plot-pacea-biomass.R,2,1
