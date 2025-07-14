@@ -176,15 +176,21 @@ test_that("zooplankton plotting works with various options", {
   expect_invisible(plot(zooplankton_sog))
 })
 
-# generic object with no attribute. MWE from Emily O'Grady #87..
+# generic object with no axis_name attribute. MWE from Emily O'Grady
+#  #87. Thought might have to do for
+#  each type of class to make sure they're all covered (i.e. fix each plotting
+#  function, but it's only in plot.pacea_biomass where we explicitly do an if
+# statement on an attribute.
 test_that("no error given if axis_name attribute missing", {
   # Create a data frame without axis_name attribute
   test_data <- data.frame(
     year = 2000:2010,
     median = rnorm(11)
   )
-  class(test_data) <- c("pacea_biomass", "data.frame")
 
-  # This gives error (before fixing the problem)
+  class(test_data) <- c("pacea_biomass", "data.frame")
+  # This gave error (before fixing the problem)
   expect_invisible(plot(test_data))
+
+
 })

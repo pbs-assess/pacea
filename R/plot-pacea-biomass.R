@@ -110,9 +110,11 @@ plot.pacea_biomass <- function(obj,
                            # to not join
   }
 
-  if(attr(obj_lub, "axis_name") == "Pacific Hake spawning biomass (million t)"){
-    if(y_tick_by == 1){
-      y_tick_by <- 0.25
+  if(!is.null(attr(obj_lub, "axis_name"))){
+    if(attr(obj_lub, "axis_name") == "Pacific Hake spawning biomass (million t)"){
+      if(y_tick_by == 1){
+        y_tick_by <- 0.25
+      }
     }
   }
 
