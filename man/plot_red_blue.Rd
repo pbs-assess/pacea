@@ -11,7 +11,9 @@ plot_red_blue(obj_lub, value, xlab, ylab, type, ...)
 \item{obj_lub}{obj a \code{pacea_index} object, which is a time series, with a date
 column that is the lubridate \code{date} class.}
 
-\item{value}{which column of \code{obj} to plot}
+\item{value}{which column of \code{obj} to plot (for \code{fraser_river_mean} and
+\code{fraser_river_peak} objects this gets automatically switched to the
+"value" column, as there is no "anomaly" column).}
 
 \item{xlab}{x-axis label}
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/lubridate-pacea-series.R
 \name{lubridate_pacea_series}
 \alias{lubridate_pacea_series}
-\title{Convert an object that represents a time seris (\code{pacea_index} etc.) to have lubridate
+\title{Convert an object that represents a time series (\code{pacea_index} etc.) to have lubridate
 year/month column, and smooth over a year if required}
 \usage{
 lubridate_pacea_series(obj, smooth_over_year = FALSE)
@@ -24,7 +24,7 @@ why we saved the original objects just as year and/or month, not lubridate
 dates.
 }
 \description{
-Called from \code{plot.pacea_index()} and others to give a lubrdiate column for
+Called from \code{plot.pacea_index()} and others to give a lubridate column for
 easier plotting.
 }
 \examples{

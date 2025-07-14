@@ -140,18 +140,6 @@ if(exists("monthly_full")){     # Then it's been created again in big loop above
   class(fraser_discharge_mean) <- c("pacea_index",
                                     class(fraser_discharge_mean))
 
-  #attr(fraser_discharge_mean, "axis_name") <-
-  #  "Fraser River discharge - mean of daily values"
-
-  # If change this then update plot.pacea_index():
-  # Copying from ALPI:
-  attr(fraser_discharge_mean, "axis_name") <- expression(paste(plain(Fraser) *
-    " " * plain(River) * " " * plain(discharge) * " " *
-    plain(mean) * " " * plain(of) * " " * plain(daily) * " " * plain(values) *
-    ", " * m * s^-3))
-
-  # plot.pacea_index(fraser_discharge_mean, value = "value")
-
   # Max of daily values over the month, call it peak
   fraser_discharge_peak <- select(fraser_discharge,
                                   -mean_for_month) %>%
@@ -161,13 +149,6 @@ if(exists("monthly_full")){     # Then it's been created again in big loop above
 
   class(fraser_discharge_peak) <- c("pacea_index",
                                     class(fraser_discharge_peak))
-
-  attr(fraser_discharge_peak, "axis_name") <- expression(paste(plain(Fraser) *
-    " " * plain(River) * " " * plain(discharge) * " " *
-    plain(peak) * " " * plain(of) * " " * plain(daily) * " " * plain(values) *
-    ", " * m * s^-3))
-                           # if change then update plot.pacea_index()
-  # plot.pacea_index(fraser_discharge_peak, value = "value")
 
 } else {
 
@@ -196,14 +177,31 @@ if(exists("monthly_full")){     # Then it's been created again in big loop above
   fraser_discharge_peak <- fraser_discharge_peak_new
 }
 
+# If change this then update plot.pacea_index():
+# Copying from ALPI:
+attr(fraser_discharge_mean, "axis_name") <- expression(paste(plain(Fraser) *
+    " " * plain(River) * " " * plain(discharge) * " " *
+    plain(mean) * " " * plain(of) * " " * plain(daily) * " " * plain(values) *
+    ", " * m^3 * s^-1))
+
 fraser_discharge_mean
 
 fraser_discharge_mean %>% a() %>% tail(35)
 
 summary(fraser_discharge_mean)
 
+plot(fraser_discharge_mean)
+
 usethis::use_data(fraser_discharge_mean,
                   overwrite = TRUE)
+
+# If change then update plot.pacea_index()
+attr(fraser_discharge_peak, "axis_name") <- expression(paste(plain(Fraser) *
+    " " * plain(River) * " " * plain(discharge) * " " *
+    plain(peak) * " " * plain(of) * " " * plain(daily) * " " * plain(values) *
+    ", " * m^3 * s^-1))
+
+plot.pacea_index(fraser_discharge_peak, value = "value")
 
 fraser_discharge_peak
 
@@ -211,42 +209,15 @@ fraser_discharge_peak %>% tail()
 
 summary(fraser_discharge_peak)
 
+plot(fraser_discharge_peak)
+
 usethis::use_data(fraser_discharge_peak,
                   overwrite = TRUE)
 
-stop("rest is for the help files")
-
-# For help files:
-For real-time data retrieved from the Wateroffice web site:
-"Extracted from the Environment and Climate Change Canada Real-time Hydrometric Data web site (https://wateroffice.ec.gc.ca/mainmenu/real_time_data_index_e.html) on [DATE]"
-
-For historical data retrieved from the Wateroffice web site:
-"Extracted from the Environment and Climate Change Canada Historical Hydrometric Data web site (https://wateroffice.ec.gc.ca/mainmenu/historical_data_index_e.html) on [DATE]"
-
-# From https://wateroffice.ec.gc.ca/report/statistics_e.html?stn=08MF005
-Data Collection History
-This table contains information pertaining to the historical changes of defined elements in the operation of a station.
-Type	Operation schedule	Gauge type
-1912 - 1949	Flow	Continuous	Manual
-1950 - 1995	Flow	Continuous	Recorder
-1996 - 2025	Flow & Level	Continuous	Recorder
-Historical Hydrometric Remarks
-
-DRAINAGE AREA INCLUDES THE 14 000 KM2 BEHIND KENNEY DAM
-Annual Hydrometric Remarks
-
-WATER LEVEL NOT AVAILABLE 2023-12-28 TO 2024-01-08.
-
-Note for historic data the "Symbol.Symbole" column was not defined, and we have
-kept all values. A `summary()` gives:
- Symbol.Symbole
-  :38828
- A:  523
- B:  822
- E:  675
-
-i.e. 38828 with no symbol There were some symbols near the end of the time
-series, so it's not just a historical thing.
-
-
-`fraser_discharge_mean` and `fraser_discharge_max` represent, for each month, the mean daily discharge and the maximum daily discharge, respectively. Add units - m3/s.
+# Was going to add this to the help but couldn't find it again on website so
+#just leaving here (also wasn't sure if it should be "flow continuous" or just
+#"flow" and then "continuouse manual".
+##' Type        Operation schedule       Gauge type
+##' 1912-1949   Flow Continuous	         Manual
+##' 1950-1995   Flow Continuous          Recorder
+##' 1996-2025   Flow & Level Continuous  Recorder

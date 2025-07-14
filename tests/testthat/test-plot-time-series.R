@@ -48,7 +48,9 @@ test_that("index plotting works with various options", {
 
   expect_invisible(plot(oni,
                         style = "goa"))   # that isn't implemented yet
-
+  # Confirm works for Fraser River discharge
+  expect_invisible(plot(fraser_discharge_mean))
+  expect_invisible(plot(fraser_discharge_peak))
 })
 
 # Adapting some of above for hake_recruitment

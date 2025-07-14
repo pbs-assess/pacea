@@ -30,7 +30,9 @@
 \arguments{
 \item{obj}{a \code{pacea_index} object, which is a time series.}
 
-\item{value}{which column of \code{obj} to plot}
+\item{value}{which column of \code{obj} to plot (for \code{fraser_river_mean} and
+\code{fraser_river_peak} objects this gets automatically switched to the
+"value" column, as there is no "anomaly" column).}
 
 \item{xlab}{x-axis label}
 
@@ -52,7 +54,8 @@ width of bars to look good for your specific plot}
 blue below 0}
 \item{"goa":}{TODO (not implemented yet) for Gulf of Alaska Ecosystem
 Report style plots}
-\item{"plain":}{just a plain line}
+\item{"plain":}{just a plain line, which automaticallybecomes the default
+for \code{fraser_river_mean} and \code{fraser_river_peak}}
 }}
 
 \item{y_tick_by}{increment for y-axis ticks; gets
@@ -114,6 +117,10 @@ plot(oni,
      lubridate::dmy(01012040))) # to expand x-axis
 plot(npi_monthly,
      value = "value")
+
+# For these, `value` gets automatically set to the "value" column and style to "plain".
+plot(fraser_discharge_max)
+plot(fraser_discharge_peak)
 
 # The overlaying of events idea was inspired from a lunchtime conversation regarding a
 # rare sighting of a Bluntnose Sixgill Shark by divers in Port Alberni, that garnered

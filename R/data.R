@@ -1629,3 +1629,53 @@
 ##' @author Andrew Edwards
 ##' @source Generated from running `data-raw/coastwide-indices/coastwide-indices.R`.
 "bi"
+
+##' Fraser River discharge at Hope
+##'
+##' Fraser River discharge measured at Hope, British Columbia, since
+##' 1912, of relevance for migrating salmon.
+##'
+##' Fraser River discharge is an important determinant of survival for Fraser
+##' River Sockeye Salmon during juvenile migration from freshwater to the ocean,
+##' and during return migration back to the spawning grounds.
+##'
+##' Data up to the end of 2023 were extracted from the Environment and Climate
+##' Change Canada Historical Hydrometric Data website at https://wateroffice.ec.gc.ca/mainmenu/historical_data_index_e.html on 18 June 2025.
+##'
+##' Data from the start of 2024 onwards were extracted from the Environment and
+##' Climate Change Canada Real-time Hydrometric Data website at https://wateroffice.ec.gc.ca/mainmenu/real_time_data_index_e.html on 9 July 2025 (or later when being updated).
+##'
+##' The Hope station is geographically located at  https://wateroffice.ec.gc.ca/map/index_e.html?type=historical&target_station=08MF005.
+##'
+##' The wateroffice.ec.gc.ca website provides the data as is, with a
+##'  disclaimer at https://wateroffice.ec.gc.ca/disclaimer_info_e.html and a
+##'  list of FAQs at https://wateroffice.ec.gc.ca/contactus/faq_e.html. It also
+##'  provides details of changes in gauge type through time.
+##'
+##' From the websites we downloaded daily means, which are time-weighted averages
+##'  of the 5-minute data between 0:00 and 24:00 (presumably older data has less
+##'  resolution). For `fraser_discharge_mean` we calculate the mean of these daily
+##'  values for each month. For `fraser_discharge_peak` we calculate the maximum
+##'  of these daily values over each month. Units are \code{m^3 s^-1}.
+##'
+##' @format A tibble also of class `pacea_index` with columns:
+##' \describe{
+##'   \item{year:}{year of value}
+##'   \item{month:}{month of value}
+##'   \item{value:}{mean over that month or peak over the month, for
+##'    `fraser_discharge_mean` and `fraser_discharge_peak`, respectively}
+##' }
+##' @author Andrew Edwards and Chris Rooper
+##' @source Generated from running
+##'   `data-raw/fraser-river/fraser-river-discharge.R`, which was adapted from
+##'   code originally provided by Chris Rooper.
+##' @examples
+##' \dontrun{
+##' fraser_discharge_mean
+##' fraser_discharge_peak
+##' plot(fraser_discharge_peak)
+##' }
+"fraser_discharge_mean"
+
+##' @rdname fraser_discharge_mean
+"fraser_discharge_peak"

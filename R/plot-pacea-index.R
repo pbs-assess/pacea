@@ -124,11 +124,11 @@ plot.pacea_index <- function(obj,
        c(expression(paste(plain(Fraser) *
                           " " * plain(River) * " " * plain(discharge) * " " *
                           plain(mean) * " " * plain(of) * " " * plain(daily) * " " * plain(values) *
-                          ", " * m * s^-3)),
+                          ", " * m^3 * s^-1)),
          expression(paste(plain(Fraser) *
                           " " * plain(River) * " " * plain(discharge) * " " *
                           plain(peak) * " " * plain(of) * " " * plain(daily) * " " * plain(values) *
-                          ", " * m * s^-3)))){
+                          ", " * m^3 * s^-1)))){
       value = "value"
       style = "plain"
     }
