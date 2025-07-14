@@ -23,6 +23,11 @@
 lubridate_pacea_series <- function(obj,
                                    smooth_over_year = FALSE){
 
+  orig_attrs <- attributes(obj)
+  attrs_to_preserve <- setdiff(names(orig_attrs),
+                               c("names", "row.names", "class")) # these latter
+                                        # ones might change
+
   if(smooth_over_year){
     stopifnot("to smooth over year you need monthly data (if you have daily we can adapt the code
                to use that); set smooth_over_year = FALSE" =
@@ -62,5 +67,11 @@ lubridate_pacea_series <- function(obj,
                                                    truncated = 2))
     }
   }
+
+  # Restore custom attributes
+  for(attr_name in attrs_to_preserve) {
+    attr(obj_lub, attr_name) <- orig_attrs[[attr_name]]
+  }
+
   return(obj_lub)
 }
