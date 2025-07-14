@@ -1,6 +1,6 @@
 # These are on plotting functions for pacea_index and then pacea_recruitment,
 # pacea_biomass, pacea_buoy, pacea_harbour_seals, pacea_zooplankton, and
-# pacea_recruitment_herring objects.
+# pacea_recruitment_herring objects. Also a generic df to which we add class pacea_index.
 
 # plot.pacea_index()
 test_that("index plotting: the stopifnot commands are working", {
@@ -174,4 +174,17 @@ test_that("zooplankton plotting works with various options", {
                         ylab = "Hello again",
                         mgp_val = c(3, 2, 0)))
   expect_invisible(plot(zooplankton_sog))
+})
+
+# generic object with no attribute. MWE from Emily O'Grady #87..
+test_that("no error given if axis_name attribute missing", {
+  # Create a data frame without axis_name attribute
+  test_data <- data.frame(
+    year = 2000:2010,
+    median = rnorm(11)
+  )
+  class(test_data) <- c("pacea_biomass", "data.frame")
+
+  # This gives error (before fixing the problem)
+  expect_invisible(plot(test_data))
 })

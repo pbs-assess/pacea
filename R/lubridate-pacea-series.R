@@ -1,7 +1,7 @@
-##' Convert an object that represents a time seris (`pacea_index` etc.) to have lubridate
+##' Convert an object that represents a time series (`pacea_index` etc.) to have lubridate
 ##'  year/month column, and smooth over a year if required
 ##'
-##' Called from `plot.pacea_index()` and others to give a lubrdiate column for
+##' Called from `plot.pacea_index()` and others to give a lubridate column for
 ##' easier plotting.
 ##'
 ##' @inherit plot.pacea_index
