@@ -119,17 +119,19 @@ plot.pacea_index <- function(obj,
                              ){
   # No anomaly column for fraser_river_mean or fraser_river_peak, so change
   #  default to ploting the 'value' column
-  if(attr(obj, "axis_name") %in%
-     c(expression(paste(plain(Fraser) *
-    " " * plain(River) * " " * plain(discharge) * " " *
-    plain(mean) * " " * plain(of) * " " * plain(daily) * " " * plain(values) *
-    ", " * m * s^-3)),
-    expression(paste(plain(Fraser) *
-    " " * plain(River) * " " * plain(discharge) * " " *
-    plain(peak) * " " * plain(of) * " " * plain(daily) * " " * plain(values) *
-    ", " * m * s^-3)))){
-    value = "value"
-    style = "plain"
+  if(!is.null(attr(obj, "axis_name"))){
+    if(attr(obj, "axis_name") %in%
+       c(expression(paste(plain(Fraser) *
+                          " " * plain(River) * " " * plain(discharge) * " " *
+                          plain(mean) * " " * plain(of) * " " * plain(daily) * " " * plain(values) *
+                          ", " * m * s^-3)),
+         expression(paste(plain(Fraser) *
+                          " " * plain(River) * " " * plain(discharge) * " " *
+                          plain(peak) * " " * plain(of) * " " * plain(daily) * " " * plain(values) *
+                          ", " * m * s^-3)))){
+      value = "value"
+      style = "plain"
+    }
   }
 
   stopifnot("value must be a column of the pacea_index object" =
