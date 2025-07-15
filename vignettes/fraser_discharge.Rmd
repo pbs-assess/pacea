@@ -1,0 +1,211 @@
+---
+title: "Fraser River Discharge Data"
+author: "Andrew Edwards"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Fraser River Discharge Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+date: "Last rendered on `r format(Sys.time(), '%d %B, %Y')`"
+---
+
+<!-- To build either run
+rmarkdown::render("fraser_discharge.Rmd")
+or click the knit button in RStudio -->
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5,
+  fig.align = "center"
+)
+```
+
+```{r setup}
+library(pacea)
+library(dplyr)
+library(tibble)  # Else prints all of a tibble
+library(ggplot2)
+```
+
+## Fraser River discharge data sets
+
+The Fraser River is the longest river in British Columbia and one of the most
+important waterways in western Canada. Fraser River discharge is particularly
+significant for salmon populations, as it is an important determinant of
+survival for Fraser River Sockeye Salmon during juvenile migration from
+freshwater to the ocean, and during return migration back to the spawning
+grounds.
+
+In pacea we include two Fraser River discharge data sets, both measured at Hope,
+British Columbia:
+
+1. **`fraser_discharge_mean`** - monthly mean discharge data
+2. **`fraser_discharge_peak`** - monthly peak discharge data
+
+Both data sets are derived from measurements
+at the [Hope station](https://wateroffice.ec.gc.ca/map/index_e.html?type=historical&target_station=08MF005) and provide monthly time series from 1912 onwards,
+downloaded from Environment and Climate Change Canada. The
+data are of class `pacea_index` and contain measurements in cubic meters per
+second (m³/s). See `?fraser_discharge_mean` for further details.
+
+### Mean discharge data
+
+The mean discharge values are the monthly averages:
+
+```{r mean-data}
+fraser_discharge_mean
+tail(fraser_discharge_mean)
+```
+
+The columns are `year` and `month` (1-12), and `value`, which is the mean over
+the month of the daily means (calculated from measurements throughout the day), in m³/s.
+
+```{r mean-summary}
+summary(fraser_discharge_mean)
+```
+
+Built-in plotting functions are included in pacea, with automatic axis labelling:
+```{r plot-mean}
+plot(fraser_discharge_mean)
+```
+
+This plot shows the long-term patterns in monthly mean discharge, revealing both seasonal cycles and inter-annual variability.
+
+### Peak discharge data
+
+The peak discharge data are monthly peaks calculated from daily mean values:
+
+```{r peak-data}
+fraser_discharge_peak
+tail(fraser_discharge_peak)
+```
+
+The columns are `year` and `month` (1-12), and `value`, which is the peak over
+the month of the daily means (calculated from measurements thoughout the day),
+in m³/s.
+
+```{r peak-summary}
+summary(fraser_discharge_peak)
+plot(fraser_discharge_peak)
+```
+
+The peak discharge plot shows the variability in monthly maximum flows, which is important for understanding flood conditions and extreme hydrological events.
+
+## Example analyses
+
+That desribes the two data objects. The rest of this vignette provides example
+analyses that can be conducted.
+
+### Seasonal patterns
+
+The Fraser River exhibits strong seasonal discharge patterns due to its
+snowmelt-dominated hydrological regime:
+
+Calculate long-term statistics of monthly means and then monthly peaks:
+```{r seasonal-patterns}
+monthly_mean_stats <- fraser_discharge_mean %>%
+  group_by(month) %>%
+  summarise(
+    avg = mean(value),
+    min = min(value),
+    max = max(value)) %>%
+  ungroup() %>%
+  mutate(month_name = month.name[month])
+
+monthly_mean_stats
+
+monthly_peak_stats <- fraser_discharge_peak %>%
+  group_by(month) %>%
+  summarise(
+    avg = mean(value),
+    min = min(value),
+    max = max(value)) %>%
+  ungroup() %>%
+  mutate(month_name = month.name[month])
+
+monthly_peak_stats
+```
+
+Now plot the average seasonal cycle
+```{r seasonal-cycle, fig.height = 9}
+par(mfrow = c(2, 1))
+
+y_lim = c(0,
+          max(c(monthly_mean_stats$avg, monthly_peak_stats$avg)))
+
+plot(monthly_mean_stats$month,
+     monthly_mean_stats$avg,
+     type = "l",
+     lwd = 2,
+     xlab = "Month",
+     ylab = "Average daily mean discharge (m³/s)",
+     ylim = y_lim,
+     main = "Average seasonal cycle - mean discharge",
+     xaxt = "n")
+axis(1, at = 1:12, labels = month.abb)
+
+plot(monthly_peak_stats$month,
+     monthly_peak_stats$avg,
+     type = "l",
+     lwd = 2,
+     col = "red",
+     xlab = "Month",
+     ylab = "Average peak discharge (m³/s)",
+     main = "Average seasonal cycle - peak discharge",
+     ylim = y_lim,
+     xaxt = "n")
+axis(1, at = 1:12, labels = month.abb)
+```
+
+### Months with highest mean or highest peak discharge:
+
+```{r extreme-events}
+fraser_discharge_mean %>%
+  arrange(desc(value))
+
+fraser_discharge_peak %>%
+  arrange(desc(value))
+```
+
+### Months with lowest mean or lowest peak discharge:
+
+```{r low-flows}
+fraser_discharge_mean %>%
+  arrange(value)
+
+fraser_discharge_peak %>%
+  arrange(value)
+```
+
+### Annual statistics
+
+Annual statistics based on the monthly means, and also the annual peak (being the
+maximum monthly peak each year):
+
+```{r annual-patterns}
+annual_mean_stats <- fraser_discharge_mean %>%
+  group_by(year) %>%
+  summarise(
+    annual_mean = mean(value),
+    annual_min = min(value),
+    annual_max = max(value)) %>%
+  ungroup()
+
+# Calculate annual peaks
+annual_peak <- fraser_discharge_peak %>%
+  group_by(year) %>%
+  summarise(
+    annual_peak = max(value)) %>%
+  ungroup()
+
+annual_summary <- annual_mean_stats %>%
+  left_join(annual_peak,
+            by = "year")
+
+annual_summary
+annual_summary %>% tail()
+```

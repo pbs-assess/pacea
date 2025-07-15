@@ -5,6 +5,11 @@ Developers: for some general tips for writing good bullets see https://style.tid
 
 ## Updates by date
 
+* 2025-07-15 New data: Fraser River discharge monthly means
+  `fraser_discharge_mean` and peaks `fraser_discharge_peak` from 1912
+  onwards, with new help files, tests, and vignettes. Also now preserve/check
+  attributes (issue #87).
+
 * 2025-05-26 Update buoy data (665 new daily temperature calculations), and indices `ao`, `mei`
   `npi_annual`, `npi_monthly`, `pdo` and `pacea_indices` since several now extend
   into 2025.

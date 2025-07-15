@@ -1656,7 +1656,8 @@
 ##'  of the 5-minute data between 0:00 and 24:00 (presumably older data has less
 ##'  resolution). For `fraser_discharge_mean` we calculate the mean of these daily
 ##'  values for each month. For `fraser_discharge_peak` we calculate the maximum
-##'  of these daily values over each month. Units are \code{m^3 s^-1}.
+##'  of these daily values over each month. Units are \code{m^3 s^-1}. We will
+##'  update these data sets on a monthly basis.
 ##'
 ##' @format A tibble also of class `pacea_index` with columns:
 ##' \describe{

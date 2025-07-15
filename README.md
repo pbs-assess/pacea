@@ -37,13 +37,15 @@ include documentation regarding the original sources and authors, who
 should be cited and consulted as appropriate.
 
 Please continue reading through this README file, and especially see the
-vignettes section get started.
+[vignettes
+section](https://github.com/pbs-assess/pacea?tab=readme-ov-file#vignettes)
+to get started.
 
 ## What is in pacea?
 
 Currently, pacea contains:
 
--   209,626 calculations of daily sea surface temperature based on data
+-   212,189 calculations of daily sea surface temperature based on data
     from 19 buoys. **Updated monthly.**
 
 -   outputs from the spatial British Columbia continental margin (BCCM)
@@ -73,7 +75,7 @@ Currently, pacea contains:
     record, that incorporates observations from different platforms
     (satellites, ships, buoys, and Argo floats):
 
-    -   provided as weekly and monthly means from Sep 1981 to Oct 2024.
+    -   provided as weekly and monthly means from Sep 1981 to Mar 2025.
         **Updated monthly.**
 
 -   outputs from the Hindcast of the Salish Sea (HOTSSea) physical
@@ -102,6 +104,9 @@ Currently, pacea contains:
 
 -   zooplankton biomass anomalies in the Strait of Georgia, for 25
     species groups, from 1996 onwards. **Updated annually.**
+
+-   Fraser River discharge monthly means and monthly peaks, from 1912
+    onwards. **Updated monthly.**
 
 Plotting and helper functions are provided, and demonstrated in the
 detailed vignettes. All data and model outputs are fully documented and
@@ -165,6 +170,11 @@ the Issues) with latest first:
     values from the 2024 assessment (retaining the original estimates
     from the 2023 assessments for reproducibility); see the
     [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
+    vignette.
+
+-   added Fraser River discharge values, for each month since 1912. See
+    the
+    [fraser_discharge.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/fraser_discharge.html)
     vignette.
 
 ## Brief examples of some questions that can be quickly visualised (see vignettes for full details)
@@ -280,12 +290,23 @@ plot(zooplankton_sog)
 
 <img src="man/figures/README-zooplankton.png" style="width:80.0%" />
 
+**How has Fraser River monthly mean discharge at Hope changed since
+2000?**
+
+``` r
+plot(fraser_discharge_mean,
+     xlim = c(lubridate::dmy(01012000),
+              lubridate::dmy(01012026)))
+```
+
+<img src="man/figures/README-fraser.png" style="width:80.0%" />
+
 You can view and analyse all these data sets in the usual way in R. For
 example:
 
 ``` r
 oni
-#> # A tibble: 897 × 4
+#> # A tibble: 900 × 4
 #>     year month value anomaly
 #>    <dbl> <dbl> <dbl>   <dbl>
 #>  1  1950     1  24.7   -1.53
@@ -298,7 +319,7 @@ oni
 #>  8  1950     8  26.0   -0.42
 #>  9  1950     9  25.8   -0.39
 #> 10  1950    10  25.6   -0.44
-#> # ℹ 887 more rows
+#> # ℹ 890 more rows
 ```
 
 **What climatic and oceanographic indices are currently available, and
@@ -310,16 +331,16 @@ knitr::kable(pacea_indices)
 
 | Object      | Description                                     | Resolution | Start year | End year |
 |:------------|:------------------------------------------------|:-----------|-----------:|---------:|
-| pdo         | Pacific Decadal Oscillation                     | monthly    |       1854 |     2024 |
-| npi_monthly | North Pacific Index (monthly)                   | monthly    |       1899 |     2024 |
-| npi_annual  | North Pacific Index (annual)                    | annual     |       1899 |     2024 |
+| pdo         | Pacific Decadal Oscillation                     | monthly    |       1854 |     2025 |
+| npi_monthly | North Pacific Index (monthly)                   | monthly    |       1899 |     2025 |
+| npi_annual  | North Pacific Index (annual)                    | annual     |       1899 |     2025 |
 | alpi        | Aleutian Low Pressure Index                     | annual     |       1900 |     2022 |
 | oni         | Oceanic Niño Index                              | monthly    |       1950 |     2024 |
-| npgo        | North Pacific Gyre Oscillation                  | monthly    |       1950 |     2024 |
-| ao          | Arctic Oscillation                              | monthly    |       1950 |     2024 |
-| soi         | Southern Oscillation Index                      | monthly    |       1951 |     2024 |
+| npgo        | North Pacific Gyre Oscillation                  | monthly    |       1950 |     2025 |
+| ao          | Arctic Oscillation                              | monthly    |       1950 |     2025 |
+| soi         | Southern Oscillation Index                      | monthly    |       1951 |     2025 |
 | bi          | North Pacific Bifurcation Index                 | annual     |       1967 |     2024 |
-| mei         | Multivariate El Niño Southern Oscillation Index | monthly    |       1979 |     2024 |
+| mei         | Multivariate El Niño Southern Oscillation Index | monthly    |       1979 |     2025 |
 
 ## Vignettes
 
@@ -349,6 +370,9 @@ run them locally you may get more up-to-date values):
 -   [zooplankton.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/zooplankton.html)
     Zooplankton anomalies for the Strait of Georgia, calculations, and
     associated plotting functions.
+-   [fraser_discharge.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/fraser_discharge.html)
+    Fraser River discharge monthly means and peaks, and associated
+    plotting functions.
 
 The presentations where we introduced `pacea` are available as .pdf.
 [Here is the DFO version (10th November

@@ -52,8 +52,8 @@ in R, and provide helpful plotting functions. All data sets include
 documentation regarding the original sources and authors, who should be cited
 and consulted as appropriate.
 
-Please continue reading through this README file, and especially see the vignettes
-section get started.
+Please continue reading through this README file, and especially see the [vignettes
+section](https://github.com/pbs-assess/pacea?tab=readme-ov-file#vignettes) to get started.
 
 ## What is in pacea?
 
@@ -111,6 +111,10 @@ Currently, pacea contains:
 - zooplankton biomass anomalies in the Strait of Georgia, for 25
   species groups, from 1996 onwards. **Updated annually.**
 
+- Fraser River discharge monthly means and monthly peaks, from 1912 onwards.
+  **Updated monthly.**
+
+
 Plotting and helper functions are provided, and demonstrated in the detailed vignettes. All
 data and model outputs are fully documented and referenced.
 
@@ -166,6 +170,10 @@ the Issues) with latest first:
   assessments for reproducibility); see the
   [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
   vignette.
+
+- added Fraser River discharge values, for each month since 1912. See the
+  [fraser_discharge.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/fraser_discharge.html) vignette.
+
 
 ## Brief examples of some questions that can be quickly visualised (see vignettes for full details)
 
@@ -361,6 +369,27 @@ plot(zooplankton_sog)
 
 ![](man/figures/README-zooplankton.png){width=80%}
 
+
+**How has Fraser River monthly mean discharge at Hope changed since 2000?**
+
+```{r frasermakefig, eval = FALSE, echo = FALSE}
+png(paste0(here::here(), "/man/figures/README-fraser.png"),
+    width = 670,   # 670 matches size from running from a chunk
+    height = 480)
+plot(fraser_discharge_mean,
+     xlim = c(lubridate::dmy(01012000),
+              lubridate::dmy(01012026)))
+dev.off()
+```
+
+```{r, fraserplot, eval = FALSE}
+plot(fraser_discharge_mean,
+     xlim = c(lubridate::dmy(01012000),
+              lubridate::dmy(01012026)))
+```
+
+![](man/figures/README-fraser.png){width=80%}
+
 You can view and analyse all these data sets in the usual way in R. For example:
 ```{r onivalues}
 oni
@@ -396,6 +425,8 @@ may get more up-to-date values):
   HOTSSea model results and associated plotting functions.
 * [zooplankton.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/zooplankton.html)
   Zooplankton anomalies for the Strait of Georgia, calculations, and associated plotting functions.
+* [fraser_discharge.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/fraser_discharge.html)
+  Fraser River discharge monthly means and peaks, and associated plotting functions.
 
 The presentations where we introduced `pacea` are available as .pdf. [Here is the DFO
 version (10th November 2023)](talks/pacea-release-talk-dfo.pdf) and

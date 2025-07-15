@@ -129,6 +129,7 @@ vignettes/bccm_full_cache/
 vignettes/hotssea-figs-cache/
 vignettes/hotssea_cache/
 vignettes/oisst_month_grid26.rds
+vignettes/fraser_discharge_claude.Rmd
 
 inst/Pacea_Final.ai
 R-temp/3d-printing/hake-total-biomass-at-age-2025.stl
