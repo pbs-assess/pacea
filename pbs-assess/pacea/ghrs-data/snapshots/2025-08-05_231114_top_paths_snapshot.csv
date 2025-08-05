@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,47,14
+/pbs-assess/pacea/commits/main,4,3
+/pbs-assess/pacea/actions/runs/16473746069/job/46569583538,4,2
+/pbs-assess/pacea/commit/b7662ccbeccbca1c84b9ba32eaf2cc900fb4c1cd,3,2
+/pbs-assess/pacea/tree/main/data,3,2
+/pbs-assess/pacea/tree/main/data-raw,3,2
+/pbs-assess/pacea/blob/main/data-raw/mammals/harbour-seals/harbour-seals.R,3,1
+/pbs-assess/pacea/tree/main/data-raw/mammals/harbour-seals,3,1
+/pbs-assess/pacea/tree/main/vignettes,3,1
+/pbs-assess/pacea/actions/runs/16473746069,2,1
