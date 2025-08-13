@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,21,11
+/pbs-assess/pacea/tree/main/data,3,2
+/pbs-assess/pacea/tree/main/data-raw,3,2
+/pbs-assess/pacea/blob/main/data-raw/mammals/harbour-seals/harbour-seals.R,3,1
+/pbs-assess/pacea/tree/main/data-raw/mammals/harbour-seals,3,1
+/pbs-assess/pacea/tree/main,2,2
+/pbs-assess/pacea/tree/main/vignettes,2,2
+/pbs-assess/pacea/graphs/traffic,2,1
+/pbs-assess/pacea/pulse,2,1
+/pbs-assess/pacea/tree/main/R,2,1
