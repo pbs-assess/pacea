@@ -33,7 +33,7 @@
 #  https://climatedataguide.ucar.edu/sites/default/files/2023-01/npindex_anom_ndjfm.txt  - annoying if their websites now have dates in them, bit harder to automate (but doable)
 #   or monthly absolute values:
 #  https://climatedataguide.ucar.edu/sites/default/files/2023-01/npindex_monthly.txt .
-#D PDO      PDO                    Tetjana: http://research.jisao.washington.edu/pdo/ (but data links are borken, 29/3/31)
+#D PDO      PDO                    Tetjana: http://research.jisao.washington.edu/pdo/ (but data links are broken, 29/3/31)
 #                                 Chris: https://www.ncei.noaa.gov/pub/data/cmb/ersst/v5/index/ersst.v5.pdo.dat  (works and is updated)
 # SOI      SOI                    Same website, still updated.
 # NPGO     NPGO                   Same website, still updated.
@@ -139,6 +139,11 @@ expect_true(monthly_file_exists[length(monthly_file_exists)],
 
 # Then pick the first one. Should always have one TRUE, even if it's only the
 # last in the vector, corresponding to the earliest month.
+
+# 2025-10-15: US Shutdown, the actual website is down, so get
+# > monthly_file_exists
+# [1] FALSE FALSE FALSE FALSE FALSE FALSE
+# and so an error above. Not digging into now, as may get resolved later.
 
 # If there is a TRUE newer than the final position in the vector (which should
 # always be TRUE since we got that data last time), then update:
@@ -258,6 +263,8 @@ expect_true(monthly_file_exists[length(monthly_file_exists)],
 # "2023-11" "2023-10" "2023-09" "2023-08" "2023-07" "2023-06" "2023-05" "2023-04"
 # monthly_file_exists
 # FALSE     FALSE     FALSE     FALSE     FALSE     FALSE     FALSE     TRUE
+
+# 2025-10-15: as above for npi_monthly
 
 sum(monthly_file_exists)
 if(sum(monthly_file_exists) > 1){
@@ -444,7 +451,8 @@ tail(soi_new)
 
 if(check_index_changed(soi, soi_new)){
   expect_equal(soi,
-               soi_new[1:nrow(soi), ])  # See note at top if this fails
+               soi_new[1:nrow(soi), ])  # See note at top if this fails;
+   # 2025-10-15 it did, but just the previous final value
   par(mfrow = c(2,1))
   plot(soi, main = "Currently in pacea")
   plot(soi_new, main = "Updated")

@@ -5,6 +5,11 @@
 # adds on to the existing saved objects now. The 2024 onwards data gets updated
 # every day, but we check to see if we have a full month added on.
 
+# BUT, can only get last 18 months of values. So need to just download the new
+# calendar year and add onto it. OR, how about just check the final date we
+# already have, then just extract from then to today, as have to do manually
+# anyway. And need to just extend original since updating on 2025-10-15 can't
+# get the early 2024 values, so need to stick with what we have in pacea already.
 library(dplyr)
 library(lubridate)
 load_all()
@@ -66,6 +71,11 @@ if(FALSE){              # Change if want to rerun, not sure when would want to
                          -"num_days")
 }
 
+# 2025-10-15: so can only download 18 months worth, so end up losing Jan-Mar
+# 2024. So need to change this to download the current calendar year, or even
+# just since the last update. Need to think about. HERE
+
+
 # Manually get 2024 onwards from the following (think automatically getting it
 # might still have been provisional at some point):
 
@@ -74,7 +84,8 @@ if(FALSE){              # Change if want to rerun, not sure when would want to
 # dates today) gives daily mean values to today, which is what we want. So try
 # that again going forward, maybe it's just all of them up to today.
 
-# Not sure how that knows I want station 08MF005. FRASER RIVER AT HOPE.
+# Not sure how that knows I want station 08MF005. FRASER RIVER AT HOPE. Must be
+# default, as came up on laptop2025 first time, using link below.
 
 # From
 # https://wateroffice.ec.gc.ca/report/real_time_e.html?stn=08MF005&mode=Table&startDate=2024-01-01&endDate=2024-12-31&prm1=46&y1Max=&y1Min=&prm2=47&y2Max=&y2Min=
