@@ -39,13 +39,13 @@ if(redownload_data){
                             url = "https://data.cioospacific.ca/erddap/")
   saveRDS(dfo_info, "dfo_info.Rds")
 
-  dfo_data_raw <- tabledap(x = dfo_info,
-                           fields = c("time",
-                                      "longitude",
-                                      "latitude",
-                                      "STN_ID",
-                                      "SSTP",
-                                      "SSTP_flags"))
+  dfo_data_raw <- rerddap::tabledap(x = dfo_info,
+                                    fields = c("time",
+                                               "longitude",
+                                               "latitude",
+                                               "STN_ID",
+                                               "SSTP",
+                                               "SSTP_flags"))
   saveRDS(dfo_data_raw, "dfo_data_raw.Rds")
 } else {
     dfo_data_raw <- readRDS("dfo_data_raw.Rds")     # A tabledap which is a tibble
@@ -92,7 +92,7 @@ dfo_data <- as_tibble(dfo_data_raw) %>%
          latitude < 60,
          sstp_flags %in% use_flags | is.na(sstp_flags))
 
-# 4/4/25 (and 26/5/25) get this, not sure if had that before:
+# 4/4/25 (and 26/5/25, 14/10/25) get this, not sure if had that before:
 #Warning message:
 # There was 1 warning in `mutate()`.
 # In argument: `time = with_tz(ymd_hms(time), "Etc/GMT+8")`.
@@ -110,13 +110,13 @@ dfo_data       # 3.666 million rows when removing pre-1991 . Every few minutes h
                # 29/1/2024 update: 3.811 million rows
                #  6/8/2024 update: 3.839 million rows
                #  20/9/2024 update: 3.845 million rows
+               #  14/10/2025 update: 3.855 million rows
 
 summary(dfo_data)   # Earliest is 1987, so not adding tons of data, yet not really worth
                     # excluding 1987-1991 for our purposes (Andrea did since
                     # looking at climatology)..
                # Latest is 2023-06-11 having just downloaded on 2023-06-14. OPP
-               #  data below seems to be more recent. TODO If really wanted more recent
-               #  could switch to using OPP for some buoys, bit of work though.
+               #  data below seems to be more recent.
 
 # Issue #26 - criteria for excluding days with missing values. Discussion at
 # IOS resulted in Charles suggesting :
@@ -165,6 +165,12 @@ dfo_daily_mean_no_qc <- group_by(dfo_two_hourly_mean,
 #    12
 #144630
 
+# table(dfo_daily_mean_no_qc$num_two_hourly_in_day) as of 2025-10-14 data (download)
+#    1    2     3      4      5      6      7      8      9     10     11    12
+# 1150  922   792   1281   1949   1232   1444   3493   2898   4282  10014 146880
+
+
+
 num_two_hour_intervals_required <- 10  # Number of two-hour intervals in a day
                                        # that must have sst values in order to
                                        # use the daily mean for that day.
@@ -187,6 +193,10 @@ max(dfo_daily_mean$date)
 # 159,407            2023-02-17  # max(dfo_daily_mean$date)
 # 160,467            2024-07-30
 # 161,166            2025-03-17
+# 161,176            2025-03-17  # is max date again on 14/10/25, above line was
+# earlier, but do have 10 more rows, though expect I wrote the 161,166 as the
+# 'more rows' after the tibble displayed.
+# i.e. older data not changed here, or being updated through time.
 
 # Before doing two-hour quality control had less, not sure how many (can test by
 #  changing num_two_hour_intervals_required)
@@ -390,6 +400,8 @@ if(redownload_data){
 opp_data_raw   #  A tibble: 1,278,688 × 11. File size (of temp download file I
                #  think) is 119 Mb. First rows have NaN's.
 
+# 14/10/25 the tibble is # A tibble: 2,174,473 × 12
+
 # Andrea doesn't use the flags in these data, so not using here.
 # But, we get the spurious large fluctations at the start of the data for C46304
 # (opp_data_C463404 below and the plot).
@@ -402,6 +414,9 @@ opp_data_raw   #  A tibble: 1,278,688 × 11. File size (of temp download file I
 # values so may actually not exclude many days of calculations).
 # Doing below then keeping track of how it changes opp_daily_mean later.
 
+# 14/10/25:
+#    -10      -1       0      20     100
+#  70900    5348    1264   44861 2017262
 
 # Originally was keeping only
 # the two buoys not in DFO data above, but now checking and using OPP when it is
@@ -414,11 +429,11 @@ opp_data_raw$stn_id = as.factor(paste0("C",
 # Figure out stations in both data sets
 dfo_and_opp_stn <- intersect(unique(dfo_daily_mean$stn_id),
                              unique(opp_data_raw$stn_id))
-dfo_and_opp_stn   # seems to be 16 of the 17 in DFO data
+dfo_and_opp_stn   # seems to be 16 of the 17 in DFO data. Same: 14/10/25.
 
 dfo_only_stn <- setdiff(unique(dfo_daily_mean$stn_id),
                              unique(opp_data_raw$stn_id))
-dfo_only_stn
+dfo_only_stn    # 14/10/25: C46134
 
 # Check the dates of those in both
 dfo_ranges <- dfo_daily_mean %>%
@@ -437,7 +452,6 @@ opp_ranges <- opp_data_raw %>%
   summarise(start_opp = min(date, na.rm = TRUE),
             end_opp = max(date, na.rm= TRUE))
 opp_ranges
-
 ## > opp_ranges # using date = as.Date(time), actually come out same as floor_date(...)
 ## # A tibble: 16 × 3
 ##    stn_id start_opp  end_opp
@@ -459,6 +473,9 @@ opp_ranges
 ## 15 C46207 2021-09-07 2022-09-08
 ## 16 C46208 2021-09-07 2023-08-28
 
+# 14/10/15 all 16 stations were up to date (data from today, all started
+# 2021-09-07 as below)
+
 dfo_opp_ranges <- left_join(dfo_ranges,
                             opp_ranges,
                             by = "stn_id") %>%
@@ -471,7 +488,9 @@ dfo_opp_ranges <- left_join(dfo_ranges,
 
 as.data.frame(dfo_opp_ranges)
 # They all have DFO starting strictly (<) first, so need DFO data for all
-# these. One of them is 0 days difference.
+# these. One of them is 0 days difference. 14/10/25 - no 0's, shows all buoys
+# have DFO starting before OPP, and DFO ending before OPP, so you need both data
+# streams for all buoys.
 filter(dfo_opp_ranges, dfo_ends_last == TRUE)
 
 # So only three that have both ending on same day, but that looks to be because
@@ -481,6 +500,7 @@ filter(dfo_opp_ranges, dfo_ends_last == TRUE)
 # like end dates may be off by 1, but conclusion still holds. Think that's now
 # fixed with the use of lubridate::date().
 # 2023-11-09 - opp are all later now (and only two by 1 day, several 5).
+# 2025-10-14 - opp all later by at least 211 days.
 
 # So, want DFO data first, then add on OPP data after as either
 #  (i) they are both 2-11 months ago, which is presumably something failing) - 3 buoys
@@ -502,7 +522,7 @@ switch_dfo_to_opp <- lubridate::date("2021-09-10")
 # we want, including the overlapping ones. Filtering based on ...qa_summary also
 # (keeping track of resulting influence on opp_daily_mean later).
 opp_data <- as_tibble(opp_data_raw) %>%
-  filter(stn_id %in% c(dfo_and_opp_stn, "C46303", "C46304"),
+  filter(stn_id %in% c(dfo_and_opp_stn, as.factor(c("C46303", "C46304"))),
          avg_sea_sfc_temp_pst10mts_qa_summary == 100) %>%
   mutate(time = with_tz(ymd_hms(time),
                         "Etc/GMT+8"),
@@ -519,6 +539,8 @@ opp_data <- as_tibble(opp_data_raw) %>%
          sst != 49.3)  # One value of that.
 
 opp_data # A tibble: 569,537 × 3, was 346,659 with only C46303 and C46304
+         # 14/10/25: 923,081 x 3, with ~250,000 each of  C46303 and C46304 but
+         # also ~420,000 of all the rest.
 summary(opp_data)
 
 # Both these still account for time zone:
@@ -578,12 +600,19 @@ max(opp_data_full_range$end_date)
 
 # Want to look at plot of fine-scale data:
 opp_data_example <- filter(opp_data,
-                           stn_id == "C46208")[1:150, ]   # Looks better
-                                        # resolution there
-
+                           stn_id == "C46208")[1:150, ]   # Every hour
+par(mfrow = c(2,1))
 plot(opp_data_example$time,
      opp_data_example$sst,
      type = "o")
+
+# Different raw resolution, every ten minutes
+opp_data_example_2 <- filter(opp_data,
+                             stn_id == "C46303")[1:150, ]
+plot(opp_data_example_2$time,
+     opp_data_example_2$sst,
+     type = "o")
+par(mfrow = c(1,1))
 
 # Can calculate daily variation
 opp_daily_range <- opp_data %>%
@@ -890,6 +919,7 @@ opp_daily_mean # A tibble: 11,227 x 3 with data saved on 2023-08-23, run on
 #  10,774 × 3, so keeping 100 flags only loses us 453 days, 4%.
 # 10,671 × 3 when removing the 103 days that have daily fluctuations > 5degC
 # 10,669 x 3 after using lubridate::date().
+# 21,243 x 3 on 15/10/25
 
 summary(opp_daily_mean)
 
@@ -932,6 +962,7 @@ class(buoy_sst_new) <- c("pacea_buoy",
                          class(buoy_sst_new))
 
 buoy_sst_new # 2023-11-09: 202,927
+             # 2025-10-14: 216,285
 buoy_sst     # 201,435 with same data as 28 August 2023, but having done the
              #  two-hour quality control on all the data. So only actually lose
              #  206 daily means, which seems fine and makes sense..
@@ -958,7 +989,7 @@ summary(buoy_sst)
 # This update adds in
 nrow(buoy_sst_new) - nrow(buoy_sst)
 #  new daily means. Could use in commit message.
-
+# 14/10/25 - 4096 new daily means (hadn't updated for
 # Had some warnings (4/4/2025) so checking that past values haven't changed.
 # buoy_sst_new_overlap <- group_by(buoy_sst_new,
 #                                  date,

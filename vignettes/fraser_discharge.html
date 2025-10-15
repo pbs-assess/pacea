@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Andrew Edwards" />
+
+
+<title>Fraser River Discharge Data</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Fraser River Discharge Data</h1>
+<h4 class="author">Andrew Edwards</h4>
+<h4 class="date">Last rendered on 15 July, 2025</h4>
+
+
+
+<!-- To build either run
+rmarkdown::render("fraser_discharge.Rmd")
+or click the knit button in RStudio -->
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pacea)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)  <span class="co"># Else prints all of a tibble</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code></pre></div>
+<div id="fraser-river-discharge-data-sets" class="section level2">
+<h2>Fraser River discharge data sets</h2>
+<p>The Fraser River is the longest river in British Columbia and one of the most important waterways in western Canada. Fraser River discharge is particularly significant for salmon populations, as it is an important determinant of survival for Fraser River Sockeye Salmon during juvenile migration from freshwater to the ocean, and during return migration back to the spawning grounds.</p>
+<p>In pacea we include two Fraser River discharge data sets, both measured at Hope, British Columbia:</p>
+<ol style="list-style-type: decimal">
+<li><strong><code>fraser_discharge_mean</code></strong> - monthly mean discharge data</li>
+<li><strong><code>fraser_discharge_peak</code></strong> - monthly peak discharge data</li>
+</ol>
+<p>Both data sets are derived from measurements at the <a href="https://wateroffice.ec.gc.ca/map/index_e.html?type=historical&amp;target_station=08MF005">Hope station</a> and provide monthly time series from 1912 onwards, downloaded from Environment and Climate Change Canada. The data are of class <code>pacea_index</code> and contain measurements in cubic meters per second (m³/s). See <code>?fraser_discharge_mean</code> for further details.</p>
+<div id="mean-discharge-data" class="section level3">
+<h3>Mean discharge data</h3>
+<p>The mean discharge values are the monthly averages:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fraser_discharge_mean</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1,360 × 3</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     year month value</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1  1912     3  485.</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2  1912     4 1154.</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3  1912     5 4989.</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4  1912     6 6128 </span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5  1912     7 4781.</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6  1912     8 3961.</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7  1912     9 2162.</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8  1912    10 1531.</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9  1912    11 1065.</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10  1912    12  761.</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 1,350 more rows</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(fraser_discharge_mean)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 3</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    year month value</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  2025     1 1131.</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2  2025     2  802.</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3  2025     3 1141.</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4  2025     4 2354 </span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5  2025     5 3959.</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6  2025     6 5224.</span></span></code></pre></div>
+<p>The columns are <code>year</code> and <code>month</code> (1-12), and <code>value</code>, which is the mean over the month of the daily means (calculated from measurements throughout the day), in m³/s.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fraser_discharge_mean)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       year          month            value        </span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Min.   :1912   Min.   : 1.000   Min.   :  482.2  </span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1st Qu.:1940   1st Qu.: 3.750   1st Qu.: 1045.8  </span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Median :1968   Median : 6.000   Median : 1938.2  </span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Mean   :1968   Mean   : 6.494   Mean   : 2710.7  </span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3rd Qu.:1997   3rd Qu.: 9.000   3rd Qu.: 3914.5  </span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Max.   :2025   Max.   :12.000   Max.   :10752.3</span></span></code></pre></div>
+<p>Built-in plotting functions are included in pacea, with automatic axis labelling:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fraser_discharge_mean)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<p>This plot shows the long-term patterns in monthly mean discharge, revealing both seasonal cycles and inter-annual variability.</p>
+</div>
+<div id="peak-discharge-data" class="section level3">
+<h3>Peak discharge data</h3>
+<p>The peak discharge data are monthly peaks calculated from daily mean values:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fraser_discharge_peak</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1,360 × 3</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     year month value</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1  1912     3   578</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2  1912     4  2070</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3  1912     5  6850</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4  1912     6  7420</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5  1912     7  6340</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6  1912     8  4390</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7  1912     9  3000</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8  1912    10  2030</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9  1912    11  1270</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10  1912    12   864</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 1,350 more rows</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(fraser_discharge_peak)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 3</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    year month value</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  2025     1  1470</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2  2025     2  1050</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3  2025     3  1360</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4  2025     4  2900</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5  2025     5  5590</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6  2025     6  6950</span></span></code></pre></div>
+<p>The columns are <code>year</code> and <code>month</code> (1-12), and <code>value</code>, which is the peak over the month of the daily means (calculated from measurements thoughout the day), in m³/s.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fraser_discharge_peak)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       year          month            value      </span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Min.   :1912   Min.   : 1.000   Min.   :  538  </span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1st Qu.:1940   1st Qu.: 3.750   1st Qu.: 1440  </span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Median :1968   Median : 6.000   Median : 2800  </span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Mean   :1968   Mean   : 6.494   Mean   : 3643  </span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3rd Qu.:1997   3rd Qu.: 9.000   3rd Qu.: 5320  </span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Max.   :2025   Max.   :12.000   Max.   :15200</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fraser_discharge_peak)</span></code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAqAAAAHgCAMAAABNUi8GAAAAaVBMVEUAAAAAACsAAFUAK4AAVaorAAArACsrAFUrKysrK4ArgNRVAABVACtVAFVVK1VVK4BVqv+AKwCAK1WAVQCAgNSAqoCA1P+qVQCq1ICq/6qq///UgCvUgIDU////qlX/1ID//6r//9T////1xoGFAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAfWUlEQVR4nO2di5qjOnZG6dNVmaR6knRNknamnXZV6f0fMgYM6K4ttCW28L/O1zMuEFu3ZQEyl0EBIJjh6AIAEAOCAtFAUCAaCApEA0GBaCAoEA0EBaKBoEA0EBSIBoIC0UBQIBoICkQDQYFoICgQDQQFooGgQDQQFIgGggLRQFAgGggKRANBgWggKBANBAWigaBANBAUiAaCAtFAUCAaCApEA0GBaCAoEA0EBaKBoEA0EBSIBoIC0UBQIBoICkQDQYFoICgQDQQFooGgQDQQFIgGggLRQFAgGggKRANBgWggKBANBAWigaBANBAUiAaCAtFAUCAaCApEA0GBaCAoEA0EBaKBoEA0EBSIBoIC0UBQIJph5K/fRxcDAD8YQYFohj9HlwCACMPnf2D/DuQyfP47BAVygaBANBAUiAaCAtHgJAmIBvOgQDQPQT9/vKnrMHzHrCiQxUPQy/c/H68v6vJybGkAsJgF/fzxU92G+7/Er/Jf7wN+vAct2QS93K27xs27Dm/zh9vyAYC6LLv4l88f3/98/oju4r/eVy2vOFoFTVhPkoZvv77e44eg4zj7IHUsAAAPOdNMGEFBc7LmQa/DYwjFMShoxPA/rxnn5PcjgYng+DkAQIIs6OtP9fFvbPtr/DAFSNAF/cdvxXi9CAQFJOiC3v99/id1BE1O1ENQQCJH0Nu3X8TE6Yl6CApIZI2gVAjTTBAUkMgVdDk9j57QEybqISggkSno1ztl4h0jKOAiU1BtbIyRnqiHoIBE9ghK+2UoPVFPzRc8N7nHoB//Qj2TZ8oXPDfZgr4STpI48xVGr+XuluxdPO1ej9NO1Pda7m6pdZJ01on6XsvdLVVOkk48zdRrubulyklSeKI+/yoqYfRa7m7J3sUPhJOkxAjataC9FrxXqvwWf+KJegjamDqCnneiHoI2ppKgrcM1A4I2BoLmAUEbU0XQ8Qlj4/HnGSfqey14r9QTdDp/D07s99rPELQxOwW9DkPk/o9R0Ieap5uo77XgvVJtBP14nQQ92xX1ELQx1QTFCAo4qCToOAf6opbTpcJwkoCgjcm/aY72CPDpKXiRRzP12s8QtDG5gnI9ArzXfoagjdlxPSjlEeB8+QoDgjZmh6CER4Az5isMCNqY7F085RHgnPkKA4I2ZseTRSiPAN8uTMY8KCihzsUiX++pQ4Be+xmCNqbS1UzJuz977WcI2phsQe+77+9/Lslb525D/PbPXvsZgjYmV9Dbt1/X8SSp9N0IvfYzBG3MjtuOx5/XMc0E2rBjHnQUFBP1oA07R9BL6fu5eu1nCNqYfceg18QpEGO+woCgjdlzFh+9mp47X2FA0Mbgrs48IGhjqjz6hjNfYUDQxuwbQctfst1rP0PQxuzcxeOCZdCGnYJiHhS0Ye998RAUNGGfoLhgGTRi51l86Q9JEBTQwDxoHhC0MRA0DwjamBxBCbca8ecrDAjaGIygeUDQxkDQPCBoY3bcdoxdPGjHjmczXV+Wh3+2yFcYTQXttZE4yZ4HfVO38Z4kXFHfIrOGeUllxz1JH3/7Pf1rk68wIGhjdtyT9Pn3XxC0TWYN85JK7jHoeJXI5Q27+DaZNcxLKtnTTJeX8UweFyw3yaxhXlLBPGgeELQx2SdJpdfZ5eYrjE3QBjXotZE4yZ4HZbjp+Bzvi4egTdixi78t75hpkq8wIGhj9h2Dph9Qy5avMCBoYzCC5gFBG5M9Uc/y4Jt+2x6CNgZn8XlA0MZgHjQPCNoYCJoHBG0MBM0DgjYGguYBQRuTfZJUPMGUma8wIGhjskfQ6zAEXwJfI19hQNDG7NnFczjaa9tD0MbsOwa9Ft/X2WvbQ9DG7Pyp86f6ei+6qL7XtoegjckVdLwvfjaz7Bm2vbY9BE1x1HTPchbP8UN8Tr7CYBOUsnmXjXSsoO3zFQYETXGgoHi6HQRNgxH0UCBoCgh6KBA0BQQ9FAia4tBj0De8CjEhKOsXvnkjcWSIEfRQIGiLGHvCQdAJCNoixp5w2i9J2MVPnxLrU4GY0rByAkGJT1ie7v6MedzgFKMKELRFjD3hlp86SU9Yvi6X491C1+VBUKY0rJxBUMoTlsfH3D4ImQxBmdKwwjGHdqygtCcsjxo/CF3zBEGZ0rDSv6C0JyxjBCUEYkrDSmVB90TNnhYhPWH5OjyGUByDBgMxpWHlDILSSL62e38LDGWbF1JH0MBGXD+rksnKMFXorFXl24iZqIeg9ehcUBnXg0LQenQu6Mh8UHlL3fhRcaIegtajf0G/3ucHixw4Uc8l6L4QPQmav1Ugw0BVs3PdU59MQZcZzvgtnVWnmSAolWcUdFHvEh1Bq07UQ1AqzyjofZ89uneNH4NiBE2Hh6CJxOQUVsLpVD71UJGaE/UQlEqJoITiCRWURsFEPalnE4kKTkJTW0HQRPg+BC0IB0HdxecVNFlGCJoHBDWWetb0IWjBRP1TCpoYoyBomqzalkzUQ1A3DZeg5EIVCkreI/AK+vnj53ixcpqiaSZKI6bqBUH9W51e0DeaoOGJ+u1qk90lgqBUnk7Q6cnflKuZEiNoDUGHyF/78glsBUH1pcIEVYo2ghZN1JMFjbQhBPVv1VTQSPb1BKVSeaIeglJoL+igjhf045XlhdzZghqV60TQWBZ5ghIK6zZHC0Hddj9Y0Hmfve7CdwNB/VH9aToRdO0WT/ZGe9QTdDn9SVywXGGiPiKo68LBghr9RMkegqaLREtIu2C5xkR9l4JG8oCgqRaK5R1MSBtBa0zUQ9BUyZw/nlFQ2jFo0RX1IgX19Fy2oJEiQtB0kagJKWfx5xtBt3MfgqBbP0FQM7VTvOMuFmGfqIegqSI6ASFoGP6JeggazjQQEIIW8GSCJoooW9BI6SCou9gU1GgScox4CXxbQlBvYgjqLhYiaKjXIKhSBwr6+d/zX1//qPbwMEpnQdBI4nUDSYK6B2WVBP0xnZXf4teDEh6DB0G94ZU/TSpXf8BnFHSaN7r79xJP/PWeejzjGQVdWhyCHijo3VDKw0GXp+DtyLcDQQNNe7CgjlOeEiYqfQZBw3PvBrfEBXk5gprVhaCJIhrFjKQhZZgoHYeg8TLlC5p0LzOcs4ZD0ESHx0sQKxQENRLLErTNI8B3CprV4fESxApVUVB/QE/2iSLGAp5bUE4gqBO+O0EHb7NTBR0gaDxTCOqJEQ7mz1CeoPVfx23VWdnVhaCJIsYCnl9Q4uu4qeF8a1xBzcolBA3Y42Sa6ix/oVoI6vkAQZPMCYmv46aG8655HkFNHyBotEgpFkEpr+Mmh/OuCVRlWQpBE0V0A/rT+GKEg/kzFCco7XXc5HDeNVUENRJv+ZCLu19QN2flLPEI6i8rq6D+GgSC+TMUJyjtddz0cL41EDRc1jxB3VY4v6C013HTw3nWRAR1FOhY0MEuS76gg7EBBOXkPIJuYSAoBFUlglqRTyvoWgS5gupFZBb0vn///udCuaBpZ77nFtTso3CdCwQ1ej9QDavkzpJ+Bb19+3U/QXpcWF9Aj4K6ZTFrcpygg53maQUdp5nGM/hr5Z86IWhzQcON05Og40T9KGji6XbUcN41ENTYwigrBE0kXEbQ+Ou4yeG8a7gEdTrD2opBUDObgKD+XksIGvgycQhqfhHM0nsT9iTo4xi06hOWcwR1B7TTCerIZ1Zq21yioKEa1hN0vt6u6jPqexPUyTkiqJZ4sMtyvKBm6ToVlIlGglI6nVRcCOrwzIKGdKsnaKR6ES/5BXXCn0jQwf2r1i6+9BQJgnIIai4VI+hgVcWTuKKgt+nw81p8EHqIoMqRglAesqCh0jmCDms1nfBnEdRt/0aCfr3Pp++Vp5kgqEdQp9BkQf3enVLQ5V2dlSfqeQXd/oCgxl92NU8g6DKCVr5guYKgQ66gsSJ4c4agOwWNOpgp6OO5N7Un6psJGugsZa86TtDBn5lSvpzNBmwlqLXVoYKyPP0m8b54COqtcwtBTSf9gnosM8MfKigbgS+lgqDeqkLQJBC0WFCjQ/2ChqoKQZNA0AqCJqLmC+puZVZlv6DuVhBUX9JU0EHZq5IqRUoHQfWl1qYQVI+6CGp2qFsedkHdVc0E9RjkrXOWoG4NzHLEBPW3SRBRgnrKnOjnpKBGrz21oKk6BwR1LfTWwCzHkYLWvKvzYEHNnoOg1QQd1GAnDpIraNW7Op9c0PimxwjqsdBbXrMcxwla965OLkEH5V1/JkHNP/YLasQ4gaB17+o8r6BLj0DQmKA+KTIFrXtXJwQ9v6BGc/ALWveuzmME3brPKFypoN4ekSmoUcx5TbeCVr2rE4KSBHVtDed8nKDuqjaCMlFN0K2hRQq6FEGwoE4DxlSDoM7iEwia0tEbjFfQSAOFi6kC+Xj77xhBtetBy45CWQXVtzitoG6hIagn4fyu49vws3CuXoagbodthTuvoE6MEwm6vAd+PJMvmmk6TtBI0xuFCws6OEt6ElRrnHADdSvoOFE/cvvrd9lc/UkEJToFQVsJOk7Uj4wjaMeCmqau+RiFyxM08eEEgnpbICmo0S0NBN2OQZed/U4aChrRxB0btsJBULKgTtsfKOh8Hj++zavs1/j6glI0eVpBrXwoxexFUCbIgkZ63rvFiQSNamKU9xyC+p3wLQwnXI5Bi5Et6LrYWCVEUHMrt92eWtDlLL6YhKDKX7FnFzTUsylBA1GDq/oVtPxC0GhhIGi2oImyPJug60+dlS9YliKovx8haJag4ebgF5SNKoJGGgCCHiZopDkgKElQI5jSlwgRNHPzQwR1Yxwj6LKPT+ziv94TyboVdPzvWQWl5HO0oJfvf64v6uM1fjJ/HR6zUbchMC0FQSGovjjshN+fUMLxIrvbeNtx9FImbbY0lJAiaKpdVGhJX4IGKwZBQwvDCcd50I+//Z7+hdFmS0PTUsIE3Rp6K8dSTAjakaDj2Di+SCEuaH8j6LaFUY4eBCWKEzHoTIJOjxS5vKVeorDellxyDErtRwgKQbWEl5fxTD41T7+c7Ac97lDQOQ0EpVb1IEGZqCFocvNsQT3dB0FlC5qc4MwLZy3cJWhMt2cTNCzfswhKvE6ZY6Ke2i4QFIKuCYk3G7NM1LcQ1O0RsxwQtKagQw1BKdeD7p5mojXQYC6BoAcKGm77YwSl3Sq3e6L+CQX1rUqXt7mgySYVImjyV/iJZxlBdww0zyVoYituQekv6tw7US9A0K3XIKivmHRBH/81FDSDnRP1EBSCUkQpSlgQDoLuFNRN+LyCjk+nD+6401FW/HnkCTrkC7paBkFlCTowCTq/PeHzR+JkPjpRD0G19RCUVVDt6XaxxHsn6umCDhBUoKC6k8cIuj7dLipog2kmCEoTlLLkTII+JpA+XqMHoRUm6vUlEPR8gg5cgt7dTL+GpsIICkHbCDqkiileUBL8E/V9CkowTLag9Jz7EpR/or65oKElnQiao+ypBB2vt7tGxMsMZy+EoL4iQFC6UZfvfz5eX8Y7k8rYJ6havYwIGm2XJoISfJEl6Ja4d0HH8/Pb/QAzPg86X9Z8y7+iXoKgCV/kCmrbUSyoN+AOQYNFqCToeNdHfB50EnQ6fw9e4NyPoB4NDhTUyD5L0LCyzQRVVj4VBL3v2z9/fP+T+KlzFPShJu800yroZmp9QZVdhJCgOXZIEDQoTs+C3k/Pv/1KXVc/Cvq4spl3ol6IoOFVEPRoQUkcNYJaq5VyWxOCVhLUu4VcQcc50BcVuQu0XFCrNc8kaGRzn6ADBM1JODMdCkQuHH12QfcWAYKGGKbhsPJLFE4paK44FEGNxI0E9Xw1SgW16kwWpShhQbjGgkYHiKcT1G1SCOoutGu5Q1Dv5mu7PIWgu0xtL+jSG2yC0m87JoXzLWQW1G4ASYLaqh0qqLdJuxN05PE67sQFoeRw9kIImigCRdBIEQsFXf8SK+gyRZ94wjI1nLMwW1C3Mw4V1NcjMgX1yUcQdBAuKPGmOWo4Z2FAUKOq23/1BSWGbyuo3UAQdEu43MxxaTGCrvWBoGscrfrtBNVa25NXpqBbPpWOQcch9NrkGDRQ1e2/QwWNr/LGMDbVKmIGs+oMQfOMmk7liy+oDxUmLajeRwFBB2sJBH0mQZk4TlDXFyuht49oghr++wV1IyQF1bcztioXdC24Lg4EDYU7WtB18aGCOku4BB301mwuqBMMgu4RNNRHHIIGIjyBoIM6q6DRLrYaeWsOt3tEChpZpi8xpNgqTxDUijro4phtpzcpBA2GSza01UeDP03PgnpSyRU03DiHCao91KaMloLqfbRXUNqHsKC+9PbKrWLVBA21nb64a0Fpr6Ehh3MW7hPU6lkI6s9p0DZuIuighW+1iy/+jTOWL80Ft5GV2XZhQQ0prPal9FHngvrazloVqbzZyFsMUYK2uKI+5YLbyMpsuyMEtYrQUtDQ9JWTE0FQFam8VcM1xh5B57U1RlAuMgX195GZNCGoI0UlQd1ecw7JzBR0QQcrzaCcxmkhqBUDglp9EOoKW1B9ZYagsT5KFQqC2hm2F/S+k//+51J8Ln9KQZVUQdcGcleSBN0q5hU0VLUjBL19+3UdH31TamixoG5rL2lUlqBrjwS6LqdQHkHNXM1CSxbUXF9d0CUfoijhhOM86Hg1ffzhYeRwzsJags5ndragq0Rbaz+doOaqtTk8TbouWYsQzvAwQcd50FHQJlfUx1w4WFAjw/X/qgiqJAmq1VCrqhvzMEGXEbTVFfU+50KtXSaom69sQR8Ft8sxBGL4m8xpTas5qgqqagj6OAZdX5Kwm1JBldvaDQQ1u2anoG4Ngjmb9kBQilHTVH3xHR+hwhwiaCDffYLafWQsLhPUqTNR0JDf3ix0QZXRpIP+QTsYjWZIF3T6TBSlKGFBOH919ZbyuZAr6La+vqDWYmZBt2r0J+g8RGi1mj4XeDcnTL5FNi+cs7CpoL4O5xPUt7gLQc2CFwq6FsojqLl/mT4TRYkkvLDs4NsLqlRXghq+iBXU39Juvc3066oqgqr57R1DxdfQeJpwv6BaGlPQx4dQj/mXDcYHJkF9OTMI6m2gUNX8haojqLJHCm5B1TjbVDIP+tjd+vKoI+h6xMMvqL9H2gtqlkzfyorj3y9HBHU/aLtsuqBbPtUF7W8EpQnqtKbXBk0DVkEHI+dyQf0NlC/o+sEV1NPShwv69d7qGNSobAtBldOazyNooFAeQddMjJYkCapvVU3QdmfxogXVWjxQKP/iJxPUqUabXTwLaUH1PjitoNYqp4uTgi7OHSeoux9fN3fa/3kFXZs+knifoE4w2YK6qnkSO1WJCjoYgiq1eckpqGIQtNFbPgIt1ZOgIbFSgrri+OO4zvUq6FQ/LkF1/k+koNHEuwX19bNKCGoXSFMtLuhauog9eYJatfQK6snLbrcuBL0+hs6yedBgvoYUMgQNSbHkkxQ0aKG5SjmlIwtqlUOSoMqqam1Bx3cnjFeC3obgG+RywnkWnklQqyOWIih3lS2oT5P6goZyzhV0i7Ek9giqtz+boNMbFD5//LzWvtyuiqDuGBUQ1LBOnqCDXajNnsFJnBB0U2m3oOYWuwTVvyg0UQIJp1vlvt7/tfhnpFC+fIK6KkkQ1OqaQwU1EwsQdF5MEyWQcH4w06V49x7Mlyqo++07StDAkjxBH5t5t6ohqOeLQBDUdM4S1O2NAwUtf0B9KN+ooGYDeDrjMEEDH1oKqq/3CeoOnCcWlOXHzj2ChtvXL6jPF6UkCqotTQlqVLwXQddmhaBEQU0FPII6HUr2MimoU4SYoI6AeYLqUhwkqBO+a0G373wzQZ0+ogjqH6zaC+quDwvq0YRdUHPJ1tWtBB1WKk3U5wnqaciEL3M2zQVVeninCMpJkyeo00qFgvq++HFBPd+RLEHN/kmLUpSwINxuQVWWoH7LHEF9JtYTVOlpqIKqTVD/qoCgehHMyVnlZEgXdHCibpWyw0PQEkG1XoGgENRYqJVXOS2lrA99C2p2ltLTZAqqtFVOMT2Crls0EVTZ4ZWdT1eCOk3mCmqqxCGoaZC/xWPe+jNUesCWghqblgpqfY2VHTXywexuV1BrRDqpoIHElQRV0cUxQZXyLaYImhi7rXzMGHp5lVOWiKCBFlg29Qjqlt7sbo+gil3Q2u9JCgmqvC0RENTo0ExBlR5s0AuVJajel8yCUkfqtoJ6S2/1rpFwqzKroLXfk8QrqDv0bFntEtTtvpSgZkVNn9bVYUHX9a72XIJ6viytBbVKZm7lXRpOWPk9Sb4dxpLW1ChP0G17pQXztK/SgxmC+rvPHlgPFdQTQznB9LKYKuUIGmxAI4ZBTFCnpbT1ROaEte9JKhXU1aQ7Qd1WMHt+2TwpqLklQVCrbcOCejrKqItfUCvhupBVUDaaCerrQzuxa4g1fHnyWVZlCaqcsjgd5imd2+ExQbf1TjBPHu6m+hamoIbJIUGVvsTK0VffEwjqsUf/4B9ojhY0UFHH20CzEgT1NY6+ni6omztBULOIbi3zBfWTLWjd9yR5esUj6PqXqaxSxYJukbMFVUbO8YrSBDWr60Q1vasrqDFaa0XIEtRYv+XFK2jl9yR5DgmLBTVWmekyBFV+QbXvkFvgMobIn97BSFutCxooVKyYgYr5y5MvKLkcWXGm/639niQeQZU+jpkdZfyRGgDc7okJaqxnICaoUTr/pqWCunlEBC2AV9Da70nSen9NlRLUXOoIGsnTzMxNly+oXoTaUATb/mIXlIs6I2it9yT5GpNNUDc/iqBGXu6QvX6rzKjiIHxfQ1v1JGjt9yRFlwa8NZdmCZpOEi3CuohSsi6JHEbw5rFzrSdh3fckRZeSNFi/7pyCPi0tWohZUCb2CJqXAQQ9BaIEBcAmV9BxBvQ6DMUPb4CggESuoPfT94/Xl/J7jyEoILFjHvR2P4WvMw8KgM0OQS93Oev8kgSATfYu/uXzx/hbPHbxoAn5J0nDt1/Tk2wb5Quem0rTTNMb6WIX3kNQQKKOoNflIbe30NNuISggsWMXn74nSbs5+RqYMYWggMSOedDri/p4jV4sot2cbM1HbY/HyysmeFayp5ne1G28YDn6UxJlBAWARK6gP9XH335P/yKsl+MFj0Hti4CdD6n1XB9a5YOK7YxKZU48jo2ff/+VEnQ9VI0MtELa9yT9eNqKkXkkHn9CurwldvHkgALa9yT9eNqKkVkSX17G4ZHpAThG5IMTSykHariPOlGzI6P79ieWUo6agrI9frGsGJ2F7jFyd4Weo7I9frGsGJ2F7jFyd4V+ROV6/GJhMfoK3WPk7gq9jKCP6dOjPEWPNIrcXaErNgUA5UBQIJpBwBkSAEEWQQ+faALABwQFooGgQDQQFIgGggLRQFAgmkH7GenAX5IA8IOJeiAaCApEA0GBaA4T9HF/3vXxZPzpoTrTedqt+Fn5VuiR+fUlxaHtyB+vwzA9z4o98v3DfAttYWRPu7ofmCJz9uHKUYJ+/pjOxy73eoyPi/h6v3+4jp19u3+4FdXOCj1ym+5DLQ5tRx4fJTA9EZA98nUMOBpaGNnTru4HpsicfbhxkKC3ecJgfvfidXy882jS9a/f83RXyZOe7dDq8SJSVRzajjwH5Ci0G/llDlga2W1X9wNXZMY+1DhG0NvwNl3DP3/N1i/b/cNaS87Q1+//dRe0NLQT+eNfHuVmj7wKWtwcc3ytXd0PXJFDS8o47BhU75HlgSWXe7NNnV52B4od+h5zPAZlCG1Gvv31zx/TQRd75HUXz9EcZru6H7gih5aUcaygj+/asBwpvtljKkfocY8zCsoQ2ox8HffL42DHHnk9zeBoDrNd3Q9ckQNLCjlW0MdZwXK++sLTI1bo5SWkXBqtka/fHiMFe+TphQEfr0zfV6NdOQV1e4ytD1cOFlRd7qcH//z7vGcbD63ZdvFr6Cki5y5+jTwfZd2HPfbI24EiQ2SzXRl38W6P8fXhytGCjkxzgI+nN3McYJuhr4/LDH4yhDYjz3/du4M/8noeVhzZble+kyS3xxj7cEWCoOM+eDkO5ZiisEKPXDimmezI881cN5Z5FTPy3MUckZ125Zpm8vQYZx+uHCvoOss9Hm89lpdP8pqhJy4sE/V25OuiPXvk5Ri0NLKnXZkm6t3IrH24cvAIOl7qN3X1vBt+fCysmxl6Yv6pszi0Hfm2/LbHHvnCE9nXru4HnsisfbiCi0WAaCAoEA0EBaKBoEA0EBSIBoIC0UBQIBoICkQDQYFoICgQDQQFooGgQDQQFIgGggLRQFAgGggKRANBgWggKBANBAWigaBANBAUiAaCAtFAUCAaCApEA0GBaCAoEA0EBaKBoPxcHs97NBbefgZSgygQlJ/5SWUfr/rzB+dHNYJsICg/s6DmAwgh6E4gKD8PQR/vkpl29uMr6abH9D4eqgioQFB+LtpjnacnD9+H0mkEvRqPeQUUICg/i6DXv35/ju+HGB/oPQo6v0iO6eUCzwIE5UcTdPy/27iPHwWdD0qX94cCEhCUH30Xfz/q/Ot/HyPobfDNP4EoEJQf7SRpGi6XXTzXewWeCgjKjzbNNL+Cc1iOQTF2ZgNB+Vkm6t+WwXN4m0+QpncnXjCO5gBB+dF/6pxeyDI6eVnmQXESnwUEBaKBoEA0EBSIBoIC0UBQIBoICkQDQYFoICgQDQQFooGgQDQQFIgGggLRQFAgGggKRANBgWggKBANBAWigaBANBAUiAaCAtFAUCAaCApEA0GBaCAoEM3/A0xurM82NUceAAAAAElFTkSuQmCC" style="display: block; margin: auto;" /></p>
+<p>The peak discharge plot shows the variability in monthly maximum flows, which is important for understanding flood conditions and extreme hydrological events.</p>
+</div>
+</div>
+<div id="example-analyses" class="section level2">
+<h2>Example analyses</h2>
+<p>That desribes the two data objects. The rest of this vignette provides example analyses that can be conducted.</p>
+<div id="seasonal-patterns" class="section level3">
+<h3>Seasonal patterns</h3>
+<p>The Fraser River exhibits strong seasonal discharge patterns due to its snowmelt-dominated hydrological regime:</p>
+<p>Calculate long-term statistics of monthly means and then monthly peaks:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>monthly_mean_stats <span class="ot">&lt;-</span> fraser_discharge_mean <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(month) <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg =</span> <span class="fu">mean</span>(value),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">min =</span> <span class="fu">min</span>(value),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">max =</span> <span class="fu">max</span>(value)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">month_name =</span> month.name[month])</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>monthly_mean_stats</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 12 × 5</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    month   avg   min    max month_name</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;     </span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1     1  952.  516.  1855. January   </span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2     2  898.  497.  2201. February  </span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3     3  900.  482.  2563. March     </span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4     4 1878.  676.  3807. April     </span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5     5 5007. 2694.  9107. May       </span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6     6 6940. 4209. 10752. June      </span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7     7 5477. 2547.  9601. July      </span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8     8 3445. 2014.  6437. August    </span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9     9 2302. 1289   4456  September </span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10    10 1924.  924.  3458. October   </span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11    11 1632.  727.  2933  November  </span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12    12 1138.  540.  2416. December</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>monthly_peak_stats <span class="ot">&lt;-</span> fraser_discharge_peak <span class="sc">%&gt;%</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(month) <span class="sc">%&gt;%</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg =</span> <span class="fu">mean</span>(value),</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">min =</span> <span class="fu">min</span>(value),</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">max =</span> <span class="fu">max</span>(value)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">month_name =</span> month.name[month])</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>monthly_peak_stats</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 12 × 5</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    month   avg   min   max month_name</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt;     </span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1     1 1313.   555  3870 January   </span></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2     2 1167.   555  3210 February  </span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3     3 1182.   538  5160 March     </span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4     4 3293.   917  8240 April     </span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5     5 7251.  3840 15200 May       </span></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6     6 8408.  4570 14800 June      </span></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7     7 6873.  3170 11100 July      </span></span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8     8 4441.  2290  7650 August    </span></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9     9 3030.  1610  6260 September </span></span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10    10 2660.  1180  5320 October   </span></span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11    11 2393.   912  5370 November  </span></span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12    12 1651.   694  4210 December</span></span></code></pre></div>
+<p>Now plot the average seasonal cycle</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>y_lim <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">0</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>          <span class="fu">max</span>(<span class="fu">c</span>(monthly_mean_stats<span class="sc">$</span>avg, monthly_peak_stats<span class="sc">$</span>avg)))</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(monthly_mean_stats<span class="sc">$</span>month,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>     monthly_mean_stats<span class="sc">$</span>avg,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">type =</span> <span class="st">&quot;l&quot;</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">lwd =</span> <span class="dv">2</span>,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;Month&quot;</span>,</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">&quot;Average daily mean discharge (m³/s)&quot;</span>,</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim =</span> y_lim,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">&quot;Average seasonal cycle - mean discharge&quot;</span>,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">xaxt =</span> <span class="st">&quot;n&quot;</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>, <span class="at">labels =</span> month.abb)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(monthly_peak_stats<span class="sc">$</span>month,</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>     monthly_peak_stats<span class="sc">$</span>avg,</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>     <span class="at">type =</span> <span class="st">&quot;l&quot;</span>,</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>     <span class="at">lwd =</span> <span class="dv">2</span>,</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">&quot;red&quot;</span>,</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;Month&quot;</span>,</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">&quot;Average peak discharge (m³/s)&quot;</span>,</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">&quot;Average seasonal cycle - peak discharge&quot;</span>,</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim =</span> y_lim,</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>     <span class="at">xaxt =</span> <span class="st">&quot;n&quot;</span>)</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>, <span class="at">labels =</span> month.abb)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+</div>
+<div id="months-with-highest-mean-or-highest-peak-discharge" class="section level3">
+<h3>Months with highest mean or highest peak discharge:</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fraser_discharge_mean <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(value))</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1,360 × 3</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     year month  value</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1  1972     6 10752.</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2  1948     6 10737 </span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3  1964     6 10219.</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4  1967     6  9962.</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5  1920     7  9601.</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6  1997     6  9582.</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7  2012     6  9400.</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8  1921     6  9317 </span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9  2002     6  9303 </span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10  2011     6  9166.</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 1,350 more rows</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>fraser_discharge_peak <span class="sc">%&gt;%</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(value))</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1,360 × 3</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     year month value</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1  1948     5 15200</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2  1948     6 14800</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3  1972     6 12900</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4  1950     6 12500</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5  2012     6 11700</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6  1964     6 11600</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7  1955     6 11300</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8  1997     6 11300</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9  1921     6 11100</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10  1955     7 11100</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 1,350 more rows</span></span></code></pre></div>
+</div>
+<div id="months-with-lowest-mean-or-lowest-peak-discharge" class="section level3">
+<h3>Months with lowest mean or lowest peak discharge:</h3>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fraser_discharge_mean <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(value)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1,360 × 3</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     year month value</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1  1917     3  482.</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2  1912     3  485.</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3  1929     2  497.</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4  1919     3  497.</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5  1929     3  505.</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6  1913     1  516.</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7  1929     1  520.</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8  1937     2  528.</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9  2001     3  537.</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10  1928    12  540.</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 1,350 more rows</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>fraser_discharge_peak <span class="sc">%&gt;%</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(value)</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1,360 × 3</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     year month value</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1  1917     3   538</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2  1929     1   555</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3  1929     2   555</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4  1917     2   558</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5  1937     2   566</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6  1929     3   575</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7  1912     3   578</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8  1927     3   592</span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9  1919     3   612</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10  2023     3   624</span></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 1,350 more rows</span></span></code></pre></div>
+</div>
+<div id="annual-statistics" class="section level3">
+<h3>Annual statistics</h3>
+<p>Annual statistics based on the monthly means, and also the annual peak (being the maximum monthly peak each year):</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>annual_mean_stats <span class="ot">&lt;-</span> fraser_discharge_mean <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">annual_mean =</span> <span class="fu">mean</span>(value),</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">annual_min =</span> <span class="fu">min</span>(value),</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">annual_max =</span> <span class="fu">max</span>(value)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate annual peaks</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>annual_peak <span class="ot">&lt;-</span> fraser_discharge_peak <span class="sc">%&gt;%</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">annual_peak =</span> <span class="fu">max</span>(value)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>annual_summary <span class="ot">&lt;-</span> annual_mean_stats <span class="sc">%&gt;%</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(annual_peak,</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>            <span class="at">by =</span> <span class="st">&quot;year&quot;</span>)</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>annual_summary</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 114 × 5</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     year annual_mean annual_min annual_max annual_peak</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;       &lt;int&gt;</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1  1912       2702.       485.      6128         7420</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2  1913       2806.       516.      8282.       10300</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3  1914       2910.       787.      7144.        8550</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4  1915       2262.       585.      5021.        5800</span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5  1916       2503.       543.      6582.        8720</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6  1917       2702.       482.      7880         8980</span></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7  1918       3046.       837       7971.        9770</span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8  1919       2628.       497.      6930.        8520</span></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9  1920       3261.       648.      9601.       10800</span></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10  1921       3202.       824.      9317        11100</span></span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 104 more rows</span></span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>annual_summary <span class="sc">%&gt;%</span> <span class="fu">tail</span>()</span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 5</span></span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    year annual_mean annual_min annual_max annual_peak</span></span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;       &lt;int&gt;</span></span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  2020       3605.       872.      8639.       10600</span></span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2  2021       2957.      1157.      7643         9640</span></span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3  2022       2941.       589.      8940        10400</span></span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4  2023       1943.       579.      7174.        8970</span></span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5  2024       2097.       763.      4230         4990</span></span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6  2025       2435.       802.      5224.        6950</span></span></code></pre></div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

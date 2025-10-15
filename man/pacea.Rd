@@ -36,10 +36,10 @@ Authors:
 
 Other contributors:
 \itemize{
-  \item Jessica Nephin [contributor]
+  \item Jessica Nephin  [contributor]
   \item Strahan Tucker [contributor]
-  \item Matt Grinnell [contributor]
-  \item Lindsay Davidson [contributor]
+  \item Matt Grinnell  [contributor]
+  \item Lindsay Davidson  [contributor]
   \item Sean Anderson [contributor]
   \item Philina English [contributor]
   \item Chris Grandin (\href{https://orcid.org/0000-0002-6746-3486}{ORCID}) [contributor]
