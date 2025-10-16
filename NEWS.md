@@ -5,6 +5,16 @@ Developers: for some general tips for writing good bullets see https://style.tid
 
 ## Updates by date
 
+* 2025-10-15 Updates for:
+  * `oisst_7day` and `oisst_month`
+  * indices `ao`, `mei`, `npgo`, `pdo`, and `soi`
+  * buoy temperature data (4,096 new daily temperature calculations)
+  * Fraser River discharge (note that values for June 2025 have changed from the
+original ones in pacea, as values changed on the wateroffice.ec.gc.ca website),
+also fixed curious concatenating factor problem 
+  * README file updated with uses of pacea and link to marea
+
+
 * 2025-07-15 New data: Fraser River discharge monthly means
   `fraser_discharge_mean` and peaks `fraser_discharge_peak` from 1912
   onwards, with new help files, tests, and vignettes. Also now preserve/check

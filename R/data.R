@@ -1659,6 +1659,16 @@
 ##'  of these daily values over each month. Units are \code{m^3 s^-1}. We will
 ##'  update these data sets on a monthly basis.
 ##'
+##' From the website, the details are:
+##' Type        Operation schedule       Gauge type
+##' 1912-1949   Flow Continuous	         Manual
+##' 1950-1995   Flow Continuous          Recorder
+##' 1996-2025   Flow & Level Continuous  Recorder
+
+##' Note that the June 2025 values seemed to have got updated on the website
+##' when redownloading the data in October 2025, as shown up by a check in our
+##' `data-raw/` code. See the NEWS for details.
+##'
 ##' @format A tibble also of class `pacea_index` with columns:
 ##' \describe{
 ##'   \item{year:}{year of value}

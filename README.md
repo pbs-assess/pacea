@@ -2,11 +2,11 @@
 <!--
 README.md is generated from README.Rmd. Please edit that file. Build with
 -->
+
 <!--
 which builds the .html that can be viewed locally (but isn't pushed to GitHub;
 GitHub uses README.md to make the page you see on GitHub).
-
-Figures - to update a figure, manually run the piece of code that makes
+&#10;Figures - to update a figure, manually run the piece of code that makes
 the .png file. See notes below (and Issue #44). Make the png resolutions the same in
 each direction, at least for multi-panel plots, as seemed a bit blurry when I
 hadn't (primary production and hotssea at least).
@@ -45,68 +45,68 @@ to get started.
 
 Currently, pacea contains:
 
--   212,189 calculations of daily sea surface temperature based on data
-    from 19 buoys. **Updated monthly.**
+- 216,285 calculations of daily sea surface temperature based on data
+  from 19 buoys. **Updated monthly.**
 
--   outputs from the spatial British Columbia continental margin (BCCM)
-    model, the coupled physical-biogeochemical model by Peña et
-    al. (2019). Variables are available for (a) 40,580 spatial cells
-    across Canada’s Pacific Exclusive Economic Zone, and **NEW** (b)
-    161,025 spatial cells across a larger domain, extending into US
-    waters. Variables are given as 27 years of monthly means (from 1993
-    to 2019). The variables are:
+- outputs from the spatial British Columbia continental margin (BCCM)
+  model, the coupled physical-biogeochemical model by Peña et
+  al. (2019). Variables are available for (a) 40,580 spatial cells
+  across Canada’s Pacific Exclusive Economic Zone, and **NEW** (b)
+  161,025 spatial cells across a larger domain, extending into US
+  waters. Variables are given as 27 years of monthly means (from 1993 to
+  2019). The variables are:
 
-    -   dissolved oxygen concentration
-    -   pH
-    -   salinity
-    -   temperature
-    -   depth-integrated phytoplankton
-    -   depth-integrated primary production.
+  - dissolved oxygen concentration
+  - pH
+  - salinity
+  - temperature
+  - depth-integrated phytoplankton
+  - depth-integrated primary production.
 
-    For applicable variables these are given for
+  For applicable variables these are given for
 
-    -   sea surface
-    -   0-40 m integration
-    -   40-100 m integration
-    -   100 m to the sea bottom
-    -   sea bottom.
+  - sea surface
+  - 0-40 m integration
+  - 40-100 m integration
+  - 100 m to the sea bottom
+  - sea bottom.
 
--   NOAA’s spatial Optimum Interpolation Sea Surface Temperature (OISST)
-    record, that incorporates observations from different platforms
-    (satellites, ships, buoys, and Argo floats):
+- NOAA’s spatial Optimum Interpolation Sea Surface Temperature (OISST)
+  record, that incorporates observations from different platforms
+  (satellites, ships, buoys, and Argo floats):
 
-    -   provided as weekly and monthly means from Sep 1981 to Mar 2025.
-        **Updated monthly.**
+  - provided as weekly and monthly means from Sep 1981 to Aug 2025.
+    **Updated monthly.**
 
--   outputs from the Hindcast of the Salish Sea (HOTSSea) physical
-    oceanography model that recreates conditions throughout the Salish
-    Sea from 1980 to 2018 [(Oldford et al., in
-    review)](https://doi.org/10.5194/gmd-2024-58). Statistics regarding
-    temperature and salinity are available at the same 2 km x 2 km
-    spatial resolution as the full BCCM results. Specifically, values of
-    minimum, mean, maximum, and standard deviation (over each month) are
-    available for:
+- outputs from the Hindcast of the Salish Sea (HOTSSea) physical
+  oceanography model that recreates conditions throughout the Salish Sea
+  from 1980 to 2018 [(Oldford et al., in
+  review)](https://doi.org/10.5194/gmd-2024-58). Statistics regarding
+  temperature and salinity are available at the same 2 km x 2 km spatial
+  resolution as the full BCCM results. Specifically, values of minimum,
+  mean, maximum, and standard deviation (over each month) are available
+  for:
 
-    -   sea surface
-    -   0-30 m integration
-    -   30-150 m integration
-    -   150 m to the sea bottom
-    -   sea bottom.
+  - sea surface
+  - 0-30 m integration
+  - 30-150 m integration
+  - 150 m to the sea bottom
+  - sea bottom.
 
--   10 climatic and oceanographic indices, such as the Pacific Decadal
-    Oscillation and those related to El Niño. **Updated monthly, new one
-    added.**
+- 10 climatic and oceanographic indices, such as the Pacific Decadal
+  Oscillation and those related to El Niño. **Updated monthly, new one
+  added.**
 
--   estimates of abundances for Harbour Seals.
+- estimates of abundances for Harbour Seals.
 
--   estimates of biomass and annual recruitments for Pacific Hake and
-    Pacific Herring. **Updated annually.**
+- estimates of biomass and annual recruitments for Pacific Hake and
+  Pacific Herring. **Updated annually.**
 
--   zooplankton biomass anomalies in the Strait of Georgia, for 25
-    species groups, from 1996 onwards. **Updated annually.**
+- zooplankton biomass anomalies in the Strait of Georgia, for 25 species
+  groups, from 1996 onwards. **Updated annually.**
 
--   Fraser River discharge monthly means and monthly peaks, from 1912
-    onwards. **Updated monthly.**
+- Fraser River discharge monthly means and monthly peaks, from 1912
+  onwards. **Updated monthly.**
 
 Plotting and helper functions are provided, and demonstrated in the
 detailed vignettes. All data and model outputs are fully documented and
@@ -121,61 +121,61 @@ pacea installation (see below). Since the initial release we have also
 added the following in response to user requests (some are documented in
 the Issues) with latest first:
 
--   for Pacific Hake, added estimates of total biomass of age-1 fish and
-    recruitment deviations (required updating some plotting and tickmark
-    functions which should all still be back compatible); see the
-    [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
-    vignette.
+- for Pacific Hake, added estimates of total biomass of age-1 fish and
+  recruitment deviations (required updating some plotting and tickmark
+  functions which should all still be back compatible); see the
+  [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
+  vignette.
 
--   added Mike Malick’s oceanographic index: `bi`, the North Pacific
-    Current Bifurcation Index; see the [indices
-    vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/indices.html)
-    and `?bi`.
+- added Mike Malick’s oceanographic index: `bi`, the North Pacific
+  Current Bifurcation Index; see the [indices
+  vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/indices.html)
+  and `?bi`.
 
--   added results from the Hindcast of the Salish Sea (HOTSSea) physical
-    oceanography model that recreates conditions throughout the Salish
-    Sea from 1980 to 2018. See the new [hotssea
-    vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/hotssea.html).
+- added results from the Hindcast of the Salish Sea (HOTSSea) physical
+  oceanography model that recreates conditions throughout the Salish Sea
+  from 1980 to 2018. See the new [hotssea
+  vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/hotssea.html).
 
--   added results from the BCCM model over its full original domain
-    (rather than just restricted to Canada’s Exclusive Economic Zone),
-    see the new [bccm_full
-    vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm_full.html).
+- added results from the BCCM model over its full original domain
+  (rather than just restricted to Canada’s Exclusive Economic Zone), see
+  the new [bccm_full
+  vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm_full.html).
 
--   added depths for the `grid26` model domain, see `?grid26_depth`.
+- added depths for the `grid26` model domain, see `?grid26_depth`.
 
--   updated citation information (incremented the year, added a DOI
-    through Zenodo, and added two new co-authors: Kelsey Flynn and Greig
-    Oldford), see \`citation(“pacea”) or scroll down below.
+- updated citation information (incremented the year, added a DOI
+  through Zenodo, and added two new co-authors: Kelsey Flynn and Greig
+  Oldford), see \`citation(“pacea”) or scroll down below.
 
--   added Pacific Herring stock assessment results, for spawning stock
-    biomass and age-2 recruitment for each of the five major stock
-    assessment regions; see the
-    [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
-    vignette.
+- added Pacific Herring stock assessment results, for spawning stock
+  biomass and age-2 recruitment for each of the five major stock
+  assessment regions; see the
+  [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
+  vignette.
 
--   added helper function `a()`, shorthand for `as.data.frame()`, see
-    examples in `?a`.
+- added helper function `a()`, shorthand for `as.data.frame()`, see
+  examples in `?a`.
 
--   extended calculations of the Aleutian Low Pressure Index (ALPI) up
-    to 2022; they were originally only available to 2015. The Aleutian
-    Low was mentioned in several talks at the 2024 State of the Pacific
-    Ocean meeting, motivating us to update the values here.
+- extended calculations of the Aleutian Low Pressure Index (ALPI) up to
+  2022; they were originally only available to 2015. The Aleutian Low
+  was mentioned in several talks at the 2024 State of the Pacific Ocean
+  meeting, motivating us to update the values here.
 
--   added zooplankton biomass anomalies for the Strait of Georgia, with
-    a new vignette:
-    [zooplankton.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/zooplankton.html).
+- added zooplankton biomass anomalies for the Strait of Georgia, with a
+  new vignette:
+  [zooplankton.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/zooplankton.html).
 
--   updated the estimates of Pacific Hake abundance and recruitment with
-    values from the 2024 assessment (retaining the original estimates
-    from the 2023 assessments for reproducibility); see the
-    [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
-    vignette.
+- updated the estimates of Pacific Hake abundance and recruitment with
+  values from the 2024 assessment (retaining the original estimates from
+  the 2023 assessments for reproducibility); see the
+  [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
+  vignette.
 
--   added Fraser River discharge values, for each month since 1912. See
-    the
-    [fraser_discharge.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/fraser_discharge.html)
-    vignette.
+- added Fraser River discharge values, for each month since 1912. See
+  the
+  [fraser_discharge.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/fraser_discharge.html)
+  vignette.
 
 ## Brief examples of some questions that can be quickly visualised (see vignettes for full details)
 
@@ -187,7 +187,8 @@ Entrance compare to previous years, based on the buoy there?**
 plot(buoy_sst)    # Buoy C46205 is plotted by default
 ```
 
-<img src="man/figures/README-north-hecate-temp.png" style="width:80.0%" />
+<img src="man/figures/README-north-hecate-temp.png"
+style="width:80.0%" />
 
 **Are we experiencing a phase of El Niño, based on the Oceanic Niño
 Index? (If the last bars are red and above 0.5, then ‘yes’)**
@@ -329,18 +330,18 @@ over what years?**
 knitr::kable(pacea_indices)
 ```
 
-| Object      | Description                                     | Resolution | Start year | End year |
-|:------------|:------------------------------------------------|:-----------|-----------:|---------:|
-| pdo         | Pacific Decadal Oscillation                     | monthly    |       1854 |     2025 |
-| npi_monthly | North Pacific Index (monthly)                   | monthly    |       1899 |     2025 |
-| npi_annual  | North Pacific Index (annual)                    | annual     |       1899 |     2025 |
-| alpi        | Aleutian Low Pressure Index                     | annual     |       1900 |     2022 |
-| oni         | Oceanic Niño Index                              | monthly    |       1950 |     2024 |
-| npgo        | North Pacific Gyre Oscillation                  | monthly    |       1950 |     2025 |
-| ao          | Arctic Oscillation                              | monthly    |       1950 |     2025 |
-| soi         | Southern Oscillation Index                      | monthly    |       1951 |     2025 |
-| bi          | North Pacific Bifurcation Index                 | annual     |       1967 |     2024 |
-| mei         | Multivariate El Niño Southern Oscillation Index | monthly    |       1979 |     2025 |
+| Object | Description | Resolution | Start year | End year |
+|:---|:---|:---|---:|---:|
+| pdo | Pacific Decadal Oscillation | monthly | 1854 | 2025 |
+| npi_monthly | North Pacific Index (monthly) | monthly | 1899 | 2025 |
+| npi_annual | North Pacific Index (annual) | annual | 1899 | 2025 |
+| alpi | Aleutian Low Pressure Index | annual | 1900 | 2022 |
+| oni | Oceanic Niño Index | monthly | 1950 | 2024 |
+| npgo | North Pacific Gyre Oscillation | monthly | 1950 | 2025 |
+| ao | Arctic Oscillation | monthly | 1950 | 2025 |
+| soi | Southern Oscillation Index | monthly | 1951 | 2025 |
+| bi | North Pacific Bifurcation Index | annual | 1967 | 2024 |
+| mei | Multivariate El Niño Southern Oscillation Index | monthly | 1979 | 2025 |
 
 ## Vignettes
 
@@ -349,36 +350,69 @@ the vignettes, which are already rendered here (note that we do not
 automatically update them when the data in pacea are updated, so if you
 run them locally you may get more up-to-date values):
 
--   [indices.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/indices.html)
-    Climatic and oceanographic indices and associated plotting
-    functions.
--   [buoys.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/buoys.html)
-    Calculated daily mean sea surface temperatures and associated
-    plotting functions.
--   [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
-    Estimates of animal populations and associated plotting functions.
--   [oisst.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/oisst.html)
-    OISST data and calculations and associated plotting functions.
--   [bccm.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm.html)
-    BCCM model results restricted to Canada’s Exclusive Economic Zone,
-    calculations, and associated plotting functions.
--   [bccm_full.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm_full.html)
-    BCCM model results over the full model domain, calculations, and
-    associated plotting functions.
--   [hotssea.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/hotssea.html)
-    HOTSSea model results and associated plotting functions.
--   [zooplankton.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/zooplankton.html)
-    Zooplankton anomalies for the Strait of Georgia, calculations, and
-    associated plotting functions.
--   [fraser_discharge.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/fraser_discharge.html)
-    Fraser River discharge monthly means and peaks, and associated
-    plotting functions.
+- [indices.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/indices.html)
+  Climatic and oceanographic indices and associated plotting functions.
+- [buoys.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/buoys.html)
+  Calculated daily mean sea surface temperatures and associated plotting
+  functions.
+- [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
+  Estimates of animal populations and associated plotting functions.
+- [oisst.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/oisst.html)
+  OISST data and calculations and associated plotting functions.
+- [bccm.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm.html)
+  BCCM model results restricted to Canada’s Exclusive Economic Zone,
+  calculations, and associated plotting functions.
+- [bccm_full.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm_full.html)
+  BCCM model results over the full model domain, calculations, and
+  associated plotting functions.
+- [hotssea.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/hotssea.html)
+  HOTSSea model results and associated plotting functions.
+- [zooplankton.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/zooplankton.html)
+  Zooplankton anomalies for the Strait of Georgia, calculations, and
+  associated plotting functions.
+- [fraser_discharge.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/fraser_discharge.html)
+  Fraser River discharge monthly means and peaks, and associated
+  plotting functions.
 
 The presentations where we introduced `pacea` are available as .pdf.
 [Here is the DFO version (10th November
 2023)](talks/pacea-release-talk-dfo.pdf) and [here is the UVic Ecostats
 version (21st November 2023)](talks/pacea-release-talk-uvic.pdf). The
-code to build them is [here as .Rmd](talks/pacea-release-talk.Rmd).
+code to build them is [here as .Rmd](talks/pacea-release-talk.Rmd) and
+for subsequent talks see [here](talks/).
+
+## Uses of pacea
+
+Example uses of pacea that we are aware of (some are ongoing), include:
+
+- Petrale Sole stock assessment (under revision) – investigating
+  environmental conditions potentially affecting recruitment and body
+  condition
+- Pacific Hake – generation of indices previously found to be
+  influential for recruitment of Pacific Hake (Merluccius productus), to
+  produce a first hake-specific ecosystem summary for the 2025 stock
+  assessment ([Johnson et al.,
+  2025)](https://s3.amazonaws.com/media.fisheries.noaa.gov/2025-02/Status-Pacific-Hake-whiting-US-and-Canadian-waters-2025.pdf)
+- Spiny Dogfish – understanding declines over the past 20 years
+  (research project and potentially a stock assessment)
+- shrimp distributions – impact of including environmental variables on
+  predicting distributions (manuscript)
+- humpback whales and porpoises - environmental covariates in species
+  distribution models
+- analysing occurrence of Bigg’s killer whales
+- Pacific Saury – finding links between two basin-scale indices (AOI &
+  PDO) and process errors in assessment, supporting Canada’s North
+  Pacific Fisheries Commission commitments
+- combines several disparate datasets discussed in DFO’s annual State of
+  the Pacific Ocean report [(Boldt et al.,
+  2025)](https://www.dfo-mpo.gc.ca/oceans/publications/soto-rceo/2024/pac-technical-report-rapport-technique-eng.html)
+- Dover Sole stock assessment – investigating environmental conditions
+  potentially affecting recruitment and body condition
+- Yelloweye Rockfish stock assessment – investigating environmental
+  conditions potentially affecting recruitment and body condition
+- Recommended source of information for the Salmon Prize Project
+
+Please let us know of any other applications.
 
 ## Installation
 
@@ -452,6 +486,10 @@ This work is strongly motivated by, and based on, the
 [GSLea](https://github.com/duplisea/gslea) R package by Dan Duplisea and
 colleagues for the Gulf of St Lawrence.
 
+In turn, pacea helped motivate its sibling package
+[marea](https://github.com/MarEcosystemApproaches/marea), developed for
+the Maritimes Region.
+
 ## Citation
 
 If you use `pacea` in your work then please cite it as (NOTE this has
@@ -481,9 +519,9 @@ Fisheries and Oceans Canada (project 21-FS-03-13).
 We thank the following for contributing ideas, example code for ROMS
 output, model output, and/or helping with ideas and coding issues:
 
--   Jessica Nephin, Lindsay Davidson, Strahan Tucker, Brianna Wright,
-    Patrick Thompson, Matt Grinnell, Sean Anderson, Philina English,
-    Chris Grandin, Jennifer Boldt, Kelly Young, and others.
+- Jessica Nephin, Lindsay Davidson, Strahan Tucker, Brianna Wright,
+  Patrick Thompson, Matt Grinnell, Sean Anderson, Philina English, Chris
+  Grandin, Jennifer Boldt, Kelly Young, and others.
 
 And a big thanks to Carley Colclough for expertly designing the pacea
 logo.
@@ -532,32 +570,32 @@ the package being installable).
 Your own branch should be called `dev-yourname`, e.g. `dev-andy` and
 `dev-travis`. If you don’t yet have a branch you need to:
 
--   create it locally (and ‘check it out’, i.e. move into it):
-    `git checkout -b dev-yourname`
--   tell Git where to push to:
-    `git push --set-upstream origin dev-yourname` (Git will tell you
-    this command if you do a `git push` without having run it)
--   update GitHub Actions so that pushes of your branch get properly
-    tested on GitHub. Just add your branch to **both** lists of branches
-    at the top of:
-    -   `.github/workflows/R-CMD-check.yaml`
-    -   `.github/workflows/test-coverage.yaml`
--   Do that as your first commit and push to check everything’s working.
+- create it locally (and ‘check it out’, i.e. move into it):
+  `git checkout -b dev-yourname`
+- tell Git where to push to:
+  `git push --set-upstream origin dev-yourname` (Git will tell you this
+  command if you do a `git push` without having run it)
+- update GitHub Actions so that pushes of your branch get properly
+  tested on GitHub. Just add your branch to **both** lists of branches
+  at the top of:
+  - `.github/workflows/R-CMD-check.yaml`
+  - `.github/workflows/test-coverage.yaml`
+- Do that as your first commit and push to check everything’s working.
 
 Once you have your branch set up then the workflow is:
 
 1.  Make sure you are all caught up on the main branch:
 
--   `git checkout main`
--   `git fetch`
--   `git rebase`
+- `git checkout main`
+- `git fetch`
+- `git rebase`
 
 2.  Switch to your development branch and merge the main branch into it
 
--   `git checkout dev-yourname`
--   `git merge main`
--   for magit users (probably just Andy), this is just `b b` and `m m`
-    (it recommends arguments)
+- `git checkout dev-yourname`
+- `git merge main`
+- for magit users (probably just Andy), this is just `b b` and `m m` (it
+  recommends arguments)
 
 3.  Do some new commits in your branch and push them in the usual way.
     GitHub Actions will work on your branch.
@@ -581,8 +619,8 @@ commands Andy tried (now deleting to keep this README file cleaner).
 4.  When you are happy with your changes and ready to merge them into
     the main branch, you need to
 
--   add any changes that users should be aware of to the [NEWS](NEWS.Md)
-    file.
+- add any changes that users should be aware of to the [NEWS](NEWS.Md)
+  file.
 
 No need to mention things that are only of interest to developers (like
 the commiting of these instructions). We want the NEWS to be succinct
@@ -594,30 +632,30 @@ last fetched), then merge any changes back into your branch. You could
 just check on GitHub (if you’re the last person to have pushed to main
 then you are probably fine), or do these:
 
--   `git checkout main`
+- `git checkout main`
 
--   `git fetch`
+- `git fetch`
 
--   `git rebase`
+- `git rebase`
 
--   `git checkout dev-yourname`
+- `git checkout dev-yourname`
 
--   `git merge main`
+- `git merge main`
 
 If that does merge in some new commits then you should
 
--   `git push` to run the GitHub Actions checks again on GitHub. If the
-    merge says something like you are all caught up, no merging is
-    needed (i.e. no-one committed anything to the main branch
-    recenetly), then no need for the `git push`, since this entire step
-    will not have added any new code.
+- `git push` to run the GitHub Actions checks again on GitHub. If the
+  merge says something like you are all caught up, no merging is needed
+  (i.e. no-one committed anything to the main branch recenetly), then no
+  need for the `git push`, since this entire step will not have added
+  any new code.
 
 5.  Now you are ready to merge your changes into the main branch, so
     that people will get them when they install/update `pacea`:
 
--   `git checkout main`
--   `git merge dev-yourname`
--   `git push`
+- `git checkout main`
+- `git merge dev-yourname`
+- `git push`
 
 And you are done! If you want, we have some aliases (such as `git co`
 for `git checkout` and `git p` for `git push` listed in this example

@@ -14,7 +14,7 @@ A tibble also of class \code{pacea_index} with columns:
 \code{fraser_discharge_mean} and \code{fraser_discharge_peak}, respectively}
 }
 
-An object of class \code{pacea_index} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 1360 rows and 3 columns.
+An object of class \code{pacea_index} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 1363 rows and 3 columns.
 }
 \source{
 Generated from running
@@ -54,6 +54,15 @@ resolution). For \code{fraser_discharge_mean} we calculate the mean of these dai
 values for each month. For \code{fraser_discharge_peak} we calculate the maximum
 of these daily values over each month. Units are \code{m^3 s^-1}. We will
 update these data sets on a monthly basis.
+
+From the website, the details are:
+Type        Operation schedule       Gauge type
+1912-1949   Flow Continuous	         Manual
+1950-1995   Flow Continuous          Recorder
+1996-2025   Flow & Level Continuous  Recorder
+Note that the June 2025 values seemed to have got updated on the website
+when redownloading the data in October 2025, as shown up by a check in our
+\verb{data-raw/} code. See the NEWS for details.
 }
 \examples{
 \dontrun{

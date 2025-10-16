@@ -432,7 +432,34 @@ The presentations where we introduced `pacea` are available as .pdf. [Here is th
 version (10th November 2023)](talks/pacea-release-talk-dfo.pdf) and
 [here is the UVic Ecostats version (21st November
 2023)](talks/pacea-release-talk-uvic.pdf). The code to build them is [here as
-.Rmd](talks/pacea-release-talk.Rmd).
+.Rmd](talks/pacea-release-talk.Rmd) and for subsequent talks see [here](talks/).
+
+## Uses of pacea
+
+Example uses of pacea that we are aware of (some are ongoing), include:
+
+* Petrale Sole stock assessment (under revision) -- investigating environmental
+conditions potentially affecting recruitment and body condition 
+* Pacific Hake -- generation of indices previously found to be influential for
+  recruitment of Pacific Hake (Merluccius productus), to produce a first
+  hake-specific ecosystem summary for the 2025 stock assessment ([Johnson et al., 2025)](https://s3.amazonaws.com/media.fisheries.noaa.gov/2025-02/Status-Pacific-Hake-whiting-US-and-Canadian-waters-2025.pdf)
+* Spiny Dogfish -- understanding declines over the past 20 years (research project
+ and potentially a stock assessment)
+* shrimp distributions -- impact of including environmental variables on predicting distributions (manuscript)
+* humpback whales and porpoises - environmental covariates in species
+  distribution models
+* analysing occurrence of Bigg's killer whales 
+* Pacific Saury -- finding links between two basin-scale indices (AOI & PDO) and
+process errors in assessment, supporting Canada's North Pacific Fisheries Commission commitments
+* combines several disparate datasets discussed in DFO's annual State of the
+Pacific Ocean report [(Boldt et al., 2025)](https://www.dfo-mpo.gc.ca/oceans/publications/soto-rceo/2024/pac-technical-report-rapport-technique-eng.html)
+* Dover Sole stock assessment  -- investigating environmental
+conditions potentially affecting recruitment and body condition 
+* Yelloweye Rockfish stock assessment  -- investigating environmental
+conditions potentially affecting recruitment and body condition 
+* Recommended source of information for the Salmon Prize Project
+
+Please let us know of any other applications.
 
 ## Installation
 
@@ -491,6 +518,10 @@ anticipate other interested users). The Fisheries Act requires management of fis
 A comprehensive [2022 analysis of Canadian stock assessments](https://publications.gc.ca/collections/collection_2022/mpo-dfo/Fs97-6-3473-eng.pdf) found that availability of data on environmental variables was the leading cause of not integrating such information into assessments. pacea aims to help make data availability more streamlined, and avoid each individual assessment scientist having to figure out themselves where to get appropriate data.
 
 This work is strongly motivated by, and based on, the [GSLea](https://github.com/duplisea/gslea) R package by Dan Duplisea and colleagues for the Gulf of St Lawrence.
+
+In turn, pacea helped motivate its sibling package
+[marea](https://github.com/MarEcosystemApproaches/marea), developed for the
+Maritimes Region.
 
 ## Citation
 
