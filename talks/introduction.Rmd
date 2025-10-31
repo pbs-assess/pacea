@@ -100,8 +100,6 @@ approach data matrix R-package. R package version 0.1 https://github.com/duplise
 
 - Primary audience is DFO stock assessment scientists, but usable by anyone
   (with a minimal working knowledge of R).
--->
-
 
 ## What is a stock assessment?
 
@@ -128,6 +126,63 @@ different catches:
 | 150,000 | 100% | 17% |
 | 300,000 | 100% | 23% |
 | 450,000 | 100% | 30% |
+
+-->
+
+## Hence... pacea
+
+- Released in November 2023.
+
+- Maintained and extended since then.
+
+- Include vignettes that walk users through various features.
+
+- All data (except oceanographic model output) is saved within the package
+  - no further downloading required
+  - not relying on external websites being functional.
+
+- Code is completely open source: transparent, traceable, and transferable.
+
+## pacea palooza 2025
+
+- Given quite a few talks, but not done a detailed how-to presentation
+
+- Gave short talk to Molecular Genetics Section
+
+- Claire thought of hosting a workshop
+
+**Day 1**
+
+- motivation and overview (this talk)
+
+- overview of GitHub site
+
+- we will walk through example code of each type of data and model output
+
+  - based on the vignettes that are rendered on GitHub 
+  - so you do **not** need to frantically copy everything down that we type
+  
+- options:
+  - people play with relevant outputs on their own?
+  - look at people's questions? work through one together?
+  - troubleshoot any installation issues
+
+## pacea palooza 2025
+
+**Between Day 1 and Day 2**
+
+- carry on digging into the package
+- wrangle any of your own data that you want to use with pacea outputs to 
+   investigate a problem
+- try some analyses
+
+**Day 2**
+
+- people say what they have done
+- any problems we can work through together 
+- people could plug away individually (or in pairs/groups, particularly if some people
+  are less familiar with R) and we help out
+- whatever else people want
 
 
 <!--
@@ -219,3 +274,4 @@ Currently, pacea contains (`r colorize("red is updated/new since last year's mee
 
 - `r colorize("zooplankton biomass anomalies in the Strait of Georgia for 25 species groups", "red")`
 -->
+

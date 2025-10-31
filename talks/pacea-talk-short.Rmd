@@ -39,7 +39,7 @@ pacea-talk.Rmd is the main one, got a bit fancy with switches for a long and
 pacea-talk-sopo-25-update.Rmd for SOPO 25
  Using that as a template for:
 pacea-talk-short.Rmd for FUTURE Habitat talk plus Molecular Genetics section
-  meeting.
+  meeting and pacea palooza 2025
 Suggest going forward with the long one and short one.
 Note that results and figures are cached.
 
@@ -118,7 +118,8 @@ long_motivation <- TRUE  # whether to include the original longer motivation
                          # FALSE here if not wanted).
 short_motivation <- !long_motivation
 
-explain_assessment <- TRUE   # set to TRUE for two slides explaining stock assessment
+explain_assessment <- FALSE   # set to TRUE for two slides explaining stock
+  # assessment, did not work for palooza so just commenting out
 
 more_details <- FALSE        # set to TRUE for some of the more detailed slides
                              # (setting FALSE for national EAFM talk)
@@ -156,7 +157,7 @@ colorize <- function(x, color = "red"){
 
 ```{r coverpage, echo=FALSE, out.width = "100%"}
 knitr::include_graphics(paste0(here::here(),
-                               "/talks/talks-manual-figures/pacea-title-slide-molecular-genetics-2025.png"))
+                               "/talks/talks-manual-figures/pacea-title-slide-palooza-2025.png"))
 ```
 
 <!-- Getting in a mess with trying to be too clever. Just make _short versions -->
@@ -219,3 +220,7 @@ ecosystem approach to fisheries management
 
 ```{r summaryshort, child = "summary-sopo-25.Rmd", eval = short_talk}
 ```
+
+```{r paloozaplan, child = "palooza-plan.Rmd", eval = short_talk}
+```
+
