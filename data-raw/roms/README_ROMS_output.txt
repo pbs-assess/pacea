@@ -1,8 +1,22 @@
 README_ROMS_output.txt
 
-Files are too big to share through GitHub, so ask Andy or Angelica for them if
-you need them.
+Wrangling the BCCM model outputs from Angelica.
 
+Files are too big to share through GitHub, so ask Andy, Travis, or Angelica for them if
+you need them. These are original notes and ideas, mostly figuring out how to do
+the wrangling.
+
+Latest wrangling file will be
+
+roms-data-interpolation-full-to-2024.R    (though check if there's a later R
+file)  for processing the updated runs that go to 2024. See that file for more
+details.
+
+
+
+
+
+--
 From Angelica Pena (9/11/22):
 
 Grid file = BCC03_grd_b5.nc
