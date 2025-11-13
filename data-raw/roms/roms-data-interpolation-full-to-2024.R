@@ -1,8 +1,48 @@
 # Interpolating the data for the full BCCM grid, not just inshore_poly and
-# offshore_poly.
-# Copying roms-data-interpolation.R to then edit, based on
+# offshore_poly. ...-full-to-2024.r is including the updated model outputs to
+# the end of 2024 from Angelica.
+
+# Copying roms-data-interpolation-full.R to then edit, based on
 #  hotssea-data-interpolation.R in which worked out the parallel stuff.
-# ROMs data from Angelina Pena - full bottom and surface variables that Andy requested
+
+# From Angelica's email (5/11/2025):
+
+
+## There are 8 files:  6 are similar to the ones I sent you before and the 2 other have surface and bottom velocities, as we discussed.
+## bcc42_era5glo12r6_mon1993to2024_avg0to40m_TSOpH.nc has average values in the upper 40 m.
+## bcc42_era5glo12r6_mon1993to2024_avg40to100m_TSOpH.nc has average values from 40 to 100 m.
+## bcc42_era5glo12r6_mon1993to2024_avg100mtoBot_TSOpH.nc has average values below 100 m
+## bcc42_era5glo12r6_mon1993to2024_surTSOpH.nc has the same surface values as before
+## bcc42_era5glo12r6_mon1993to2024_botTSOpH.nc has the same bottom values as before
+## bcc42_era5glo12r6_mon1993to2024_zInt_PT.nc has depth-integrated values of
+##  primary production as before but, for phytoplankton I replaced the
+##  depth-integrated values with the average value in the upper layer which I
+##  think it is more meaningful and easy to compare to observations
+
+## The other 2 files:
+## bcc42_era5glo12r6_mon1993to2024_surVel and bcc42_era5glo12r6_mon1993to2024_botVel have the surface and bottom velocities, respectively.
+
+## The TSOpH files have the following variable names are: temp (=temperature in oC), salt (=salinity), Oxygen (=dissolved oxygen in mmol-oxygen m-3), and pH values.
+## The PT file has two variables: total phytoplankton biomass (phytoplankton in mmol-nitrogen m-3), and PTproduction (total primary production in gC m-2 d-1)
+## The Vel files have the u (=x component of velocity in m/s), v(=y component of
+##   velocity in m/s) and angle (=grid angle of rotation from east to y in
+##   radians). Note: if you prefer to include the u_northward and v_eastward, you
+##   will need to rotate the values using the angle.
+## In addition all files have the following variables: lat_rho and lon_rho (the
+##   latitude and longitude of the center of the model grid), mask_rho (a mask for
+##   model grids that are on land=0 and ocean=1), and ocean_time (time in days
+##   since 1-Jan-1970)
+## This time, I did not masked any region of the model but, instead I am
+##   including the mask file that I used previously, which mask the areas where
+##   the model is questionable due to the relatively coarse resolution (nearshore
+##   regions, SoG, JdF and inlets). Although, I think it is important to let users
+##   know that the model output is likely garbage in inlets and nearshore areas,
+##   depending on the application, users might want to include some region of the
+##   SoG and JdF, which are less of a problem. They could also decide to use all
+##   regions despite the warning.
+
+
+# Below is from -full.R, need to adapt for full-to-2024.
 
 # Run with option <- 1 then option <- 2.
 # 1/11/24 overnight:
