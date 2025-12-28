@@ -103,8 +103,7 @@ doParallel::registerDoParallel(cl = my_cluster)
 # Set up directories
 
 pacea_dir <- here::here()   # Will give local pacea/
-pacea_data_dir <- paste0(here::here(),
-                         "/../pacea-data/data-bccm-full/")  # Where to save .rds
+pacea_data_dir <- paste0("../pacea-data/data-bccm-full/")  # Where to save .rds
                                         # files. Then uploading to Zenodo, not
                                         # commiting those to GitHub.
 # TODO add in mkdir if it's not already there.
@@ -121,15 +120,22 @@ tbc.line <- st_cast(tbc, "MULTILINESTRING")
 #####
 # PARAMETERS
 
-# Do OPTION 1 or 2. Then re-run.
-option <- 2
+
+# bccm raw data folder
+raw_dir <-"bccm-output-to-2024"
+
+# Do OPTION 1 or 2 or 3. Then re-run.
+# option 1 = temp, sal, oxygen, ph
+# option 2 = phytoplankton
+# option 3 = velocity
+option <- 1
 
 # OPTION 1 FOR LOOPING THROUGH VARIABLES FOR EACH DEPTH
 # loop variables
 if(option == 1){
 
   nc_filenames <- list.files(paste0(pacea_dir,
-                                    "/data-raw/roms/"),
+                                    "/data-raw/roms/bccm-raw-data/", raw_dir, "/"),
                              pattern = "TSOpH.nc")
   jvars <- c("temp", "salt", "Oxygen", "pH")
 
@@ -146,7 +152,7 @@ if(option == 1){
 # loop variables
 if(option == 2){
   nc_filenames <- list.files(paste0(pacea_dir,
-                                    "/data-raw/roms/"),
+                                    "/data-raw/roms/bccm-raw-data/", raw_dir, "/"),
                              pattern = "zInt_PT.nc")
   jvars <- c("phytoplankton", "PTproduction")
 
@@ -157,23 +163,40 @@ if(option == 2){
   jvars_table <- cbind(jvars, vars_fullname, vars_units)
 }
 
+# OPTION 3 FOR VELOCITY (CURRENTS)
+# loop variables
+if(option == 3){
+  nc_filenames <- list.files(paste0(pacea_dir,
+                                    "/data-raw/roms/bccm-raw-data/", raw_dir, "/"),
+                             pattern = "Vel.nc")
+  jvars <- c("angle", "u", "v")
+  
+  # index table
+  vars_fullname <- c("angle", "u_currentvelocity", "v_currentvelocity")
+  vars_units <- c("Angle rotation (radians)", "Eastward Current velocity (m/s)", "Northward Current velocity (m/s)")
+  jvars_table <- cbind(jvars, vars_fullname, vars_units)
+}
+
+
+
 # function argument
 llnames <- c("x", "y")
 nmax <- 4
 
 # column names. See hotssea-data-interpolation.R for automated version (if
 # there's a time_counter in the .nc file).
-cnames <- paste(rep(1993:2019, each=12), 1:12, sep="_")
+cnames <- paste(rep(1993:2024, each=12), 1:12, sep="_")
 
 # version of data update
-version <- "01"
+version <- "02"
 
 # processing times output
 proctimes <- vector()
 
 # surface mask layer
 snc_dat <- nc_open(paste0(pacea_dir,
-                          "/data-raw/roms/bcc42_era5glo12r4_mon1993to2019_surTSOpH.nc"))
+                          "/data-raw/roms/bccm-raw-data/", raw_dir, 
+                          "/bcc42_era5glo12r6_mon1993to2024_surTSOpH.nc"))
 snc_lon <- as.vector(ncvar_get(snc_dat, "lon_rho"))
 snc_lat <- as.vector(ncvar_get(snc_dat, "lat_rho"))
 svar <- as.vector(ncvar_get(snc_dat, "temp", count = c(-1, -1, 1)))
@@ -204,7 +227,7 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
   devtools::load_all()                 # Else get error in not finding %>%
 
   nc_dat <- ncdf4::nc_open(paste0(pacea_dir,
-                           "/data-raw/roms/",
+                           "/data-raw/roms/bccm-raw-data/", raw_dir, "/",
                            this_filename))
 
   # load lon-lat and mask layers from netcdf
@@ -221,8 +244,8 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
 
   for(j in jvars) {
     # j <- jvars[1]
-    # start <- Sys.time()
-
+    start <- Sys.time()
+    
     nc_var <- ncdf4::ncvar_get(nc_dat, j)
     nc_varmat <- apply(nc_var, 3, c)
 
@@ -233,6 +256,7 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
                            crs = "EPSG:4326")
     tdat_sf <- sf::st_transform(dat_sf,
                                 crs = "EPSG: 3005")
+    if(any(is.na(tdat_sf))) {tdat_sf <- tdat_sf[,1:375]}
 
     # create polygon for cropping ROMS data
     roms_cave <- tdat_sf %>%
@@ -334,7 +358,7 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
     # }
 
     # assign column names as year_month
-    names(t2_sf26)[1:(ncol(t2_sf26) - 1)] <- cnames
+    names(t2_sf26)[1:(ncol(t2_sf26) - 1)] <- cnames[1:(ncol(t2_sf26) - 1)]
 
     # covert to long format data - Don't do long format as it is too big
     # t3_sf26 <- t2_sf26 %>%
@@ -383,19 +407,20 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
 
     do.call("save", list(as.name(obj_name), file = filename, compress = "xz"))
 
-    # filesize is 120Mb. Ugh. 4x the existing ones., took 2 hours to process (TODO
+    # filesize is now 150Mb for 1993-2024 (up from 120mb). Ugh. 4x the existing ones., took 2 hours to process (TODO
     # close .nc files like Andrea said). sum(is.na(...)) is 0. So efficiently
     # saved.
 
-    #end <- Sys.time()
-    #jtime <- end-start
-    #print(jtime)
-    #names(jtime) <- paste(ti, tj, sep="_")
-    #proctimes <- c(proctimes, jtime)
+    end <- Sys.time()
+    jtime <- end-start
+    print(jtime)
+    names(jtime) <- paste(ti, tj, sep="_")
+    proctimes <- c(proctimes, jtime)
 
     # remove files
     rm(dat, dat_sf, tdat_sf, roms_cave, roms_buff,
        output2, output6, t2_sf2, t2_sf6, t2_sf26,
+       output2_full, t2_sf2_full,
        t2_sf26a, t2_sf26b, t3_sf26, nc_var, nc_varmat)
     rm(list = obj_name)
     gc()
