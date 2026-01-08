@@ -186,6 +186,14 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
     nc_var <- ncdf4::ncvar_get(nc_dat, j)
     nc_varmat <- apply(nc_var, 3, c)
 
+    # Next lines not originally used, but adding in while investigating negative
+    #  values for 100m to Bottom oxygen. Have not rerun everything with this in.
+    variable_as_vector <- as.vector( nc_varmat[ , -c(1, 2)])  # take out x and y
+    summary(variable_as_vector)
+    sum(variable_as_vector[!is.na(variable_as_vector)] < 0)   # number of
+      # negative values
+    # --
+
     # put sst into dataframe and sf object
     dat <- data.frame(x = nc_lon, y = nc_lat) %>% cbind(nc_varmat)
     dat_sf <- sf::st_as_sf(dat,
