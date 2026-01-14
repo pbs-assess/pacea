@@ -1,0 +1,436 @@
+---
+title: "Examples of querying GLORYS datas"
+format: html
+editor: visual
+---
+
+<!-- Start is from Eric, then Megan Feddern added the Section 'Post processing 
+summarising into time series' onwards. 
+Andy editing here, and making .Rmd instead of .qmd. Also doing the CopernicusMarine 
+approach, so skipping the first two options here-->
+
+```{r, libraries}
+library(dplyr)
+library(tidyr)
+library(tidync)
+library(lubridate)
+library(tidync)
+library(tidyverse)   # might not be fully needed?
+library(data.table)
+library(CopernicusMarine)
+library(abind)
+library(fuzzyjoin)
+
+```
+
+## Downloading – straight Python
+
+This is the approach I'm using the most right now – querying temp file downloads straight from Python. You have to install via <https://pypi.org/project/copernicusmarine/> – I like this because I think it's made by the Copernicus development team and seems very stable.
+
+```{python echo=FALSE, eval = FALSE}
+# example of 
+copernicusmarine.subset(
+  dataset_id="cmems_mod_glo_phy_my_0.083deg_P1M-m",
+  variables=["thetao"],  # temperature
+  minimum_longitude=-126,
+  maximum_longitude=-115,
+  minimum_latitude=32,
+  maximum_latitude=50,
+  start_datetime="1994-01-01T00:00:00",
+  end_datetime="2024-08-20T23:59:59",
+  output_directory="./copernicus-data",  # Directory to save 
+  output_filename="glorys_data_01.nc"
+)
+
+```
+
+## Downloading – reticulate
+
+As an alternative to pure Python, you can use the reticulate package in R.
+
+```{r, eval = FALSE}
+library(reticulate)
+#install_python() 
+virtualenv_create(envname = "thiscopernicus")
+#virtualenv_install("thiscopernicus", packages = c("copernicusmarine"))
+use_virtualenv("thiscopernicus", required = TRUE)
+#py_install("copernicusmarine")
+
+cm <- import("copernicusmarine")
+
+cm$subset(
+    dataset_id = "cmems_mod_glo_phy_my_0.083deg_P1M-m",
+    start_datetime=paste0(1994,"-01-01T00:00:00"),
+    end_datetime=paste0(2024,"-12-31T23:59:59"),
+    variables = list("thetao"),
+    minimum_longitude = -126,
+    maximum_longitude = -115,
+    minimum_latitude = 32,
+    maximum_latitude = 50,
+    minimum_depth = 50,
+    maximum_depth = 250,
+    output_filename = "CMEMS_tmp.nc"
+  )
+```
+
+## Downloading – CopernicusMarine
+
+This example works with the R package CopernicusMarine. You need to authenticate credentials the first time you use it, and I've avoided it because it was a little glitchy during the last Copernicus upgrade
+
+Skip to the one lower down
+```{r, eval = FALSE}
+# library(CopernicusMarine)
+my_data <- cms_download_subset(
+  product = "GLOBAL_MULTIYEAR_PHY_001_030",
+  layer = "cmems_mod_glo_phy_my_0.083deg_P1M-m",
+  variable = "thetao",
+  region = c(-126, 32, -115, 50), # lon_min, lat_min, lon_max, lat_max
+  timerange = c("1994-01-01", "2024-08-20"),
+  verticalrange = c(-50, -250), # 50m to 250m depth
+  progress = TRUE
+)
+my_data
+```
+
+## Processing – netCDF
+
+For most of these, you can use `tidync` in R to process the data
+
+```{r}
+# Using R approach we have no .nc file saved it seems, but my_data is a start
+# object and has what we need I think. Kelsey suggested just save stars object
+# as a netcdf so can easily use this code
+temp <- tidync::tidync("CMEMS_tmp.nc") |>
+  tidync::hyper_tibble( force = TRUE) |>
+  drop_na() |>
+  group_by(longitude,latitude,time)
+```
+
+## post processing – summarising into time series
+
+
+Example time series: MLDyolk To get the appropriate time series, we need to summarise the dataset. We can easily just download the data at the depths and latitude we need but to get this time series as "between the 100 and 2,000 m isobath" as defined in Vestfals et al. 2023 and to do that we need to combine our .nc tibble with a bathymetric dataset. To approach this I am going to download beyond the longitude I need then combine datasets. You can download the bathymetry data from GLORYS and then use the grid to assign longitude. Here I am just going to use the dataset as a .csv that Nick and I are already using. No need to reinvent the wheel...
+
+First lets download the mixed layer data, I usually use reticulate so I will just use Eric's approach from above:
+
+Andy then doing it using the R package approach.
+
+```{r, eval = FALSE}
+#
+cm <- import("copernicusmarine")
+
+cm$subset(
+    dataset_id = "cmems_mod_glo_phy_my_0.083deg_P1M-m",
+    start_datetime=paste0(1994,"-01-01T00:00:00"),
+    end_datetime=paste0(2024,"-12-31T23:59:59"),
+    variables = list("mlotst"),
+    minimum_longitude = -130, #probably more longitude than we need
+    maximum_longitude = -115,
+    minimum_latitude = 31,
+    maximum_latitude = 36,#no depth because MLD is not a variable with depths
+    output_filename = "CMEMS_mlotst.nc"
+  )
+```
+
+R package approach, copying Eric's extraction from above and using Megan's options: 
+```{r, mixedlayer}
+if(FALSE){    # set to TRUE to redownload
+  mld_via_package <- cms_download_subset(
+    product = "GLOBAL_MULTIYEAR_PHY_001_030",
+    layer = "cmems_mod_glo_phy_my_0.083deg_P1M-m",
+    variable = "mlotst",
+    region = c(-130, 31, -115, 36), # lon_min, lat_min, lon_max, lat_max
+    timerange = c("1994-01-01", "2024-12-31"),
+    # verticalrange   no depth since MLD; if missing then gets given NULL
+    progress = TRUE
+  )
+}
+
+mld_via_package
+
+mld_via_package <- abind::adrop(mld_via_package) # drop elevation as only one value
+mld_via_package
+
+saveRDS(mld_via_package,
+        "mld_via_package.Rds")
+
+# plot(mld_via_package)  # not doing as plots every month
+```
+
+Summarise just as Eric did (not doing)
+
+```{r, eval = FALSE}
+  temp <- tidync::tidync("CMEMS_mlotst.nc") |>
+    hyper_tibble( force = TRUE) |>
+    drop_na() |>
+    group_by(longitude,latitude,time)
+```
+
+Copying in what we have been using for this - this is a static variable from GLORYS and linked to lat/long using the grid cell info
+
+```{r, eval = FALSE}
+
+bath <- read.csv('databathymetry-m.csv') %>% as_tibble()
+
+# Andy adding this for the my_data approach:
+dim(my_data)
+# longitude  latitude elevation      time 
+#      133       217         9       368 
+prod(dim(my_data))
+#[1] 95,587,632
+ 
+my_tibble_temp <- as_tibble(my_data)    # my_data is class stars
+my_tibble_temp
+```
+
+That worked, but was for the first dataset. Now do for the MLD values, to
+hopefully get agreement with Megan's:
+```{r, mldanalysis}
+dim(mld_via_package)
+prod(dim(mld_via_package))
+
+my_tibble_mld <- as_tibble(mld_via_package)    # uses that
+# class(mld_via_package) is stars
+my_tibble_mld
+
+expect_equal(prod(dim(mld_via_package)),
+             nrow(my_tibble_mld))   
+
+my_tibble_mld_small <- my_tibble_mld[1:1000, ]
+
+# tibble is huge, so filter to just required months for now
+my_tibble_mld_red <-
+    # Megan had this but don't need as already lubridate format
+    #mutate(my_tibble_mld,
+    #                         date = as_date(time/24,origin="1950-01-01 00:00:00"))%>% #adding in date
+  mutate(my_tibble_mld,
+         year = year(time),
+         month = month(time))%>% #getting out year and month from date
+  filter(month ==1 | month==2 | month==3 | month==4 ) #getting the months for the yolk-sac lifestage
+
+# Could do the averaging over the four months first, assuming that the long and
+# lat are consistent. No - since need the keep the correct bathymetries first to
+# include those, and then do the averaging.
+
+my_tibble_mld_red
+summary(my_tibble_mld_red)
+
+# do a small subset first, also filter out the months first
+
+my_tibble_mld_red_jan_1994 <- filter(my_tibble_mld_red,
+                                     year == 1994,
+                                     month == 1)
+my_tibble_mld_red_jan_1994
+
+combined2 <-  difference_left_join(bath,
+                                   my_tibble_mld_red_jan_1994[1:100, ],
+                                   max_dist = 0.0001)
+
+summary(combined2)
+lots of NAs
+
+
+# I feel it should be this way round
+combined2_other_way <-  difference_left_join(my_tibble_mld_red_jan_1994[1:100, ],
+                                             bath,
+                                             max_dist = 0.0001)
+summary(combined2_other_way)
+
+no NAs but still have latitude.x and latitude.y
+
+plot(combined2_other_way$longitude.x,
+     combined2_other_way$longitude.y)
+max(abs(combined2_other_way$longitude.x - 
+        combined2_other_way$longitude.y))
+
+plot(combined2_other_way$latitude.x,
+     combined2_other_way$latitude.y)
+max(abs(combined2_other_way$latitude.x - 
+        combined2_other_way$latitude.y))
+
+
+# Try rounding lat and long first then just left_join; as difference_left_join
+# help was not too helpful.
+
+range(diff(my_tibble_mld_red_jan_1994$longitude))
+range(diff(my_tibble_mld_red_jan_1994$latitude))
+
+# 0.08333 is 1/12 of a degree. So any approximation should be fine to 0.00001
+dp <- 4    # decimal places to round to
+
+my_tibble_mld_red_jan_1994_round <- my_tibble_mld_red_jan_1994 %>%
+  mutate(across(c(longitude, latitude),
+                round,
+                dp))
+my_tibble_mld_red_jan_1994_round
+
+range(diff(my_tibble_mld_red_jan_1994_round$longitude))
+range(diff(my_tibble_mld_red_jan_1994_round$latitude))
+
+
+# Then do the same for the bathymetry data sets
+range(diff(bath$longitude))
+range(diff(bath$latitude))
+
+bath_round <- bath %>%
+  mutate(across(c(longitude, latitude),
+                round,
+                dp))
+bath_round
+range(diff(bath_round$longitude))
+range(diff(bath_round$latitude))
+
+# Just do the first 100 of mld values
+combined_100 <- bath_round %>%
+  left_join(my_tibble_mld_red_jan_1994_round[1:100, ])
+
+summary(combined_100)   # has lots of NA's, but 100 non-NA rows which is correct
+
+# Original way round that Megan did, then analysing further down (as switching
+# the order did not match her result)
+# Now join all of them, still for just 1994:
+combined <- bath_round %>%
+  left_join(my_tibble_mld_red_jan_1994_round)
+combined
+summary(combined)
+# Not quite sure why so many NA's
+
+# summary(my_tibble_mld_red_jan_1994_round)
+
+
+# Try the other way round, I feel we only care about values where have MLD
+# I guess need to check if every lat-lon for MLD gets a bottom_depth
+# TODO ask Megan why
+combined_2 <- my_tibble_mld_red_jan_1994_round %>%
+  left_join(bath_round)
+combined_2
+summary(combined_2)
+summary(bath_round)
+summary(my_tibble_mld_red_jan_1994_round)
+
+# So some NA's for combined_2$bottom_depth, presumably as those lat and lons
+# were not in bath_round. Need to exclude some values anyway, so they might get
+# ignored.
+
+# isobath greater than 100m less than 2,000
+combined_2_need <- combined_2 %>%
+  filter(bottom_depth >= 100 & bottom_depth <= 2000)
+summary(combined_2_need)
+
+combined_2_need[is.na(combined_2_need$mlotst),]
+which(is.na(combined_2_need$mlotst))
+# So they are kind of spread out. Only a few values, so just remove those rows.
+
+combined_2_need_no_na <- combined_2_need %>%
+  filter(!is.na(mlotst))
+combined_2_need_no_na
+summary(combined_2_need_no_na)
+# No NA's left
+
+mld_yolk_tib <- combined_2_need_no_na %>%
+  group_by(year) %>%
+  summarise(mld_yolk_ = mean(mlotst))  #woo! we have it
+mld_yolk_tib
+
+# 1994 gives 31.4, but original from last year is 22.65 (from below).
+```
+So don't get the same, but I did switch the order of the `left_join`, which will
+make a difference when then averaging over space. I think.
+
+So do the way that Megan did, copying my code from above and renaming with `_b`
+```{r, leftjoin}
+summary(combined)
+summary(combined_2)
+
+# isobath greater than 100m less than 2,000
+combined_need <- combined %>%
+  filter(bottom_depth >= 100 & bottom_depth <= 2000)
+combined_need
+summary(combined_need)
+
+combined_need[is.na(combined_need$mlotst),]
+# which(is.na(combined_need$mlotst))
+# So lots for this one.
+
+combined_need_no_na <- combined_need %>%
+  filter(!is.na(mlotst))
+combined_need_no_na
+summary(combined_need_no_na)
+# No NA's left
+
+mld_yolk_tib_orig <- combined_need_no_na %>%
+  group_by(year) %>%
+  summarise(mld_yolk_ = mean(mlotst))  #woo! we have it
+mld_yolk_tib_orig
+# 1994 gives 31.4, but original from last year is 22.65 (from below). So this
+# gives the same value as doing the other way round, I think because the grids
+# (without NA's) are the same.
+```
+
+HERE git save this then tidy up to then troubleshoot
+
+
+
+```{r, bitsofcode}
+# combined <- bath %>% left_join(my_tibble_mld)   # I feel these are wrong way round
+combined
+summary(combined)
+
+# These are similar increments, but not exact
+my_tibble_mld$longitude[1:10]
+bath$longitude[1:10]
+expect_equal(my_tibble_mld$longitude[1:10],
+             bath$longitude[2:11])
+max(abs(my_tibble_mld$longitude[1:10] - bath$longitude[2:11]))
+
+
+
+%>% #combining data so we have bottom
+    #depth to filter over for isobath
+    
+combined <- bath %>% left_join(my_tibble) %>% #combining data so we have bottom depth to filter over for isobath
+    filter(bottom_depth >= 100 & bottom_depth <= 2000)
+
+
+%>% #isobath greater than 100m less than 2,000
+
+group_by(year)%>%
+  summarise(MLD_yolk_New=mean(mlotst)) #woo! we have it
+
+
+
+# Megan's orginal:
+combined <- bath%>%left_join(temp)%>% #combining data so we have bottom depth to filter over for isobath
+  filter(bottom_depth >= 100 & bottom_depth <= 2000)%>% #isobath greater than 100m less than 2,000
+  mutate(date = as_date(time/24,origin="1950-01-01 00:00:00"))%>% #adding in date
+  mutate(year=year(date), month = month(date))%>% #getting out year and month from date
+  filter(month ==1|month==2|month==3|month==4 )%>% #getting the months for the yolk-sac lifestage
+  group_by(year)%>%
+  summarise(MLD_yolk_New=mean(mlotst)) #woo! we have it
+
+
+
+```
+
+I am just going to double check this against the old dataset that I have for hake to make sure we didnt mess anything up...you could swap out the file for whatever you have from last years assessment (I think that is what I have...)
+
+```{r}
+
+old <- read.csv('DATA_Combined_glorys_hake_UNSTANDARDIZED.csv')%>%
+  select(year, MLDyolk)%>%
+  rename(MLDyolk_Old=MLDyolk)
+
+comparison_wide <- old%>%left_join(combined)
+comparison<-  comparison_wide%>%pivot_longer(-year)
+
+ggplot(data=comparison, aes(y=value, x=year, col=name))+
+  geom_line()+
+  theme_bw() #looks great! These minor differences are from the reanalysis
+
+cor(comparison_wide%>%filter(year>1993&year<2024)%>%select(MLDyolk_Old), 
+    comparison_wide%>%filter(year>1993&year<2024)%>%select(MLD_yolk_New)) #0.99 love to see it
+
+```
+
+citation - see
+https://pepijn-devries.github.io/CopernicusMarine/
