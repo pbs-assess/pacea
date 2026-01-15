@@ -180,7 +180,7 @@ if(FALSE){    # set to TRUE to redownload. Have not rerun since doing lon_min
     layer = "cmems_mod_glo_phy_my_0.083deg_P1M-m",
     variable = "mlotst",
     region = c(lon_min, lat_min, lon_max, lat_max),
-    timerange = c("1994-01-01", "2024-12-31"),
+    timerange = c("1993-01-01", "2024-12-31"),
     # verticalrange   no depth since MLD; if missing then gets given NULL
     progress = TRUE
   )
@@ -413,7 +413,7 @@ ggplot(data=comparison,
   expand_limits(y = 0)  
 ```
 
-Compare to last year's values. Copy some code over from
+Compare to last year's values that went into the assessment. Copy some code over from
 `ecosystem-summary-hake-glorys.R`, and standardise like we did (though I think
 Kristin supplied values already standardised):
 ```{r, redo2025}
@@ -425,13 +425,17 @@ mld_yolk_index_2025 <- dplyr::select(glorys_2025,
   dplyr::mutate(anomaly = standardise(value))
 class(mld_yolk_index_2025) <- class(oni)
 
-mld_yolk_index_2025
+mld_yolk_index_2025   # As used in 2025 assessment
 summary(mld_yolk_index_2025)
 
-HERE - want to get the new one plus check the values I have here agree with
-Kristin's from last year, just do the standardise again (the .csv Megan compared with could be different).
 
-mld_yolk_index_2026 <- dplry::select()
+# HERE - want to get the new one plus check the values I have here agree with
+# Kristin's from last year, just do the standardise again (the .csv Megan compared with could be different).
+
+# Calculating here:
+mld_yolk_index_2026 <- mld_yolk_tib %>%
+ dplyr::mutate(anomaly = standardise(mld_yolk))
+class(mld_yolk_index_2026) <- class(oni)
 
 
 ```
