@@ -51,12 +51,14 @@ ecosystem_summary_hake_glorys <- function(max_year = 2024,   # though does to 20
   # standardised values (think of like nondimensionalising). And using Vestfals'
   # variable names (names in .csv file are slightly different).
 
-  # Tspawn - TEMPspawn
-  # SSHjac - SSH_jac (this matches)
+  # Tspawn - temp_spawn
+  # SSHjac - ssh_jac (this matches)
   # LSTegg - CST_eggs.s or CST_eggs.n or AST_eggs ?   # Change ast_eggs below
   # once find out.
-  # PUTlate - PU_latelarv
-  # MLDlate - MLD_latelarv
+  # PUTlate - pu_late_larv
+  # MLDlate - mld_late_larv
+  # MLDyolk - mld_yolk
+  # then all get ..index appended
 
   temp_spawn_index <- dplyr::select(glorys_new,
                                     year,

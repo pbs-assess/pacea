@@ -19,8 +19,8 @@ knitr::opts_chunk$set(
   cache = TRUE,
   cache_path = "glorys-examples-cache/",
   fig.path = "glorys-examples-figs-cache/",
-  fig.width = 7,   # Good for sizeSpectraFit hist and spectra plots, prob want to adapt
-  fig.height = 9
+  fig.width = 4,
+  fig.height = 5
 )
 # comment = "#>",
 
@@ -51,6 +51,7 @@ library(data.table)
 library(CopernicusMarine)
 library(abind)
 library(stars)
+load_all()  # or library(pacea) if not developer
 # library(fuzzyjoin)
 
 ```
@@ -253,30 +254,35 @@ my_tibble_mld_red <- my_tibble_mld %>%
 my_tibble_mld_red
 summary(my_tibble_mld_red)
 
-# do a small subset first, just 1994
+# do a small subset first, just 1994, which is presumably all we need for
+# checking the longitude and latitudes
 
 my_tibble_mld_red_1994 <- filter(my_tibble_mld_red,
-                                     year == 1994)
+                                 year == 1994)
 my_tibble_mld_red_1994
 ```
 Try rounding lat and long first as `left_join` without doing that had
 `latitude.x` and `latitude.y` I think because of slight numerical differences.
 
 ```{r, rounding}
+
 range(diff(my_tibble_mld_red_1994$longitude))
 range(diff(my_tibble_mld_red_1994$latitude))
+# Actually just do:
+unique(diff(my_tibble_mld_red_1994$longitude))
+unique(diff(my_tibble_mld_red_1994$latitude))
 
 # 0.08333 is 1/12 of a degree. So any approximation should be fine to 0.00001
 dp <- 4    # decimal places to round to
 
-my_tibble_mld_red_1994_round <- my_tibble_mld_red_1994 %>%
+my_tibble_mld_red_round <- my_tibble_mld_red %>%
   mutate(across(c(longitude, latitude),
                 round,
                 dp))
-my_tibble_mld_red_1994_round
+my_tibble_mld_red_round
 
-range(diff(my_tibble_mld_red_1994_round$longitude))
-range(diff(my_tibble_mld_red_1994_round$latitude))
+range(diff(my_tibble_mld_red_round$longitude))
+range(diff(my_tibble_mld_red_round$latitude))
 
 
 # Then do the same for the bathymetry data sets
@@ -292,19 +298,21 @@ range(diff(bath_round$longitude))
 range(diff(bath_round$latitude))
 ```
 
-Check the two grids, skipping as maybe makes .tex too big
+Check the two grids, though just doing 1994 as presume the locations are the same
+for each year:
 ```{r, grids}
 plot(my_tibble_mld_red_1994_round$longitude, 
      my_tibble_mld_red_1994_round$latitude,
      xlim = range(c(range(bath_round$longitude),
-                    range(my_tibble_mld_red_1994_round$longitude))),
+                    range(my_tibble_mld_red_round$longitude))),
      ylim = range(c(range(bath_round$latitude),
-                    range(my_tibble_mld_red_1994_round$latitude))),
+                    range(my_tibble_mld_red_round$latitude))),
      main = "Red is bathymetry")
 points(bath_round$longitude,
        bath_round$latitude,
        col = "red",
-       cex = 0.5)
+       pch = 20,
+       cex = 0.75)
 ```
 
 Makes sense - MLD grid is on a rectangle (but presumably NA's are on land), and
@@ -314,18 +322,22 @@ bathymetry grid is already just the ocean.
 # Original way round that Megan did, then analysing further down 
 # Now join all of them, still for just 1994:
 combined <- bath_round %>%
-  left_join(my_tibble_mld_red_1994_round)
+  left_join(my_tibble_mld_red_round)
+combined
 combined[500:520, ]
 summary(combined)
-# Looks like 225 NA's, which are presumably the bathymetry with no MLD.
+# Looks like 225 NA's for time (which are presumably the bathymetry with no
+# MLD ever), and 1475 for mlotst which is might be those points around -120, 34,
+# that look to be the Channel Islands.
+
 
 # Try the other way round, I feel we only care about values where have MLD
 # I guess need to check if every lat-lon for MLD gets a bottom_depth
-combined_2 <- my_tibble_mld_red_1994_round %>%
+combined_2 <- my_tibble_mld_red_round %>%
   left_join(bath_round)
 combined_2
 summary(combined_2)
-# lots of NA's
+# lots of NA's. So not proceeding with this
 ```
 
 Aha, Megan's way does make more sense, as not trying to assign as MLD grid
@@ -335,18 +347,27 @@ efficiency when doing all years.
 
 Now need just the required isobaths:
 ```{r, combine2}
-summary(bath_round)
-summary(my_tibble_mld_red_1994_round)
-
 # isobath greater than 100m less than 2,000
 combined_need <- combined %>%
   filter(bottom_depth >= 100 & bottom_depth <= 2000)
+combined_need
 summary(combined_need)
 
 combined_need[is.na(combined_need$mlotst),]
-which(is.na(combined_need$mlotst))
-# So they are kind of spread out. Only a few values, so just remove those rows.
+# which(is.na(combined_need$mlotst))
+# So could see they were kind of spread out when just 1994.
+```
 
+Plot the locations of NAs for MLD:
+```{r, plotmissing}
+plot(combined_need$longitude[is.na(combined_need$mlotst)],
+     combined_need$latitude[is.na(combined_need$mlotst)])
+```
+as expected.
+
+Okay, remove those rows:
+
+```{r, removeNAs
 combined_need_no_na <- combined_need %>%
   filter(!is.na(mlotst))
 combined_need_no_na
@@ -359,32 +380,62 @@ mld_yolk_tib <- combined_need_no_na %>%
             # need as.numeric else class(pull(mld_yolk_tib)) is "units"
 
 mld_yolk_tib
- 
-
-# 1994 gives 31.4, but original from last year is 22.65 (from below).
 ```
 
-HERE, adapting Megan's comparison code from below, need to rerun above on all
-years to then use properly. Saving as commit after 9f38fb2c and then doing above
-without setting to just 1994.
-```{r, compare, eval = FALSE}
+Now compare with what was obtained and used last year:
+```{r, compare}
 res_2025 <- read.csv('DATA_Combined_glorys_hake_UNSTANDARDIZED.csv')%>%
   select(year, MLDyolk)%>%
   rename(MLDyolk_Old = MLDyolk)
 
-comparison_wide <- old %>%
+comparison_wide <- res_2025 %>%
   left_join(mld_yolk_tib)
+comparison_wide
 
 comparison <- comparison_wide %>%
   pivot_longer(-year)
+comparison
 
 ggplot(data=comparison, aes(y=value, x=year, col=name))+
   geom_line()+
   theme_bw() #looks great! These minor differences are from the reanalysis
 
-cor(comparison_wide%>%filter(year>1993&year<2024)%>%select(MLDyolk_Old), 
-    comparison_wide%>%filter(year>1993&year<2024)%>%select(MLD_yolk_New)) #0.99 love to see it
+cor(comparison_wide %>% filter(year>1993&year<2024) %>% select(MLDyolk_Old), 
+    comparison_wide %>% filter(year>1993&year<2024) %>% select(mld_yolk)) #0.99 love to see it
 ```
+
+Plot again including 0 on y-axis:
+```{r, compareplot2}
+ggplot(data=comparison,
+       aes(y=value, x=year, col=name)) +
+  geom_line() +
+  theme_bw() +
+  expand_limits(y = 0)  
+```
+
+Compare to last year's values. Copy some code over from
+`ecosystem-summary-hake-glorys.R`, and standardise like we did (though I think
+Kristin supplied values already standardised):
+```{r, redo2025}
+glorys_2025 <- read.csv("../../ecosystem-summary-hake/DATA_Combined_glorys_hake_UW_for_Andy.csv") %>%
+    tibble::as_tibble()
+mld_yolk_index_2025 <- dplyr::select(glorys_2025,
+                                     year,
+                                     value = "MLDyolk") %>%
+  dplyr::mutate(anomaly = standardise(value))
+class(mld_yolk_index_2025) <- class(oni)
+
+mld_yolk_index_2025
+summary(mld_yolk_index_2025)
+
+HERE - want to get the new one plus check the values I have here agree with
+Kristin's from last year, just do the standardise again (the .csv Megan compared with could be different).
+
+mld_yolk_index_2026 <- dplry::select()
+
+
+```
+
 
 
 
@@ -420,6 +471,8 @@ cor(comparison_wide%>%filter(year>1993&year<2024)%>%select(MLDyolk_Old),
     comparison_wide%>%filter(year>1993&year<2024)%>%select(MLD_yolk_New)) #0.99 love to see it
 
 ```
+
+
 
 citation - see
 https://pepijn-devries.github.io/CopernicusMarine/
