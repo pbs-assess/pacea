@@ -69,6 +69,10 @@ for now as already have the wrangling code done).
 https://documentation.marine.copernicus.eu/PUM/CMEMS-GLO-PUM-001-030.pdf for
 description of variables.
 
+For citation - see
+https://pepijn-devries.github.io/CopernicusMarine/
+
+
 \begin{table}[hbp]
 \centering
 \caption{Variables from Table H.1 of 2025 hake assessment for which GLORYS was
@@ -736,7 +740,7 @@ summary(ssh_jac_combined)
 # with way more NAs; see previous .Rmd.
 ```
 
-Now need just the required isobaths:  TODO need something else here, so
+Now need just the required isobaths:  TODO need something else here for SSHjac, so
 commenting out
 ```{r, combine2sshjac}
 # isobath greater than 100m less than 2,000 for MLD_latelarv
@@ -855,7 +859,275 @@ plot(ssh_jac_index_2026)
 Will make the full figure later.
 
 
+# Download variables with `verticalrange`
+
+Going to do each separately (to keep filesizes down).
+
+## TEMPspawn
+
+TEMP$_{\mbox{spawn}}$ -- potential temperature `thetao`
+
+So you restrict it to the area based on shelf break (100-2,000 m) but then still
+average over the depths 130-500 m. And 31-36degN - do manually here then no need
+to restrict later (for MLD had different ranges for the same download).
+
+Adapting code from above:
+```{r, tempspawn}
+if(TRUE){    # set to TRUE to redownload
+  data_temp_spawn_depth <- cms_download_subset(
+    product = "GLOBAL_MULTIYEAR_PHY_001_030",
+    layer = "cmems_mod_glo_phy_my_0.083deg_P1M-m",
+    variable = "thetao",
+    region = c(lon_min, 31, lon_max, 36),
+    timerange = time_range,
+    verticalrange = c(-130, -500), # 130m to 500m depth
+    progress = TRUE
+  )
+  
+  # data_temp_spawn_depth <- abind::adrop(data_temp_spawn_depth) # drop elevation as only
+  # one value (when we were doing MLD)
+  saveRDS(data_temp_spawn_depth,
+          "data_temp_spawn_depth.Rds")
+} else {
+  data_temp_spawn_depth <- readRDS("data_temp_spawn_depth.Rds")
+}
+
+data_temp_spawn_depth
+# Aha column values shows, I think, the range for elevation.
+# Tease the values out:
+
+st_dimensions(data_temp_spawn_depth)$elevation$values
+# would be a bit easier to see as intervals
+
+summary(data_temp_spawn_depth)
+```
+So a stars object. Note that the shallowest elevation interval is -130.6 to
+-109.7, so including more than we would really want if we're saying 130m. TODO
+could tweak the values if what we do here does not match last year's.
+
+If just average each cell over elevation, will end up with something of
+similar structure to what we had above, so can then just use that code. So do
+the averaging first. 
+
+TODO note somewhere that mean temperature over unevenly
+spaced depth layers is not a true mean temperature, but method is consistent
+over the years.
+
+So, average over depth:
+```r, tempspawnmean}
+# Calculate the mean over the 'elevation' dimension, should keep the other
+# dimensions and look like the MLD objects from earlier
+data_temp_spawn <- st_apply(
+  data_temp_spawn_depth,
+  MARGIN = c("longitude", "latitude", "time"),  # dimensions to keep
+  FUN = mean,
+  na.rm = TRUE,
+  .fname = "temp"   # not tested yet but should work
+)
+
+data_temp_spawn
+summary(data_temp_spawn)
+```
+
+Now wrangle the temp values, actually this contains `zos` also, so can use for SSH.
+```{r, tempspawnanalysis}
+dim(data_temp_spawn)
+prod(dim(data_temp_spawn))
+
+temp_spawn_tib <- as_tibble(data_temp_spawn)    # makes one big tibble, uses that
+                                       # class(data_temp_spawn) is stars
+temp_spawn_tib
+names(temp_spawn_tib)[4] <- "temp"   # can remove when .fname above is tested
+temp_spawn_tib
+
+expect_equal(prod(dim(data_temp_spawn)),
+             nrow(temp_spawn_tib))   
+```
+
+Now can copy and adapt the SSHjac code from above. 
+
+```{r, tempspawn}
+temp_spawn_data <- temp_spawn_tib %>%
+  # select(-c("mlotst")) %>%      
+  filter(latitude >= 31,
+         latitude <= 36) %>%
+  mutate(year = year(time),
+         month = month(time))%>% 
+  filter(month %in% 1:3) 
+temp_spawn_data
+
+summary(temp_spawn_data)
+tail(temp_spawn_data)
+summary(as.factor(temp_spawn_data$month)) 
+```
+
+Need to round before joining with bathymetry, since slight numerical
+differences. See previous .Rmd for details.
+
+```{r, roundingtempspawn}
+temp_spawn_data_round <- temp_spawn_data %>%
+  mutate(across(c(longitude, latitude),
+                round,
+                dp))
+temp_spawn_data_round
+
+range(diff(temp_spawn_data_round$longitude))
+range(diff(temp_spawn_data_round$latitude))
+
+# Then do the same for the bathymetry data sets
+range(diff(bath$longitude))
+range(diff(bath$latitude))
+
+range(diff(bath_round$longitude))
+range(diff(bath_round$latitude))
+```
+
+Check the two grids, though just doing 1993 as presume the locations are the same
+for each year, shows up well on full screen (not in pdf):
+```{r, gridstempspawn}
+plot(filter(temp_spawn_data_round, year == 1993, month == 1)$longitude, 
+     filter(temp_spawn_data_round, year == 1993, month == 1)$latitude,
+     xlim = range(c(range(bath_round$longitude),
+                    range(temp_spawn_data_round$longitude))),
+     ylim = range(c(range(bath_round$latitude),
+                    range(temp_spawn_data_round$latitude))),
+     main = "Red is bathymetry")
+points(bath_round$longitude,
+       bath_round$latitude,
+       col = "red",
+       pch = 20,
+       cex = 0.75)
+```
+
+Makes sense - MLD grid is on a rectangle (but presumably NA's are on land), and
+bathymetry grid is already just the ocean.
+
+```{r, combinetempspawn}
+temp_spawn_combined <- bath_round %>%
+  left_join(temp_spawn_data_round)
+temp_spawn_combined
+temp_spawn_combined[500:520, ]
+summary(temp_spawn_combined)
+# See previous .Rmd for details on NAs;  mlotst ones looked to around the Channel
+# Islands, around -120, 34.
+# Megan did the left_join that way. I also tried the other way round, but end up
+# with way more NAs; see previous .Rmd.
+```
+
+Now need just the required isobaths:  TODO need something else here, so
+commenting out
+```{r, combine2tempspawn}
+# isobath greater than 100m less than 2,000 for temp_spawn
+temp_spawn_combined_need <- temp_spawn_combined %>%
+  filter(bottom_depth >= 100 & bottom_depth <= 2000)
+temp_spawn_combined_need
+summary(temp_spawn_combined_need)
+
+# temp_spawn_combined_need[is.na(temp_spawn_combined_need$zos),]
+```
+
+Plot the locations of NAs for MLD:
+```{r, plotmissingtempspawn}
+plot(temp_spawn_combined_need$longitude[is.na(temp_spawn_combined_need$temp)],
+     temp_spawn_combined_need$latitude[is.na(temp_spawn_combined_need$temp)])
+```
+as expected.
+
+Okay, remove those rows:
+
+```{r, removeNAtempspawn}
+temp_spawn_combined_need_no_na <- temp_spawn_combined_need %>%
+  filter(!is.na(temp))
+temp_spawn_combined_need_no_na
+summary(temp_spawn_combined_need_no_na)
+# No NA's left, even though only removed the rows with NAs in  MLD column
+max(temp_spawn_combined_need_no_na$year)
+
+filter(temp_spawn_combined_need_no_na, year ==
+        max(temp_spawn_combined_need_no_na$year)) %>%
+  summary()
+```
+
+No non-January values for final year, so remove those:
+
+```{r, removefinalyeartempspawn}
+temp_spawn_tib <- temp_spawn_combined_need_no_na %>%
+  filter(year < max(temp_spawn_combined_need_no_na$year)) %>%
+  group_by(year) %>%
+  summarise(temp_spawn = as.numeric(mean(temp)))  #woo! we have it
+            # need as.numeric else class(pull(temp_spawn_tib)) is "units"
+
+temp_spawn_tib
+temp_spawn_tib %>% tail()
+```
+
+Compare to last year's values that went into the assessment (did Megan's check
+on MLDyolk in previous .Rmd).
+
+Note there will be an extra year, so
+standardising with that can result in slight differences. Will check, and also 
+check that the new figures look similar enough. Maybe just doing the latter for brevity.
+
+```{r, tempspawnindex}
+temp_spawn_index_2025 <- dplyr::select(glorys_2025,
+                                          year,
+                                          value = "Tspawn") %>%
+    dplyr::mutate(anomaly = standardise(value))
+class(temp_spawn_index_2025) <- class(oni)
+
+temp_spawn_index_2025   # As used in 2025 assessment
+summary(temp_spawn_index_2025)
+
+# Calculating here but just restricting to the same years as used for 2025
+# assessment (need to do for comparison because standardisation depends on the
+# years) 
+temp_spawn_index_2026_restr <- temp_spawn_tib %>%
+ dplyr::filter(year <= max(temp_spawn_index_2025$year)) %>%
+ dplyr::mutate(anomaly = standardise(temp_spawn))
+class(temp_spawn_index_2026_restr) <- class(oni)
+
+temp_spawn_index_2026_restr   # As calculated here
+summary(temp_spawn_index_2026_restr)
+
+# And calculate the new one for all available years
+temp_spawn_index_2026 <- temp_spawn_tib %>%
+ dplyr::mutate(anomaly = standardise(temp_spawn))
+class(temp_spawn_index_2026) <- class(oni)
+
+temp_spawn_index_2026   # As calculated here. 
+summary(temp_spawn_index_2026)
+```
 
 
-citation - see
-https://pepijn-devries.github.io/CopernicusMarine/
+Compare the updated and 2025-assessment values:
+```{r, compareplot3tempspawn}
+plot(temp_spawn_index_2025$year,
+     temp_spawn_index_2025$anomaly,
+     type = "o",
+     col = "blue")
+lines(temp_spawn_index_2026_restr$year,
+     temp_spawn_index_2026_restr$anomaly,
+     type = "o",
+     col = "red")
+```
+Wow, awesome. 
+
+Now as a correlation plot
+```{r, compareplot4tempspawn}
+plot(temp_spawn_index_2025$anomaly,
+     temp_spawn_index_2026_restr$anomaly)
+abline(a = 0, b = 1)
+
+cor(temp_spawn_index_2025$anomaly,
+    temp_spawn_index_2026_restr$anomaly)
+```
+Check above value is high.
+
+New updated index is
+```{r, tempspawnindex2}
+plot(temp_spawn_index_2026)
+```
+
+Will make the full figure later.
+
+

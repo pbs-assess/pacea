@@ -11,6 +11,29 @@ as presumably they came from marea workshop:
 Download_Copernicus_Marine_Data.r
 glorys_helper_functions.r
 
+Also see
+from-nick-tolimieri/ which he sent in May 2025.
+"Some code is attached. You do have to set  up python before you can use it, but
+don't run anything from python. You essentially use R to send the server some
+python requests.  Because some of the files are large, in some cases, I have
+loops set up to download one year at a time."
+It does seem to me that now you can get 1993 to curren-ish in one go, think
+they've merged things online.
+
+Aha, think I need this for depth:
+dataset_id = 'cmems_mod_glo_phy_my_0.083deg_static'
+
+variable <- c(" --variable deptho")
+
+and maybe:
+dataset_id = 'cmems_mod_glo_phy_my_0.083deg_static'
+
+variable <- c(" --variable e1t --variable e2t --variable e3t")
+filename = paste0("glorys-cell-dimensions-meters.nc")
+
+He does transport east and north separately (to help with download size I think).
+
+
 
 So Andy was going to do this (didn't do, as then got stuff from Megan, see below):
 glorys-mld-for-hake.r  - adapting Emily's glorys-bottom-temperature.R to extract
