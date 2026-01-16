@@ -1,0 +1,861 @@
+---
+title: "Extracting and analysing GLORYS time series for hake assessment"
+author: "Andrew Edwards, Eric Ward, and Megan Feddern"
+output:
+  pdf_document:
+    keep_tex: true
+fontsize: 12pt
+date: "Last compiled on `r format(Sys.time(), '%d %B, %Y')`"
+header-includes:
+- \usepackage{pdflscape}
+- \newcommand{\blandscape}{\begin{landscape}}
+- \newcommand{\elandscape}{\end{landscape}}
+---
+
+```{r, setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "",
+  cache = TRUE,
+  cache_path = "glorys-examples-cache/",
+  fig.path = "glorys-examples-figs-cache/",
+  fig.width = 7,
+  fig.height = 5
+)
+# comment = "#>",
+
+knitr::dep_auto()
+```
+
+```{r, build, echo = FALSE, eval = FALSE}
+# To build either run this line or click knit button in RStudio:
+rmarkdown::render("glorys_2026.Rmd")
+```
+
+```{r, libraries}
+library(dplyr)
+library(tidyr)
+library(tidync)
+library(lubridate)
+library(tidync)
+library(tidyverse)   # might not be fully needed?
+library(data.table)
+library(CopernicusMarine)
+library(abind)
+library(stars)
+ifelse(Sys.info()["user"] == "edwardsand",
+       load_all(),
+       library(pacea))   # remotes::install_github("pbs-assess/pacea")
+```
+
+Obtaining time series from GLORYS for the 2026 Pacific Hake assessment
+Ecoysystem Report. Getting the GLORYS-related variables as listed in Table H.1
+of the 2025 hake assessment.
+
+Simplifying down the needed code from
+`glorys_examples_for_andy_isobathprocessing-ame.Rmd`, which was testing the R
+workflow and comparing the `mld_yolk` values to what we had in 2025
+assessment. That `.Rmd` was adapted from code from Eric and Megan.
+
+Using the bathymetry from Megan that Nick and her had used last year, to save
+having to redownload from GLORYS right now. 
+
+See
+https://data.marine.copernicus.eu/product/GLOBAL_MULTIYEAR_PHY_001_030/services
+for description of the dataset `cmems_mod_glo_phy_my_0.083deg_P1M-m` being downloaded for MLDyolk (and likely
+more). It's daily; note there is a monthly one available also (stick with daily
+for now as already have the wrangling code done). 
+
+https://documentation.marine.copernicus.eu/PUM/CMEMS-GLO-PUM-001-030.pdf for
+description of variables.
+
+\begin{table}[hbp]
+\centering
+\caption{Variables from Table H.1 of 2025 hake assessment for which GLORYS was
+used, and is being used here for updating. 
+Shelf break is considered
+between 100 and 2,000~m isobaths, defining the longitudinal extent for several
+variables. The first subscripts refer to life-history stage
+(`pre` is preconditioning, while JA is Jan-Apr, in the egg to late larvae stage).}
+\centering
+\fontsize{10}{12}\selectfont
+\begin{tabular}[t]{p{3cm}p{6cm}p{6cm}}
+\hline % \toprule
+Abbreviation~of variable & Definition & Effect on recruitment; expectation for an increase in
+variable\\
+\hline % \midrule
+
+TEMP$_{\mbox{spawn}}$ & Mean temperature during spawning (shelf break,
+Jan-Mar, 130-500~m depth, 31-36°~N) &
+At higher temperatures, fish are less likely to spawn but growth rate of larvae
+increases;
+$\cup$-shaped relationship with recruitment that year\\
+
+AST$_{\mbox{eggs}}$ & Net along-shore transport (shelf break,
+Jan-Mar, 40-60~m depth, 31-36°~N)
+& Increased northward advection away from juvenile nursery areas decreases
+recruitment; $\downarrow$ recruitment that year\\
+
+MLD$_{\mbox{yolk}}$ & Mean mixed layer depth (shelf break
+Jan-Apr, 31-36°~N)
+& Larvae aggregate at base of mixed layer so mixed layer depth may limit how far
+they rise in the water column affecting later transport; $\downarrow$ recruitment that year\\
+
+SSH$_{\mbox{JA.c}}$ & Average sea-surface
+height off California as an indicator of basin-scale processes (from coast to
+30~km offshore, Jan-Apr, 34.5-42.5°~N) &
+Higher sea surface is indicative of higher productivity and better conditions for copepods;
+$\uparrow$ recruitment that year\\
+
+MLD$_{\mbox{latelarv}}$ & Mean mixed layer depth (shelf break
+Mar-Jun, 31-37°~N)
+& Larvae aggregate at base of mixed layer so mixed layer depth may limit how far they rise in the
+water column affecting later transport, and possibly less competition and
+predation when mixed layer shallower; % Kristin's guess
+$\uparrow$ recruitment that year\\
+
+PU$_{\mbox{latelarv}}$ & Strength of poleward undercurrent (from coast to 275~m isobath,
+Mar-Jun, 75-275~m depth, 33.5-34.5°~N)
+& Increased northward
+advection away from juvenile nursery areas decreases recruitment; $\downarrow$ recruitment that year \\
+
+\hline % \bottomrule
+\end{tabular}
+\end{table}
+
+Looking at the GLORYS .pdf mentioned above for the specific product, plus the above table, seems like we
+need:
+
+TEMP$_{\mbox{spawn}}$ -- potential temperature `thetao` (manual also says
+`sea_water_potential_temperature` but think just `thetao` is needed).
+
+AST$_{\mbox{eggs}}$ -- haved asked Kristin how she calculated it last
+year. Maybe some
+rough trigonometry from `uo` and `vo`, respectively the eastward and northward
+ocean current velocity. Or just northward, given hypothesis above. Try that first.
+
+MLD$_{\mbox{yolk}}$ and MLD$_{\mbox{latelarv}}$-- mixed layer depth `mlotst` as
+used by Megan
+
+SSH$_{\mbox{JA.c}}$ -- sea-surface height `zos` 
+
+PU$_{\mbox{latelarv}}$ -- given description also talks about northward
+advection, just do `vo`.
+
+So I think we can download some of these together. Presumably do the 2-d ones in
+one go since do not have to specify a depth range. Then the ones for which need
+a depth range (`verticalrange`); have to see whether the results come averaged
+(i.e. a 2-d field plus time) or still 3-d. I'm guessing the former, which means
+will have to do each one spearaetely probably as the depths are different.
+
+1. No depth `verticalrange` needed:
+
+MLD$_{\mbox{yolk}}$, MLD$_{\mbox{latelarv}}$ need `mlotst`, and
+SSH$_{\mbox{JA.c}}$ needs `zos`. 
+Lat: 31-42.5
+
+MLD wants shelf break (100-2000m). SSH is coast to 30 km offshore, for which
+think I can use Wei's masking provided it covers the same latitude. 
+
+2. With depth values, do each separately.
+
+
+Have also asked Kristin:
+
+2. 0-30km offshore calculations, and 
+
+3. Looks like Wei got the EKE values from Copernicus for me. Wondering why you
+did not get those last year (no idea if they were available then)? You had
+mentioned that the values can be different from different products.
+
+
+# Download variables with no `verticalrange`
+
+R package approach, copying Eric's extraction from above and using Megan's options: 
+```{r, nodepth}
+time_range <- c("1993-01-01", "2024-12-31")   # Though it gives 2025-01-01
+# values also
+
+lon_min <- -130
+lon_max <- -115
+lat_min <-  31
+lat_max <- 42.5
+
+if(FALSE){    # set to TRUE to redownload
+  data_no_depth <- cms_download_subset(
+    product = "GLOBAL_MULTIYEAR_PHY_001_030",
+    layer = "cmems_mod_glo_phy_my_0.083deg_P1M-m",
+    variable = c("mlotst", "zos"),
+    region = c(lon_min, lat_min, lon_max, lat_max),
+    timerange = time_range,
+    # verticalrange   no depth since MLD; if missing then gets given NULL
+    progress = TRUE
+  )
+  data_no_depth <- abind::adrop(data_no_depth) # drop elevation as only one value
+  saveRDS(data_no_depth,
+          "data_no_depth.Rds")
+} else {
+  data_no_depth <- readRDS("data_no_depth.Rds")
+}
+
+data_no_depth
+
+summary(data_no_depth)
+# plot(data_no_depth)  # not doing as plots every month
+```
+So a stars object.
+
+Copying in Meghan's bathymetry - ``this is a static variable from
+GLORYS and linked to lat/long using the grid cell info''. Think I can easily redownload. Andy found the lats and
+lons to not be exactly the same as those in the downloaded MLD data though (see
+below), maybe they would be if using the same approach
+
+```{r, bath}
+bath_orig <- read.csv('databathymetry-m.csv') %>%
+  as_tibble()
+bath_orig
+
+bath <- bath_orig %>%
+    filter(longitude >= lon_min,
+           longitude <= lon_max,
+           latitude >= lat_min,
+           latitude <= lat_max)
+bath
+```
+
+Actually, may as well get bathymetry directly, didn't work so not run or show here:
+```{r, bathdirect, eval = FALSE, echo = FALSE}
+if(FALSE){    # set to TRUE to redownload
+  bath_direct <- cms_download_subset(
+    product = "GLOBAL_MULTIYEAR_PHY_001_030",
+    layer = "cmems_mod_glo_phy_my_0.083deg_static",
+    variable = c("mask", "deptho"),
+    region = c(lon_min, lat_min, lon_max, lat_max),
+    timerange = NULL,
+    # verticalrange   no depth since MLD; if missing then gets given NULL
+    progress = TRUE
+  )
+  # bath_direct <- abind::adrop(bath_direct) # drop elevation as only one value
+  saveRDS(bath_direct,
+          "bath_direct.Rds")
+} else {
+  bath_direct <- readRDS("bath_direct.Rds")
+}
+
+# That does not work, trying to figure out:
+tt <- cms_products_list()
+tttt <- filter(tt, product_id == "GLOBAL_MULTIYEAR_PHY_001_030")  # tbl_df but I
+# think is more like a list, some elements have >1 value maybe
+ <- as.vector(tttt)$mainVariables   # Does not have bathymetry, even though pdf help
+# says batho and mask.
+```
+
+Now wrangle the MLD values, actually this contains `zos` also, so can use for SSH.
+```{r, mldanalysis}
+dim(data_no_depth)
+prod(dim(data_no_depth))
+
+mld_tib <- as_tibble(data_no_depth)    # makes one big tibble, uses that
+                                       # class(data_no_depth) is stars
+mld_tib
+
+expect_equal(prod(dim(data_no_depth)),
+             nrow(mld_tib))   
+```
+
+## MLDyolk
+
+Do each covariate in turn, MLDyolk first as already have code for it. Could
+maybe avoid repeating some things (e.g. join bathymetry to mld earlier than we
+do), but may well take longer as not restricting datasets to what we actually
+need each time.
+
+```{r, mldyolk}
+mld_yolk_data <- mld_tib %>%
+  select(-c("zos")) %>%  
+  filter(latitude >= 31,
+         latitude <= 36) %>%
+  mutate(year = year(time),
+         month = month(time))%>% 
+  filter(month %in% 1:4) 
+mld_yolk_data
+
+summary(mld_yolk_data)
+
+summary(as.factor(mld_yolk_data$month))
+
+# Could do the averaging over the four months first, assuming that the long and
+# lat are consistent. No - since need the keep the correct bathymetries first to
+# include those, and then do the averaging.
+```
+
+Need to round before joining with bathymetry, since slight numerical
+differences. See previous .Rmd for details.
+
+```{r, roundingmldyolk}
+dp <- 4    # decimal places to round to
+
+mld_yolk_data_round <- mld_yolk_data %>%
+  mutate(across(c(longitude, latitude),
+                round,
+                dp))
+mld_yolk_data_round
+
+range(diff(mld_yolk_data_round$longitude))
+range(diff(mld_yolk_data_round$latitude))
+
+# Then do the same for the bathymetry data sets
+range(diff(bath$longitude))
+range(diff(bath$latitude))
+
+bath_round <- bath %>%
+  mutate(across(c(longitude, latitude),
+                round,
+                dp))
+bath_round
+range(diff(bath_round$longitude))
+range(diff(bath_round$latitude))
+```
+
+Check the two grids, though just doing 1994 as presume the locations are the same
+for each year:
+```{r, gridsmldyolk}
+plot(filter(mld_yolk_data_round, year == 1993, month == 1)$longitude, 
+     filter(mld_yolk_data_round, year == 1993, month == 1)$latitude,
+     xlim = range(c(range(bath_round$longitude),
+                    range(mld_yolk_data_round$longitude))),
+     ylim = range(c(range(bath_round$latitude),
+                    range(mld_yolk_data_round$latitude))),
+     main = "Red is bathymetry")
+points(bath_round$longitude,
+       bath_round$latitude,
+       col = "red",
+       pch = 20,
+       cex = 0.75)
+```
+
+Makes sense - MLD grid is on a rectangle (but presumably NA's are on land), and
+bathymetry grid is already just the ocean.
+
+```{r, combinemldyolk}
+mld_yolk_combined <- bath_round %>%
+  left_join(mld_yolk_data_round)
+mld_yolk_combined
+mld_yolk_combined[500:520, ]
+summary(mld_yolk_combined)
+# See previous .Rmd for details on NAs;  mlotst ones looked to around the Channel
+# Islands, around -120, 34.
+# Megan did the left_join that way. I also tried the other way round, but end up
+# with way more NAs; see previous .Rmd.
+```
+
+Now need just the required isobaths:
+```{r, combine2mldyolk}
+# isobath greater than 100m less than 2,000 for MLDyolk
+mld_yolk_combined_need <- mld_yolk_combined %>%
+  filter(bottom_depth >= 100 & bottom_depth <= 2000)
+mld_yolk_combined_need
+summary(mld_yolk_combined_need)
+
+# mld_yolk_combined_need[is.na(mld_yolk_combined_need$mlotst),]
+```
+
+Plot the locations of NAs for MLD:
+```{r, plotmissingmldyolk}
+plot(mld_yolk_combined_need$longitude[is.na(mld_yolk_combined_need$mlotst)],
+     mld_yolk_combined_need$latitude[is.na(mld_yolk_combined_need$mlotst)])
+```
+as expected.
+
+Okay, remove those rows:
+
+```{r, removeNAsmldyolk}
+mld_yolk_combined_need_no_na <- mld_yolk_combined_need %>%
+  filter(!is.na(mlotst))
+mld_yolk_combined_need_no_na
+summary(mld_yolk_combined_need_no_na)
+# No NA's left, even though only removed the rows with NAs in  MLD column
+max(mld_yolk_combined_need_no_na$year)
+
+filter(mld_yolk_combined_need_no_na, year ==
+        max(mld_yolk_combined_need_no_na$year)) %>%
+  summary()
+```
+
+That shows only values for January in the final year, so remove it.
+
+```{r, removefinalyearmldyolk}
+mld_yolk_tib <- mld_yolk_combined_need_no_na %>%
+  filter(year < max(mld_yolk_combined_need_no_na$year)) %>%
+  group_by(year) %>%
+  summarise(mld_yolk = as.numeric(mean(mlotst)))  #woo! we have it
+            # need as.numeric else class(pull(mld_yolk_tib)) is "units"
+
+mld_yolk_tib
+mld_yolk_tib %>% tail()
+```
+
+Compare to last year's values that went into the assessment (did Megan's check
+on MLDyolk in previous .Rmd). Copy some code over from
+`ecosystem-summary-hake-glorys.R`, and standardise like we did (though I think
+Kristin supplied values already standardised):
+```{r, redo2025}
+glorys_2025 <- read.csv("../../ecosystem-summary-hake/DATA_Combined_glorys_hake_UW_for_Andy.csv") %>%
+    tibble::as_tibble()
+
+summary(glorys_2025)
+```
+
+Want each covariate as it's own index object for plotting. 
+
+Note there will be an extra year, so
+standardising with that can result in slight differences. Will check, and also 
+check that the new figures look similar enough. Maybe just doing the latter for brevity.
+
+```{r, mldyolkindex}
+mld_yolk_index_2025 <- dplyr::select(glorys_2025,
+                                     year,
+                                     value = "MLDyolk") %>%
+  dplyr::mutate(anomaly = standardise(value))
+class(mld_yolk_index_2025) <- class(oni)
+
+mld_yolk_index_2025   # As used in 2025 assessment
+summary(mld_yolk_index_2025)
+
+# Calculating here but just restricting to the same years as used for 2025
+# assessment (need to do for comparison because standardisation depends on the
+# years) 
+mld_yolk_index_2026_restr <- mld_yolk_tib %>%
+ dplyr::filter(year <= max(mld_yolk_index_2025$year)) %>%
+ dplyr::mutate(anomaly = standardise(mld_yolk))
+class(mld_yolk_index_2026_restr) <- class(oni)
+
+mld_yolk_index_2026_restr   # As calculated here
+summary(mld_yolk_index_2026_restr)
+
+# And calculate the new one for all available years
+mld_yolk_index_2026 <- mld_yolk_tib %>%
+ dplyr::mutate(anomaly = standardise(mld_yolk))
+class(mld_yolk_index_2026) <- class(oni)
+
+mld_yolk_index_2026   # As calculated here. 
+summary(mld_yolk_index_2026)
+```
+
+Compare the updated and 2025-assessment values:
+```{r, compareplot3mldyolk}
+plot(mld_yolk_index_2025$year,
+     mld_yolk_index_2025$anomaly,
+     type = "o",
+     col = "blue")
+lines(mld_yolk_index_2026_restr$year,
+     mld_yolk_index_2026_restr$anomaly,
+     type = "o",
+     col = "red")
+```
+
+Now as a correlation plot
+```{r, compareplot4mldyolk}
+plot(mld_yolk_index_2025$anomaly,
+     mld_yolk_index_2026_restr$anomaly)
+abline(a = 0, b = 1)
+
+cor(mld_yolk_index_2025$anomaly,
+    mld_yolk_index_2026_restr$anomaly)   # 0.997 like Megan found
+
+cor(mld_yolk_index_2025$value,
+    mld_yolk_index_2026_restr$mld_yolk)   # 0.997 like Megan found, cor is the
+# same as for anomaly, which is probably obvious 
+```
+
+New updated index is
+```{r, mldyolkindex2}
+plot(mld_yolk_index_2026)
+```
+
+Will make the full figure later.
+
+
+## MLDlatelarv
+
+MLD$_{\mbox{latelarv}}$, using values from the above table.
+
+```{r, mldlatelarv}
+mld_late_larv_data <- mld_tib %>%
+  filter(latitude >= 31,
+         latitude <= 37) %>%
+  mutate(year = year(time),
+         month = month(time))%>% 
+  filter(month %in% 3:6) 
+mld_late_larv_data
+
+summary(mld_late_larv_data)
+
+summary(as.factor(mld_late_larv_data$month)) # Surely there should be less April
+# and June than the others? Slightly confusing. TODO think more.
+```
+
+Need to round before joining with bathymetry, since slight numerical
+differences. See previous .Rmd for details.
+
+```{r, roundingmldlatelarv}
+mld_late_larv_data_round <- mld_late_larv_data %>%
+  mutate(across(c(longitude, latitude),
+                round,
+                dp))
+mld_late_larv_data_round
+
+range(diff(mld_late_larv_data_round$longitude))
+range(diff(mld_late_larv_data_round$latitude))
+
+# Then do the same for the bathymetry data sets
+range(diff(bath$longitude))
+range(diff(bath$latitude))
+
+range(diff(bath_round$longitude))
+range(diff(bath_round$latitude))
+```
+
+Check the two grids, though just doing 1993 as presume the locations are the same
+for each year, shows up well on full screen (not in pdf):
+```{r, gridsmldlatelarv}
+plot(filter(mld_late_larv_data_round, year == 1993, month == 4)$longitude, 
+     filter(mld_late_larv_data_round, year == 1993, month == 4)$latitude,
+     xlim = range(c(range(bath_round$longitude),
+                    range(mld_late_larv_data_round$longitude))),
+     ylim = range(c(range(bath_round$latitude),
+                    range(mld_late_larv_data_round$latitude))),
+     main = "Red is bathymetry")
+points(bath_round$longitude,
+       bath_round$latitude,
+       col = "red",
+       pch = 20,
+       cex = 0.75)
+```
+
+Makes sense - MLD grid is on a rectangle (but presumably NA's are on land), and
+bathymetry grid is already just the ocean.
+
+```{r, combinemldlatelarv}
+mld_late_larv_combined <- bath_round %>%
+  left_join(mld_late_larv_data_round)
+mld_late_larv_combined
+mld_late_larv_combined[500:520, ]
+summary(mld_late_larv_combined)
+# See previous .Rmd for details on NAs;  mlotst ones looked to around the Channel
+# Islands, around -120, 34.
+# Megan did the left_join that way. I also tried the other way round, but end up
+# with way more NAs; see previous .Rmd.
+```
+
+Now need just the required isobaths:
+```{r, combine2mldlatelarv}
+# isobath greater than 100m less than 2,000 for MLD_latelarv
+mld_late_larv_combined_need <- mld_late_larv_combined %>%
+  filter(bottom_depth >= 100 & bottom_depth <= 2000)
+mld_late_larv_combined_need
+summary(mld_late_larv_combined_need)
+
+# mld_late_larv_combined_need[is.na(mld_late_larv_combined_need$mlotst),]
+```
+
+Plot the locations of NAs for MLD:
+```{r, plotmissingmldlatelarv}
+plot(mld_late_larv_combined_need$longitude[is.na(mld_late_larv_combined_need$mlotst)],
+     mld_late_larv_combined_need$latitude[is.na(mld_late_larv_combined_need$mlotst)])
+```
+as expected.
+
+Okay, remove those rows:
+
+```{r, removeNAsmldlatelarv}
+mld_late_larv_combined_need_no_na <- mld_late_larv_combined_need %>%
+  filter(!is.na(mlotst))
+mld_late_larv_combined_need_no_na
+summary(mld_late_larv_combined_need_no_na)
+# No NA's left, even though only removed the rows with NAs in  MLD column
+max(mld_late_larv_combined_need_no_na$year)
+
+filter(mld_late_larv_combined_need_no_na, year ==
+        max(mld_late_larv_combined_need_no_na$year)) %>%
+  summary()
+```
+
+No values here for final year, so second line next not needed here:
+
+```{r, removefinalyearmldlatelarv}
+mld_late_larv_tib <- mld_late_larv_combined_need_no_na %>%
+  # filter(year < max(mld_late_larv_combined_need_no_na$year)) %>%
+  group_by(year) %>%
+  summarise(mld_late_larv = as.numeric(mean(mlotst)))  #woo! we have it
+            # need as.numeric else class(pull(mld_late_larv_tib)) is "units"
+
+mld_late_larv_tib
+mld_late_larv_tib %>% tail()
+```
+
+Compare to last year's values that went into the assessment (did Megan's check
+on MLDyolk in previous .Rmd).
+
+Note there will be an extra year, so
+standardising with that can result in slight differences. Will check, and also 
+check that the new figures look similar enough. Maybe just doing the latter for brevity.
+
+```{r, mldlatelarvindex}
+mld_late_larv_index_2025 <- dplyr::select(glorys_2025,
+                                          year,
+                                          value = "MLDlate") %>%
+    dplyr::mutate(anomaly = standardise(value))
+class(mld_late_larv_index_2025) <- class(oni)
+
+mld_late_larv_index_2025   # As used in 2025 assessment
+summary(mld_late_larv_index_2025)
+
+# Calculating here but just restricting to the same years as used for 2025
+# assessment (need to do for comparison because standardisation depends on the
+# years) 
+mld_late_larv_index_2026_restr <- mld_late_larv_tib %>%
+ dplyr::filter(year <= max(mld_late_larv_index_2025$year)) %>%
+ dplyr::mutate(anomaly = standardise(mld_late_larv))
+class(mld_late_larv_index_2026_restr) <- class(oni)
+
+mld_late_larv_index_2026_restr   # As calculated here
+summary(mld_late_larv_index_2026_restr)
+
+# And calculate the new one for all available years
+mld_late_larv_index_2026 <- mld_late_larv_tib %>%
+ dplyr::mutate(anomaly = standardise(mld_late_larv))
+class(mld_late_larv_index_2026) <- class(oni)
+
+mld_late_larv_index_2026   # As calculated here. 
+summary(mld_late_larv_index_2026)
+```
+
+Compare the updated and 2025-assessment values:
+```{r, compareplot3mldlatelarv}
+plot(mld_late_larv_index_2025$year,
+     mld_late_larv_index_2025$anomaly,
+     type = "o",
+     col = "blue")
+lines(mld_late_larv_index_2026_restr$year,
+     mld_late_larv_index_2026_restr$anomaly,
+     type = "o",
+     col = "red")
+```
+
+Now as a correlation plot
+```{r, compareplot4mldlatelarv}
+plot(mld_late_larv_index_2025$anomaly,
+     mld_late_larv_index_2026_restr$anomaly)
+abline(a = 0, b = 1)
+
+cor(mld_late_larv_index_2025$anomaly,
+    mld_late_larv_index_2026_restr$anomaly)
+```
+Check above value is high.
+
+New updated index is
+```{r, mldlatelarvindex2}
+plot(mld_late_larv_index_2026)
+```
+
+Will make the full figure later.
+
+## SSHJAc
+
+SSH$_{\mbox{JA.c}}$ needs `zos`, sea-surface height. Also need differenct latitude and spatial domain.
+
+TODO: need to figure out 0-30km part. THESE RESULTS WILL CURRENTLY ASSUME THE
+SAME spatial area as for the two MLD ones above. `mld_tib` still has `zos` in.
+
+```{r, sshjac}
+ssh_jac_data <- mld_tib %>%
+  select(-c("mlotst")) %>%      
+  filter(latitude >= 34.5,
+         latitude <= 42.5) %>%
+  mutate(year = year(time),
+         month = month(time))%>% 
+  filter(month %in% 1:4) 
+ssh_jac_data
+
+summary(ssh_jac_data)
+tail(ssh_jac_data)
+summary(as.factor(ssh_jac_data$month)) 
+```
+
+Need to round before joining with bathymetry, since slight numerical
+differences. See previous .Rmd for details.
+
+```{r, roundingsshjac}
+ssh_jac_data_round <- ssh_jac_data %>%
+  mutate(across(c(longitude, latitude),
+                round,
+                dp))
+ssh_jac_data_round
+
+range(diff(ssh_jac_data_round$longitude))
+range(diff(ssh_jac_data_round$latitude))
+
+# Then do the same for the bathymetry data sets
+range(diff(bath$longitude))
+range(diff(bath$latitude))
+
+range(diff(bath_round$longitude))
+range(diff(bath_round$latitude))
+```
+
+Check the two grids, though just doing 1993 as presume the locations are the same
+for each year, shows up well on full screen (not in pdf):
+```{r, gridssshjac}
+plot(filter(ssh_jac_data_round, year == 1993, month == 4)$longitude, 
+     filter(ssh_jac_data_round, year == 1993, month == 4)$latitude,
+     xlim = range(c(range(bath_round$longitude),
+                    range(ssh_jac_data_round$longitude))),
+     ylim = range(c(range(bath_round$latitude),
+                    range(ssh_jac_data_round$latitude))),
+     main = "Red is bathymetry")
+points(bath_round$longitude,
+       bath_round$latitude,
+       col = "red",
+       pch = 20,
+       cex = 0.75)
+```
+
+Makes sense - MLD grid is on a rectangle (but presumably NA's are on land), and
+bathymetry grid is already just the ocean.
+
+```{r, combinesshjac}
+ssh_jac_combined <- bath_round %>%
+  left_join(ssh_jac_data_round)
+ssh_jac_combined
+ssh_jac_combined[500:520, ]
+summary(ssh_jac_combined)
+# See previous .Rmd for details on NAs;  mlotst ones looked to around the Channel
+# Islands, around -120, 34.
+# Megan did the left_join that way. I also tried the other way round, but end up
+# with way more NAs; see previous .Rmd.
+```
+
+Now need just the required isobaths:  TODO need something else here, so
+commenting out
+```{r, combine2sshjac}
+# isobath greater than 100m less than 2,000 for MLD_latelarv
+ssh_jac_combined_need <- ssh_jac_combined
+
+# %>%
+#  filter(bottom_depth >= 100 & bottom_depth <= 2000)
+#ssh_jac_combined_need
+#summary(ssh_jac_combined_need)
+
+# ssh_jac_combined_need[is.na(ssh_jac_combined_need$zos),]
+```
+
+Plot the locations of NAs for MLD:
+```{r, plotmissingsshjac}
+plot(ssh_jac_combined_need$longitude[is.na(ssh_jac_combined_need$zos)],
+     ssh_jac_combined_need$latitude[is.na(ssh_jac_combined_need$zos)])
+```
+as expected.
+
+Okay, remove those rows:
+
+```{r, removeNAsshjac}
+ssh_jac_combined_need_no_na <- ssh_jac_combined_need %>%
+  filter(!is.na(zos))
+ssh_jac_combined_need_no_na
+summary(ssh_jac_combined_need_no_na)
+# No NA's left, even though only removed the rows with NAs in  MLD column
+max(ssh_jac_combined_need_no_na$year)
+
+filter(ssh_jac_combined_need_no_na, year ==
+        max(ssh_jac_combined_need_no_na$year)) %>%
+  summary()
+```
+
+No non-January values for final year, so remove those:
+
+```{r, removefinalyearsshjac}
+ssh_jac_tib <- ssh_jac_combined_need_no_na %>%
+  filter(year < max(ssh_jac_combined_need_no_na$year)) %>%
+  group_by(year) %>%
+  summarise(ssh_jac = as.numeric(mean(zos)))  #woo! we have it
+            # need as.numeric else class(pull(ssh_jac_tib)) is "units"
+
+ssh_jac_tib
+ssh_jac_tib %>% tail()
+```
+
+Compare to last year's values that went into the assessment (did Megan's check
+on MLDyolk in previous .Rmd).
+
+Note there will be an extra year, so
+standardising with that can result in slight differences. Will check, and also 
+check that the new figures look similar enough. Maybe just doing the latter for brevity.
+
+```{r, sshjacindex}
+ssh_jac_index_2025 <- dplyr::select(glorys_2025,
+                                          year,
+                                          value = "SSHjac") %>%
+    dplyr::mutate(anomaly = standardise(value))
+class(ssh_jac_index_2025) <- class(oni)
+
+ssh_jac_index_2025   # As used in 2025 assessment
+summary(ssh_jac_index_2025)
+
+# Calculating here but just restricting to the same years as used for 2025
+# assessment (need to do for comparison because standardisation depends on the
+# years) 
+ssh_jac_index_2026_restr <- ssh_jac_tib %>%
+ dplyr::filter(year <= max(ssh_jac_index_2025$year)) %>%
+ dplyr::mutate(anomaly = standardise(ssh_jac))
+class(ssh_jac_index_2026_restr) <- class(oni)
+
+ssh_jac_index_2026_restr   # As calculated here
+summary(ssh_jac_index_2026_restr)
+
+# And calculate the new one for all available years
+ssh_jac_index_2026 <- ssh_jac_tib %>%
+ dplyr::mutate(anomaly = standardise(ssh_jac))
+class(ssh_jac_index_2026) <- class(oni)
+
+ssh_jac_index_2026   # As calculated here. 
+summary(ssh_jac_index_2026)
+```
+
+TODO These correctly do not look good yet as have not done the correct spatial area.
+
+Compare the updated and 2025-assessment values:
+```{r, compareplot3sshjac}
+plot(ssh_jac_index_2025$year,
+     ssh_jac_index_2025$anomaly,
+     type = "o",
+     col = "blue")
+lines(ssh_jac_index_2026_restr$year,
+     ssh_jac_index_2026_restr$anomaly,
+     type = "o",
+     col = "red")
+```
+
+Now as a correlation plot
+```{r, compareplot4sshjac}
+plot(ssh_jac_index_2025$anomaly,
+     ssh_jac_index_2026_restr$anomaly)
+abline(a = 0, b = 1)
+
+cor(ssh_jac_index_2025$anomaly,
+    ssh_jac_index_2026_restr$anomaly)
+```
+Check above value is high.
+
+New updated index is
+```{r, sshjacindex2}
+plot(ssh_jac_index_2026)
+```
+
+Will make the full figure later.
+
+
+
+
+citation - see
+https://pepijn-devries.github.io/CopernicusMarine/

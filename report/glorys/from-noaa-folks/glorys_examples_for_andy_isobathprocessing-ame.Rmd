@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
   cache = TRUE,
   cache_path = "glorys-examples-cache/",
   fig.path = "glorys-examples-figs-cache/",
-  fig.width = 4,
+  fig.width = 7,
   fig.height = 5
 )
 # comment = "#>",
@@ -173,8 +173,7 @@ lon_max <- -115
 lat_min <-  31
 lat_max <- 36
 
-if(FALSE){    # set to TRUE to redownload. Have not rerun since doing lon_min
-    # etc. TODO
+if(FALE){
   mld_via_package <- cms_download_subset(
     product = "GLOBAL_MULTIYEAR_PHY_001_030",
     layer = "cmems_mod_glo_phy_my_0.083deg_P1M-m",
@@ -275,6 +274,13 @@ unique(diff(my_tibble_mld_red_1994$latitude))
 # 0.08333 is 1/12 of a degree. So any approximation should be fine to 0.00001
 dp <- 4    # decimal places to round to
 
+my_tibble_mld_red_1994_round <- my_tibble_mld_red_1994 %>%
+  mutate(across(c(longitude, latitude),
+                round,
+                dp))
+my_tibble_mld_red_1994_round
+
+
 my_tibble_mld_red_round <- my_tibble_mld_red %>%
   mutate(across(c(longitude, latitude),
                 round,
@@ -367,7 +373,7 @@ as expected.
 
 Okay, remove those rows:
 
-```{r, removeNAs
+```{r, removeNAs}
 combined_need_no_na <- combined_need %>%
   filter(!is.na(mlotst))
 combined_need_no_na
@@ -428,7 +434,6 @@ class(mld_yolk_index_2025) <- class(oni)
 mld_yolk_index_2025   # As used in 2025 assessment
 summary(mld_yolk_index_2025)
 
-
 # HERE - want to get the new one plus check the values I have here agree with
 # Kristin's from last year, just do the standardise again (the .csv Megan compared with could be different).
 
@@ -437,10 +442,44 @@ mld_yolk_index_2026 <- mld_yolk_tib %>%
  dplyr::mutate(anomaly = standardise(mld_yolk))
 class(mld_yolk_index_2026) <- class(oni)
 
+mld_yolk_index_2026   # As calculated here
+summary(mld_yolk_index_2026)
+
+# Calculating here but just restricting to the same years as used for 2025
+# assessment (need to do for comparison because standardisation depends on the
+# years) 
+mld_yolk_index_2026_restr <- mld_yolk_tib %>%
+ dplyr::filter(year <= max(mld_yolk_index_2025$year)) %>%
+ dplyr::mutate(anomaly = standardise(mld_yolk))
+class(mld_yolk_index_2026_restr) <- class(oni)
+
+mld_yolk_index_2026_restr   # As calculated here
+summary(mld_yolk_index_2026_restr)
 
 ```
 
+Compare the updated and 2025-assessment values:
+```{r, compareplot3}
+plot(mld_yolk_index_2025$year,
+     mld_yolk_index_2025$anomaly,
+     type = "o",
+     col = "blue")
+lines(mld_yolk_index_2026_restr$year,
+     mld_yolk_index_2026_restr$anomaly,
+     type = "o",
+     col = "red")
 
+cor(mld_yolk_index_2025$anomaly,
+    mld_yolk_index_2026_restr$anomaly)   # 0.997 like Megan found
+
+cor(mld_yolk_index_2025$value,
+    mld_yolk_index_2026_restr$mld_yolk)   # 0.997 like Megan found, cor is the
+# same as for anomaly, which is probably obvious 
+```
+
+So, appears the code is working for extracting from GLORYS. Start a new file,
+`glorys_2026.Rmd` to simplify this down and just get what is needed for the
+other covariates.
 
 
 ```{r, meganorig, eval = FALSE}
