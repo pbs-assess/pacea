@@ -25,7 +25,10 @@
 ##'
 ##' Might be simpler to tailor
 ##'   each species-specific function, and not have lots of if statements.
-##' @param max_year maximum year to consider (TODO)
+##' @param assessment_year year of assessment, plots years to
+##' `assessement_year+2` it seems. If 2025 then uses GLORYS values provided by Kristin
+##' Marshall (NOAA). If 2026 uses values calculated in `glorys_2026.Rmd` here.
+##' @param index_list_rds name of .rds file in which `glorys_2026.Rmd` saves the indices
 ##' @param par_mar vector for `par(mar)` TODO
 ##' @return
 ##' @export
@@ -34,15 +37,17 @@
 ##' \dontrun{
 ##'
 ##' }
-ecosystem_summary_hake_glorys <- function(max_year = 2024,   # though does to 2026
+ecosystem_summary_hake_glorys <- function(assessment_year = 2026,
+                                          index_list_rds = "../glorys/from-noaa-folks/glorys_indices_2026.Rds",
                                           lwd_index = 6,  # 8 was good on screen
                                           par_mar = c(2, 3, 1.2, 1),
                                           par_oma = c(1.5, 0, 0, 0),
                                           par_mgp = c(2, 1, 0)){
   # See ecosystem-summary-hake.R for explanations of those.
 
-  glorys_new <- read.csv("DATA_Combined_glorys_hake_UW_for_Andy.csv") %>%
-    tibble::as_tibble()
+  if(assessment_year == 2025){
+    glorys_new <- read.csv("DATA_Combined_glorys_hake_UW_for_Andy.csv") %>%
+      tibble::as_tibble()
     # dplyr::rename("year" = "YEAR",
     #              "anomaly" = "ALEUTIAN.LOW.PRESSURE.INDEX..ALPI.")
 
@@ -60,49 +65,66 @@ ecosystem_summary_hake_glorys <- function(max_year = 2024,   # though does to 20
   # MLDyolk - mld_yolk
   # then all get ..index appended
 
-  temp_spawn_index <- dplyr::select(glorys_new,
+    temp_spawn_index <- dplyr::select(glorys_new,
+                                      year,
+                                      value = "Tspawn") %>%
+      dplyr::mutate(anomaly = standardise(value))
+    class(temp_spawn_index) <- class(oni)
+
+    ssh_jac_index <- dplyr::select(glorys_new,
+                                   year,
+                                   value = "SSHjac") %>%
+      dplyr::mutate(anomaly = standardise(value))
+    class(ssh_jac_index) <- class(oni)
+
+    ast_eggs_index <- dplyr::select(glorys_new,
                                     year,
-                                    value = "Tspawn") %>%
-    dplyr::mutate(anomaly = standardise(value))
-  class(temp_spawn_index) <- class(oni)
+                                    value = "LSTegg") %>%
+      dplyr::mutate(anomaly = standardise(value))
+    class(ast_eggs_index) <- class(oni)
 
-  ssh_jac_index <- dplyr::select(glorys_new,
-                                 year,
-                                 value = "SSHjac") %>%
-    dplyr::mutate(anomaly = standardise(value))
-  class(ssh_jac_index) <- class(oni)
+    pu_late_larv_index <- dplyr::select(glorys_new,
+                                        year,
+                                        value = "PUTlate") %>%
+      dplyr::mutate(anomaly = standardise(value))
+    class(pu_late_larv_index) <- class(oni)
 
-  ast_eggs_index <- dplyr::select(glorys_new,
-                                  year,
-                                  value = "LSTegg") %>%
-    dplyr::mutate(anomaly = standardise(value))
-  class(ast_eggs_index) <- class(oni)
+    mld_late_larv_index <- dplyr::select(glorys_new,
+                                        year,
+                                        value = "MLDlate") %>%
+      dplyr::mutate(anomaly = standardise(value))
+    class(mld_late_larv_index) <- class(oni)
 
-  pu_late_larv_index <- dplyr::select(glorys_new,
-                                      year,
-                                      value = "PUTlate") %>%
-    dplyr::mutate(anomaly = standardise(value))
-  class(pu_late_larv_index) <- class(oni)
+    mld_yolk_index <- dplyr::select(glorys_new,
+                                    year,
+                                    value = "MLDyolk") %>%
+      dplyr::mutate(anomaly = standardise(value))
+    class(mld_yolk_index) <- class(oni)
 
-  mld_late_larv_index <- dplyr::select(glorys_new,
-                                      year,
-                                      value = "MLDlate") %>%
-    dplyr::mutate(anomaly = standardise(value))
-  class(mld_late_larv_index) <- class(oni)
+    min_year <- min(glorys_new$year)
+    #max(min(herring_competition$year),
+    #              min(bi$year),
+    #              min(hake_total_biomass_age_1$year))
 
-  mld_yolk_index <- dplyr::select(glorys_new,
-                                      year,
-                                      value = "MLDyolk") %>%
-    dplyr::mutate(anomaly = standardise(value))
-  class(mld_yolk_index) <- class(oni)
+  }
+
+  if(assessment_year == 2026){
+    glorys_index_list = readRDS(index_list_rds)
+
+    min_year <- sapply(glorys_index_list,
+                       function(x) min(x[, "year"])) %>%
+        min()
+
+    # Need them all, put in global so can see them
+    list2env(glorys_index_list,
+             .GlobalEnv)
+
+  }
+
 
 
   # Should generalise for adding more on. Think we should restrict each to the
   # full range of hake recruitment years. TODO need tweaking regarding year of effect.
-  min_year <- min(glorys_new$year)
-    #max(min(herring_competition$year),
-    #              min(bi$year),
-    #              min(hake_total_biomass_age_1$year))
 
   # Decide to calculate anomalies for only the time period given? I think so as
   # that's what would be used in any analysis. Call each an index.
@@ -118,7 +140,7 @@ ecosystem_summary_hake_glorys <- function(max_year = 2024,   # though does to 20
 # TODO and flip axes
 
   x_lim <- c(lubridate::dmy(paste0("0101", min_year)),
-             lubridate::dmy(paste0("0101", max_year)))  # TODO automate
+             lubridate::dmy(paste0("0101", assessment_year - 1)))  # may want more
   par(mfrow = c(7,1),
       mar = par_mar,
       oma = par_oma,
@@ -139,6 +161,8 @@ ecosystem_summary_hake_glorys <- function(max_year = 2024,   # though does to 20
   mtext("Mean temperature during spawning - when higher fish are less likely spawn but larvae grow quicker*",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
 
+  # TODO remove when have available
+  if(exists("ast_eggs_index")){
   plot(ast_eggs_index, lwd = lwd_index,
        xlim = x_lim,
        xlab = "",
@@ -147,6 +171,7 @@ ecosystem_summary_hake_glorys <- function(max_year = 2024,   # though does to 20
        y_axis_reverse = TRUE)
   mtext("Net along-shore transport - increased northward advection reduces recruitment",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
+  }
 
   plot(mld_yolk_index, lwd = lwd_index,
        xlim = x_lim,
@@ -161,7 +186,7 @@ ecosystem_summary_hake_glorys <- function(max_year = 2024,   # though does to 20
        xlim = x_lim,
        xlab = "",
        ylab = "")
-  mtext("Average sea-surface height (off California from Jan-Apr) - higher increases recruitment",
+  mtext("Average sea-surface height (off California from Jan-Apr) - higher increases recruitment TODO NOT CORRECT YET",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
 
   plot(mld_late_larv_index, lwd = lwd_index,
@@ -171,6 +196,9 @@ ecosystem_summary_hake_glorys <- function(max_year = 2024,   # though does to 20
   mtext("Mean mixed layer depth during late larval stage (Mar-Jun) - shallower reduces recruitment",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
 
+  # TODO remove when have available
+  if(exists("pu_late_larv_index")){
+
   plot(pu_late_larv_index, lwd = lwd_index,
        xlim = x_lim,
        xlab = "",
@@ -179,6 +207,6 @@ ecosystem_summary_hake_glorys <- function(max_year = 2024,   # though does to 20
        y_axis_reverse = TRUE)
   mtext("Strength of poleward undercurrent - increased northward advection reduces recruitment",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
-
+}
   mtext("Year of hake recruitment", side = 1, line = 2)
 }

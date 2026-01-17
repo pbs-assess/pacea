@@ -48,6 +48,12 @@ ifelse(Sys.info()["user"] == "edwardsand",
        library(pacea))   # remotes::install_github("pbs-assess/pacea")
 ```
 
+TODO SSHjac off California needs correct spatial area
+
+TODO ASTeggs needs transport definition
+
+TODO PUlatelarv neds strength of undercurrent definition
+
 Obtaining time series from GLORYS for the 2026 Pacific Hake assessment
 Ecoysystem Report. Getting the GLORYS-related variables as listed in Table H.1
 of the 2025 hake assessment.
@@ -754,7 +760,7 @@ ssh_jac_combined_need <- ssh_jac_combined
 # ssh_jac_combined_need[is.na(ssh_jac_combined_need$zos),]
 ```
 
-Plot the locations of NAs for MLD:
+Plot the locations of NAs for zos:
 ```{r, plotmissingsshjac}
 plot(ssh_jac_combined_need$longitude[is.na(ssh_jac_combined_need$zos)],
      ssh_jac_combined_need$latitude[is.na(ssh_jac_combined_need$zos)])
@@ -873,7 +879,7 @@ to restrict later (for MLD had different ranges for the same download).
 
 Adapting code from above:
 ```{r, tempspawn}
-if(TRUE){    # set to TRUE to redownload
+if(FALSE){    # set to TRUE to redownload
   data_temp_spawn_depth <- cms_download_subset(
     product = "GLOBAL_MULTIYEAR_PHY_001_030",
     layer = "cmems_mod_glo_phy_my_0.083deg_P1M-m",
@@ -902,15 +908,19 @@ st_dimensions(data_temp_spawn_depth)$elevation$values
 summary(data_temp_spawn_depth)
 ```
 So a stars object. Note that the shallowest elevation interval is -130.6 to
--109.7, so including more than we would really want if we're saying 130m. TODO
-could tweak the values if what we do here does not match last year's.
+-109.7, so including more than we would really want if we're saying 130m. 
+Also does not include 500 m, so it's just the intervals that include the minimum
+but not the maximum. 
+
+Had said could tweak the values if what we do here does not match last year's,
+but they match exactly. TODO mention in write up.
 
 If just average each cell over elevation, will end up with something of
 similar structure to what we had above, so can then just use that code. So do
 the averaging first. 
 
-TODO note somewhere that mean temperature over unevenly
-spaced depth layers is not a true mean temperature, but method is consistent
+TODO note somewhere that mean temperature (and current velocities) over unevenly
+spaced depth layers is not a true mean, but method is consistent
 over the years.
 
 So, average over depth:
@@ -946,7 +956,7 @@ expect_equal(prod(dim(data_temp_spawn)),
 
 Now can copy and adapt the SSHjac code from above. 
 
-```{r, tempspawn}
+```{r, tempspawndata}
 temp_spawn_data <- temp_spawn_tib %>%
   # select(-c("mlotst")) %>%      
   filter(latitude >= 31,
@@ -1014,8 +1024,7 @@ summary(temp_spawn_combined)
 # with way more NAs; see previous .Rmd.
 ```
 
-Now need just the required isobaths:  TODO need something else here, so
-commenting out
+Now need just the required isobaths:
 ```{r, combine2tempspawn}
 # isobath greater than 100m less than 2,000 for temp_spawn
 temp_spawn_combined_need <- temp_spawn_combined %>%
@@ -1026,7 +1035,7 @@ summary(temp_spawn_combined_need)
 # temp_spawn_combined_need[is.na(temp_spawn_combined_need$zos),]
 ```
 
-Plot the locations of NAs for MLD:
+Plot the locations of NAs for temp:
 ```{r, plotmissingtempspawn}
 plot(temp_spawn_combined_need$longitude[is.na(temp_spawn_combined_need$temp)],
      temp_spawn_combined_need$latitude[is.na(temp_spawn_combined_need$temp)])
@@ -1129,5 +1138,351 @@ plot(temp_spawn_index_2026)
 ```
 
 Will make the full figure later.
+
+
+
+## ASTeggs
+
+AST$_{\mbox{eggs}}$ -- alongshore transport of eggs. Try just northward first.
+
+So you restrict it to the area based on shelf break (100-2,000 m) but then still
+average over the depths 40-60 m. And 31-36degN. Maybe some
+rough trigonometry from `uo` and `vo`, respectively the eastward and northward
+ocean current velocity. Or just northward, given hypothesis above. Try that first.
+
+Transport is volume $\times$ speed ish, so may need to do something more complicated.
+
+Adapting code from TEMPspawn:
+```{r, asteggs}
+if(FALSE){    # set to TRUE to redownload
+  data_ast_eggs_depth <- cms_download_subset(
+    product = "GLOBAL_MULTIYEAR_PHY_001_030",
+    layer = "cmems_mod_glo_phy_my_0.083deg_P1M-m",
+    variable = c("uo", "vo"),
+    region = c(lon_min, 31, lon_max, 36),
+    timerange = time_range,
+    verticalrange = c(-40, -60), # 130m to 500m depth
+    progress = TRUE
+  )
+  
+  # data_ast_eggs_depth <- abind::adrop(data_ast_eggs_depth) # drop elevation as only
+  # one value (when we were doing MLD)
+  saveRDS(data_ast_eggs_depth,
+          "data_ast_eggs_depth.Rds")
+} else {
+  data_ast_eggs_depth <- readRDS("data_ast_eggs_depth.Rds")
+}
+
+data_ast_eggs_depth
+# Aha column values shows, I think, the range for elevation.
+# Tease the values out:
+
+st_dimensions(data_ast_eggs_depth)$elevation$values
+# would be a bit easier to see as intervals
+
+summary(data_ast_eggs_depth)
+```
+For TEMPspawn we had: Note that the shallowest elevation interval is -130.6 to
+-109.7, so including more than we would really want if we're saying 130m. TODO
+could tweak the values if what we do here does not match last year's.
+
+But here we asked for 40-60 and got interval that contains 40 but not 60. So
+it's always on the shallow side. 
+
+So, average over depth - or do we want the sum northward to work out advection,
+or what??? TODO wait to hear from others. Just try northward for now.
+```r, asteggsmean}
+# Calculate the mean over the 'elevation' dimension, should keep the other
+# dimensions and look like the MLD objects from earlier
+data_ast_eggs <- st_apply(
+  data_ast_eggs_depth,
+  MARGIN = c("longitude", "latitude", "time"),  # dimensions to keep
+  FUN = mean,
+  na.rm = TRUE
+  # .fname = "temp"   # not tested yet but should work
+)
+
+data_ast_eggs
+summary(data_ast_eggs)
+```
+
+Surprising if `st_apply()` works with two attributes (help does not say), but it
+has produced something of the correct size. Ah, and not changed the attribute
+names, which is slightly inconsistent with one-attribute things earlier (which
+renamed it `mean` I think, which here would be ambiguous).
+
+Now wrangle the values
+```{r, asteggsanalysis}
+dim(data_ast_eggs)
+prod(dim(data_ast_eggs))
+
+ast_eggs_tib <- as_tibble(data_ast_eggs)    # makes one big tibble, uses that
+                                       # class(data_ast_eggs) is stars
+ast_eggs_tib    # so this keeps uo and vo, which are the mean velocities over
+# the depth  
+# names(ast_eggs_tib)[4] <- "temp"   # can remove when .fname above is tested
+ast_eggs_tib
+
+expect_equal(prod(dim(data_ast_eggs)),
+             nrow(ast_eggs_tib))   
+```
+
+Now do latitude (shouldn't change anything as specified in download) and
+required months:
+```{r, asteggsdata}
+ast_eggs_data <- ast_eggs_tib %>%
+  # select(-c("mlotst")) %>%      
+  filter(latitude >= 31,
+         latitude <= 36) %>%
+  mutate(year = year(time),
+         month = month(time))%>% 
+  filter(month %in% 1:3) 
+ast_eggs_data
+
+summary(ast_eggs_data)
+tail(ast_eggs_data)
+summary(as.factor(ast_eggs_data$month)) 
+```
+
+Still has `uo` and `vo`.
+
+Need to round before joining with bathymetry, since slight numerical
+differences. See previous .Rmd for details.
+
+```{r, roundingasteggs}
+ast_eggs_data_round <- ast_eggs_data %>%
+  mutate(across(c(longitude, latitude),
+                round,
+                dp))
+ast_eggs_data_round
+
+range(diff(ast_eggs_data_round$longitude))
+range(diff(ast_eggs_data_round$latitude))
+
+# Then do the same for the bathymetry data sets
+range(diff(bath$longitude))
+range(diff(bath$latitude))
+
+range(diff(bath_round$longitude))
+range(diff(bath_round$latitude))
+```
+
+Check the two grids, though just doing 1993 as presume the locations are the same
+for each year, shows up well on full screen (not in pdf):
+```{r, gridsasteggs}
+plot(filter(ast_eggs_data_round, year == 1993, month == 1)$longitude, 
+     filter(ast_eggs_data_round, year == 1993, month == 1)$latitude,
+     xlim = range(c(range(bath_round$longitude),
+                    range(ast_eggs_data_round$longitude))),
+     ylim = range(c(range(bath_round$latitude),
+                    range(ast_eggs_data_round$latitude))),
+     main = "Red is bathymetry")
+points(bath_round$longitude,
+       bath_round$latitude,
+       col = "red",
+       pch = 20,
+       cex = 0.75)
+```
+
+Makes sense - MLD grid is on a rectangle (but presumably NA's are on land), and
+bathymetry grid is already just the ocean.
+
+```{r, combineasteggs}
+ast_eggs_combined <- bath_round %>%
+  left_join(ast_eggs_data_round)
+ast_eggs_combined
+ast_eggs_combined[500:520, ]
+summary(ast_eggs_combined)
+# See previous .Rmd for details on NAs;  mlotst ones looked to around the Channel
+# Islands, around -120, 34.
+# Megan did the left_join that way. I also tried the other way round, but end up
+# with way more NAs; see previous .Rmd.
+```
+
+Now need just the required isobaths:  HERE
+```{r, combine2asteggs}
+# isobath greater than 100m less than 2,000 for ast_eggs
+ast_eggs_combined_need <- ast_eggs_combined %>%
+  filter(bottom_depth >= 100 & bottom_depth <= 2000)
+ast_eggs_combined_need
+summary(ast_eggs_combined_need)
+
+# ast_eggs_combined_need[is.na(ast_eggs_combined_need$zos),]
+```
+
+Plot the locations of NAs for uo:
+```{r, plotmissingasteggs}
+plot(ast_eggs_combined_need$longitude[is.na(ast_eggs_combined_need$uo)],
+     ast_eggs_combined_need$latitude[is.na(ast_eggs_combined_need$uo)])
+```
+as expected.
+
+Okay, remove those rows:
+
+```{r, removeNAasteggs}
+ast_eggs_combined_need_no_na <- ast_eggs_combined_need %>%
+  filter(!is.na(uo))
+ast_eggs_combined_need_no_na
+summary(ast_eggs_combined_need_no_na)
+# No NA's left, even though only removed the rows with NAs in only uo column
+max(ast_eggs_combined_need_no_na$year)
+
+filter(ast_eggs_combined_need_no_na, year ==
+        max(ast_eggs_combined_need_no_na$year)) %>%
+  summary()
+```
+
+No non-January values for final year, so remove those; this is a bit different
+to earlier indices as we still have uo and vo, but can easily choose one or the other:
+```{r, removefinalyearasteggs}
+ast_eggs_tib <- ast_eggs_combined_need_no_na %>%
+  filter(year < max(ast_eggs_combined_need_no_na$year)) %>%
+  group_by(year) %>%
+  summarise(ast_eggs_uo = as.numeric(mean(uo)),
+            ast_eggs_vo = as.numeric(mean(vo)),)  #woo! we have it
+            # need as.numeric else class(pull(ast_eggs_tib)) is "units"
+
+ast_eggs_tib
+ast_eggs_tib %>% tail()
+```
+
+Compare to last year's values that went into the assessment (did Megan's check
+on MLDyolk in previous .Rmd).
+
+Note there will be an extra year, so
+standardising with that can result in slight differences. Will check, and also 
+check that the new figures look similar enough. Maybe just doing the latter for brevity.
+
+### Eastward flow only
+
+Here we need a uo and vo index calculated this year, to see if either match what
+was used last year. Do uo (eastward) first:
+```{r, asteggsindexuo}
+ast_eggs_index_2025 <- dplyr::select(glorys_2025,
+                                          year,
+                                          value = "Tspawn") %>%
+    dplyr::mutate(anomaly = standardise(value))
+class(ast_eggs_index_2025) <- class(oni)
+
+ast_eggs_index_2025   # As used in 2025 assessment
+summary(ast_eggs_index_2025)
+
+# Calculating here but just restricting to the same years as used for 2025
+# assessment (need to do for comparison because standardisation depends on the
+# years)
+# uo first for asteggs
+ast_eggs_index_2026_restr_uo <- ast_eggs_tib %>%
+ dplyr::filter(year <= max(ast_eggs_index_2025$year)) %>%
+ dplyr::select(c("year", "ast_eggs_uo")) %>%
+ dplyr::mutate(anomaly = standardise(ast_eggs_uo))    # with uo now in the
+# object name
+class(ast_eggs_index_2026_restr_uo) <- class(oni)
+
+ast_eggs_index_2026_restr_uo   # As calculated here
+summary(ast_eggs_index_2026_restr_uo)
+
+# And calculate the new one for all available years
+ast_eggs_index_2026_uo <- ast_eggs_tib %>%
+ dplyr::select(c("year", "ast_eggs_uo")) %>%    
+ dplyr::mutate(anomaly = standardise(ast_eggs_uo))
+class(ast_eggs_index_2026_uo) <- class(oni)
+
+ast_eggs_index_2026_uo   # As calculated here. 
+summary(ast_eggs_index_2026_uo)
+```
+
+
+Compare the updated and 2025-assessment values:
+```{r, compareplot3asteggsuo}
+plot(ast_eggs_index_2025$year,
+     ast_eggs_index_2025$anomaly,
+     type = "o",
+     col = "blue")
+lines(ast_eggs_index_2026_restr_uo$year,
+     ast_eggs_index_2026_restr_uo$anomaly,
+     type = "o",
+     col = "red")
+```
+So, as expected, last year's was not simply the mean eastward velocity. Now see if
+it was just the mean northward velocity.
+
+### Northward flow only
+
+Here we need a uo and vo index calculated this year, to see if either match what
+was used last year:
+```{r, asteggsindexvo}
+# Calculating here but just restricting to the same years as used for 2025
+# assessment (need to do for comparison because standardisation depends on the
+# years)
+# vo first for asteggs
+ast_eggs_index_2026_restr_vo <- ast_eggs_tib %>%
+ dplyr::filter(year <= max(ast_eggs_index_2025$year)) %>%
+ dplyr::select(c("year", "ast_eggs_vo")) %>%
+ dplyr::mutate(anomaly = standardise(ast_eggs_vo))    # with vo now in the
+# object name
+class(ast_eggs_index_2026_restr_vo) <- class(oni)
+
+ast_eggs_index_2026_restr_vo   # As calculated here
+summary(ast_eggs_index_2026_restr_vo)
+
+# And calculate the new one for all available years
+ast_eggs_index_2026_vo <- ast_eggs_tib %>%
+ dplyr::select(c("year", "ast_eggs_vo")) %>%    
+ dplyr::mutate(anomaly = standardise(ast_eggs_vo))
+class(ast_eggs_index_2026_vo) <- class(oni)
+
+ast_eggs_index_2026_vo   # As calculated here. 
+summary(ast_eggs_index_2026_vo)
+```
+
+Compare the updated and 2025-assessment values:
+```{r, compareplot3asteggsvo}
+plot(ast_eggs_index_2025$year,
+     ast_eggs_index_2025$anomaly,
+     type = "o",
+     col = "blue")
+lines(ast_eggs_index_2026_restr_vo$year,
+     ast_eggs_index_2026_restr_vo$anomaly,
+     type = "o",
+     col = "red")
+```
+
+All over the place, so index is not based on northward flow only. TODO wait to
+hear back from NOAA colleagues.
+
+Now as a correlation plot, just for uo
+```{r, compareplot4asteggsuo}
+plot(ast_eggs_index_2025$anomaly,
+     ast_eggs_index_2026_restr_uo$anomaly)
+abline(a = 0, b = 1)
+
+cor(ast_eggs_index_2025$anomaly,
+    ast_eggs_index_2026_restr_uo$anomaly)
+```
+
+
+New updated index is
+```{r, asteggsindex2}
+# plot(ast_eggs_index_2026_uo)
+```
+
+Will make the full figure later.
+
+HERE not much point in trying PUlatelarv wich is poleward undercurrent, for
+which we need a similar calculation probably regarding how its calculated.
+
+
+```{r, saveindices}
+glorys_indices_2026 <- list(
+    temp_spawn_index = temp_spawn_index_2026,
+    ssh_jac_index = ssh_jac_index_2026,
+    # ast_eggs_index = ast_eggs_index_2026,
+    # pu_late_larv_index = pu_late_larv_index_2026,
+    mld_late_larv_index = mld_late_larv_index_2026,
+    mld_yolk_index = mld_yolk_index_2026)
+saveRDS(glorys_indices_2026,
+        "glorys_indices_2026.Rds")
+```    
+    
 
 
