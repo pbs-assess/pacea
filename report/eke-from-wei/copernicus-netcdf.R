@@ -2,39 +2,14 @@
 # https://help.marine.copernicus.eu/en/articles/5040824-how-to-open-and-visualize-copernicus-marine-data-in-r
 # by Anais P.
 
-# From Wei:
-# I computed EKE from satellite altimetry data (available from the Copernicus
-# marine data server). It can also be done using ROMS modeled sea surface
-# height, see this paper (Coyle et al., 2012, its Fig. 25) I provide EKE to AFSC's annual ESR
-# and ESP process. Would it be helpful if I send you daily EKE from 1993/01/01
-# to near real time on a regular 0.125 deg lon x 0.125 deg lat grid? You can
-# then average it spatially to any region you like (I can help with that as well
-# if needed).
-#
-# Andy: If you have the daily values already then just sending them to me sounds
-# easiest, to save me having to get them from Copernicus (I haven’t done that
-# before, and any time savings are greatly appreciated). That would be awesome,
-# I should be able to do the averaging (although defining the range of 0-30km
-# from the coastline might be fiddly, haven’t done that before).
-#
-# Wei: Daily EKE based on satellite altimetry for your region is attached. Below
-# is a picture of the long-term mean of the EKE (averaged
-# 1993/01/01-2026/01/06) [see email]
-#
-# From the coast to 30-km offshore is slightly tricky to define, but I have done
-# it for the Gulf of Alaska. I won't be able to get to it (for your region)
-# today, but am happy to help if needed.
-
-# So, am checking can load in the file okay and look at it. Hopefully the
-# metadata is populated.
-
-
+# See README for emails.
 
 # Loading of the different libraries
 library(ncdf4)
 library(lubridate)
 library(RColorBrewer)
 library(lattice)
+library(stars)
 
 ## Set the working directory and filename
 nc_file <- nc_open("eke_cmems_0.125_19930101-20260106.nc")
@@ -91,6 +66,20 @@ names(nc_file$var)
 eke_array_full <- ncvar_get(nc_file,nc_file$var[[1]])
 dim(eke_array_full)
 # eke <- "thetao"
+class(eke_array_full)
+
+
+HERE, and then below also, but this will be useful
+# Actually be good to have as a stars object then can use other suttf
+
+Doesn't work, ask Kelsey:
+eke_stars <- st_as_stars(ncvar_get(nc_file),
+                         .var = names(nc_file$var))
+
+
+
+
+
 
 eke_array <- eke_array_full[ , , date_may_to_sep_ind]
 
@@ -109,9 +98,14 @@ eke_mean_each_cell <- apply(eke_array, c(1, 2), mean, na.rm = TRUE)   # TODO loo
 # more carefully
 summary(eke_mean_each_cell)
 
-TODO here, figure out the years
-eke_mean_each_year <- apply(eke_array, c(1, 2), mean, na.rm = TRUE)   # TODO look at
 
+eke_mean_each_year <- apply(eke_array,
+                            c(1, 2),
+                            mean, na.rm = TRUE) %>%
+  dplyr::as_tibble()
+eke_mean_each_year
+
+TODO HERE, figure out the years for that
 
 # Plot a map
 image(longitude,latitude,eke_slice, col = rev(brewer.pal(10,"RdBu")))

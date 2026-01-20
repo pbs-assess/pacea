@@ -1,0 +1,78 @@
+READeke-analysis.txt
+Documenting emails from Wei Cheng. Latest is last (as copied from email)
+ 
+copernicus-netcdf.R - see HERE, trying to get STARS object. Leaving for
+now as should focus on other covariates.
+eke-analysis.R - for analysis, 
+
+Wei:
+You are welcome, Andy! I am glad this helps. We can easily adjust the threshold to some other kms offshore if needed. The mask is defined for the entire latitude band of downloaded data, leaving you the flexibility to average over different lat bands if so desired.
+
+The data set is the global ocean level 4 gridded SSH and derived variables product, described here. Data is daily (covering 1993/01/01-2026/01/06) at 0.125 deg x0.125 deg horizontal resolution.  From 1993/01/01 to 2025/05/01, the data is what they call 'reprocessed', and from 2025/05/02 onward it's the near real time (NRT) set. I computed EKE from "ugosa" and "vgosa" (available in the data sets, which are eastward and northward surface geostrophic velocity, respectively, assuming sea level for geoid). I subsetted the global data to the domain shown on the figures before downloading just to save time.
+
+Happy to answer if you have other questions.
+
+
+Andy:
+Thanks Wei. I’ll try and get to this today. Very helpful. I should be able to use this in the hake assessment ecosystem summary.
+ 
+The ‘few grid points’ part is interesting. I’ll see how the historical values match to what Cathleen had used, which came from a ROMS model that is not updated I think – I can check but may well be the paper you sent me in your first reply. Kristin Marshall had said to me that the EKE from different products can be different. But if Copernicus source is the only one being updated then that’s all we can use operationally going forward.
+ 
+Are you able to provide a brief description of the exact Copernicus product you used, so I can put it in the assessment? Also, I’ve been adapting some  R code from Eric and colleagues for extracting Copernicus products (for the other GLORYS outputs I need). Maybe I can integrate your methods into that, at least for next year.
+ 
+Wei:
+A mask file is attached. It's defined on the EKE grid points. The coastal zone (where mask =1) is pretty narrow - at the satellite resolution (0.125 deg), 30-km offshore is no more than a few grid points. Let me know if this works for you.
+ 
+Red strip is the coastal zone. 
+ 
+Andy: 
+Thank you. If you can get the values for 0-30 km, and if the file format is the same as what you already sent me, I should be able to do the averaging . I’ve already written the code to select out the correct months.
+ 
+Yes, later this week is good (not much later if possible though). Getting the hake assessment finished up the week after, with it due on the 27th.
+ 
+Awesome. Another productive outcome of our NOAA-DFO group,
+
+Wei:
+ 
+Great. So we both didn't make any mistakes :)
+I can get to the spatial averaging later this week, if it isn't too late. If I get stuck, I will let you know. 
+more soon,
+Wei
+
+Andy:
+ 
+I made a figure that matches yours (not quite the same colour scale, but satisfyingly reproduces yours):
+ 
+This is awesome, thank you. I have loaded it into R okay, done some wrangling, and produced a plot a bit like yours (just for the first date for now; working on the averaging right now). 
+ 
+If you are able to do the coast to 30-km part that would be very helpful indeed, as I have not done that sort of thing and don’t quite know where to start.  
+ 
+I can do the averaging, exact lats and lons, and selecting the required months (May – September) easily enough. The 30km from the coast is not obvious to me.
+ 
+I did check the GitHub repository for Cathleen’s paper, but these sorts of values were already obtained from somewhere and then used in her analyses (the code for how she got them is not there).
+ 
+One question – do you know what co-ordinate reference system is used for the lats and lons?
+ 
+Thanks again, this is very useful,
+ 
+Wei: 
+Daily EKE based on satellite altimetry for your region is attached. Below is a picture of the long-term mean of the EKE (averaged 1993/01/01-2026/01/06):
+ 
+  
+From the coast to 30-km offshore is slightly tricky to define, but I have done it for the Gulf of Alaska. I won't be able to get to it (for your region) today, but am happy to help if needed.
+ 
+Andy:
+
+If you have the daily values already then just sending them to me sounds easiest, to save me having to get them from Copernicus (I haven’t done that before, and any time savings are greatly appreciated). That would be awesome, I should be able to do the averaging (although defining the range of 0-30km from the coastline might be fiddly, haven’t done that before).
+ 
+Thank you very much, this will be very valuable.
+ 
+Wei:
+ 
+Thanks for reaching out, and I hope your new year is off to a good start! We had a visitor today at work so I am behind with emails. I interacted with Cathleen when she was a student, many years ago thou'.
+ 
+I computed EKE from satellite altimetry data (available from the Copernicus marine data server). It can also be done using ROMS modeled sea surface height, see this paper (its Fig. 25) - if the link doesn't work for you, the screenshot of the title is inserted below. I provide EKE to AFSC's annual ESR and ESP process. Would it be helpful if I send you daily EKE from 1993/01/01 to near real time on a regular 0.125 deg lon x 0.125 deg lat grid? You can then average it spatially to any region you like (I can help with that as well if needed). 
+ 
+Happy to chat more.
+ 
+
