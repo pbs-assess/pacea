@@ -32,7 +32,8 @@ plot_with_uncertainty_discrete <- function(obj_lub,
                                            ...){
 
   if(is.null(y_max)){
-    y_max = max(obj_lub$high)
+    y_max = max(obj_lub$high,
+                na.rm = TRUE)
   }
 
   plot(obj_lub$date,

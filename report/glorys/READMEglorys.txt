@@ -1,5 +1,11 @@
 Andy experimenting with using the code from marea to extract GLORYS results.
 
+Use from-noaa-folks/
+# 21 Jan 2026
+    # SSTjac, ASTeggs, PUlatelarv not available for update (see glorys_2026.Rmd)
+    #  as unsure of domain, so just 2025 values
+
+
 Copying several files over from marea (8/12/08) into
 from-marea/
 but only glorys-bottom-temperature.R and R/get_CMEMS_ncdf.R are on GitHub, so

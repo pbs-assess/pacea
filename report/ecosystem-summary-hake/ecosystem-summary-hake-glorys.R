@@ -119,8 +119,47 @@ ecosystem_summary_hake_glorys <- function(assessment_year = 2026,
     list2env(glorys_index_list,
              .GlobalEnv)
 
-  }
+    # 21 Jan 2026  TODO resolve when time
+    # SSTjac, ASTeggs, PUlatelarv not available for update (see glorys_2026.Rmd)
+    #  as unsure of domain, so use the 2025 values for those
+    glorys_2025 <- read.csv("DATA_Combined_glorys_hake_UW_for_Andy.csv") %>%
+      tibble::as_tibble()
 
+    ssh_jac_index <- dplyr::select(glorys_2025,
+                                   year,
+                                   value = "SSHjac") %>%
+      dplyr::mutate(anomaly = standardise(value))
+    class(ssh_jac_index) <- class(oni)
+
+    ast_eggs_index <- dplyr::select(glorys_2025,
+                                    year,
+                                    value = "LSTegg") %>%
+      dplyr::mutate(anomaly = standardise(value))
+    class(ast_eggs_index) <- class(oni)
+
+    pu_late_larv_index <- dplyr::select(glorys_2025,
+                                        year,
+                                        value = "PUTlate") %>%
+      dplyr::mutate(anomaly = standardise(value))
+    class(pu_late_larv_index) <- class(oni)
+
+    # Change here and in ecosystem-summary-hake.R, maybe make a function TODO
+    hake_recruitment_with_na <- hake_recruitment
+    # TODO this should be more generalisable, though will see any missing years in
+    # output if more are needed, plus it's fine for 2026
+    if(max(hake_recruitment_with_na$year < assessment_year)){
+        hake_recruitment_with_na <- rbind(hake_recruitment_with_na,
+                                          c(assessment_year,
+                                            NA,
+                                            NA,
+                                            NA))
+    }
+
+    # Now change values for years that weren't estimated to data NA's
+    # TODO needs generalising, works for 2026
+    hake_recruitment_with_na[hake_recruitment_with_na$year %in% 2023:2025,
+                             c("low", "median", "high")] <- NA
+  }
 
 
   # Should generalise for adding more on. Think we should restrict each to the
@@ -140,15 +179,17 @@ ecosystem_summary_hake_glorys <- function(assessment_year = 2026,
 # TODO and flip axes
 
   x_lim <- c(lubridate::dmy(paste0("0101", min_year)),
-             lubridate::dmy(paste0("0101", assessment_year - 1)))  # may want more
+             lubridate::dmy(paste0("0101", assessment_year)))  # may want more
   par(mfrow = c(7,1),
       mar = par_mar,
       oma = par_oma,
       mgp = par_mgp)
 
-  plot(hake_recruitment,
+  plot(hake_recruitment_with_na,    # TODO wont work for 2025 right now
        xlim = x_lim,
-       y_max = max(dplyr::filter(hake_recruitment, year >= min_year)$high),
+       y_max = max(dplyr::filter(hake_recruitment_with_na, year >=
+                                                           min_year)$high,
+                   na.rm = TRUE),
        xlab = "",
        ylab = "")   # Else too much info; putting it into mtext
   mtext("Hake age-0 recruitment (billions of fish)", side = 3, adj = 0, cex = 0.7,
@@ -186,7 +227,7 @@ ecosystem_summary_hake_glorys <- function(assessment_year = 2026,
        xlim = x_lim,
        xlab = "",
        ylab = "")
-  mtext("Average sea-surface height (off California from Jan-Apr) - higher increases recruitment TODO NOT CORRECT YET",
+  mtext("Average sea-surface height (off California from Jan-Apr) - higher increases recruitment",
         side = 3, adj = 0, cex = 0.7, line = 0.3)
 
   plot(mld_late_larv_index, lwd = lwd_index,

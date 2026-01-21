@@ -24,7 +24,7 @@
 # Order (e.g. Figure 8) is HG, PRD, CC, SOG, WCVI.
 
 load_all()
-assess_yr <- 2023       # Year of the assessment (status in that year)
+assess_yr <- 2024       # Year of the assessment (status in that year)
 regions_all <- c("HG", "PRD", "CC", "SOG", "WCVI")
 
 # call create_herring_object() once for each region, and make recruitment and
@@ -94,7 +94,7 @@ if(check_index_changed(herring_recruitment,
               get(paste0("herring_recruitment_", assess_yr)))
 }
 
-# Check values with Tables 14-18:
+# Check values with Tables 14-18: TODO for 2024 assessment
 dplyr::filter(herring_recruitment,
               year >= 2014) %>%
   a()

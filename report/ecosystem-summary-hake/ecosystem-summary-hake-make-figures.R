@@ -5,8 +5,9 @@ source("ecosystem-summary-hake.R")
 source("ecosystem-summary-hake-glorys.R")
 
 # Specific to Andy's laptop:
-hake_assessment_fig_dir <- paste0(here::here(),
-TODO                                  "/../hake-assessment-2024/doc/image-files/") # 2024 is generic directory for 2024 onwards
+hake_assessment_fig_dir <- paste0(getwd(), "/")
+# hake_assessment_fig_dir <- paste0(here::here(),
+# TODO                                  "/../hake-assessment-2024/doc/image-files/") # 2024 is generic directory for 2024 onwards
 
 png(paste0(hake_assessment_fig_dir,
            "ecosystem_summary_from_pacea.png"),
