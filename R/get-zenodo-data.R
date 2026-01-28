@@ -211,7 +211,7 @@ get_zenodo_data <- function(layer,
         # turl <- paste0("https://github.com/pbs-assess/pacea-data/blob/main/data/", git_filename, "?raw=true")
           # dat <- dl_data(turl)
 
-        zen4R::download_zenodo(doi = zenodo_dir,
+        zen4R::download_zenodo(doi = zenodo_doi,
                                path = cache_dir,
                                files = paste0(data_row$data_name, "_01.rds"),
                                timeout = timeout_value)

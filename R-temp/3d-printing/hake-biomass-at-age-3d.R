@@ -3,14 +3,34 @@
 # This is based on template, saved as example-code.R, from
 # https://github.com/paulnorthrop/r2stl/blob/main/demo/r2stl.R
 
-# Run this after building doc so have the base model loaded in.
+# After building hake doc update assess_yr in hake dir:
+#  hake::pacea_save() - will create .rds and place them in data-raw/....
+# Update assess_yr here
 
-# OR move into utils-pacea-save.R which is probably better, and save n-at-age in pacea.
 library(r2stl)
 
-hake_total_biomass_at_age
+assess_yr <- 2026
 
-h <- hake_total_biomass_at_age  # rows are years, columns are ages
+hake_dir <- paste0(here::here(),
+                   "/data-raw/groundfish/hake-",
+                   assess_yr,
+                   "/")
+
+# Get assess_yr value from pacea, else from data-raw (since still draft document
+# so not updating in pacea yet)
+if(exists(paste0("hake_total_biomass_at_age_",
+                 assess_yr))){
+  assign(h,                         # rows are years, columns are ages
+         paste0("hake_total_biomass_at_age_",
+                assess_yr))
+  } else {
+  h <- readRDS(paste0(hake_dir,
+                      "hake_total_biomass_at_age_",
+                      assess_yr,
+                      ".rds"))
+}
+
+h
 
 x <- h$year                   # years
 y <- as.numeric(names(h)[-1]) # ages
@@ -27,11 +47,13 @@ length(x)
 length(y)
 dim(z)
 
-r2stl(x,
-      y,
-      z,
-      filename="hake-total-biomass-at-age-2025-default.stl",
-      show.persp=TRUE)
+# r2stl(x,
+#       y,
+#       z,
+#       filename = paste0("hake-total-biomass-at-age-",
+#                         assess_yr,
+#                         "-default.stl"),
+#       show.persp = TRUE)
 
 # Creates a pointy surface not bars. So need to manually add in intermediate
 # values to fudge it to make bars.
@@ -77,23 +99,9 @@ for(year_index in 1:length(x)){       # true years
 r2stl(x = year_inc,
       y = age_inc,
       z = z_inc,
-      filename="hake-total-biomass-at-age-2025.stl",
+      filename = paste0("hake-total-biomass-at-age-",
+                        assess_yr,
+                        ".stl"),
       show.persp=TRUE)
 
 
-
-
-stop()
-# Let's do the classic persp() demo plot
-
-x <- seq(-10, 10, length= 100)
-
-y <- x
-
-f <- function(x,y) { r <- sqrt(x^2+y^2); 10 * sin(r)/r }
-
-z <- outer(x, y, f)
-
-z[is.na(z)] <- 1
-
-r2stl(x, y, z, filename="lovelyfunction.stl", show.persp=TRUE)
