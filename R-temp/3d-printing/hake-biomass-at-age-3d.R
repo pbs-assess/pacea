@@ -7,6 +7,9 @@
 #  hake::pacea_save() - will create .rds and place them in data-raw/....
 # Update assess_yr here
 
+# Biomass-at-age not available for 2026 assessment, because not saved when doing
+# projections in Stock Synthesis.
+
 library(r2stl)
 
 assess_yr <- 2026
