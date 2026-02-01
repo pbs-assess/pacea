@@ -250,4 +250,50 @@ ecosystem_summary_hake_glorys <- function(assessment_year = 2026,
         side = 3, adj = 0, cex = 0.7, line = 0.3)
 }
   mtext("Year of hake recruitment", side = 1, line = 2)
+
+# Create one big tibble to return; ensure each new index to add is just year and
+#  anomaly. Then make a cumulative index by just summing the normalised indices.
+  tib <- hake_recruitment_with_na %>%
+    dplyr::rename(hake_recruitment_low = low,
+                  hake_recruitment_median = median,
+                  hake_recruitment_high = high) %>%
+    dplyr::left_join(dplyr::select(temp_spawn_index,
+                                   year,
+                                   anomaly),
+                     by = "year") %>%
+    dplyr::rename(temp_spawn_index = anomaly) %>%
+    dplyr::left_join(dplyr::select(ast_eggs_index,
+                                   year,
+                                   anomaly),
+                     by = "year") %>%
+    dplyr::rename(ast_eggs_index = anomaly) %>%
+    dplyr::left_join(mld_yolk_index,
+                     by = "year") %>%
+    dplyr::rename(mld_yolk_index = anomaly) %>%
+    dplyr::left_join(ssh_jac_index,
+                     by = "year") %>%
+    dplyr::rename(ssh_jac_index = anomaly) %>%
+    dplyr::left_join(dplyr::select(mld_late_larv_index,
+                                   year,
+                                   anomaly),
+                     by = "year") %>%
+    dplyr::rename(mld_late_larv_index = anomaly) %>%
+    dplyr::left_join(dplyr::select(pu_late_larv_index,
+                                   year,
+                                   anomaly),
+                     by = "year") %>%
+    dplyr::rename(pu_late_larv_index = anomaly) %>%
+
+    dplyr::mutate(cumulative_index =
+             rowSums(dplyr::across(c("temp_spawn_index",
+                                     "ast_eggs_index",
+                                     "mld_yolk_index",
+                                     "ssh_jac_index",
+                                     "mld_late_larv_index",
+                                     "pu_late_larv_index"))))
+    # cumulative_index will have NA for any rows with an NA, which are the first
+    # two here because bi has NA in first two years.
+
+    return(tib)
 }
+
