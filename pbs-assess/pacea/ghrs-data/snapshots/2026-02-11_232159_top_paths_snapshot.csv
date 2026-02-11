@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,50,24
+/pbs-assess/PACea,14,8
+/pbs-assess/pacea/tree/main,4,2
+/pbs-assess/pacea/issues,3,2
+/pbs-assess/pacea/issues/91,3,2
+/pbs-assess/pacea/tree/dev-andy,3,2
+/pbs-assess/pacea/tree/main/R,2,2
+/pbs-assess/pacea/tree/main/data-raw,2,2
+/pbs-assess/pacea/blob/dev-andy/R/bccm-all-variables-full.R,2,1
+/pbs-assess/pacea/blob/main/data-raw/roms/roms-data-interpolation-full-to-2024.R,2,1
