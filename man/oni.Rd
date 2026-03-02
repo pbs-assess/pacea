@@ -28,6 +28,11 @@ The Oceanic Niño Index is a monthly index which is one measure of the El
 Niño-Southern Oscillation.
 }
 \details{
+NOTE (2nd March 2026). Now we are in 2026, there is a new 30-year baseline
+period available for calculating anomalies, from 1995-2025. This is now used
+for all all years from 2010 onwards; hence such values will have changed from previous versions of
+pacea. See below for more details.
+
 The Oceanic Niño Index (ONI) is a 3-month running
 mean of sea surface temperature (SST) anomalies in the Niño 3.4 region
 (5 deg N to 5 deg S, 120 deg W to 170 deg W) plotted on
@@ -65,6 +70,48 @@ Niño-Southern Oscillation, and other indices can confirm whether features
 consistent with a coupled ocean-atmosphere phenomenon accompanied these periods.
 
 Also see https://www.ncei.noaa.gov/access/monitoring/enso/sst
+
+2nd March 2026 update: The 'centered 30-year base period updated every 5 years' is somewhat
+nuanced. The following is based on this 2013 NOAA web article:
+https://www.climate.gov/news-features/understanding-climate/watching-el-ni\%C3\%B1o-and-la-ni\%C3\%B1a-noaa-adapts-global-warming:
+
+Each five-year period in the historical record now has its own
+30-year average centered on the first year in the period: the years 1950 to
+1955 are compared to the 1936-1965 average, for example, while the years
+1956-1960 are compared to 1941-1970.
+
+For years for which a 30-year period is
+not available (because the final years have not occurred yet), the
+the most recently calculated climatology is used.
+
+So, for example:
+\enumerate{
+\item In 2025, the oni values from 2010 onwards would have been based on the
+climatology from 1990-2020, because the years 1996-2025 would not be
+available (the full temperatures throughout 2025 would not yet be known),
+and so 1990-2020 is the last complete 30-year block available that ends in a
+year that is a multiple of 5 years.
+\item In March 2026, when updating pacea, there is a new 30-year block available,
+1995-2025. This is a 30-year block centred on 2010, so this is now used
+as the baseline for all years from 2010-2014.
+\item Now that 1995-2025 is the newest 30-year block available, it is also used for
+all years from 2015 onwards.
+}
+
+Thus all oni values from 2010 onwards have changed when updating pacea in
+March 2026, compared to versions processed in 2025 and earlier. Pre-2010
+values have not changed because the relevant 30-year averages have not changed.
+Remember to use \code{pacea_installed()} to see when you last installed pacea.
+
+Ocean temperatures have been increasing. The reason for calculating
+anomalies with respect to near-in-time 30-year averages, rather than the
+same 30-year average for the full time series, is described
+by Mike Halpert at NOAA's Climate Prediction Center:
+
+If using one 30-year average for the full time series "we could picture a
+day not too far in the future when a weak El Niño episode from the past
+would wind up looking like a weak La Niña episode when compared to the more
+recent, warmer ocean temperatures."
 
 Associated code adapted from code generously shared by Chris Rooper.
 }

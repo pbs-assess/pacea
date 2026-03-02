@@ -26,6 +26,17 @@ combines both oceanic and atmospheric variables, to an assessment of ENSO in
 in a single index.
 }
 \details{
+NOTE (2nd March 2026; see ther notes below for context): on NOAA's PSL
+website given below it now states that
+"As the JRA55 has been discontinued we were able to calculate the MEI V2
+index using the JRA3Q Reanalysys dataset. The spatial resolution is 1.5x1.5
+and all other calulation details are the same. The correlation between the
+JRA55 version and the JRA3Q version is .998."
+This is presumably the reason why five early values of mei anomaly changed
+when updating pacea, but the changes were only by 0.01. Likely not of
+significance, but in case any analyses based on mei change slightly after a
+pacea update this is likely why.
+
 NOTE (22th April 2024): on NOAA's PSL website given below it states: "The
 input OLR dataset is delayed at the source. We will update the index when
 it's available. The source dataset (JRA-55) for the MEI V2 has been
