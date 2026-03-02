@@ -89,7 +89,9 @@ if(check_index_changed(oni, oni_new)){
 
   expect_equal(oni[1:(nrow(oni) - 2), ],
                oni_new[1:(nrow(oni) - 2), ],
-               tolerance = 0.02) # See note at top if this fails
+               tolerance = 0.02) # See note at top if this fails. Note that it
+  # will at the start of a year after the year that is a multiple of 5, because
+  # that will be the start of a new 30-year period; see help file.
 
   oni <- oni_new
   usethis::use_data(oni,
