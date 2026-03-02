@@ -4,6 +4,10 @@
 # Didn't fully re-run this all from scratch after reorganising (9/7/25), but it
 # adds on to the existing saved objects now.
 
+See HERE - may have to redo the first peak values, as I think the combining may
+have ordered them in size, not necessarily original then new. So not comminting
+the updated .rda, need to rerun this. 2nd March 2026
+
 # Can only get last 18 months of values. So now am downloading the 6 months
 # before what's in pacea up to the current today. Need need to just extend
 # original since updating on 2025-10-15 can't
@@ -13,6 +17,7 @@
 
 library(dplyr)
 library(lubridate)
+library(tibble)
 load_all()
 
 # Adapting extraction up to end of 2023 from Chris's code. No need to keep
@@ -204,25 +209,39 @@ if(FALSE){     # Change if want to rerun, but should not have to)
 
 # 2025-10-15 Going forwards will redownload pacea's last six months of data all the
 # way up to today. Do the wrangling. Check the pacea values agree with new
-# calculautions (website implies no changes will get made, but just in case).
+# calculations (website implies no changes will get made, but just in case).
 
 fraser_discharge_peak %>% tail()
 
 fraser_discharge_mean %>% tail()
 
-# On website enter the 1st of first month shown there (as tail shows 6 rows, so
-# 6 months that we're redoing); I think both data sets should be the same. Get
-# data up to today. So look at this and then change dates, and change to just
-# 'Discharge (daily mean values)' with nothing for second axis. (The link from
+# To get updated data:
+
+# 1. Go to website:
+# https://wateroffice.ec.gc.ca/report/real_time_e.html?stn=08MF005&mode=Table&startDate=2025-01-01&endDate=2026-03-02&prm1=6&y1Max=&y1Min=&prm2=-1&y2Max=&y2Min=
+
+# 2. On website enter the 1st of first month shown there (as tail shows 6 rows, so
+#  6 months that we're redoing [?]); think this is to get the full month for the
+# last time we updated pacea. I think both data sets should be the same.
+
+# 3. Change end date to today's date.
+
+# 4. Change to just 'Discharge (daily mean values)' with nothing for second
+# axis. (The link from
 # 2024 did reset other settings I think). Actually, when you download you get to
 # choose anyway.
 
-# https://wateroffice.ec.gc.ca/report/real_time_e.html?stn=08MF005&mode=Table&startDate=2024-01-01&endDate=2024-12-31&prm1=46&y1Max=&y1Min=&prm2=47&y2Max=&y2Min=
-# and then download and unzip.
+# 5. Replace the above website with the current one, as that will have the
+# correct dates in it.
 
+# 6. Download (Discharge daily mean, .csv) and unzip, and update .csv filename in next command.
+
+# Earlier grabs were:
+# https://wateroffice.ec.gc.ca/report/real_time_e.html?stn=08MF005&mode=Table&startDate=2024-01-01&endDate=2024-12-31&prm1=46&y1Max=&y1Min=&prm2=47&y2Max=&y2Min=
 # https://wateroffice.ec.gc.ca/report/real_time_e.html?stn=08MF005&mode=Table&startDate=2025-01-01&endDate=2025-10-15&prm1=6&y1Max=&y1Min=&prm2=-1&y2Max=&y2Min=
-raw_latest <- read.csv("08MF005_QRD_20251015T2202.csv",
-                       header = TRUE
+
+raw_latest <- read.csv("08MF005_QRD_20260302T2142.csv",
+                       header = TRUE,
                        skip = 9) %>%
   as_tibble()
 
@@ -282,30 +301,36 @@ fraser_discharge_mean_new_check <- summarise(group_by(fraser_discharge_mean_new,
 expect_equal(max(fraser_discharge_mean_new_check$num),
              1)
 
-#  Failed, looks like June did get updated
-if(TRUE){       # Look into if get a fail there, need to do manually
+# 2 March 2026: same as below, we got a fail for Sept 2025 when updating; that
+#  was the last full month in previous pacea. So looks like final month can be
+#  adjusted. Should automate this. #93, though might be fairly simple, as 2024
+#  was a kind of manual year I think?
+
+#  Failed, looks like June 2025 did get updated
+if(TRUE){       # Look into if get a fail there, need to do manually, #93
   filter(fraser_discharge_mean_new_check, num >1)
   filter(fraser_discharge_mean_new, year == 2025)
 
   # Had to reload and calculate daily_2024 from above. In future this will
   # change to the more recent file, so might need raw_latest_previous or something.
-  daily_2024_duplicate <- filter(daily_2024,
+  #daily_2024_duplicate <- filter(daily_2024,
                                  year == 2025,
                                  month == 6)
-  daily_2024_duplicate
+  #daily_2024_duplicate
 
-  daily_latest_duplicate <- filter(daily_latest,
-                                   year == 2025,
-                                   month == 6)
-  daily_latest_duplicate
+HERE
+  ## daily_latest_duplicate <- filter(daily_latest,
+  ##                                  year == 2025,
+  ##                                  month == 6)
+  ## daily_latest_duplicate
 
-  plot(daily_2024_duplicate$discharge, type = "o")
-  points(daily_latest_duplicate$discharge, pch = 16, col = "red")
+  ## plot(daily_2024_duplicate$discharge, type = "o")
+  ## points(daily_latest_duplicate$discharge, pch = 16, col = "red")
 
-  # Looks like a constant difference:
-  daily_2024_duplicate$discharge -  daily_latest_duplicate$discharge
-  #  [1]    0    0  -80 -140 -140 -130 -120 -130 -120 -130 -130 -130
-  # [13] -130 -120 -130 -130 -130 -130 -130 -130 -120 -120 -120 -120
+  ## # Looks like a constant difference:
+  ## daily_2024_duplicate$discharge -  daily_latest_duplicate$discharge
+  ## #  [1]    0    0  -80 -140 -140 -130 -120 -130 -120 -130 -130 -130
+  ## # [13] -130 -120 -130 -130 -130 -130 -130 -130 -120 -120 -120 -120
   # [25] -120 -120 -120 -120 -110 -120
 
   # So not quite
@@ -313,7 +338,7 @@ if(TRUE){       # Look into if get a fail there, need to do manually
   # Presume the latest values are the best ones then, so replace previous
   # pacea ones with those.
 
-  # So remove the original value, just do manually to check
+  # So remove the original value, just do manually to check - need to automate #93
   fraser_discharge_mean_new_2 <- filter(fraser_discharge_mean_new,
                                         !(year == 2025 &
                                           month == 6 &
@@ -342,6 +367,34 @@ fraser_discharge_peak_new_check <- summarise(group_by(fraser_discharge_peak_new,
 expect_equal(max(fraser_discharge_peak_new_check$num),
              1)
 
+# 2nd March 2026: three months got updated from last time:
+## fraser_discharge_peak_new %>% tail(20)
+## # A tibble: 20 × 3
+##     year month value
+##    <dbl> <dbl> <int>
+##  1  2024    10  2680
+##  2  2024    11  2270
+##  3  2024    12  2300
+##  4  2025     1  1470
+##  5  2025     2  1050
+##  6  2025     3  1360
+##  7  2025     4  2900
+##  8  2025     5  5590
+##  9  2025     6  7090
+## 10  2025     7  4100
+## 11  2025     8  2710
+## 12  2025     9  1890
+## 13  2025     6  7030
+## 14  2025     7  4070
+## 15  2025     8  2700
+## 16  2025    10  1820
+## 17  2025    11  1880
+## 18  2025    12  1940
+## 19  2026     1  1800
+## 20  2026     2  2040
+## >
+
+
 # Need to use the latest version of downloaded data, again for June 2025:
 #  Failed, looks like June did get updated
 if(TRUE){       # Look into if get a fail there, need to do manually
@@ -354,15 +407,29 @@ if(TRUE){       # Look into if get a fail there, need to do manually
   # Presume the latest values are the best ones then, so replace previous
   # pacea ones with those.
 
+  # Need to generalise, but kind of want to check and do manually. No time right
+  # now to generalise. #93.
+  # duplicates_years <- filter(fraser_discharge_peak_new_check, num >1)$year ...
+
   # So remove the original value (which comes first after the rbind), just do manually to check
   fraser_discharge_peak_new_2 <- filter(fraser_discharge_peak_new,
                                         !(year == 2025 &
                                           month == 6 &
-                                          value < 7000))  # == is too exact
-  expect_equal(nrow(fraser_discharge_peak_new),
-               nrow(fraser_discharge_peak_new_2) + 1)
-  fraser_discharge_peak_new_2 %>% tail()
+                                          value > 7080)) %>% # == is too exact
+    filter(!(year == 2025 &
+             month == 7 &
+             value > 4080)) %>%
+    filter(!(year == 2025 &
+             month == 8 &
+             value > 2705))
 
+  expect_equal(nrow(fraser_discharge_peak_new),
+               nrow(fraser_discharge_peak_new_2) + 3)  # Need to tweak that last num
+  fraser_discharge_peak_new_2 %>% tail(10)
+
+  fraser_discharge_peak_new_2 <- arrange(fraser_discharge_peak_new_2,
+                                         year, month)
+  fraser_discharge_peak_new_2 %>% tail(10)
   fraser_discharge_peak <- fraser_discharge_peak_new_2
 }
 
