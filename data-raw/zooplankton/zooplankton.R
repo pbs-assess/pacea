@@ -11,12 +11,16 @@
 # 2024_biomass_definitions.csv (after deleting column D that just had
 # year. n.samples, and vol.filt repeated).
 
+# 2026 Kelly sent me a .csv file, I never got the 2025 one into pacea
+
 load_all()
 library(dplyr)
 
 # Change this when get updated data
+assess_yr <- 2026    # for consistency with hake and herring, this is the year
+# of the SOPO report, final year of data will be assess_yr - 1
 raw_orig <-
-  readr::read_csv("2024/2024_Feb-zoop df_anomalies_deepSoG_forRpacea_1996-2021baseline.csv") %>%
+  readr::read_csv("2026/2026_Feb df_anomalies_deepSoG_forRpacea_1996-2021baseline euphx3.csv") %>%
   dplyr::mutate_if(is.character, factor)
 
 # rename the headings, should give error if any don't exist. Sticking with
@@ -62,9 +66,30 @@ tail(zooplankton_sog_new)
 tail(zooplankton_sog)     # what's currently in pacea. Will know if we're updating
                       # data, so no need to check automatically like for oni etc.
 
-# for 2025 update, do a check to see whether historic values have changed, and
-#  do a plot to compare them if so. See oni example in
-#  data-raw/coastwide-indices/coastwide-indices.R
+# for 2026 update, clear that historical values to change, can see recent sample
+#  numbers have increased (except for one that decreased).
+# So, like hake, want to keep older versions, so save each year with it's
+#  final_year appended.
+
+# One time (before updating), then comment out: save original zooplankton_sog as zooplankton_sog_2024
+# zooplankton_sog_2024 <- zooplankton_sog
+# usethis::use_data(zooplankton_sog_2024,
+#                   overwrite = TRUE)
+
+# Now do the update automatically each year:
+
+zooplankton_sog <- zooplankton_sog_new
+
+assign(paste0("zooplankton_sog_", assess_yr),
+       zooplankton_sog_new)
+
+usethis::use_data(zooplankton_sog,
+                  overwrite = TRUE)
+
+create_data(paste0("zooplankton_sog_", assess_yr),
+            get(paste0("zooplankton_sog_", assess_yr)))
+
+plot(zooplankton_sog)
 
 # Check that axis names are still consistent; if fail then manually change
 #  zooplankton_axis_names definition below
@@ -75,11 +100,19 @@ expect_equal(names(zooplankton_sog_new),
                pull(zooplankton_sog_axis_names,
                     species_group_name)))
 
-# Axis names, based on 2024/2024_biomass_definitions.csv.
-#  Adapting methods for names used in ALPI.
-zooplankton_sog_axis_names_new <- tibble(
-  species_group_name = names(zooplankton_sog_new)[-c(1, 2, 3)],
-  axis_name = c(expression(paste(plain(Total) * " " * plain(biomass) * " " * plain(anomaly) * ", " * log[10] * " " * g * " " * m^-2)),
+# If that fails then this will run, will have to manually look into and update:
+if(any(names(zooplankton_sog_new) !=
+         c("year",
+           "number_samples",
+           "volume_filtered",
+           pull(zooplankton_sog_axis_names,
+                species_group_name)))){
+
+  # Axis names, based on 2024/2024_biomass_definitions.csv.
+  #  Adapting methods for names used in ALPI.
+  zooplankton_sog_axis_names_new <- tibble(
+    species_group_name = names(zooplankton_sog_new)[-c(1, 2, 3)],
+    axis_name = c(expression(paste(plain(Total) * " " * plain(biomass) * " " * plain(anomaly) * ", " * log[10] * " " * g * " " * m^-2)),
                 expression(paste(plain(Gammarid) * " " * plain(amphipods) * " " * plain(anomaly) * ", " * log[10] * " " * g * " " * m^-2)),
                 expression(paste(plain(Hyperiid) * " " * plain(amphipods) * " " * plain(anomaly) * ", " * log[10] * " " * g * " " * m^-2)),
                 expression(paste(plain(Benthic) * " " * plain(larvae) * " " * plain(anomaly) * ", " * log[10] * " " * g * " " * m^-2)),
@@ -108,10 +141,8 @@ zooplankton_sog_axis_names_new <- tibble(
                       TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE,
                       TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, TRUE))
 
-zooplankton_sog <- zooplankton_sog_new
-usethis::use_data(zooplankton_sog,
-                  overwrite = TRUE)
+  zooplankton_sog_axis_names <- zooplankton_sog_axis_names_new
+  usethis::use_data(zooplankton_sog_axis_names,
+                    overwrite = TRUE)
+}
 
-zooplankton_sog_axis_names <- zooplankton_sog_axis_names_new
-usethis::use_data(zooplankton_sog_axis_names,
-                  overwrite = TRUE)
