@@ -36,7 +36,7 @@ urlcolor: blue
 
 load_all()      # as necessary, then
 
-rmarkdown::render("pacea-talk-sopo-25-update.Rmd")
+rmarkdown::render("pacea-talk-sopo-26-update.Rmd")
 
 or click the knit button in RStudio
 
@@ -121,8 +121,8 @@ knitr::opts_chunk$set(
   out.width = "60%",
   #out.height = 400
   cache = TRUE,
-  cache_path = "pacea-talk-sopo-25-update-cache/",
-  fig.path = "pacea-talk-sopo-25-update-cache-figs/"
+  cache_path = "pacea-talk-sopo-26-update-cache/",
+  fig.path = "pacea-talk-sopo-26-update-cache-figs/"
 )
 
 options(pillar.print_max = 6,   # number of rows to show for a tibble
@@ -143,7 +143,7 @@ colorize <- function(x, color){
 
 ```{r coverpage, echo=FALSE, out.width = "100%"}
 knitr::include_graphics(paste0(here::here(),
-                               "/talks/talks-manual-figures/pacea-title-slide-sopo-2025.png"))
+                               "/talks/talks-manual-figures/pacea-title-slide-sopo-2026.png"))
 ```
 
 <!-- Getting in a mess with trying to be too clever. Just make _short versions -->
@@ -161,7 +161,8 @@ knitr::include_graphics(paste0(here::here(),
 \centering pacea: An R package of Pacific ecosystem information to help facilitate an
 ecosystem approach to fisheries management
 
-
+```{r fraser, child = "fraser.Rmd", eval = short_talk}
+```
 
 ```{r buoys, child = "buoys.Rmd", eval = long_talk}
 ```
@@ -175,7 +176,7 @@ ecosystem approach to fisheries management
 ```{r hotssea, child = "hotssea.Rmd", eval = long_talk}
 ```
 
-```{r hotssea, child = "hotssea-short.Rmd", eval = short_talk}
+```{r hotssea, child = "hotssea-short.Rmd", eval = long_talk}
 ```
 
 ```{r populations, child = "populations.Rmd", eval = long_talk}
@@ -199,5 +200,5 @@ ecosystem approach to fisheries management
 ```{r summaryshort, child = "summary-short.Rmd", eval = long_talk}
 ```
 
-```{r summaryshort, child = "summary-sopo-25.Rmd", eval = short_talk}
+```{r summaryshort, child = "summary-sopo-26.Rmd", eval = short_talk}
 ```

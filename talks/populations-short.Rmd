@@ -18,11 +18,4 @@ plot(herring_spawning_biomass,
      region = "HG")
 ```
 
-## Pacific Harbour Seals
 
-Estimated abundances for seven regions (and coastwide) were calculated by DFO
-(2022; SAR 2022/034), and included here:
-```{r sealplot}
-plot(harbour_seals,
-     region = "HG")
-```

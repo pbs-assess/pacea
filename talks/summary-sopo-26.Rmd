@@ -1,0 +1,137 @@
+<!--
+## Other updates
+
+- $\cancel{204,373}$ `r colorize(format(nrow(buoy_sst), big.mark = ","), "red")` calculations of daily sea surface
+   temperature based on data from `r nrow(buoy_metadata)` buoys
+
+- NOAA's spatial Optimum Interpolation Sea Surface Temperature (OISST) record
+  `r colorize("updated monthly", "red")`
+
+\pause
+
+- `r colorize("expanded", "red")`  British Columbia continental margin (BCCM) model outputs
+   `r colorize("to include the full model domain and 2x2 km resolution", "red")`
+
+
+- `r colorize("bathymetry data", "red")`
+
+- estimates of abundances for Harbour Seals (will be updated from next assessment)
+
+- code for `r colorize("3d printing", "red")` of biomass-at-age
+-->
+
+# Uses of pacea
+
+## Ecosystem summaries
+
+Stock-specific ecosystem summary -- [Edwards et al. (2026)](https://www.fisheries.noaa.gov/s3/2026-02/hake-assessment-2026.pdf)
+```{r, ecosumplot, echo = FALSE}
+source(paste0(here::here(),
+              "/report/ecosystem-summary-hake/ecosystem-summary-hake.R"))
+# png(paste0(here::here(), "/talks/talks-manual-figures/ecosystem-summary-hake.png"),
+#    width = 400,   # 670 px matches size from running from a chunk
+#    height = 360)  # 480
+
+#ecosystem_summary_hake()
+#dev.off()
+```
+
+```{r, ecosumfunc, echo = TRUE, eval = FALSE}
+ecosystem_summary_hake()
+```
+```{r, ecosum, echo = FALSE, fig.height = 4.2}
+res <- ecosystem_summary_hake(short_talk_version = TRUE)
+```
+
+## Ongoing uses
+
+Stock assessments:
+
+- Petrale Sole
+- Dover Sole
+- Yelloweye Rockfish
+
+Others:
+
+- body conditions of 35 fish species (English et al., 2026)
+- spatial densities of humpback whales
+- fluctuations of infectious hematopoietic necrosis virus (IHPV) in Sockeye Salmon
+- Salmon Prize prediction project
+
+# New products
+
+## Coming soon
+
+- BCCM model updated to 2025
+
+- Functionality to extract GLORYS (Global Ocean Physics Reanalysis) outputs, such
+  as mixed-layer depths and eddy kinetic energy 
+  
+- Future projections downscaled from IPCC forecasts using Angelica's BCCM model
+  - Surface and bottom temperatures
+  - Three future socio-economic pathways
+<!-- - Done by Trond Kristiansen et al., contract through Robyn Forrest -->
+
+\pause
+
+<!-- Three future socio-economic pathways:
+
+- SSP1-RCP2.6 -- `r colorize("sustainable development", "red")`
+- SSP2-RCP4.5 -- `r colorize("middle-of-the-road development", "red")`
+- SSP5-RCP8.5 -- `r colorize("fossil fueled development", "red")`
+
+\pause
+
+Think we will have monthly averages, corresponding to time periods:
+
+- 2021-2040
+- 2041-2060
+- 2080-2090
+- or maybe just 2050 and 2090
+
+-->
+
+## Potentially coming soon
+
+- Pan-basin Pattern (due to breakdown of PDO-ecosystem correlations)
+- Relative Oceanic Niño Index (RONI)
+- Lightstation data (temperature and salinity)
+- Functionality to extract the oceanographic indices (Python or just .csv)
+- Oxygen time series in BC waters
+
+<!-- 
+```{r otherinfo, echo=FALSE, out.width = "100%"}
+knitr::include_graphics(paste0(here::here(),
+                               "/talks/talks-manual-figures/pacea-montage.png"))
+```
+
+
+# Installation
+
+ - https://github.com/pbs-assess/pacea
+
+ - can read vignettes online
+
+ <!-- - installation:
+   \textcolor{red}{\texttt{remotes::install\_github("pbs-assess/pacea")}}  -->
+
+\medskip
+
+\medskip
+
+\begin{center}
+\includegraphics[width = 2cm]{"../man/figures/logo.png"}\\
+\emph{We wrangle the data so you don't have to}
+\end{center}
+
+<!-- 
+```{r citation, eval=FALSE}
+citation("pacea")
+
+Edwards AM, Tai TC, Watson J, Peña MA, Hilborn A, Hannah CG, Rooper CN, Flynn
+  KL, Oldford GL (2024). "pacea: An R package of Pacific ecosystem
+  information to help facilitate an ecosystem approach to fisheries
+  management."
+  https://github.com/pbs-assess/pacea.
+```
+-->

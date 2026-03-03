@@ -1,6 +1,6 @@
 # Indices
 
-## Climatic and oceanographic indices
+## Updated monthly: climatic and oceanographic indices
 
 Various climate and oceanographic indices are currently included in pacea:
 
@@ -18,27 +18,30 @@ kableExtra::kable(pacea_indices, "latex", booktabs = TRUE) %>%
 \toprule
 Object & Description & Resolution & Start year & End year\\
 \midrule
-\cellcolor{gray!10}{pdo} & \cellcolor{gray!10}{Pacific Decadal Oscillation} & \cellcolor{gray!10}{monthly} & \cellcolor{gray!10}{1854} & \cellcolor{gray!10}{\textcolor{red}{2025}}\\
-npi\_monthly & North Pacific Index (monthly) & monthly & 1899 & \textcolor{red}{2024}\\
-\cellcolor{gray!10}{npi\_annual} & \cellcolor{gray!10}{North Pacific Index (annual)} & \cellcolor{gray!10}{annual} & \cellcolor{gray!10}{1899} & \cellcolor{gray!10}{\textcolor{red}{2024}}\\
-alpi & Aleutian Low Pressure Index & annual & 1900 & \textcolor{red}{2022}\\
-\cellcolor{gray!10}{oni} & \cellcolor{gray!10}{Oceanic Niño Index} & \cellcolor{gray!10}{monthly} & \cellcolor{gray!10}{1950} & \cellcolor{gray!10}{\textcolor{red}{2024}}\\
+\cellcolor{gray!10}{pdo} & \cellcolor{gray!10}{Pacific Decadal Oscillation} & \cellcolor{gray!10}{monthly} & \cellcolor{gray!10}{1854} & \cellcolor{gray!10}{\textcolor{red}{2026}}\\
+npi\_monthly & North Pacific Index (monthly) & monthly & 1899 & \textcolor{red}{2025}\\
+\cellcolor{gray!10}{npi\_annual} & \cellcolor{gray!10}{North Pacific Index (annual)} & \cellcolor{gray!10}{annual} & \cellcolor{gray!10}{1899} & \cellcolor{gray!10}{\textcolor{red}{2025}}\\
+alpi & Aleutian Low Pressure Index & annual & 1900 & \textcolor{black}{2022}\\
+\cellcolor{gray!10}{oni} & \cellcolor{gray!10}{Oceanic Niño Index} & \cellcolor{gray!10}{monthly} & \cellcolor{gray!10}{1950} & \cellcolor{gray!10}{\textcolor{red}{2025}}\\
 \addlinespace
 npgo & North Pacific Gyre Oscillation & monthly & 1950 & \textcolor{red}{2025}\\
 \cellcolor{gray!10}{ao} & \cellcolor{gray!10}{Arctic Oscillation} & \cellcolor{gray!10}{monthly} & \cellcolor{gray!10}{1950} & \cellcolor{gray!10}{\textcolor{red}{2025}}\\
-soi & Southern Oscillation Index & monthly & 1951 & \textcolor{red}{2025}\\
-\cellcolor{gray!10}{\textcolor{red}{bi}} & \cellcolor{gray!10}{\textcolor{red}{North Pacific Bifurcation Index}} & \cellcolor{gray!10}{\textcolor{red}{annual}} & \cellcolor{gray!10}{\textcolor{red}{1967}} & \cellcolor{gray!10}{\textcolor{red}{2024}}\\
-mei & Multivariate El Niño Southern Oscillation Index & monthly & 1979 & \textcolor{red}{2025}\\
+soi & Southern Oscillation Index & monthly & 1951 & \textcolor{red}{2026}\\
+\cellcolor{gray!10}{\textcolor{black}{bi}} &
+\cellcolor{gray!10}{\textcolor{black}{North Pacific Bifurcation Index}} &
+\cellcolor{gray!10}{\textcolor{black}{annual}} &
+\cellcolor{gray!10}{\textcolor{black}{1967}} &
+\cellcolor{gray!10}{\textcolor{black}{2024}}\\
+mei & Multivariate El Niño Southern Oscillation Index & monthly & 1979 & \textcolor{red}{2026}\\
 \bottomrule
 \end{tabular}}
 \end{table}
 
-<!--
-## New index
+## Monthly or annually updated
 
-Now includes Mike Malick's North Pacific Current Bifurcation Index:
-
-```{r biplot}
-plot(bi, lwd = 6)
-```
--->
+- Optimum Interpolation Sea Surface Temperature (OISST)
+- buoy temperatures
+- Fraser River discharge
+- zooplankton biomass anomalies
+- Pacific Herring assessment outputs
+- Pacific Hake assessment outputs
