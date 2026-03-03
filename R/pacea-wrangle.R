@@ -31,8 +31,7 @@ pacea_long <- function(data, names_to = "date", values_to = "value") {
   dat <- data %>% 
     tidyr::pivot_longer(cols = !last_col(), cols_vary = "slowest", names_to = names_to, values_to = values_to)  %>%
     mutate(year = as.numeric(substr(get(names_to), 1, 4)),
-           month = as.numeric(substr(get(names_to), 6, 7))) %>%
-    dplyr::select(c(year, month, value, geometry))
+           month = as.numeric(substr(get(names_to), 6, 7)))
     
   return(dat)
 }
@@ -84,8 +83,9 @@ pacea_wide <- function(data, names_from = c("year", "month"), values_from = "val
   }
   
   dat <- data %>% 
-    mutate(date = out.vec) %>%
-    tidyr::pivot_wider(id_cols = "geometry", names_from = "date", values_from = values_from) %>%
+    mutate(date = out.vec,
+           value = values_from) %>%
+    tidyr::pivot_wider(id_cols = "geometry", names_from = "date", values_from = "value") %>%
     relocate(geometry, .after = last_col()) 
   
   return(dat)
