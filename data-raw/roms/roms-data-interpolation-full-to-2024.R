@@ -370,7 +370,7 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
     #dim(t2_sf2_full)
     #> [1] 462210    325
 
-    # 1. use roms_cave TODO change that name plus some of these
+    # 1. use roms_cave to get extent polygon of BCCM polygon
     t2_sf26b <- t2_sf2_full[roms_cave,]
     #> dim(t2_sf26b)
     # > [1] 164454    325
