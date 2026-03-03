@@ -179,17 +179,18 @@ ecosystem approach to fisheries management
 ```{r hotssea, child = "hotssea-short.Rmd", eval = long_talk}
 ```
 
+```{r indices, child = "indices.Rmd", eval = long_talk}
+```
+
+```{r indicesshort, child = "indices-short.Rmd", eval = short_talk}
+```
+
 ```{r populations, child = "populations.Rmd", eval = long_talk}
 ```
 
 ```{r populationsshort, child = "populations-short.Rmd", eval = short_talk}
 ```
 
-```{r indices, child = "indices.Rmd", eval = long_talk}
-```
-
-```{r indicesshort, child = "indices-short.Rmd", eval = short_talk}
-```
 
 ```{r oisst, child = "oisst.Rmd", eval = long_talk}
 ```

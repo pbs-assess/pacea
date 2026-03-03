@@ -1,14 +1,18 @@
-# Populations
-
-## Zooplankton in the Strait of Georgia
+## Updated annually: zooplankton in the Strait of Georgia
 
 - anomalies of zooplankton biomass since 1996 (Perry et al., 2021)
 
 - extended by Kelly Young each year for SOPO; 25 species groups
 
-```{r zooplot}
+```{r zooplotfake, eval = FALSE}
 plot(zooplankton_sog)
 ```
+
+```{r zooplot, echo = FALSE}
+plot(zooplankton_sog, lwd = 12)
+```
+
+<!-- 
 
 ## Pacific Herring biomass (five stocks)
 
@@ -17,5 +21,5 @@ New and updating annually from stock assessments (Cleary et al.):
 plot(herring_spawning_biomass,
      region = "HG")
 ```
-
+-->
 
