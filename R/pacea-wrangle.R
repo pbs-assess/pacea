@@ -32,7 +32,7 @@ pacea_long <- function(data, names_to = "date", values_to = "value") {
     tidyr::pivot_longer(cols = !last_col(), cols_vary = "slowest", names_to = names_to, values_to = values_to)  %>%
     mutate(year = as.numeric(substr(get(names_to), 1, 4)),
            month = as.numeric(substr(get(names_to), 6, 7))) %>%
-    dplyr::select(year, month, value, geometry)
+    dplyr::select(c(year, month, value, geometry))
     
   return(dat)
 }
