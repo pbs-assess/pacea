@@ -5,6 +5,15 @@ Developers: for some general tips for writing good bullets see https://style.tid
 
 ## Updates by date
 
+* 20206-03-03 Updates for
+  * `oisst_7day` and `oisst_month`
+  * indices `ao`, `mei`, `npgo`, `oni`, and `pdo`; See ?mei and ?oni for why some
+  historical values of mei and noi have changed. In particular for ONI we are
+  now in a new five-year baseline period for recent anomalies so all ONI values
+  since 2010 have been recalculated. 
+  * buoy temperature data (2,284 new daily temperature calculations)
+  * zooplankton anomalies (retaining previous values, see ?zooplankton_sog).
+
 * 2025-10-15 Updates for:
   * `oisst_7day` and `oisst_month`
   * indices `ao`, `mei`, `npgo`, `pdo`, and `soi`
