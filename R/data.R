@@ -1313,8 +1313,8 @@
 ##' Georgia (see map in Perry et al., 2021). These extend the
 ##' time series calculated by Perry
 ##' et al. (2021) which was up to 2018, and as updated annually by Kelly Young in DFO's
-##' State of the Pacific Ocean Report (latest is Young et al., 2023);
-##' values here extend another year.
+##' State of the Pacific Ocean Report (see Young et al., 2023 and later versions);
+##' values here extend into more recent years.
 ##'
 ##' Following description is adapted from Young et al. (2023).
 ##'
@@ -1335,6 +1335,20 @@
 ##' anomaly (for details see Perry et al., 2021).
 ##'
 ##' See examples and zooplankton vignette.
+##'
+##' This dataset is updated annually in time for the State of the Pacific Ocean
+##' meeting each March. The recent years of the dataset can get updated as
+##' further samples are analysed. So we additionally save the dataset each year
+##' with the year of the analysis appended to `zooplankton_sog`. So
+##' `zooplankton_sog_2024` was conducted for the 2024 State of the Pacific Ocean
+##' report (and has data ending in 2023), and `zooplankton_sog_2026` was
+##' conducted for the 2026 report. The most recent available dataset is also
+##' saved as `zooplankton_sog`.
+##'
+##' This is so that you can always refer to a specific set of
+##' anomalies (rather than have your analyses change because you have
+##' updated `pacea` and we have replaced `zooplankton_sog` with updated
+##' results). This approach is also done for hake-related pacea objects.
 ##'
 ##' Perry, R.I., Young, K., Galbraith, M., Chandler, P., Velez-Espino A.,
 ##' Baillie S. (2021). Zooplankton variability in the Strait of Georgia, Canada,
@@ -1394,11 +1408,19 @@
 ##' zooplankton_sog
 ##' plot(zooplankton_sog)    # Default is total_biomass, calls plot.pacea_zooplankton()
 ##' plot(zooplankton_sog, species_group = "cladocera")  # y-axis name is automated
+##' plot(zooplankton_sog_2024)   # Default plot for the original values in
+##' pacea, that have since been updated
 ##' }
 ##' @author Andrew Edwards
 ##' @source Anomalies calculated and provided by Kelly Young, then wrangled and imported using
 ##'   `data-raw/zooplankton/zooplankton.R`
 "zooplankton_sog"
+
+##' @rdname zooplankton_sog
+"zooplankton_sog_2024"
+
+##' @rdname zooplankton_sog
+"zooplankton_sog_2026"
 
 ##' Zooplankton anomalies in the Strait of Georgia -- long names for y-axis labels
 ##'

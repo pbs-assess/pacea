@@ -3,6 +3,8 @@
 \docType{data}
 \name{zooplankton_sog}
 \alias{zooplankton_sog}
+\alias{zooplankton_sog_2024}
+\alias{zooplankton_sog_2026}
 \title{Zooplankton anomalies in the Strait of Georgia}
 \format{
 A tibble also of class \code{pacea_zooplankton} with the following
@@ -43,6 +45,10 @@ Perry at al. (2021) study.}
 \item{scyphozoa:}{Scyphozoa}
 \item{siphonophorae:}{Siphonophorae}
 }
+
+An object of class \code{pacea_zooplankton} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 28 rows and 28 columns.
+
+An object of class \code{pacea_zooplankton} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 30 rows and 28 columns.
 }
 \source{
 Anomalies calculated and provided by Kelly Young, then wrangled and imported using
@@ -50,6 +56,10 @@ Anomalies calculated and provided by Kelly Young, then wrangled and imported usi
 }
 \usage{
 zooplankton_sog
+
+zooplankton_sog_2024
+
+zooplankton_sog_2026
 }
 \description{
 Biomass anomalies of zooplankton biomass from 1996 onwards for the deep
@@ -58,8 +68,8 @@ bottom depths greater than 50 m, of the central and northern Strait of
 Georgia (see map in Perry et al., 2021). These extend the
 time series calculated by Perry
 et al. (2021) which was up to 2018, and as updated annually by Kelly Young in DFO's
-State of the Pacific Ocean Report (latest is Young et al., 2023);
-values here extend another year.
+State of the Pacific Ocean Report (see Young et al., 2023 and later versions);
+values here extend into more recent years.
 }
 \details{
 Following description is adapted from Young et al. (2023).
@@ -82,6 +92,20 @@ anomaly (for details see Perry et al., 2021).
 
 See examples and zooplankton vignette.
 
+This dataset is updated annually in time for the State of the Pacific Ocean
+meeting each March. The recent years of the dataset can get updated as
+further samples are analysed. So we additionally save the dataset each year
+with the year of the analysis appended to \code{zooplankton_sog}. So
+\code{zooplankton_sog_2024} was conducted for the 2024 State of the Pacific Ocean
+report (and has data ending in 2023), and \code{zooplankton_sog_2026} was
+conducted for the 2026 report. The most recent available dataset is also
+saved as \code{zooplankton_sog}.
+
+This is so that you can always refer to a specific set of
+anomalies (rather than have your analyses change because you have
+updated \code{pacea} and we have replaced \code{zooplankton_sog} with updated
+results). This approach is also done for hake-related pacea objects.
+
 Perry, R.I., Young, K., Galbraith, M., Chandler, P., Velez-Espino A.,
 Baillie S. (2021). Zooplankton variability in the Strait of Georgia, Canada,
 and relationships with the marine survivals of Chinook and Coho salmon. PLoS
@@ -101,6 +125,8 @@ https://www.dfo-mpo.gc.ca/oceans/publications/soto-rceo/2022/pac-technical-repor
 zooplankton_sog
 plot(zooplankton_sog)    # Default is total_biomass, calls plot.pacea_zooplankton()
 plot(zooplankton_sog, species_group = "cladocera")  # y-axis name is automated
+plot(zooplankton_sog_2024)   # Default plot for the original values in
+pacea, that have since been updated
 }
 }
 \author{
