@@ -136,7 +136,7 @@ if(option == 1){
 
   nc_filenames <- list.files(paste0(pacea_dir,
                                     "/data-raw/roms/bccm-raw-data/", raw_dir, "/"),
-                             pattern = "TSOpH.nc")
+                             pattern = "TSOpH_v3.nc")
   jvars <- c("temp", "salt", "Oxygen", "pH")
 
   # index table
@@ -153,7 +153,7 @@ if(option == 1){
 if(option == 2){
   nc_filenames <- list.files(paste0(pacea_dir,
                                     "/data-raw/roms/bccm-raw-data/", raw_dir, "/"),
-                             pattern = "zInt_PT.nc")
+                             pattern = "zInt_PT_v2.nc")
   jvars <- c("phytoplankton", "PTproduction")
 
   # index table
@@ -169,11 +169,11 @@ if(option == 3){
   nc_filenames <- list.files(paste0(pacea_dir,
                                     "/data-raw/roms/bccm-raw-data/", raw_dir, "/"),
                              pattern = "Vel.nc")
-  jvars <- c("angle", "u", "v")
+  jvars <- c("u", "v")
   
   # index table
-  vars_fullname <- c("angle", "u_currentvelocity", "v_currentvelocity")
-  vars_units <- c("Angle rotation (radians)", "Eastward Current velocity (m/s)", "Northward Current velocity (m/s)")
+  vars_fullname <- c("u_currentvelocity", "v_currentvelocity")
+  vars_units <- c("Eastward Current velocity (m/s)", "Northward Current velocity (m/s)")
   jvars_table <- cbind(jvars, vars_fullname, vars_units)
 }
 
@@ -196,7 +196,7 @@ proctimes <- vector()
 # surface mask layer
 snc_dat <- nc_open(paste0(pacea_dir,
                           "/data-raw/roms/bccm-raw-data/", raw_dir, 
-                          "/bcc42_era5glo12r6_mon1993to2024_surTSOpH.nc"))
+                          "/bcc42_era5glo12r6_mon1993to2024_surTSOpH_v3.nc"))
 snc_lon <- as.vector(ncvar_get(snc_dat, "lon_rho"))
 snc_lat <- as.vector(ncvar_get(snc_dat, "lat_rho"))
 svar <- as.vector(ncvar_get(snc_dat, "temp", count = c(-1, -1, 1)))
@@ -241,14 +241,46 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
   } else {
     ti <- strsplit(substr(this_filename, 33, nchar(this_filename)), "_")[[1]][1]
   }
-
-  for(j in jvars) {
-    # j <- jvars[1]
+  
+  # current velocities
+  if(option == 3) {
     start <- Sys.time()
     
-    nc_var <- ncdf4::ncvar_get(nc_dat, j)
-    nc_varmat <- apply(nc_var, 3, c)
-
+    nc_var_u <- ncdf4::ncvar_get(nc_dat, "u")
+    u_mat <- apply(nc_var_u, 3, c)
+    
+    nc_var_v <- ncdf4::ncvar_get(nc_dat, "v")
+    v_mat <- apply(nc_var_v, 3, c)
+    
+    nc_var_a <- ncdf4::ncvar_get(nc_dat, "angle")
+    angle_vec <-c(nc_var_a)
+    
+    # radian angle rotations
+    u_east_mat  <- u_mat * cos(angle_vec) - v_mat * sin(angle_vec)
+    v_north_mat <- u_mat * sin(angle_vec) + v_mat * cos(angle_vec)
+  }
+  
+  for(j in jvars) {
+    # j
+    start <- Sys.time()
+    
+    # load variables
+    if(option==3){
+      if(j == "u") {nc_varmat <- u_east_mat}
+      if(j == "v") {nc_varmat <- v_north_mat}
+    } else {
+      nc_var <- ncdf4::ncvar_get(nc_dat, j)
+      
+      ## IMPORTANT - REPLACE NEGATIVE AND INFINITE VALUES WITH NA (for oxygen)
+      nc_var[which(is.infinite(nc_var))] <- NA
+      
+      # if(length(which(nc_var < 0)) > 0) {
+      #   stop("negative values in data")
+      # }
+      
+      nc_varmat <- apply(nc_var, 3, c)
+    }
+    
     # put sst into dataframe and sf object
     dat <- data.frame(x = nc_lon, y = nc_lat) %>% cbind(nc_varmat)
     dat_sf <- sf::st_as_sf(dat,
@@ -256,13 +288,18 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
                            crs = "EPSG:4326")
     tdat_sf <- sf::st_transform(dat_sf,
                                 crs = "EPSG: 3005")
-    if(any(is.na(tdat_sf))) {tdat_sf <- tdat_sf[,1:375]}
-
+    
+    # remove empty columns (oxygen and pH are missing columns 376-384)
+    empty_idx <- which(colSums(is.na(tdat_sf)) == nrow(tdat_sf))
+    if(length(empty_idx) > 0){
+      tdat_sf <- tdat_sf[,-empty_idx]
+    }
+    
     # create polygon for cropping ROMS data
-    roms_cave <- tdat_sf %>%
+    roms_cave <- tdat_sf[,ncol(tdat_sf)] %>%
       na.omit() %>%
       concaveman::concaveman()
-    roms_buff <- tdat_sf %>%
+    roms_buff <- tdat_sf[,ncol(tdat_sf)] %>%
       na.omit() %>%
       sf::st_geometry() %>%
       sf::st_buffer(dist = 2000) %>%
@@ -333,7 +370,7 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
     #dim(t2_sf2_full)
     #> [1] 462210    325
 
-    # 1. use roms_cave TODO change that name plus some of these
+    # 1. use roms_cave to get extent polygon of BCCM polygon
     t2_sf26b <- t2_sf2_full[roms_cave,]
     #> dim(t2_sf26b)
     # > [1] 164454    325

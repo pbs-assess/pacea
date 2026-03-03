@@ -55,19 +55,37 @@ if(!DL_ALL_DATA){
   
   # set start date from start of year of latest date in oisst_7day data
   # this ensures that each calendar week is calculated correctly
-  # need to revise when the year changes over
   timechar <- "T12:00:00Z"
   data_enddate <- max(oisst_7day_orig$end_date)
-  #start_date <- paste0(data_enddate + 1, timechar)
-  start_date <- paste0(year_current,"-01-01", timechar)
+  
+  if(lubridate::year(data_enddate) == year_current) {
+    start_date <- paste0(year_current,"-01-01", timechar)
+    
+    # remove current year data from oisst data
+    oisst_7day_orig <- oisst_7day_orig %>% 
+      filter(year < year_current)
+    oisst_month_orig <- oisst_month %>% 
+      filter(year < year_current)
+    
+  } else {
+    start_date <- paste0((year_current - 1),"-01-01", timechar)
+    
+    # remove current year data from oisst data
+    oisst_7day_orig <- oisst_7day_orig %>% 
+      filter(year < (year_current - 1))
+    oisst_month_orig <- oisst_month %>% 
+      filter(year < (year_current - 1))
+  }
+  
   
   # set end date, and time limit
-  end_date <- paste0(as.Date(paste0(year_current, "-", month_current, "-01")) - 1, timechar)
+  # if current date is too close to the end of month we want data for; need two weeks
+  if(date_current - as.Date(paste0(year_current, "-", month_current, "-01")) < 15) {
+    end_date <- paste0(as.Date(paste0(year_current, "-", month_current - 1, "-01")) - 1, timechar)
+  } else {
+    end_date <- paste0(as.Date(paste0(year_current, "-", month_current, "-01")) - 1, timechar)
+  }
   timelim <- c(start_date, end_date)
-  
-  # remove current year data from oisst data
-  oisst_7day_orig <- oisst_7day_orig %>% 
-    filter(year != year_current)
   
   # ERRDAP datat: 14 day lag; 0.25 degree grid
   sstInfo <- info("ncdcOisst21Agg_LonPM180", url = "https://coastwatch.pfeg.noaa.gov/erddap/")
@@ -124,10 +142,6 @@ if(!DL_ALL_DATA){
   ##########
   # month data
   if(DATA_MONTH){
-    # remove current year data from oisst data
-    oisst_month_orig <- oisst_month %>% 
-      filter(year != year_current)
-    
     # monthly means
     sstdata_month <- sstdata$data %>%
       filter(!is.na(sst)) %>%

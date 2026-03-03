@@ -11,7 +11,7 @@ test_that("pacea_long function works", {
   long_dat <- pacea_long(pdata)
   
   expect_equal(nrow(long_dat), nrow(pdata) * (ncol(pdata) - 1))
-  expect_length(long_dat, 4)
+  expect_length(long_dat, 5)
 })
 
 
