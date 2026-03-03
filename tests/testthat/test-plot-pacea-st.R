@@ -7,24 +7,24 @@ test_that("ggplot plot for pacea.st objects work with various functions", {
   pdata <- get_pacea_data("test_surftemp", force = TRUE)
   
   # numeric month
-  expect_true(ggplot2::is.ggplot(plot(pdata, 
+  expect_true(ggplot2::is_ggplot(plot(pdata, 
                              months.plot = c(1),
                              years.plot = c(2000))))   
   
   # character month - no bc or eez
-  expect_true(ggplot2::is.ggplot(plot(pdata, 
+  expect_true(ggplot2::is_ggplot(plot(pdata, 
                              months.plot = c("June"),
                              years.plot = c(2000), 
                              bc = FALSE, eez = FALSE)))
   
   # numeric and character month - no bc or eez
-  expect_true(ggplot2::is.ggplot(plot(pdata, 
+  expect_true(ggplot2::is_ggplot(plot(pdata, 
                              months.plot = c(1, "June"),
                              years.plot = c(2000, 2019), 
                              bc = FALSE, eez = FALSE)))
   
   # numeric and abbr month - no bc or eez
-  expect_true(ggplot2::is.ggplot(plot(pdata, 
+  expect_true(ggplot2::is_ggplot(plot(pdata, 
                              months.plot = c(1, "Jun"),
                              years.plot = c(2000, 2019), 
                              bc = FALSE, eez = FALSE)))
