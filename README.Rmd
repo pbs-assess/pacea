@@ -55,6 +55,8 @@ and consulted as appropriate.
 Please continue reading through this README file, and especially see the [vignettes
 section](https://github.com/pbs-assess/pacea?tab=readme-ov-file#vignettes) to get started.
 
+Some example uses of pacea are in the ['Uses of pacea'](https://github.com/pbs-assess/pacea#uses-of-pacea ) section below.
+
 ## What is in pacea?
 
 Currently, pacea contains:
@@ -438,26 +440,39 @@ version (10th November 2023)](talks/pacea-release-talk-dfo.pdf) and
 
 Example uses of pacea that we are aware of (some are ongoing), include:
 
-* Petrale Sole stock assessment (under revision) -- investigating environmental
-conditions potentially affecting recruitment and body condition 
+* investigating environmental influences on body conditions of 35 demersal fish species [(English et al., 2026)](https://doi.org/10.1111/faf.70053)
 * Pacific Hake -- generation of indices previously found to be influential for
   recruitment of Pacific Hake (Merluccius productus), to produce a first
-  hake-specific ecosystem summary for the 2025 stock assessment ([Johnson et al., 2025)](https://s3.amazonaws.com/media.fisheries.noaa.gov/2025-02/Status-Pacific-Hake-whiting-US-and-Canadian-waters-2025.pdf)
+  hake-specific ecosystem summary for the 2025 stock assessment ([Johnson et
+  al.,
+  2025)](https://s3.amazonaws.com/media.fisheries.noaa.gov/2025-02/Status-Pacific-Hake-whiting-US-and-Canadian-waters-2025.pdf),
+  updated for the 2026 assessment ([Edwards et al., 2026)](https://www.fisheries.noaa.gov/s3/2026-02/hake-assessment-2026.pdf)
+* Petrale Sole stock assessment (under revision for the Canadian Science
+Advisory Secretariat, CSAS) -- investigating environmental
+conditions potentially affecting recruitment and body condition <!-- Philina, -->
+<!-- Mackenzie --> 
+* Dover Sole stock assessment (under revision for CSAS) -- investigating environmental
+conditions potentially affecting recruitment <!-- Travis, Nick -->
+* Yelloweye Rockfish stock assessment (under revision for CSAS) -- investigating
+environmental <!-- Travis, Matt -->
+conditions potentially affecting recruitment and body condition 
 * Spiny Dogfish -- understanding declines over the past 20 years (research project
- and potentially a stock assessment)
-* shrimp distributions -- impact of including environmental variables on predicting distributions (manuscript)
-* humpback whales and porpoises - environmental covariates in species
-  distribution models
+ and potentially a stock assessment) <!-- Lindsay -->
+* shrimp distributions -- impact of temperature on shrimp habitat (manuscript in
+  progress) <!-- Mackenzie -->
+* spatial densities of humpback whales (working paper for CSAS) <!-- Elise -->
+<!-- and porpoises - environmental covariates in species
+  distribution models ; may still be happening-->
 * analysing occurrence of Bigg's killer whales 
 * Pacific Saury -- finding links between two basin-scale indices (AOI & PDO) and
-process errors in assessment, supporting Canada's North Pacific Fisheries Commission commitments
+process errors in assessment, supporting Canada's North Pacific Fisheries
+Commission commitments <!-- Chris -->
 * combines several disparate datasets discussed in DFO's annual State of the
-Pacific Ocean report [(Boldt et al., 2025)](https://www.dfo-mpo.gc.ca/oceans/publications/soto-rceo/2024/pac-technical-report-rapport-technique-eng.html)
-* Dover Sole stock assessment  -- investigating environmental
-conditions potentially affecting recruitment and body condition 
-* Yelloweye Rockfish stock assessment  -- investigating environmental
-conditions potentially affecting recruitment and body condition 
-* Recommended source of information for the Salmon Prize Project
+Pacific Ocean report [(Boldt et al.,
+2025)](https://www.dfo-mpo.gc.ca/oceans/publications/soto-rceo/2024/pac-technical-report-rapport-technique-eng.html)
+* investigating fluctuations of infectious hematopoietic necrosis virus (IHPV)
+  in Sockeye Salmon <!-- Kyle -->
+* recommended source of information for the [Salmon Prize Project](http://salmonprize.com/)
 
 Please let us know of any other applications.
 
