@@ -128,23 +128,23 @@ the Issues) with latest first:
 - for Pacific Hake, added estimates of total biomass of age-1 fish and
   recruitment deviations (required updating some plotting and tickmark
   functions which should all still be back compatible); see the
-  [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
+  [populations.html](https://pbs-assess.github.io/pacea/vignettes/populations.html)
   vignette.
 
 - added Mike Malick’s oceanographic index: `bi`, the North Pacific
   Current Bifurcation Index; see the [indices
-  vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/indices.html)
+  vignette](https://pbs-assess.github.io/pacea/vignettes/indices.html)
   and `?bi`.
 
 - added results from the Hindcast of the Salish Sea (HOTSSea) physical
   oceanography model that recreates conditions throughout the Salish Sea
   from 1980 to 2018. See the new [hotssea
-  vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/hotssea.html).
+  vignette](https://pbs-assess.github.io/pacea/vignettes/hotssea.html).
 
 - added results from the BCCM model over its full original domain
   (rather than just restricted to Canada’s Exclusive Economic Zone), see
   the new [bccm_full
-  vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm_full.html).
+  vignette](https://pbs-assess.github.io/pacea/vignettes/bccm_full.html).
 
 - added depths for the `grid26` model domain, see `?grid26_depth`.
 
@@ -155,7 +155,7 @@ the Issues) with latest first:
 - added Pacific Herring stock assessment results, for spawning stock
   biomass and age-2 recruitment for each of the five major stock
   assessment regions; see the
-  [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
+  [populations.html](https://pbs-assess.github.io/pacea/vignettes/populations.html)
   vignette.
 
 - added helper function `a()`, shorthand for `as.data.frame()`, see
@@ -168,17 +168,17 @@ the Issues) with latest first:
 
 - added zooplankton biomass anomalies for the Strait of Georgia, with a
   new vignette:
-  [zooplankton.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/zooplankton.html).
+  [zooplankton.html](https://pbs-assess.github.io/pacea/vignettes/zooplankton.html).
 
 - updated the estimates of Pacific Hake abundance and recruitment with
   values from the 2024 assessment (retaining the original estimates from
   the 2023 assessments for reproducibility); see the
-  [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
+  [populations.html](https://pbs-assess.github.io/pacea/vignettes/populations.html)
   vignette.
 
 - added Fraser River discharge values, for each month since 1912. See
   the
-  [fraser_discharge.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/fraser_discharge.html)
+  [fraser_discharge.html](https://pbs-assess.github.io/pacea/vignettes/fraser_discharge.html)
   vignette.
 
 ## Brief examples of some questions that can be quickly visualised (see vignettes for full details)
@@ -354,27 +354,27 @@ the vignettes, which are already rendered here (note that we do not
 automatically update them when the data in pacea are updated, so if you
 run them locally you may get more up-to-date values):
 
-- [indices.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/indices.html)
+- [indices.html](https://pbs-assess.github.io/pacea/vignettes/indices.html)
   Climatic and oceanographic indices and associated plotting functions.
-- [buoys.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/buoys.html)
+- [buoys.html](https://pbs-assess.github.io/pacea/vignettes/buoys.html)
   Calculated daily mean sea surface temperatures and associated plotting
   functions.
-- [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
+- [populations.html](https://pbs-assess.github.io/pacea/vignettes/populations.html)
   Estimates of animal populations and associated plotting functions.
-- [oisst.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/oisst.html)
+- [oisst.html](https://pbs-assess.github.io/pacea/vignettes/oisst.html)
   OISST data and calculations and associated plotting functions.
-- [bccm.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm.html)
+- [bccm.html](https://pbs-assess.github.io/pacea/vignettes/bccm.html)
   BCCM model results restricted to Canada’s Exclusive Economic Zone,
   calculations, and associated plotting functions.
-- [bccm_full.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm_full.html)
+- [bccm_full.html](https://pbs-assess.github.io/pacea/vignettes/bccm_full.html)
   BCCM model results over the full model domain, calculations, and
   associated plotting functions.
-- [hotssea.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/hotssea.html)
+- [hotssea.html](https://pbs-assess.github.io/pacea/vignettes/hotssea.html)
   HOTSSea model results and associated plotting functions.
-- [zooplankton.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/zooplankton.html)
+- [zooplankton.html](https://pbs-assess.github.io/pacea/vignettes/zooplankton.html)
   Zooplankton anomalies for the Strait of Georgia, calculations, and
   associated plotting functions.
-- [fraser_discharge.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/fraser_discharge.html)
+- [fraser_discharge.html](https://pbs-assess.github.io/pacea/vignettes/fraser_discharge.html)
   Fraser River discharge monthly means and peaks, and associated
   plotting functions.
 
