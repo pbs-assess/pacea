@@ -1,0 +1,22 @@
+---
+title: "pacea vignettes"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{simple_time_series}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r start, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 6,
+  fig.height = 6
+)
+options(rmarkdown.html_vignette.check_title = FALSE)
+# rmarkdown::render("index.Rmd")
+```
+
+Dummy page to set up vignette .html rendering for
+[pacea](https://github.com/pbs-assess/pacea#vignettes) R package.
