@@ -2,7 +2,7 @@
 title: "pacea vignettes"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{pacea vignettes}
+  %\VignetteIndexEntry{simple_time_series}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
