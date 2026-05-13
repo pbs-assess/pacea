@@ -172,7 +172,7 @@ This shows the production ramping up through the spring.
 
 Let's have a quick look at anomalies, say for oxygen at the bottom of the water
 column, adapting the examples from the [BCCM
-vignette](https://pbs-assess.github.io/pacea/vignettes/bccm.html). Again,
+vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm.html). Again,
 see that vignette for extra details.
 
 So let's ask: how do the anomalies of bottom oxygen for
@@ -203,7 +203,7 @@ than normal in April 2010, generally a bit less in September 2010, and even less
 in April and September 2018.
 
 See the [BCCM
-vignette](https://pbs-assess.github.io/pacea/vignettes/bccm.html)
+vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm.html)
 for further example calculations, which hopefully stimulate your own ideas.
 
 ## Reference

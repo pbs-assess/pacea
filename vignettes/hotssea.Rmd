@@ -61,15 +61,15 @@ December 2018.
 
 We have wrangled the HOTSSea model outputs into the same format as those from
 the British Columbia Continential Margin (BCCM) model, such that the functions regarding plotting, climatology, and anomalies,
-described in the [BCCM vignette](https://pbs-assess.github.io/pacea/vignettes/bccm.html) will work for the HOTSea model
+described in the [BCCM vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm.html) will work for the HOTSea model
 output. Therefore, in this vignette we describe the available HOTSSea model
 outputs and present some results, and refer users to see the [BCCM
-vignette](https://pbs-assess.github.io/pacea/vignettes/bccm.html)
+vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm.html)
 for further analytical and visual possibilities (to avoid duplicating details here).
 
 Furthermore, the grid for the HOTSSea outputs matches that used for the full
 BCCM outputs; see the [BCCM_full
-vignette](https://pbs-assess.github.io/pacea/vignettes/bccm_full.html).
+vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm_full.html).
 
 ```{r packages}
 library(pacea)
@@ -241,7 +241,7 @@ The package has some built in functions to calculate climatologies and
 anomalies of the spatiotemporal results, and these functions can be used on the
 HOTSSea results. See help files for details of functions. Here are some
 brief examples taken from the [BCCM
-vignette](https://pbs-assess.github.io/pacea/vignettes/bccm.html).
+vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm.html).
 
 So let's ask: how do the anomalies of minimum bottom temperature for
 April and September in 2010 and 2018, look compared to a climatology (for each
@@ -275,7 +275,7 @@ which creates contour lines showing the anomaly areas that are above (or below
 for other variables) the 90th and 99th percentile of data.
 
 See the rest of the [BCCM
-vignette](https://pbs-assess.github.io/pacea/vignettes/bccm.html)
+vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm.html)
 for details and other features, like estimating statistics across spatial areas.
 
 ## Updating HOTSSea data
