@@ -1,48 +1,13 @@
 # Interpolating the data for the full BCCM grid, not just inshore_poly and
-# offshore_poly. ...-full-to-2024.r is including the updated model outputs to
-# the end of 2024 from Angelica.
+# offshore_poly. 
 
-# Copying roms-data-interpolation-full.R to then edit, based on
-#  hotssea-data-interpolation.R in which worked out the parallel stuff.
+# This extra 2025 script is just for the 2025 data. The updated files from Angelica only includes the 2025 output. 
+# The interpolated data up to 2024 and this data that is 2025 only then need to be combined. The new version with all the data
+#  will be version 03 (data to 2024 is version 02, and just 2025 is '2025')
 
-# From Angelica's email (5/11/2025):
+# See roms_combine2025data.R for combining the data.
 
-
-## There are 8 files:  6 are similar to the ones I sent you before and the 2 other have surface and bottom velocities, as we discussed.
-## bcc42_era5glo12r6_mon1993to2024_avg0to40m_TSOpH.nc has average values in the upper 40 m.
-## bcc42_era5glo12r6_mon1993to2024_avg40to100m_TSOpH.nc has average values from 40 to 100 m.
-## bcc42_era5glo12r6_mon1993to2024_avg100mtoBot_TSOpH.nc has average values below 100 m
-## bcc42_era5glo12r6_mon1993to2024_surTSOpH.nc has the same surface values as before
-## bcc42_era5glo12r6_mon1993to2024_botTSOpH.nc has the same bottom values as before
-## bcc42_era5glo12r6_mon1993to2024_zInt_PT.nc has depth-integrated values of
-##  primary production as before but, for phytoplankton I replaced the
-##  depth-integrated values with the average value in the upper layer which I
-##  think it is more meaningful and easy to compare to observations
-
-## The other 2 files:
-## bcc42_era5glo12r6_mon1993to2024_surVel and bcc42_era5glo12r6_mon1993to2024_botVel have the surface and bottom velocities, respectively.
-
-## The TSOpH files have the following variable names are: temp (=temperature in oC), salt (=salinity), Oxygen (=dissolved oxygen in mmol-oxygen m-3), and pH values.
-## The PT file has two variables: total phytoplankton biomass (phytoplankton in mmol-nitrogen m-3), and PTproduction (total primary production in gC m-2 d-1)
-## The Vel files have the u (=x component of velocity in m/s), v(=y component of
-##   velocity in m/s) and angle (=grid angle of rotation from east to y in
-##   radians). Note: if you prefer to include the u_northward and v_eastward, you
-##   will need to rotate the values using the angle.
-## In addition all files have the following variables: lat_rho and lon_rho (the
-##   latitude and longitude of the center of the model grid), mask_rho (a mask for
-##   model grids that are on land=0 and ocean=1), and ocean_time (time in days
-##   since 1-Jan-1970)
-## This time, I did not masked any region of the model but, instead I am
-##   including the mask file that I used previously, which mask the areas where
-##   the model is questionable due to the relatively coarse resolution (nearshore
-##   regions, SoG, JdF and inlets). Although, I think it is important to let users
-##   know that the model output is likely garbage in inlets and nearshore areas,
-##   depending on the application, users might want to include some region of the
-##   SoG and JdF, which are less of a problem. They could also decide to use all
-##   regions despite the warning.
-
-
-# Below is from -full.R, need to adapt for full-to-2024.
+# Below is is adapted from -full-to-2024.R
 
 # Run with option <- 1 then option <- 2 then option <-3 (for TSOpH, then phytoplankton and PP, then velocities)
 # Each variable takes just under 2 hours.
@@ -99,7 +64,7 @@ pacea_data_dir <- paste0("../pacea-data/data-bccm-full/")  # Where to save .rds
 # START - load data to environment
 
 # transform bc_coast
-tbc <- bc_coast
+tbc <- bc_coast |> st_transform(crs = "EPSG: 3005") 
 
 # convert to multilinestring
 tbc.line <- st_cast(tbc, "MULTILINESTRING")
@@ -109,21 +74,22 @@ tbc.line <- st_cast(tbc, "MULTILINESTRING")
 
 
 # bccm raw data folder
-raw_dir <-"bccm-output-to-2024"
+raw_dir <-"bccm-output-to-2025"
 
 list.files(paste0(pacea_dir,"/data-raw/roms/bccm-raw-data/", raw_dir, "/"))
 # file name characters for depth range
-startchar <- 33
+startchar <- 27
 endchar <- startchar + 2
 
 substr(list.files(paste0(pacea_dir,"/data-raw/roms/bccm-raw-data/", raw_dir, "/")), 
        startchar, endchar)
 
+
 # Do OPTION 1 or 2 or 3. Then re-run.
 # option 1 = temp, sal, oxygen, ph
-# option 2 = phytoplankton
+# option 2 = phytoplankton and pp
 # option 3 = velocity
-option <- 3
+option <- 1
 
 # OPTION 1 FOR LOOPING THROUGH VARIABLES FOR EACH DEPTH
 # loop variables
@@ -131,7 +97,7 @@ if(option == 1){
 
   nc_filenames <- list.files(paste0(pacea_dir,
                                     "/data-raw/roms/bccm-raw-data/", raw_dir, "/"),
-                             pattern = "TSOpH_v3.nc")
+                             pattern = "TSOpH.nc")
   jvars <- c("temp", "salt", "Oxygen", "pH")
 
   # index table
@@ -148,7 +114,7 @@ if(option == 1){
 if(option == 2){
   nc_filenames <- list.files(paste0(pacea_dir,
                                     "/data-raw/roms/bccm-raw-data/", raw_dir, "/"),
-                             pattern = "zInt_PT_v2.nc")
+                             pattern = "zInt_PT.nc")
   jvars <- c("phytoplankton", "PTproduction")
 
   # index table
@@ -180,30 +146,35 @@ nmax <- 4
 
 # column names. See hotssea-data-interpolation.R for automated version (if
 # there's a time_counter in the .nc file).
-cnames <- paste(rep(1993:2024, each=12), 1:12, sep="_")
+cnames <- paste(rep(2025, each=12), 1:12, sep="_")
 
 # version of data update
-version <- "02"
+version <- "2025"
 
 # processing times output
 proctimes <- vector()
 
-# surface mask layer
+# surface mask layer - extent of original model output
 snc_dat <- nc_open(paste0(pacea_dir,
-                          "/data-raw/roms/bccm-raw-data/", raw_dir, 
-                          "/bcc42_era5glo12r6_mon1993to2024_surTSOpH_v3.nc"))
+                          "/data-raw/roms/bccm-raw-data/", "bccm-output-to-2024",
+                          "/bcc42_era5glo12r6_mon1993to2024_surTSOpH_v3.nc"))  ## keeping the same file outline as the 2024 interpolation
 snc_lon <- as.vector(ncvar_get(snc_dat, "lon_rho"))
 snc_lat <- as.vector(ncvar_get(snc_dat, "lat_rho"))
 svar <- as.vector(ncvar_get(snc_dat, "temp", count = c(-1, -1, 1)))
 nc_close(snc_dat)
 
+# entire curvilinear rectangle
 sdat <- data.frame(x = snc_lon, y = snc_lat, value = svar) %>%
   st_as_sf(coords = c("x", "y"), crs = "EPSG:4326") %>%
   st_transform(crs = "EPSG:3005")
 
+# perimeter outline of datapoints with values (islands not shown - Haida gwaii, van island)
 sroms_cave <- sdat %>%
   na.omit() %>%
   concaveman::concaveman()
+
+# outline of all datapoints (includes islands and coastline) - uses 2km buffer around each point (of raw ROMS data)
+# could increase buffer - what would that do?
 if(!exists("sroms_buff")){
   sroms_buff <- sdat %>%
     na.omit() %>%
@@ -278,13 +249,15 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
       nc_varmat <- apply(nc_var, 3, c)
     }
     
-    # put into dataframe and sf object
+    # put sst into dataframe and sf object
     dat <- data.frame(x = nc_lon, y = nc_lat) %>% cbind(nc_varmat)
     dat_sf <- sf::st_as_sf(dat,
                            coords = c("x", "y"),
                            crs = "EPSG:4326")
     tdat_sf <- sf::st_transform(dat_sf,
                                 crs = "EPSG: 3005")
+    
+    rm(dat, dat_sf, nc_var, nc_varmat)
     
     # remove empty columns (oxygen and pH are missing columns 376-384)
     empty_idx <- which(colSums(is.na(tdat_sf)) == nrow(tdat_sf))
@@ -302,7 +275,7 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
       sf::st_buffer(dist = 2000) %>%
       sf::st_union() %>%
       sf::st_as_sf()
-
+    
     # interpolate data
     # 2 km res
     # output2 <- point2rast(data = tdat_sf, spatobj = inshore_poly, loc = llnames, cellsize = 2000, nnmax = nmax, as = "SpatRast")
@@ -332,8 +305,8 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
     ## max values  : 10.229637, 9.604419, 9.817786, 10.668157, 12.789614, 13.939012, ...
     ## > dim(output2_full)
     ## [1] 710 651 324
-    
-    # 
+
+
     # crop out grid cells with polygon masks
     #    t2_sf2 <- output2 %>%
     #      mask(bccm_eez_poly) %>%
@@ -343,7 +316,7 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
 
     # Quick:
     t2_sf2_full <- output2_full %>%
-      #      mask(bccm_eez_poly) %>%  ## don't need to mask out sections as we're using the 2km resolution across the whole area
+      #      mask(bccm_eez_poly) %>%
       #      mask(inshore_poly) %>%
       stars::st_as_stars() %>%  ## check here for converting to points (not raster)
       sf::st_as_sf()
@@ -376,8 +349,7 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
     t2_sf26 <- t2_sf26b[roms_buff,]
     #dim(t2_sf26b)
     #[1] 161025    325
-    
-    # can skip the below as it's repetitive
+
     # 3. use default surface roms_cave
     # t2_sf26 <- t2_sf26[sroms_cave,]
     # same dim
@@ -389,7 +361,7 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
     # t2_sf26 <- st_filter(t2_sf26, tbc, .predicate = Negate(st_intersects))
 
     
-    ## different depths will have differnt number of grid cells
+    
     # data should have 41,288 grid cells
     # if(nrow(t2_sf26) != 41288){
     #   out.msg <- paste0(as.symbol(t2_sf26), " nrows = ", nrow(get(obj_name)),
