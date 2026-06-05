@@ -5,8 +5,10 @@ bccm_data <- read.csv(paste0(here::here(),
                              "/data-raw/data-key/data_list.csv"),
                       header = TRUE)
 
-use_data(bccm_data,
-         overwrite = TRUE)
+# Do not run this line again as we have since updated data_list.csv
+#use_data(bccm_data,
+#         overwrite = TRUE)
+
 
 bccm_data_full <- bccm_data
 for(i in 1:nrow(bccm_data_full)){

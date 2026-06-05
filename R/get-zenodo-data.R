@@ -10,17 +10,27 @@
 #'  and also the help for invidual functions such as
 #'  [hotssea_surface_salinity_min()] and [bccm_bottom_temperature_full()].
 #'
-#' Notes to keep track (for developers): The Zenodo links are:
+#'
+#'
+#' Notes to keep track (for developers):
+#'
+#' The Zenodo links are (for hotssea I think):
 #'  - 14019141 will always point to the latest version
 #'  - 14019142 is the test ones at 200 km resolution
 #'  - 14027261 is the latest version uploaded to Zenodo, and what we want.
-#' Sohttps://doi.org/10.5281/zenodo.14019141 does go
+#' So https://doi.org/10.5281/zenodo.14019141 does go
 #'  to https://zenodo.org/records/14027261, but when people try it seems that
 #'  the zen4R code is ending
 #'  up at the ...142 version (using the token in a different way maybe). So,
 #'  given ...141 wasn't working here for the default, am changing it to ...261
 #'  and so it will need manually updating in future if we update (or increment
 #'  the version number).
+#'
+#' For BCCM, update the function with the latest.
+#' Original BCCM with two resolutions was saved on pacea-data.
+#' 14031460 - first version full domain, saved here.
+#' https://zenodo.org/records/20562991 - version full 03, adds 2020-2025 and
+#' Strait of Georgia.
 #'
 #' Based on [get_pacea_data()], but getting from Zenodo not `pacea-data/`.
 #'
@@ -63,7 +73,7 @@ get_zenodo_data <- function(layer,
                             update = FALSE,
                             ask = interactive(),
                             force = FALSE,
-                            version = "01",
+                            version = "01",    # hotssea
                             cache_subfolder,
                             zenodo_doi = "10.5281/zenodo.14027261",    # hotssea
                                         # master doi
@@ -74,14 +84,10 @@ get_zenodo_data <- function(layer,
          Use the function ?...? to get a list of data objects available", call. = FALSE)
   }
 
-  if(version != "01"){
-    stop("get_zonodo_data() currently only set up for version 01")
-  }
-
   # Change subfolder DOI if doing bccm_full
   if(grepl("bccm", layer) & grepl("full", layer)){
     cache_subfolder = "bccm_full"
-    zenodo_doi = "10.5281/zenodo.14031460"
+    zenodo_doi = "10.5281/zenodo.20562991"
   }
 
   # testing data
@@ -113,9 +119,10 @@ get_zenodo_data <- function(layer,
                                         # worrying about versions yet)
 
   filename <- paste0(layer,
-                     "_01.rds")
-  # If versions then need local_filename and filename to be possibly
-  # different
+                     "_",
+                     version,
+                     ".rds")
+
   local_filename <- filename
   local_file_dir <- paste0(cache_dir, "/", local_filename)
 
@@ -213,7 +220,10 @@ get_zenodo_data <- function(layer,
 
         zen4R::download_zenodo(doi = zenodo_doi,
                                path = cache_dir,
-                               files = paste0(data_row$data_name, "_01.rds"),
+                               files = paste0(data_row$data_name,
+                                              "_",
+                                              version,
+                                              ".rds"),
                                timeout = timeout_value)
 
         # create file name with version number
@@ -222,8 +232,8 @@ get_zenodo_data <- function(layer,
 
         #  saveRDS(dat, file = file_dir, compress = "xz")
 
-          # delete previous version in local folder
-        #  unlink(local_file_dir)
+        # delete previous version in local folder
+        unlink(local_file_dir)
 
         message("Data successfully updated and downloaded to local cache folder!")
 
@@ -269,7 +279,10 @@ get_zenodo_data <- function(layer,
 
     zen4R::download_zenodo(doi = zenodo_doi,
                            path = cache_dir,
-                           files = paste0(data_row$data_name, "_01.rds"),
+                           files = paste0(data_row$data_name,
+                                          "_",
+                                          version,
+                                          ".rds"),
                            timeout = timeout_value)
     dat <- load(local_file_dir)   # seems to not be a true .rds file, should contain
                                   # the object 'layer'

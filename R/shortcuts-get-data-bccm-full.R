@@ -66,7 +66,7 @@
 #' plot(bccm_primaryproduction_full(), months = 1:12)
 #' }
 bccm_bottom_oxygen_full <- function(update = FALSE, ask = interactive(),
-                                    force = FALSE, version = "01",
+                                    force = FALSE, version = "03",
                                     cache_subfolder = "bccm_full"){
   get_zenodo_data("bccm_bottom_oxygen_full", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
@@ -75,7 +75,7 @@ bccm_bottom_oxygen_full <- function(update = FALSE, ask = interactive(),
 #' @rdname bccm_bottom_oxygen_full
 #' @export
 bccm_bottom_ph_full <- function(update = FALSE, ask = interactive(),
-                                force = FALSE, version = "01",
+                                force = FALSE, version = "03",
                                 cache_subfolder = "bccm_full"){
   get_zenodo_data("bccm_bottom_pH_full", update = update, ask = ask,
                   force = force, version = version,
@@ -85,7 +85,7 @@ bccm_bottom_ph_full <- function(update = FALSE, ask = interactive(),
 #' @rdname bccm_bottom_oxygen_full
 #' @export
 bccm_bottom_salinity_full <- function(update = FALSE, ask = interactive(),
-                                      force = FALSE, version = "01",
+                                      force = FALSE, version = "03",
                                       cache_subfolder = "bccm_full"){
   get_zenodo_data("bccm_bottom_salinity_full", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
@@ -94,7 +94,7 @@ bccm_bottom_salinity_full <- function(update = FALSE, ask = interactive(),
 #' @rdname bccm_bottom_oxygen_full
 #' @export
 bccm_bottom_temperature_full <- function(update = FALSE, ask = interactive(),
-                                         force = FALSE, version = "01",
+                                         force = FALSE, version = "03",
                                          cache_subfolder = "bccm_full"){
   get_zenodo_data("bccm_bottom_temperature_full", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
@@ -104,7 +104,7 @@ bccm_bottom_temperature_full <- function(update = FALSE, ask = interactive(),
 #'
 #' @export
 bccm_surface_oxygen_full <- function(update = FALSE, ask = interactive(),
-                                     force = FALSE, version = "01",
+                                     force = FALSE, version = "03",
                                     cache_subfolder = "bccm_full"){
 
   get_zenodo_data("bccm_surface_oxygen_full", update = update, ask = ask,
@@ -114,7 +114,7 @@ bccm_surface_oxygen_full <- function(update = FALSE, ask = interactive(),
 #' @rdname bccm_bottom_oxygen_full
 #' @export
 bccm_surface_ph_full <- function(update = FALSE, ask = interactive(),
-                                 force = FALSE, version = "01",
+                                 force = FALSE, version = "03",
                                  cache_subfolder = "bccm_full"){
   get_zenodo_data("bccm_surface_pH_full", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
@@ -123,7 +123,7 @@ bccm_surface_ph_full <- function(update = FALSE, ask = interactive(),
 #' @rdname bccm_bottom_oxygen_full
 #' @export
 bccm_surface_salinity_full <- function(update = FALSE, ask = interactive(),
-                                       force = FALSE, version = "01",
+                                       force = FALSE, version = "03",
                                        cache_subfolder = "bccm_full"){
   get_zenodo_data("bccm_surface_salinity_full", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
@@ -132,7 +132,7 @@ bccm_surface_salinity_full <- function(update = FALSE, ask = interactive(),
 #' @rdname bccm_bottom_oxygen_full
 #' @export
 bccm_surface_temperature_full <- function(update = FALSE, ask = interactive(),
-                                          force = FALSE, version = "01",
+                                          force = FALSE, version = "03",
                                           cache_subfolder = "bccm_full"){
   get_zenodo_data("bccm_surface_temperature_full", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
@@ -141,7 +141,7 @@ bccm_surface_temperature_full <- function(update = FALSE, ask = interactive(),
 #' @rdname bccm_bottom_oxygen_full
 #' @export
 bccm_avg0to40m_oxygen_full <- function(update = FALSE, ask = interactive(),
-                                       force = FALSE, version = "01",
+                                       force = FALSE, version = "03",
                                        cache_subfolder = "bccm_full"){
   get_zenodo_data("bccm_avg0to40m_oxygen_full", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
@@ -150,7 +150,7 @@ bccm_avg0to40m_oxygen_full <- function(update = FALSE, ask = interactive(),
 #' @rdname bccm_bottom_oxygen_full
 #' @export
 bccm_avg0to40m_ph_full <- function(update = FALSE, ask = interactive(),
-                                   force = FALSE, version = "01",
+                                   force = FALSE, version = "03",
                                    cache_subfolder = "bccm_full"){
   get_zenodo_data("bccm_avg0to40m_ph_full", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
@@ -159,7 +159,7 @@ bccm_avg0to40m_ph_full <- function(update = FALSE, ask = interactive(),
 #' @rdname bccm_bottom_oxygen_full
 #' @export
 bccm_avg0to40m_salinity_full <- function(update = FALSE, ask = interactive(),
-                                         force = FALSE, version = "01",
+                                         force = FALSE, version = "03",
                                          cache_subfolder = "bccm_full"){
   get_zenodo_data("bccm_avg0to40m_salinity_full", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
@@ -168,7 +168,7 @@ bccm_avg0to40m_salinity_full <- function(update = FALSE, ask = interactive(),
 #' @rdname bccm_bottom_oxygen_full
 #' @export
 bccm_avg0to40m_temperature_full <- function(update = FALSE, ask = interactive(),
-                                            force = FALSE, version = "01",
+                                            force = FALSE, version = "03",
                                             cache_subfolder = "bccm_full"){
   get_zenodo_data("bccm_avg0to40m_temperature_full", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
@@ -177,7 +177,7 @@ bccm_avg0to40m_temperature_full <- function(update = FALSE, ask = interactive(),
 #' @rdname bccm_bottom_oxygen_full
 #' @export
 bccm_avg40to100m_oxygen_full <- function(update = FALSE, ask = interactive(),
-                                         force = FALSE, version = "01",
+                                         force = FALSE, version = "03",
                                          cache_subfolder = "bccm_full"){
   get_zenodo_data("bccm_avg40to100m_oxygen_full", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
@@ -186,7 +186,7 @@ bccm_avg40to100m_oxygen_full <- function(update = FALSE, ask = interactive(),
 #' @rdname bccm_bottom_oxygen_full
 #' @export
 bccm_avg40to100m_ph_full <- function(update = FALSE, ask = interactive(),
-                                     force = FALSE, version = "01",
+                                     force = FALSE, version = "03",
                                      cache_subfolder = "bccm_full"){
   get_zenodo_data("bccm_avg40to100m_ph_full", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
@@ -195,7 +195,7 @@ bccm_avg40to100m_ph_full <- function(update = FALSE, ask = interactive(),
 #' @rdname bccm_bottom_oxygen_full
 #' @export
 bccm_avg40to100m_salinity_full <- function(update = FALSE, ask = interactive(),
-                                           force = FALSE, version = "01",
+                                           force = FALSE, version = "03",
                                            cache_subfolder = "bccm_full"){
   get_zenodo_data("bccm_avg40to100m_salinity_full", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
@@ -205,7 +205,7 @@ bccm_avg40to100m_salinity_full <- function(update = FALSE, ask = interactive(),
 #' @export
 bccm_avg40to100m_temperature_full <- function(update = FALSE, ask =
                                                                 interactive(),
-                                              force = FALSE, version = "01",
+                                              force = FALSE, version = "03",
                                               cache_subfolder = "bccm_full"){
   get_zenodo_data("bccm_avg40to100m_temperature_full", update = update, ask =
                                                                           ask,
@@ -215,7 +215,7 @@ bccm_avg40to100m_temperature_full <- function(update = FALSE, ask =
 #' @rdname bccm_bottom_oxygen_full
 #' @export
 bccm_avg100mtoBot_oxygen_full <- function(update = FALSE, ask = interactive(),
-                                          force = FALSE, version = "01",
+                                          force = FALSE, version = "03",
                                           cache_subfolder = "bccm_full"){
   get_zenodo_data("bccm_avg100mtoBot_oxygen_full", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
@@ -224,7 +224,7 @@ bccm_avg100mtoBot_oxygen_full <- function(update = FALSE, ask = interactive(),
 #' @rdname bccm_bottom_oxygen_full
 #' @export
 bccm_avg100mtoBot_ph_full <- function(update = FALSE, ask = interactive(),
-                                      force = FALSE, version = "01",
+                                      force = FALSE, version = "03",
                                       cache_subfolder = "bccm_full"){
   get_zenodo_data("bccm_avg100mtoBot_ph_full", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
@@ -233,7 +233,7 @@ bccm_avg100mtoBot_ph_full <- function(update = FALSE, ask = interactive(),
 #' @rdname bccm_bottom_oxygen_full
 #' @export
 bccm_avg100mtoBot_salinity_full <- function(update = FALSE, ask = interactive(),
-                                            force = FALSE, version = "01",
+                                            force = FALSE, version = "03",
                                             cache_subfolder = "bccm_full"){
   get_zenodo_data("bccm_avg100mtoBot_salinity_full", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
@@ -243,7 +243,7 @@ bccm_avg100mtoBot_salinity_full <- function(update = FALSE, ask = interactive(),
 #' @export
 bccm_avg100mtoBot_temperature_full <- function(update = FALSE,
                                                ask = interactive(),
-                                               force = FALSE, version = "01",
+                                               force = FALSE, version = "03",
                                                cache_subfolder = "bccm_full"){
   get_zenodo_data("bccm_avg100mtoBot_temperature_full", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
@@ -252,7 +252,7 @@ bccm_avg100mtoBot_temperature_full <- function(update = FALSE,
 #' @rdname bccm_bottom_oxygen_full
 #' @export
 bccm_phytoplankton_full <- function(update = FALSE, ask = interactive(),
-                                    force = FALSE, version = "01",
+                                    force = FALSE, version = "03",
                                     cache_subfolder = "bccm_full"){
   get_zenodo_data("bccm_phytoplankton_full", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
@@ -261,7 +261,7 @@ bccm_phytoplankton_full <- function(update = FALSE, ask = interactive(),
 #' @rdname bccm_bottom_oxygen_full
 #' @export
 bccm_primaryproduction_full <- function(update = FALSE, ask = interactive(),
-                                        force = FALSE, version = "01",
+                                        force = FALSE, version = "03",
                                         cache_subfolder = "bccm_full"){
   get_zenodo_data("bccm_primaryproduction_full", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)

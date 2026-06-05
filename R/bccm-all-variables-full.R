@@ -1,7 +1,7 @@
-#' Download all 22 BCCM full model results from Zenodo to a local drive.
+#' Download all 26 BCCM full model results from Zenodo to a local drive.
 #'
-#' This downloads (in parallel by default) all 22 BCCM full model results from
-#' https://zenodo.org/records/14031460 to your local cache directory given by
+#' This downloads (in parallel by default) all 26 BCCM full model results from
+#' https://zenodo.org/records/19580988 to your local cache directory given by
 #' `paste0(pacea_cache(), "/bccm_full")`. Each file is around 120 Mb, and only
 #' took about two minutes each on a home network (and since was running on 6
 #' parallel cores, it all took less than 10 minutes. Any files that are already
@@ -48,7 +48,10 @@
 #'   the internet. Gets used by [zen4R::download_zenodo()] via
 #'   [get_zenodo_data()]. Try increasing if get an Error saying Timeout has been
 #'   reached. If it says `Timeout of 60 seconds` then `timeout_value` is not
-#'   getting used (the default is 4 hours). Maybe try the manual download option above.
+#'   getting used (the default is 4 hours). Maybe try the manual download option
+#' above.
+#' @param version Character. Version number of data on Zenodo (as in what is
+#'   appended at the end of the filenames).
 #'
 #' @return downloaded files to `paste0(pacea_cache(), "/bccm_full")`
 #'   directory.
@@ -60,7 +63,8 @@
 #' plot(bccm_avg100mtoBot_temperature_full())
 #' }
 bccm_all_variables_full <- function(run_parallel = TRUE,
-                                    timeout_value = 14400) {
+                                    timeout_value = 14400,
+                                    version = "03") {
 
   cache_dir <- paste0(pacea::pacea_cache(),
                       "/bccm_full")
@@ -68,7 +72,7 @@ bccm_all_variables_full <- function(run_parallel = TRUE,
   bccm_full_data_vec <- pacea::bccm_data_full$data_name  # Can get reduced in next loop
 
   ans <-
-                   ask(paste("Downloading all 22 bccm_full files (around 120 Mb each), may take around ten minutes depending on connection speed (seems faster on a home network). Please read the help file `?bccm_all_variables_full` for faster options or solutions if this fails. Files will be downloaded to  directory:",
+                   ask(paste("Downloading all 26 bccm_full files (around 120 Mb each), may take around ten minutes depending on connection speed (seems faster on a home network). Please read the help file `?bccm_all_variables_full` for faster options or solutions if this fails. Files will be downloaded to  directory:",
                    cache_dir,
                    "Would you like to continue?", sep = "\n"))
 
@@ -106,7 +110,8 @@ bccm_all_variables_full <- function(run_parallel = TRUE,
       pacea::get_zenodo_data(data_name,
                              force = TRUE,
                              cache_subfolder = "bccm_full",
-                             timeout_value = timeout_value)
+                             timeout_value = timeout_value,
+                             version = version)
     }
 
     parallel::stopCluster(cl = my_cluster)

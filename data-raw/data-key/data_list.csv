@@ -3,6 +3,8 @@ bccm_surface_oxygen
 bccm_surface_ph
 bccm_surface_salinity
 bccm_surface_temperature
+bccm_surface_u_currentvelocity
+bccm_surface_v_currentvelocity
 bccm_avg0to40m_oxygen
 bccm_avg0to40m_ph
 bccm_avg0to40m_salinity
@@ -19,5 +21,7 @@ bccm_bottom_oxygen
 bccm_bottom_ph
 bccm_bottom_salinity
 bccm_bottom_temperature
+bccm_bottom_u_currentvelocity
+bccm_bottom_v_currentvelocity
 bccm_phytoplankton
 bccm_primaryproduction
