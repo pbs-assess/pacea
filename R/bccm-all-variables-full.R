@@ -107,6 +107,8 @@ bccm_all_variables_full <- function(run_parallel = TRUE,
 
     foreach::foreach(i = 1:length(bccm_full_data_vec)) %dopar% {
       data_name <- bccm_full_data_vec[i]
+      # pacea:: is needed here for the foreach, so you have to reinstall rather
+      # than just load_all() if you are editing  get_zenodo_data() as a developer
       pacea::get_zenodo_data(data_name,
                              force = TRUE,
                              cache_subfolder = "bccm_full",
