@@ -290,4 +290,4 @@ For full details and reference see
 
 We anticipate adding assessment output for other species soon, so stay tuned
 (check the NEWS). For zooplankton anomalies see the new zooplankton vignette:
-[zooplankton.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/zooplankton.html).
+[zooplankton.html](https://pbs-assess.github.io/pacea/vignettes/zooplankton.html).

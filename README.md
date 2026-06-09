@@ -41,11 +41,15 @@ Please continue reading through this README file, and especially see the
 section](https://github.com/pbs-assess/pacea?tab=readme-ov-file#vignettes)
 to get started.
 
+Some example uses of pacea are in the [‘Uses of
+pacea’](https://github.com/pbs-assess/pacea#uses-of-pacea) section
+below.
+
 ## What is in pacea?
 
 Currently, pacea contains:
 
-- 216,285 calculations of daily sea surface temperature based on data
+- 218,569 calculations of daily sea surface temperature based on data
   from 19 buoys. **Updated monthly.**
 
 - outputs from the spatial British Columbia continental margin (BCCM)
@@ -75,7 +79,7 @@ Currently, pacea contains:
   record, that incorporates observations from different platforms
   (satellites, ships, buoys, and Argo floats):
 
-  - provided as weekly and monthly means from Sep 1981 to Aug 2025.
+  - provided as weekly and monthly means from Sep 1981 to Jan 2026.
     **Updated monthly.**
 
 - outputs from the Hindcast of the Salish Sea (HOTSSea) physical
@@ -124,23 +128,23 @@ the Issues) with latest first:
 - for Pacific Hake, added estimates of total biomass of age-1 fish and
   recruitment deviations (required updating some plotting and tickmark
   functions which should all still be back compatible); see the
-  [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
+  [populations.html](https://pbs-assess.github.io/pacea/vignettes/populations.html)
   vignette.
 
 - added Mike Malick’s oceanographic index: `bi`, the North Pacific
   Current Bifurcation Index; see the [indices
-  vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/indices.html)
+  vignette](https://pbs-assess.github.io/pacea/vignettes/indices.html)
   and `?bi`.
 
 - added results from the Hindcast of the Salish Sea (HOTSSea) physical
   oceanography model that recreates conditions throughout the Salish Sea
   from 1980 to 2018. See the new [hotssea
-  vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/hotssea.html).
+  vignette](https://pbs-assess.github.io/pacea/vignettes/hotssea.html).
 
 - added results from the BCCM model over its full original domain
   (rather than just restricted to Canada’s Exclusive Economic Zone), see
   the new [bccm_full
-  vignette](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm_full.html).
+  vignette](https://pbs-assess.github.io/pacea/vignettes/bccm_full.html).
 
 - added depths for the `grid26` model domain, see `?grid26_depth`.
 
@@ -151,7 +155,7 @@ the Issues) with latest first:
 - added Pacific Herring stock assessment results, for spawning stock
   biomass and age-2 recruitment for each of the five major stock
   assessment regions; see the
-  [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
+  [populations.html](https://pbs-assess.github.io/pacea/vignettes/populations.html)
   vignette.
 
 - added helper function `a()`, shorthand for `as.data.frame()`, see
@@ -164,17 +168,17 @@ the Issues) with latest first:
 
 - added zooplankton biomass anomalies for the Strait of Georgia, with a
   new vignette:
-  [zooplankton.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/zooplankton.html).
+  [zooplankton.html](https://pbs-assess.github.io/pacea/vignettes/zooplankton.html).
 
 - updated the estimates of Pacific Hake abundance and recruitment with
   values from the 2024 assessment (retaining the original estimates from
   the 2023 assessments for reproducibility); see the
-  [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
+  [populations.html](https://pbs-assess.github.io/pacea/vignettes/populations.html)
   vignette.
 
 - added Fraser River discharge values, for each month since 1912. See
   the
-  [fraser_discharge.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/fraser_discharge.html)
+  [fraser_discharge.html](https://pbs-assess.github.io/pacea/vignettes/fraser_discharge.html)
   vignette.
 
 ## Brief examples of some questions that can be quickly visualised (see vignettes for full details)
@@ -307,7 +311,7 @@ example:
 
 ``` r
 oni
-#> # A tibble: 900 × 4
+#> # A tibble: 912 × 4
 #>     year month value anomaly
 #>    <dbl> <dbl> <dbl>   <dbl>
 #>  1  1950     1  24.7   -1.53
@@ -320,7 +324,7 @@ oni
 #>  8  1950     8  26.0   -0.42
 #>  9  1950     9  25.8   -0.39
 #> 10  1950    10  25.6   -0.44
-#> # ℹ 890 more rows
+#> # ℹ 902 more rows
 ```
 
 **What climatic and oceanographic indices are currently available, and
@@ -332,16 +336,16 @@ knitr::kable(pacea_indices)
 
 | Object | Description | Resolution | Start year | End year |
 |:---|:---|:---|---:|---:|
-| pdo | Pacific Decadal Oscillation | monthly | 1854 | 2025 |
+| pdo | Pacific Decadal Oscillation | monthly | 1854 | 2026 |
 | npi_monthly | North Pacific Index (monthly) | monthly | 1899 | 2025 |
 | npi_annual | North Pacific Index (annual) | annual | 1899 | 2025 |
 | alpi | Aleutian Low Pressure Index | annual | 1900 | 2022 |
-| oni | Oceanic Niño Index | monthly | 1950 | 2024 |
+| oni | Oceanic Niño Index | monthly | 1950 | 2025 |
 | npgo | North Pacific Gyre Oscillation | monthly | 1950 | 2025 |
-| ao | Arctic Oscillation | monthly | 1950 | 2025 |
-| soi | Southern Oscillation Index | monthly | 1951 | 2025 |
+| ao | Arctic Oscillation | monthly | 1950 | 2026 |
+| soi | Southern Oscillation Index | monthly | 1951 | 2026 |
 | bi | North Pacific Bifurcation Index | annual | 1967 | 2024 |
-| mei | Multivariate El Niño Southern Oscillation Index | monthly | 1979 | 2025 |
+| mei | Multivariate El Niño Southern Oscillation Index | monthly | 1979 | 2026 |
 
 ## Vignettes
 
@@ -350,27 +354,27 @@ the vignettes, which are already rendered here (note that we do not
 automatically update them when the data in pacea are updated, so if you
 run them locally you may get more up-to-date values):
 
-- [indices.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/indices.html)
+- [indices.html](https://pbs-assess.github.io/pacea/vignettes/indices.html)
   Climatic and oceanographic indices and associated plotting functions.
-- [buoys.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/buoys.html)
+- [buoys.html](https://pbs-assess.github.io/pacea/vignettes/buoys.html)
   Calculated daily mean sea surface temperatures and associated plotting
   functions.
-- [populations.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/populations.html)
+- [populations.html](https://pbs-assess.github.io/pacea/vignettes/populations.html)
   Estimates of animal populations and associated plotting functions.
-- [oisst.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/oisst.html)
+- [oisst.html](https://pbs-assess.github.io/pacea/vignettes/oisst.html)
   OISST data and calculations and associated plotting functions.
-- [bccm.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm.html)
+- [bccm.html](https://pbs-assess.github.io/pacea/vignettes/bccm.html)
   BCCM model results restricted to Canada’s Exclusive Economic Zone,
   calculations, and associated plotting functions.
-- [bccm_full.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/bccm_full.html)
+- [bccm_full.html](https://pbs-assess.github.io/pacea/vignettes/bccm_full.html)
   BCCM model results over the full model domain, calculations, and
   associated plotting functions.
-- [hotssea.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/hotssea.html)
+- [hotssea.html](https://pbs-assess.github.io/pacea/vignettes/hotssea.html)
   HOTSSea model results and associated plotting functions.
-- [zooplankton.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/zooplankton.html)
+- [zooplankton.html](https://pbs-assess.github.io/pacea/vignettes/zooplankton.html)
   Zooplankton anomalies for the Strait of Georgia, calculations, and
   associated plotting functions.
-- [fraser_discharge.html](http://htmlpreview.github.io/?https://github.com/pbs-assess/pacea/blob/main/vignettes/fraser_discharge.html)
+- [fraser_discharge.html](https://pbs-assess.github.io/pacea/vignettes/fraser_discharge.html)
   Fraser River discharge monthly means and peaks, and associated
   plotting functions.
 
@@ -385,32 +389,45 @@ for subsequent talks see [here](talks/).
 
 Example uses of pacea that we are aware of (some are ongoing), include:
 
-- Petrale Sole stock assessment (under revision) – investigating
-  environmental conditions potentially affecting recruitment and body
-  condition
+- investigating environmental influences on body conditions of 35
+  demersal fish species [(English et al.,
+  2026)](https://doi.org/10.1111/faf.70053)
 - Pacific Hake – generation of indices previously found to be
   influential for recruitment of Pacific Hake (Merluccius productus), to
   produce a first hake-specific ecosystem summary for the 2025 stock
   assessment ([Johnson et al.,
-  2025)](https://s3.amazonaws.com/media.fisheries.noaa.gov/2025-02/Status-Pacific-Hake-whiting-US-and-Canadian-waters-2025.pdf)
+  2025)](https://s3.amazonaws.com/media.fisheries.noaa.gov/2025-02/Status-Pacific-Hake-whiting-US-and-Canadian-waters-2025.pdf),
+  updated for the 2026 assessment ([Edwards et al.,
+  2026)](https://www.fisheries.noaa.gov/s3/2026-02/hake-assessment-2026.pdf)
+- Petrale Sole stock assessment (under revision for the Canadian Science
+  Advisory Secretariat, CSAS) – investigating environmental conditions
+  potentially affecting recruitment and body condition <!-- Philina, -->
+  <!-- Mackenzie -->
+- Dover Sole stock assessment (under revision for CSAS) – investigating
+  environmental conditions potentially affecting recruitment
+  <!-- Travis, Nick -->
+- Yelloweye Rockfish stock assessment (under revision for CSAS) –
+  investigating environmental <!-- Travis, Matt --> conditions
+  potentially affecting recruitment and body condition
 - Spiny Dogfish – understanding declines over the past 20 years
-  (research project and potentially a stock assessment)
-- shrimp distributions – impact of including environmental variables on
-  predicting distributions (manuscript)
-- humpback whales and porpoises - environmental covariates in species
-  distribution models
+  (research project and potentially a stock assessment) <!-- Lindsay -->
+- shrimp distributions – impact of temperature on shrimp habitat
+  (manuscript in progress) <!-- Mackenzie -->
+- spatial densities of humpback whales (working paper for CSAS)
+  <!-- Elise -->
+  <!-- and porpoises - environmental covariates in species
+  distribution models ; may still be happening-->
 - analysing occurrence of Bigg’s killer whales
 - Pacific Saury – finding links between two basin-scale indices (AOI &
   PDO) and process errors in assessment, supporting Canada’s North
-  Pacific Fisheries Commission commitments
+  Pacific Fisheries Commission commitments <!-- Chris -->
 - combines several disparate datasets discussed in DFO’s annual State of
   the Pacific Ocean report [(Boldt et al.,
   2025)](https://www.dfo-mpo.gc.ca/oceans/publications/soto-rceo/2024/pac-technical-report-rapport-technique-eng.html)
-- Dover Sole stock assessment – investigating environmental conditions
-  potentially affecting recruitment and body condition
-- Yelloweye Rockfish stock assessment – investigating environmental
-  conditions potentially affecting recruitment and body condition
-- Recommended source of information for the Salmon Prize Project
+- investigating fluctuations of infectious hematopoietic necrosis virus
+  (IHPV) in Sockeye Salmon <!-- Kyle -->
+- recommended source of information for the [Salmon Prize
+  Project](http://salmonprize.com/)
 
 Please let us know of any other applications.
 

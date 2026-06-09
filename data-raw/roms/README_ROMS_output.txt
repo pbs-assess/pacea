@@ -12,9 +12,21 @@ roms-data-interpolation-full-to-2024.R    (though check if there's a later R
 file)  for processing the updated runs that go to 2024. See that file for more
 details.
 
+2026 Travis doing the 2024 and 2025, bccmto2025_interpolated_plots.pdf from
+Travis:
+
+Here are output plots of the interpolated data. I took the four month-year combinations with the absolute lowest (and highest) outlier values, and for each of those I plotted the 30 most extreme values, with the range listed in the legend. The subtitle has the value for the 0.1%-ile and 99.9%-ile of the distribution of all values (across all time and space in the dataset), for reference of how extreme these values might be.
+ 
+The interpolation and masking seems to have done a pretty good job. We get some
+low values of oxygen, but no more negative oxygen values - these low values are
+found in the coastal/fjordal areas, which also coincides with very low salinity
+and pH. The only plot that I would raise concern about is the low values for
+surface temperature on page 47. Up in the inlets up near the Alaskan border
+there are quite a few negative temperature values.
 
 
 
+Original stuff:
 
 --
 From Angelica Pena (9/11/22):
