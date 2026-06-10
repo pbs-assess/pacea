@@ -43,6 +43,7 @@ data-raw/coastwide-indices/alpi-update.png
 /data/sst_time_1_sf.rda
 /data/test_grid_10.rda
 /data/test_grid_2.rda
+/data/ignore/
 
 /R/older-functions/Upload_Data_Key.csv
 /data-raw/coastwide-indices/*.txt
@@ -137,3 +138,7 @@ R-temp/3d-printing/hake-total-biomass-at-age-2025.stl
 /report/glorys/from-marea-scoping-meeting/
 /report/glorys/from-marea/
 
+/notes/plot-pacea-oi_ggplotoption.R
+/notes/plot-pacea-st_baseplotoption.R
+/notes/plot-pacea-st_ggplotoption.R
+/notes/test-plot-pacea-st_ggplotoption.R

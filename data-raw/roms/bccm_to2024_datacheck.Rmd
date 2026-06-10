@@ -1,0 +1,845 @@
+---
+title: "bccm to 2024 data check"
+author: "Travis Tai"
+date: "2026-01-15"
+output: html_document
+---
+
+Checking initial model output from Angelica to see where the outlier data lies
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r packages, echo=FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ncdf4)
+library(sf)
+library(terra)
+library(ggnewscale)
+```
+
+```{r ncfiles, echo=FALSE}
+pacea_dir <- "C:/github/pacea"
+raw_dir <-"bccm-output-to-2024"
+nc_pattern <- ".nc"
+nc_filenames <- list.files(paste0(pacea_dir,
+                                    "/data-raw/roms/bccm-raw-data/", raw_dir, "/"),
+                             pattern = nc_pattern)
+```
+
+```{r functions, echo=FALSE}
+# plot low outliers function
+plot_lo_outliers <- function(nc_var, nc_lon, nc_lat, idx_lo, thr_lo, depth, variable) {
+  
+  # specific month to plot outliers
+  value <- c(nc_var[,, idx_lo[1, 3]])
+  
+  # create sf dataframe
+  dat <- data.frame(x = nc_lon, y = nc_lat, value = value)
+  dat_sf <- sf::st_as_sf(dat, coords = c("x", "y"), crs = "EPSG:4326")
+  tdat_sf <- sf::st_transform(dat_sf, crs = "EPSG:3005")
+  
+  # extract outliers
+  tdat_outlier <- tdat_sf[which(sf::st_drop_geometry(tdat_sf)$value < thr_lo), ]
+
+  ggplot() +
+    geom_sf(data = tdat_sf, aes(color = value)) +
+    ggnewscale::new_scale_color() +
+    geom_sf(data = tdat_outlier, aes(color = paste0("< ", thr_lo))) +
+    scale_color_manual(values = setNames("green", paste0("< ", thr_lo)),
+                       name = "Flagged cells") +
+    ggtitle(paste(depth, variable, "values <", thr_lo, sep = " "))
+}
+
+# plot hi outliers function
+plot_hi_outliers <- function(nc_var, nc_lon, nc_lat, idx_hi, thr_hi, depth, variable) {
+  
+  # specific month to plot outliers
+  value <- c(nc_var[,, idx_hi[1, 3]])
+  
+  # create sf dataframe
+  dat <- data.frame(x = nc_lon, y = nc_lat, value = value)
+  dat_sf <- sf::st_as_sf(dat, coords = c("x", "y"), crs = "EPSG:4326")
+  tdat_sf <- sf::st_transform(dat_sf, crs = "EPSG:3005")
+  
+  # extract outliers
+  tdat_outlier <- tdat_sf[which(sf::st_drop_geometry(tdat_sf)$value > thr_hi), ]
+
+  ggplot() +
+    geom_sf(data = tdat_sf, aes(color = value)) +
+    ggnewscale::new_scale_color() +
+    geom_sf(data = tdat_outlier, aes(color = paste0("> ", thr_hi))) +
+    scale_color_manual(values = setNames("orange", paste0("> ", thr_hi)),
+                       name = "Flagged cells") +
+    ggtitle(paste(depth, variable, "values >", thr_hi, sep = " "))
+}
+```
+
+<!-- Surface depth -->
+## Surface TSOph
+
+```{r surf, echo=FALSE}
+depth <- "Surface"
+
+# open nc file
+this_filename <- nc_filenames[grep("surTSO", nc_filenames)]
+
+nc_dat <- ncdf4::nc_open(paste0(pacea_dir, 
+                                "/data-raw/roms/bccm-raw-data/", raw_dir, "/",
+                           this_filename))
+
+# load lon-lat and mask layers from netcdf
+nc_lon <- as.vector(ncdf4::ncvar_get(nc_dat, "lon_rho"))
+nc_lat <- as.vector(ncdf4::ncvar_get(nc_dat, "lat_rho"))
+```
+
+**Temperature**
+
+```{r, echo=FALSE}
+variable <- "temp"
+nc_var <- ncdf4::ncvar_get(nc_dat, variable)
+```
+
+Summary of values across all years show that we have values well below freezing (0) as well as warm values. Warm values may be reasonable, but the low values seem questionable
+```{r}
+summary(nc_var)
+```
+
+```{r, echo=FALSE}
+# threshold low
+thr_lo <- -2
+idx_lo <- which(nc_var < thr_lo, arr.ind = TRUE)
+
+# threshold high
+thr_hi <- 20
+idx_hi <- which(nc_var > thr_hi, arr.ind = TRUE)
+```
+
+Plotting one month of data for temperature below `thr_lo`
+```{r, echo = FALSE}
+plot_lo_outliers(nc_var, nc_lon, nc_lat, idx_lo, thr_lo, depth, variable)
+```
+
+Plotting one month of data for temperature above `thr_hi`
+```{r, echo = FALSE}
+plot_hi_outliers(nc_var, nc_lon, nc_lat, idx_hi, thr_hi, depth, variable)
+```
+
+**Salinity**
+
+```{r, echo=FALSE}
+variable <- "salt"
+nc_var <- ncdf4::ncvar_get(nc_dat, variable)
+```
+
+Summary of salinity values across all years show that we have values of very low salinity (about zero).
+```{r}
+summary(nc_var)
+```
+
+```{r, echo=FALSE}
+# threshold low
+thr_lo <- 5
+idx_lo <- which(nc_var < thr_lo, arr.ind = TRUE)
+```
+
+Plotting one month of data for low salinity outliers, lower than `thr_lo`.
+```{r, echo = FALSE}
+plot_lo_outliers(nc_var, nc_lon, nc_lat, idx_lo, thr_lo, depth, variable)
+```
+
+**Oxygen**
+
+```{r, echo=FALSE}
+variable <- "Oxygen"
+nc_var <- ncdf4::ncvar_get(nc_dat, variable)
+```
+
+Summary of oxygen values across all years show that we have values quite low.
+```{r}
+summary(nc_var)
+```
+
+```{r, echo=FALSE}
+# threshold low
+thr_lo <- 50
+idx_lo <- which(nc_var < thr_lo, arr.ind = TRUE)
+
+# threshold high
+thr_hi <- 500
+idx_hi <- which(nc_var > thr_hi, arr.ind = TRUE)
+```
+
+Plotting one month of data for low oxygen outliers, lower than `thr_lo`.
+```{r, echo = FALSE}
+plot_lo_outliers(nc_var, nc_lon, nc_lat, idx_lo, thr_lo, depth, variable)
+```
+
+Plotting one month of data for high oxygen outliers, greater than `thr_hi`.
+```{r, echo = FALSE}
+plot_hi_outliers(nc_var, nc_lon, nc_lat, idx_hi, thr_hi, depth, variable)
+```
+
+**pH**
+
+```{r, echo=FALSE}
+variable <- "pH"
+nc_var <- ncdf4::ncvar_get(nc_dat, variable)
+```
+
+Summary of pH values across all years show that we have values quite low (below 7) and high (above 9)
+```{r}
+summary(nc_var)
+```
+
+```{r, echo=FALSE}
+# threshold low
+thr_lo <- 7
+idx_lo <- which(nc_var < thr_lo, arr.ind = TRUE)
+
+# threshold high
+thr_hi <- 9
+idx_hi <- which(nc_var > thr_hi, arr.ind = TRUE)
+```
+
+Plotting one month of data for outliers below `thr_lo`
+```{r, echo = FALSE}
+plot_lo_outliers(nc_var, nc_lon, nc_lat, idx_lo, thr_lo, depth, variable)
+```
+
+Plotting one month of data for outliers above `thr_hi`
+```{r, echo = FALSE}
+plot_hi_outliers(nc_var, nc_lon, nc_lat, idx_hi, thr_hi, depth, variable)
+```
+
+```{r, echo=FALSE}
+nc_close(nc_dat)
+```
+
+<!-- 0-40m depth -->
+## 0-40m TSOph
+
+```{r 0to40, echo=FALSE}
+depth <- "0to40m"
+
+# open nc file
+this_filename <- nc_filenames[grep("0to40", nc_filenames)]
+
+nc_dat <- ncdf4::nc_open(paste0(pacea_dir, 
+                                "/data-raw/roms/bccm-raw-data/", raw_dir, "/",
+                           this_filename))
+
+# load lon-lat and mask layers from netcdf
+nc_lon <- as.vector(ncdf4::ncvar_get(nc_dat, "lon_rho"))
+nc_lat <- as.vector(ncdf4::ncvar_get(nc_dat, "lat_rho"))
+```
+
+**Temperature**
+
+```{r, echo=FALSE}
+variable <- "temp"
+nc_var <- ncdf4::ncvar_get(nc_dat, variable)
+```
+
+Summary of values across all years show that we have values just above freezing and quite high values.
+```{r}
+summary(nc_var)
+```
+
+```{r, echo=FALSE}
+# threshold low
+thr_lo <- 3
+idx_lo <- which(nc_var < thr_lo, arr.ind = TRUE)
+
+# threshold high
+thr_hi <- 18
+idx_hi <- which(nc_var > thr_hi, arr.ind = TRUE)
+```
+
+Plotting one month of data for temperature below `thr_lo`
+```{r, echo = FALSE}
+plot_lo_outliers(nc_var, nc_lon, nc_lat, idx_lo, thr_lo, depth, variable)
+```
+
+Plotting one month of data for temperature above `thr_hi`
+```{r, echo = FALSE}
+plot_hi_outliers(nc_var, nc_lon, nc_lat, idx_hi, thr_hi, depth, variable)
+```
+
+**Salinity**
+
+```{r, echo=FALSE}
+variable <- "salt"
+nc_var <- ncdf4::ncvar_get(nc_dat, variable)
+```
+
+Summary of salinity values across all years show that we have values of very low salinity (about zero).
+```{r}
+summary(nc_var)
+```
+
+```{r, echo=FALSE}
+# threshold low
+thr_lo <- 5
+idx_lo <- which(nc_var < thr_lo, arr.ind = TRUE)
+```
+
+Plotting one month of data for low salinity outliers, lower than `thr_lo`.
+```{r, echo = FALSE}
+plot_lo_outliers(nc_var, nc_lon, nc_lat, idx_lo, thr_lo, depth, variable)
+```
+
+**Oxygen**
+
+```{r, echo=FALSE}
+variable <- "Oxygen"
+nc_var <- ncdf4::ncvar_get(nc_dat, variable)
+```
+
+Summary of oxygen values across all years show that we have values relatively low. Also have some fairly high values
+```{r}
+summary(nc_var)
+```
+
+```{r, echo=FALSE}
+# threshold low
+thr_lo <- 50
+idx_lo <- which(nc_var < thr_lo, arr.ind = TRUE)
+
+# threshold high
+thr_hi <- 400
+idx_hi <- which(nc_var > thr_hi, arr.ind = TRUE)
+```
+
+Plotting one month of data for low oxygen outliers, lower than `thr_lo`.
+```{r, echo = FALSE}
+plot_lo_outliers(nc_var, nc_lon, nc_lat, idx_lo, thr_lo, depth, variable)
+```
+
+Plotting one month of data for high oxygen outliers, greater than `thr_hi`.
+```{r, echo = FALSE}
+plot_hi_outliers(nc_var, nc_lon, nc_lat, idx_hi, thr_hi, depth, variable)
+```
+
+**pH**
+
+```{r, echo=FALSE}
+variable <- "pH"
+nc_var <- ncdf4::ncvar_get(nc_dat, variable)
+```
+
+Summary of pH values across all years show that we have values quite low (below 7) and high (above 9)
+```{r}
+summary(nc_var)
+```
+
+```{r, echo=FALSE}
+# threshold low
+thr_lo <- 7
+idx_lo <- which(nc_var < thr_lo, arr.ind = TRUE)
+
+# threshold high
+thr_hi <- 8.5
+idx_hi <- which(nc_var > thr_hi, arr.ind = TRUE)
+```
+
+Plotting one month of data for outliers below `thr_lo`
+```{r, echo = FALSE}
+plot_lo_outliers(nc_var, nc_lon, nc_lat, idx_lo, thr_lo, depth, variable)
+```
+
+Plotting one month of data for outliers above `thr_lo`
+```{r, echo = FALSE}
+plot_hi_outliers(nc_var, nc_lon, nc_lat, idx_hi, thr_hi, depth, variable)
+```
+
+```{r, echo=FALSE}
+nc_close(nc_dat)
+```
+
+<!-- 40-100m depth -->
+## 40-100m TSOph
+
+```{r 40to100, echo=FALSE}
+depth <- "40to100m"
+
+# open nc file
+this_filename <- nc_filenames[grep("40to100", nc_filenames)]
+
+nc_dat <- ncdf4::nc_open(paste0(pacea_dir, 
+                                "/data-raw/roms/bccm-raw-data/", raw_dir, "/",
+                           this_filename))
+
+# load lon-lat and mask layers from netcdf
+nc_lon <- as.vector(ncdf4::ncvar_get(nc_dat, "lon_rho"))
+nc_lat <- as.vector(ncdf4::ncvar_get(nc_dat, "lat_rho"))
+```
+
+**Temperature**
+
+```{r, echo=FALSE}
+variable <- "temp"
+nc_var <- ncdf4::ncvar_get(nc_dat, variable)
+```
+
+Summary of values across all years show that we have values just above freezing and fairly high values for depths below 40m
+```{r}
+summary(nc_var)
+```
+
+```{r, echo=FALSE}
+# threshold low
+thr_lo <- 3
+idx_lo <- which(nc_var < thr_lo, arr.ind = TRUE)
+
+# threshold high
+thr_hi <- 15
+idx_hi <- which(nc_var > thr_hi, arr.ind = TRUE)
+```
+
+Plotting one month of data for temperature below `thr_lo`
+```{r, echo = FALSE}
+plot_lo_outliers(nc_var, nc_lon, nc_lat, idx_lo, thr_lo, depth, variable)
+```
+
+Plotting one month of data for temperature above `thr_hi`
+```{r, echo = FALSE}
+plot_hi_outliers(nc_var, nc_lon, nc_lat, idx_hi, thr_hi, depth, variable)
+```
+
+**Salinity**
+
+```{r, echo=FALSE}
+variable <- "salt"
+nc_var <- ncdf4::ncvar_get(nc_dat, variable)
+```
+
+Summary of salinity values across all years show a fairly reasonable range. We will check where the low values lie.
+```{r}
+summary(nc_var)
+```
+
+```{r, echo=FALSE}
+# threshold low
+thr_lo <- 30
+idx_lo <- which(nc_var < thr_lo, arr.ind = TRUE)
+```
+
+Plotting one month of data for low salinity outliers, lower than `thr_lo`.
+```{r, echo = FALSE}
+plot_lo_outliers(nc_var, nc_lon, nc_lat, idx_lo, thr_lo, depth, variable)
+```
+
+**Oxygen**
+
+```{r, echo=FALSE}
+variable <- "Oxygen"
+nc_var <- ncdf4::ncvar_get(nc_dat, variable)
+```
+
+Summary of oxygen values across all years show that we have values relatively low again. 
+```{r}
+summary(nc_var)
+```
+
+```{r, echo=FALSE}
+# threshold low
+thr_lo <- 50
+idx_lo <- which(nc_var < thr_lo, arr.ind = TRUE)
+```
+
+Plotting one month of data for low oxygen outliers, lower than `thr_lo`.
+```{r, echo = FALSE}
+plot_lo_outliers(nc_var, nc_lon, nc_lat, idx_lo, thr_lo, depth, variable)
+```
+
+**pH**
+
+```{r, echo=FALSE}
+variable <- "pH"
+nc_var <- ncdf4::ncvar_get(nc_dat, variable)
+```
+
+Summary of pH values across all years show that we have maybe reasonable ph values. Will check where the low ones lie
+```{r}
+summary(nc_var)
+```
+
+```{r, echo=FALSE}
+# threshold low
+thr_lo <- 7.5
+idx_lo <- which(nc_var < thr_lo, arr.ind = TRUE)
+```
+
+Plotting one month of data for outliers below `thr_lo`
+```{r, echo = FALSE}
+plot_lo_outliers(nc_var, nc_lon, nc_lat, idx_lo, thr_lo, depth, variable)
+```
+
+```{r, echo=FALSE}
+nc_close(nc_dat)
+```
+
+<!-- 100m-bottom depth -->
+## 100m-bottom TSOph
+
+```{r 100tobot, echo=FALSE}
+depth <- "100mtobot"
+
+# open nc file
+this_filename <- nc_filenames[grep("100mtoBot", nc_filenames)]
+
+nc_dat <- ncdf4::nc_open(paste0(pacea_dir, 
+                                "/data-raw/roms/bccm-raw-data/", raw_dir, "/",
+                           this_filename))
+
+# load lon-lat and mask layers from netcdf
+nc_lon <- as.vector(ncdf4::ncvar_get(nc_dat, "lon_rho"))
+nc_lat <- as.vector(ncdf4::ncvar_get(nc_dat, "lat_rho"))
+```
+
+**Temperature**
+
+```{r, echo=FALSE}
+variable <- "temp"
+nc_var <- ncdf4::ncvar_get(nc_dat, variable)
+```
+
+Summary of values across all years show that we have values that may be a bit high for this depth
+```{r}
+summary(nc_var)
+```
+
+```{r, echo=FALSE}
+# threshold high
+thr_hi <- 10
+idx_hi <- which(nc_var > thr_hi, arr.ind = TRUE)
+```
+
+Plotting one month of data for temperature above `thr_hi`
+```{r, echo = FALSE}
+plot_hi_outliers(nc_var, nc_lon, nc_lat, idx_hi, thr_hi, depth, variable)
+```
+
+**Salinity**
+
+```{r, echo=FALSE}
+variable <- "salt"
+nc_var <- ncdf4::ncvar_get(nc_dat, variable)
+```
+
+Summary of salinity values across all years show that we have fairly reasonable salinity values. Will check on low values anyways
+```{r}
+summary(nc_var)
+```
+
+```{r, echo=FALSE}
+# threshold low
+thr_lo <- 30
+idx_lo <- which(nc_var < thr_lo, arr.ind = TRUE)
+```
+
+Plotting one month of data for low salinity outliers, lower than `thr_lo`.
+```{r, echo = FALSE}
+plot_lo_outliers(nc_var, nc_lon, nc_lat, idx_lo, thr_lo, depth, variable)
+```
+
+**Oxygen**
+
+```{r, echo=FALSE}
+variable <- "Oxygen"
+nc_var <- ncdf4::ncvar_get(nc_dat, variable)
+```
+
+Summary of oxygen values across all years show that we have values relatively low. Also have some fairly high values for bottom
+```{r}
+summary(nc_var)
+```
+
+```{r, echo=FALSE}
+# threshold low
+thr_lo <- 10
+idx_lo <- which(nc_var < thr_lo, arr.ind = TRUE)
+
+# threshold high
+thr_hi <- 250
+idx_hi <- which(nc_var > thr_hi, arr.ind = TRUE)
+```
+
+Plotting one month of data for low oxygen outliers, lower than `thr_lo`.
+```{r, echo = FALSE}
+plot_lo_outliers(nc_var, nc_lon, nc_lat, idx_lo, thr_lo, depth, variable)
+```
+
+Plotting one month of data for high oxygen outliers, greater than `thr_hi`.
+```{r, echo = FALSE}
+plot_hi_outliers(nc_var, nc_lon, nc_lat, idx_hi, thr_hi, depth, variable)
+```
+
+**pH**
+
+```{r, echo=FALSE}
+variable <- "pH"
+nc_var <- ncdf4::ncvar_get(nc_dat, variable)
+```
+
+Summary of pH values across all years show that we have some values that could be low?
+```{r}
+summary(nc_var)
+```
+
+```{r, echo=FALSE}
+# threshold low
+thr_lo <- 7.5
+idx_lo <- which(nc_var < thr_lo, arr.ind = TRUE)
+```
+
+Plotting one month of data for outliers below `thr_lo`
+```{r, echo = FALSE}
+plot_lo_outliers(nc_var, nc_lon, nc_lat, idx_lo, thr_lo, depth, variable)
+```
+
+```{r, echo=FALSE}
+nc_close(nc_dat)
+```
+
+<!-- Bottom depth -->
+## Bottom TSOph
+
+```{r bot, echo=FALSE}
+depth <- "bottom"
+
+# open nc file
+this_filename <- nc_filenames[grep("bot", nc_filenames)]
+
+nc_dat <- ncdf4::nc_open(paste0(pacea_dir, 
+                                "/data-raw/roms/bccm-raw-data/", raw_dir, "/",
+                           this_filename))
+
+# load lon-lat and mask layers from netcdf
+nc_lon <- as.vector(ncdf4::ncvar_get(nc_dat, "lon_rho"))
+nc_lat <- as.vector(ncdf4::ncvar_get(nc_dat, "lat_rho"))
+```
+
+**Temperature**
+
+```{r, echo=FALSE}
+variable <- "temp"
+nc_var <- ncdf4::ncvar_get(nc_dat, variable)
+```
+
+Summary of values across all years show that there might be some high values, but bottom depth could actually be really shallow
+```{r}
+summary(nc_var)
+```
+
+```{r, echo=FALSE}
+# threshold high
+thr_hi <- 10
+idx_hi <- which(nc_var > thr_hi, arr.ind = TRUE)
+```
+
+Plotting one month of data for temperature above `thr_hi`
+```{r, echo = FALSE}
+plot_hi_outliers(nc_var, nc_lon, nc_lat, idx_hi, thr_hi, depth, variable)
+```
+
+**Salinity**
+
+```{r, echo=FALSE}
+variable <- "salt"
+nc_var <- ncdf4::ncvar_get(nc_dat, variable)
+```
+
+Summary of salinity values across all years show that we may have really low salinity values.
+```{r}
+summary(nc_var)
+```
+
+```{r, echo=FALSE}
+# threshold low
+thr_lo <- 10
+idx_lo <- which(nc_var < thr_lo, arr.ind = TRUE)
+```
+
+Plotting one month of data for low salinity outliers, lower than `thr_lo`.
+```{r, echo = FALSE}
+plot_lo_outliers(nc_var, nc_lon, nc_lat, idx_lo, thr_lo, depth, variable)
+```
+
+**Oxygen**
+
+```{r, echo=FALSE}
+variable <- "Oxygen"
+nc_var <- ncdf4::ncvar_get(nc_dat, variable)
+```
+
+Summary of oxygen values across all years show that we have values relatively low. Also have some fairly high values for bottom
+```{r}
+summary(nc_var)
+```
+
+```{r, echo=FALSE}
+# threshold low
+thr_lo <- 10
+idx_lo <- which(nc_var < thr_lo, arr.ind = TRUE)
+
+# threshold high
+thr_hi <- 400
+idx_hi <- which(nc_var > thr_hi, arr.ind = TRUE)
+```
+
+Plotting one month of data for low oxygen outliers, lower than `thr_lo`.
+```{r, echo = FALSE}
+plot_lo_outliers(nc_var, nc_lon, nc_lat, idx_lo, thr_lo, depth, variable)
+```
+
+Plotting one month of data for high oxygen outliers, greater than `thr_hi`.
+```{r, echo = FALSE}
+plot_hi_outliers(nc_var, nc_lon, nc_lat, idx_hi, thr_hi, depth, variable)
+```
+
+**pH**
+
+```{r, echo=FALSE}
+variable <- "pH"
+nc_var <- ncdf4::ncvar_get(nc_dat, variable)
+```
+
+Summary of pH values across all years show that we have some pretty low and high values
+```{r}
+summary(nc_var)
+```
+
+```{r, echo=FALSE}
+# threshold low
+thr_lo <- 7
+idx_lo <- which(nc_var < thr_lo, arr.ind = TRUE)
+
+# threshold high
+thr_hi <- 8.5
+idx_hi <- which(nc_var > thr_hi, arr.ind = TRUE)
+```
+
+Plotting one month of data for outliers below `thr_lo`
+```{r, echo = FALSE}
+plot_lo_outliers(nc_var, nc_lon, nc_lat, idx_lo, thr_lo, depth, variable)
+```
+
+Plotting one month of data for outliers above `thr_hi`
+```{r, echo = FALSE}
+plot_hi_outliers(nc_var, nc_lon, nc_lat, idx_hi, thr_hi, depth, variable)
+```
+
+```{r}
+nc_close(nc_dat)
+```
+
+<!-- Phytoplankton and PP -->
+## Phytoplankton and PP
+
+```{r pp, echo=FALSE}
+depth <- "Depth integrated"
+
+# open nc file
+this_filename <- nc_filenames[grep("zInt", nc_filenames)]
+
+nc_dat <- ncdf4::nc_open(paste0(pacea_dir, 
+                                "/data-raw/roms/bccm-raw-data/", raw_dir, "/",
+                           this_filename))
+
+# load lon-lat and mask layers from netcdf
+nc_lon <- as.vector(ncdf4::ncvar_get(nc_dat, "lon_rho"))
+nc_lat <- as.vector(ncdf4::ncvar_get(nc_dat, "lat_rho"))
+```
+
+**Phytoplankton**
+
+```{r, echo=FALSE}
+variable <- "phytoplankton"
+nc_var <- ncdf4::ncvar_get(nc_dat, variable)
+```
+
+Summary of values across all years show that we have values that can be quite high. 
+```{r}
+summary(nc_var)
+```
+
+```{r, echo=FALSE}
+# threshold high
+thr_hi <- 5
+idx_hi <- which(nc_var > thr_hi, arr.ind = TRUE)
+```
+
+Plotting one month of data for phytoplankton above `thr_hi`
+```{r, echo = FALSE}
+plot_hi_outliers(nc_var, nc_lon, nc_lat, idx_hi, thr_hi, depth, variable)
+```
+
+**Primary Production**
+
+```{r, echo=FALSE}
+variable <- "PTproduction"
+nc_var <- ncdf4::ncvar_get(nc_dat, variable)
+```
+
+Summary of values across all years show that we have values that can be quite high. 
+```{r}
+summary(nc_var)
+```
+
+```{r, echo=FALSE}
+# threshold high
+thr_hi <- 2
+idx_hi <- which(nc_var > thr_hi, arr.ind = TRUE)
+```
+
+Plotting one month of data for primary production above `thr_hi`
+```{r, echo = FALSE}
+plot_hi_outliers(nc_var, nc_lon, nc_lat, idx_hi, thr_hi, depth, variable)
+```
+
+```{r, echo=FALSE}
+nc_close(nc_dat)
+```
+
+<!-- Mask -->
+## Mask object provided by Angelica
+
+Here is a plot of the masked data layer provided by Angelica. Doesn't look like it masks out any of the coastal areas that we were initially worried about.
+
+**Mask**
+```{r mask, echo=FALSE}
+# open nc file
+this_filename <- nc_filenames[grep("mask", nc_filenames)]
+
+nc_dat <- ncdf4::nc_open(paste0(pacea_dir, 
+                                "/data-raw/roms/bccm-raw-data/", raw_dir, "/",
+                           this_filename))
+
+# load lon-lat and mask layers from netcdf
+nc_lon <- as.vector(ncdf4::ncvar_get(nc_dat, "lon_rho"))
+nc_lat <- as.vector(ncdf4::ncvar_get(nc_dat, "lat_rho"))
+nc_mask <- as.vector(ncdf4::ncvar_get(nc_dat, "mask_rho"))
+
+# create sf mask dataframe
+dat <- data.frame(x = nc_lon, y = nc_lat, value = c(nc_mask))
+dat[which(nc_mask == 0),3] <- NaN
+dat_sf <- sf::st_as_sf(dat, coords = c("x", "y"), crs = "EPSG:4326")
+mask_sf <- sf::st_transform(dat_sf, crs = "EPSG:3005") 
+
+ggplot() +
+  geom_sf(data = mask_sf, aes(color = value)) + 
+  ggtitle("BCCM mask layer")
+
+nc_close(nc_dat)
+```
+
+
+
+
+
+
