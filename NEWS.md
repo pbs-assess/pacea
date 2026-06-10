@@ -5,7 +5,15 @@ Developers: for some general tips for writing good bullets see https://style.tid
 
 ## Updates by date
 
-* 20206-03-03 Updates for
+* 2026-06-10 Updates for:
+  * BCCM ROMS data; now includes monthly spatial data to 2025 (previous only went 
+  to 2019). New variables added for surface and bottom ocean current velocity, in 
+  metres per second (m/s) - these variables include a vertical (northward) and 
+  horizontal (eastward) component. The updated data are available for the 'full' 
+  2km x 2km spatial resolution (use functions: e.g. `bccm_all_variables_full`, 
+  `bccm_surface_salinity_full`)
+
+* 2026-03-03 Updates for:
   * `oisst_7day` and `oisst_month`
   * indices `ao`, `mei`, `npgo`, `oni`, and `pdo`; See ?mei and ?oni for why some
   historical values of mei and noi have changed. In particular for ONI we are
