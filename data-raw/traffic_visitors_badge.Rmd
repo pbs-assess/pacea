@@ -1,0 +1,126 @@
+---
+title: "GitHub Traffic Action"
+author: "Travis Tai"
+date: "2023-12-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Setting up a Visitors badge
+
+There is documentation for how to create a visitors badge. This can be configured to show daily, total (since the badge was created), or both. This does not allow for number of unique visitors though, or other traffic statistics.
+
+The following GitHub repository documents how to create this badge in your README.md file.
+
+https://github.com/estruyf/github-visitors-badge/tree/master
+
+The repository also links to the website https://www.visitorbadge.io/ to create the line of code to add to the README.md file in your GitHub repository - given your repository name and a few other settings.
+
+## Setting up Repository traffic via GitHub Action
+
+GitHub repository traffic information is tracked by GitHub, found under the 'Inisghts > Traffic' tab. However, only two weeks of information is kept/shown. We can keep track of historical traffic for our repository, from the time the GitHub Action is started. 
+
+### GitHub repo stats
+
+This repository has information on how to create a GitHub Action to store and document GitHub traffic.
+
+https://github.com/jgehrcke/github-repo-stats
+
+They also provide a tutorial on the steps to create and store this data. 
+
+https://github.com/jgehrcke/github-repo-stats/wiki/Tutorial
+
+The steps listed on the website:
+
+#### Step 1: Create personal access token and store it as repository secret
+1. Go to https://github.com/settings/tokens.
+2. Press `Generate new token`. Select `New personal access token (classic)` (classic: so you can generate a token without expiration date). Enter your password if prompted.
+3. Add a meaningful note, such as "for the github-repo-stats Action in foo/bar".
+4. Set "no expiration" (or, of course, a shorter expiration if you know what you are doing).
+5. Add the complete `repo` scope. This is required for reading the traffic statistics API and for pushing commits with the classic API token (when using a fine-grained token make sure it can read visitor stats and push commits).
+6. Press the `Generate token` button, and put the token somewhere safe (I store it in a password manager).
+7. In your data repository (where this Action is supposed to run) go to `Settings -> Secrets -> Actions`. Press the `New` repository secret button.
+8. Set the `Name` field to `GHRS_GITHUB_API_TOKEN` and the `Value` to the token from step (6) above. Press Add secret.
+
+#### Step 2: Add workflow file to default branch
+In the repository, create a new workflow file .github/workflows/github-repo-stats.yml with these contents:
+
+```{bash, eval=FALSE}
+name: github-repo-stats
+
+on:
+  schedule:
+    # Run this once per day, towards the end of the day for keeping the most
+    # recent data point most meaningful (hours are interpreted in UTC).
+    - cron: "0 23 * * *"
+  workflow_dispatch: # Allow for running this manually.
+
+jobs:
+  j1:
+    name: github-repo-stats
+    runs-on: ubuntu-latest
+    steps:
+      - name: run-ghrs
+        # Use latest release.
+        uses: jgehrcke/github-repo-stats@RELEASE
+        with:
+          ghtoken: ${{ secrets.ghrs_github_api_token }}
+```
+
+(if you know what you're doing you can of course adjust the file name and also certain aspects in the YAML document).
+
+The workflow file must end up in the default branch of your repository. You would normally do this via a pull request, but this part is up to you.
+```{bash, eval=FALSE}
+$ git checkout -b jp/add-ghrs
+Switched to a new branch 'jp/add-ghrs'
+$ git add .github/workflows/github-repo-stats.yml
+$ git commit -m 'Add github-repo-stats workflow file'
+[jp/add-ghrs 1f15ae4] Add github-repo-stats workflow file
+ 1 file changed, 15 insertions(+)
+ create mode 100644 .github/workflows/github-repo-stats.yml
+$ git push --set-upstream origin jp/add-ghrs
+...
+# Open and merge pull request ...
+```
+
+#### Step 3: Prepare data branch, trigger first run
+This Action will push state to a branch called github-repo-stats (the name of this branch can be changed via a configuration parameter). The following step is not required, but for tidiness it makes sense to prepare this branch in a way that it is empty, i.e. so that it does not carry the file structure from the default branch. Here is how to do that:
+
+```{bash, eval=FALSE}
+git switch --orphan github-repo-stats
+git commit --allow-empty -m "create empty github-repo-stats branch"
+git push -u origin github-repo-stats
+```
+(kudos to this for the `switch --orphan` trick)
+
+In the main view for your repository, switch to the `Actions` tab. Select the `github-repo-stats` workflow in the left sidebar. Notice the blue notification field saying
+
+This workflow has a workflow_dispatch event trigger.
+
+Here you can press `Run workflow -> Run workflow` to manually trigger the first run of this Action.
+
+Once you see the workflow run complete you can browse the `github-repo-stats` branch in your repository to have a look at the files generated by this GitHub Action. Happy browsing! Maybe look at the generated PDF report?
+
+Note that after the first run, the report will look a little boring. Of course. The report will get more interesting over time, as data points accumulate.
+
+If the workflow succeeded after you triggering it manually you can now leave things be -- the workflow will run automatically once per day.
+
+If you happen to run into issues, in particular if the workflow fails to run: please leave feedback via opening an issue in https://github.com/jgehrcke/github-repo-stats/. Thank you!
+
+## Other badges
+
+Shields also has documentation on how to create other badges:
+shields.io
+
+There is also documentation on how to create a GitHub Action to record repository traffic:
+https://github.com/marketplace/actions/repository-traffic
+
+
+
+
+
+
+

@@ -44,21 +44,8 @@
 
 # Below is from -full.R, need to adapt for full-to-2024.
 
-# Run with option <- 1 then option <- 2.
-# 1/11/24 overnight:
-# Full option 1 took 10 hours to do all 20 files. Using 6 cores. pH files all
-# got made last, but each depth range is its own file (so pH should have got
-# made with the others), so I'm thinking memory got too full and those got
-# reserved to the end. So if do again maybe just do 4 cores. CPUE was maxed out,
-# and memory still 12Gb used after it finished (I thought things were cleaned
-# up). Ah, each R session is still open, I forget to add the closing parallel thing.
-# Full option 2:
-# Only two files, think took about 2 hours each. Not sure why not parallel though.
-
-# From hotssea-data-interpolation.R, think these ideas still hold, but sticking
-# with filename stuff that Travis did for first bccm variables.
-# Filenames that we save to (as .rds in pacea-data/data-bccm-full/) do need to match what we're calling them in pacea, but can have
-#  version number at the end.
+# Run with option <- 1 then option <- 2 then option <-3 (for TSOpH, then phytoplankton and PP, then velocities)
+# Each variable takes just under 2 hours.
 
 # To clarify, there are:
 #  - .nc files as saved by Angelica. Have more than one variable in them
@@ -124,11 +111,19 @@ tbc.line <- st_cast(tbc, "MULTILINESTRING")
 # bccm raw data folder
 raw_dir <-"bccm-output-to-2024"
 
+list.files(paste0(pacea_dir,"/data-raw/roms/bccm-raw-data/", raw_dir, "/"))
+# file name characters for depth range
+startchar <- 33
+endchar <- startchar + 2
+
+substr(list.files(paste0(pacea_dir,"/data-raw/roms/bccm-raw-data/", raw_dir, "/")), 
+       startchar, endchar)
+
 # Do OPTION 1 or 2 or 3. Then re-run.
 # option 1 = temp, sal, oxygen, ph
 # option 2 = phytoplankton
 # option 3 = velocity
-option <- 1
+option <- 3
 
 # OPTION 1 FOR LOOPING THROUGH VARIABLES FOR EACH DEPTH
 # loop variables
@@ -200,6 +195,7 @@ snc_dat <- nc_open(paste0(pacea_dir,
 snc_lon <- as.vector(ncvar_get(snc_dat, "lon_rho"))
 snc_lat <- as.vector(ncvar_get(snc_dat, "lat_rho"))
 svar <- as.vector(ncvar_get(snc_dat, "temp", count = c(-1, -1, 1)))
+nc_close(snc_dat)
 
 sdat <- data.frame(x = snc_lon, y = snc_lat, value = svar) %>%
   st_as_sf(coords = c("x", "y"), crs = "EPSG:4326") %>%
@@ -208,14 +204,15 @@ sdat <- data.frame(x = snc_lon, y = snc_lat, value = svar) %>%
 sroms_cave <- sdat %>%
   na.omit() %>%
   concaveman::concaveman()
-sroms_buff <- sdat %>%
-  na.omit() %>%
-  st_geometry() %>%
-  st_buffer(dist = 2000) %>%
-  st_union() %>%
-  st_as_sf()
+if(!exists("sroms_buff")){
+  sroms_buff <- sdat %>%
+    na.omit() %>%
+    st_geometry() %>%
+    st_buffer(dist = 2000) %>%
+    st_union() %>%
+    st_as_sf()
+}
 
-nc_close(snc_dat)
 rm(snc_dat, snc_lon, snc_lat, svar, sdat)
 # END parameters
 #####
@@ -235,11 +232,11 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
   nc_lat <- as.vector(ncdf4::ncvar_get(nc_dat, "lat_rho"))
 
   # depth from file name
-  if(substr(this_filename, 33, 35) %in% c("bot", "sur")){
-    ti <- substr(this_filename, 33, 35)
+  if(substr(this_filename, startchar, endchar) %in% c("bot", "sur")){
+    ti <- substr(this_filename, startchar, endchar)
     if(ti == "bot") {ti <- "bottom"} else {ti <- "surface"}
   } else {
-    ti <- strsplit(substr(this_filename, 33, nchar(this_filename)), "_")[[1]][1]
+    ti <- strsplit(substr(this_filename, startchar, nchar(this_filename)), "_")[[1]][1]
   }
   
   # current velocities
@@ -281,7 +278,7 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
       nc_varmat <- apply(nc_var, 3, c)
     }
     
-    # put sst into dataframe and sf object
+    # put into dataframe and sf object
     dat <- data.frame(x = nc_lon, y = nc_lat) %>% cbind(nc_varmat)
     dat_sf <- sf::st_as_sf(dat,
                            coords = c("x", "y"),
@@ -296,10 +293,10 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
     }
     
     # create polygon for cropping ROMS data
-    roms_cave <- tdat_sf[,ncol(tdat_sf)] %>%
+    roms_cave <- tdat_sf[,1] %>%
       na.omit() %>%
       concaveman::concaveman()
-    roms_buff <- tdat_sf[,ncol(tdat_sf)] %>%
+    roms_buff <- tdat_sf[,1] %>%
       na.omit() %>%
       sf::st_geometry() %>%
       sf::st_buffer(dist = 2000) %>%
@@ -335,8 +332,8 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
     ## max values  : 10.229637, 9.604419, 9.817786, 10.668157, 12.789614, 13.939012, ...
     ## > dim(output2_full)
     ## [1] 710 651 324
-
-
+    
+    # 
     # crop out grid cells with polygon masks
     #    t2_sf2 <- output2 %>%
     #      mask(bccm_eez_poly) %>%
@@ -346,7 +343,7 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
 
     # Quick:
     t2_sf2_full <- output2_full %>%
-      #      mask(bccm_eez_poly) %>%
+      #      mask(bccm_eez_poly) %>%  ## don't need to mask out sections as we're using the 2km resolution across the whole area
       #      mask(inshore_poly) %>%
       stars::st_as_stars() %>%  ## check here for converting to points (not raster)
       sf::st_as_sf()
@@ -376,17 +373,23 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
     # > [1] 164454    325
 
     # 2. use roms_buff to get haida gwaii outline and shore
-    t2_sf26b <- t2_sf26b[roms_buff,]
+    t2_sf26 <- t2_sf26b[roms_buff,]
     #dim(t2_sf26b)
     #[1] 161025    325
-
+    
+    # can skip the below as it's repetitive
     # 3. use default surface roms_cave
-    t2_sf26b <- t2_sf26b[sroms_cave,]
+    # t2_sf26 <- t2_sf26[sroms_cave,]
     # same dim
     # 4. use default surface roms_buff
-    t2_sf26 <- t2_sf26b[sroms_buff,]
+    # t2_sf26 <- t2_sf26[sroms_buff,]
     # same dim
+    
+    # 5. masking out bc_coast land areas as well - don't need this, but can include it
+    # t2_sf26 <- st_filter(t2_sf26, tbc, .predicate = Negate(st_intersects))
 
+    
+    ## different depths will have differnt number of grid cells
     # data should have 41,288 grid cells
     # if(nrow(t2_sf26) != 41288){
     #   out.msg <- paste0(as.symbol(t2_sf26), " nrows = ", nrow(get(obj_name)),
