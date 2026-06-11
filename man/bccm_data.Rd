@@ -8,7 +8,7 @@
 \format{
 table
 
-An object of class \code{data.frame} with 22 rows and 1 columns.
+An object of class \code{data.frame} with 26 rows and 1 columns.
 }
 \source{
 Pena et al., 2019.

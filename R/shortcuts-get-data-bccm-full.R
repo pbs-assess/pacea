@@ -13,14 +13,14 @@
 #'
 #' @details
 #'
-#' The following 22 functions serve to download specific individual ocean variables
+#' The following 26 functions serve to download specific individual ocean variables
 #'  of the BCCM model data over its full domain, on a 2 km x 2 km grid. Each
-#'  file is around 120 Mb, but only takes a couple of minutes (on a home
+#'  file is around 150 Mb, but only takes a couple of minutes (on a home
 #'  network, may be slower from a work network because of firewalls). If a
 #'  variable has already been downloaded, the function will simply load data from
 #'  your `paste0(pacea_cache(), "/bccm_full"` folder into your local R environment.
 #'
-#' The 22 objects available are desribed below as their respective functions;
+#' The 26 objects available are desribed below as their respective functions;
 #'   the equivalent functions without `_full` are for the BCCM outputs
 #'   restricted to Canada's EEZ and on a coarser grid for the offshore. The
 #'   objects obtained here are stored on Zenodo, with [get_zenodo_data()]
@@ -37,19 +37,23 @@
 #'   \code{bccm_*depth*_temperature_full()} Temperature in oC\cr
 #'   \code{bccm_*depth*_ph_full()} pH\cr
 #'   \code{bccm_phytoplankton_full()} Total phytoplankton biomass in mmol-nitrogen m^-2\cr
-#'   \code{bccm_primaryproduction_full()} Total primary production in gC m^-2 d^-1
+#'   \code{bccm_primaryproduction_full()} Total primary production in gC m^-2 d^-1\cr
+#'   \code{bccm_*depth*_u_currentvelocity_full()} Horizontal (eastward) ocean current velocity in m/s\cr
+#'   \code{bccm_*depth*_v_currentvelocity_full()} Vertical (northward) ocean current velocity in m/s
 #' }
 #'
 #' NOTE:\cr
 #' \code{*depth*} must be replaced by one of the following depth categories:
 #'
 #' \describe{
-#'   \code{bottom}{sea bottom}\cr
-#'   \code{0to40}{average between 0m and 40m depth}\cr
-#'   \code{40to100}{average between 40m and 100m depth}\cr
-#'   \code{100tobot} {:  average between 100m depth and sea bottom}\cr
-#'   \code{surface}{sea surface}
+#'   \code{bottom}{ sea bottom}\cr
+#'   \code{0to40}{ average between 0m and 40m depth}\cr
+#'   \code{40to100}{ average between 40m and 100m depth}\cr
+#'   \code{100tobot} { average between 100m depth and sea bottom}\cr
+#'   \code{surface}{ sea surface}
 #' }
+#' 
+#' only \code{bottom} and \code{surface} depths are available for current velocity.
 #'
 #' @format A simple features dataframe.
 #'
@@ -266,3 +270,41 @@ bccm_primaryproduction_full <- function(update = FALSE, ask = interactive(),
   get_zenodo_data("bccm_primaryproduction_full", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
 }
+
+#' @rdname bccm_bottom_oxygen_full
+#' @export
+bccm_surface_u_currentvelocity_full <- function(update = FALSE, ask = interactive(),
+                                        force = FALSE, version = "03",
+                                        cache_subfolder = "bccm_full"){
+  get_zenodo_data("bccm_surface_u_currentvelocity_full", update = update, ask = ask,
+                  force = force, version = version, cache_subfolder = cache_subfolder)
+}
+
+#' @rdname bccm_bottom_oxygen_full
+#' @export
+bccm_surface_v_currentvelocity_full <- function(update = FALSE, ask = interactive(),
+                                                force = FALSE, version = "03",
+                                                cache_subfolder = "bccm_full"){
+  get_zenodo_data("bccm_surface_v_currentvelocity_full", update = update, ask = ask,
+                  force = force, version = version, cache_subfolder = cache_subfolder)
+}
+
+#' @rdname bccm_bottom_oxygen_full
+#' @export
+bccm_bottom_u_currentvelocity_full <- function(update = FALSE, ask = interactive(),
+                                                force = FALSE, version = "03",
+                                                cache_subfolder = "bccm_full"){
+  get_zenodo_data("bccm_bottom_u_currentvelocity_full", update = update, ask = ask,
+                  force = force, version = version, cache_subfolder = cache_subfolder)
+}
+
+#' @rdname bccm_bottom_oxygen_full
+#' @export
+bccm_bottom_v_currentvelocity_full <- function(update = FALSE, ask = interactive(),
+                                                force = FALSE, version = "03",
+                                                cache_subfolder = "bccm_full"){
+  get_zenodo_data("bccm_surface_v_currentvelocity_full", update = update, ask = ask,
+                  force = force, version = version, cache_subfolder = cache_subfolder)
+}
+
+

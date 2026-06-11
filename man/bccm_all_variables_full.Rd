@@ -2,9 +2,13 @@
 % Please edit documentation in R/bccm-all-variables-full.R
 \name{bccm_all_variables_full}
 \alias{bccm_all_variables_full}
-\title{Download all 22 BCCM full model results from Zenodo to a local drive.}
+\title{Download all 26 BCCM full model results from Zenodo to a local drive.}
 \usage{
-bccm_all_variables_full(run_parallel = TRUE, timeout_value = 14400)
+bccm_all_variables_full(
+  run_parallel = TRUE,
+  timeout_value = 14400,
+  version = "03"
+)
 }
 \arguments{
 \item{run_parallel}{logical Run the downloads in parallel using
@@ -14,19 +18,24 @@ bccm_all_variables_full(run_parallel = TRUE, timeout_value = 14400)
 the internet. Gets used by \code{\link[zen4R:download_zenodo]{zen4R::download_zenodo()}} via
 \code{\link[=get_zenodo_data]{get_zenodo_data()}}. Try increasing if get an Error saying Timeout has been
 reached. If it says \verb{Timeout of 60 seconds} then \code{timeout_value} is not
-getting used (the default is 4 hours). Maybe try the manual download option above.}
+getting used (the default is 4 hours). Maybe try the manual download option
+above.}
+
+\item{version}{Character. Version number of data on Zenodo (as in what is
+appended at the end of the filenames).}
 }
 \value{
 downloaded files to \code{paste0(pacea_cache(), "/bccm_full")}
 directory.
 }
 \description{
-This downloads (in parallel by default) all 22 BCCM full model results from
-https://zenodo.org/records/14031460 to your local cache directory given by
-\code{paste0(pacea_cache(), "/bccm_full")}. Each file is around 120 Mb, and only
+This downloads (in parallel by default) all 26 BCCM full model results from
+https://zenodo.org/records/19580988 to your local cache directory given by
+\code{paste0(pacea_cache(), "/bccm_full")}. Each file is around 150 Mb, and only
 took about two minutes each on a home network (and since was running on 6
 parallel cores, it all took less than 10 minutes. Any files that are already
-present in your cache directory are not re-downloaded. You can look at your
+present in your cache directory are not re-downloaded. You may want to delete
+previous versions of the data (numbered sequentially). You can look at your
 cache directory to see progress (files should gradually appear).
 }
 \details{
@@ -35,7 +44,7 @@ and number of cores.
 
 You can download individual files, see \code{\link[=bccm_bottom_oxygen_full]{bccm_bottom_oxygen_full()}}, but
 since the downloading is a one-time exercise it's likely desirable to just get
-them all at once, providing you have the disk space (around 2.4 Gb).
+them all at once, providing you have the disk space (around 3.75 Gb).
 
 If you get an error saying \verb{Windows Defender Firewall has blocked some features of this app} when running from RStudio, try running from just R. You may as
 well try downloading all variables in one go with
@@ -56,7 +65,7 @@ scenarios.
 Or you can always just download them manually (download all) from
 the Zenodo site given above) and put them in \code{paste0(pacea_cache(), "/bccm_full")}.
 
-Type \code{bccm_data} to view the full list of available variables. See help
+Type \code{bccm_data_full} to view the full list of available variables. See help
 files for specific variables for more details on BCCM model results, e.g.
 \code{\link[=bccm_bottom_temperature_full]{bccm_bottom_temperature_full()}}.
 

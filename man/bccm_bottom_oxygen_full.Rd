@@ -23,6 +23,10 @@
 \alias{bccm_avg100mtoBot_temperature_full}
 \alias{bccm_phytoplankton_full}
 \alias{bccm_primaryproduction_full}
+\alias{bccm_surface_u_currentvelocity_full}
+\alias{bccm_surface_v_currentvelocity_full}
+\alias{bccm_bottom_u_currentvelocity_full}
+\alias{bccm_bottom_v_currentvelocity_full}
 \title{Use BCCM model output for the full domain of the model (not just within Canada's
 Exclusive Economic Zone).}
 \format{
@@ -33,7 +37,7 @@ bccm_bottom_oxygen_full(
   update = FALSE,
   ask = interactive(),
   force = FALSE,
-  version = "01",
+  version = "03",
   cache_subfolder = "bccm_full"
 )
 
@@ -41,7 +45,7 @@ bccm_bottom_ph_full(
   update = FALSE,
   ask = interactive(),
   force = FALSE,
-  version = "01",
+  version = "03",
   cache_subfolder = "bccm_full"
 )
 
@@ -49,7 +53,7 @@ bccm_bottom_salinity_full(
   update = FALSE,
   ask = interactive(),
   force = FALSE,
-  version = "01",
+  version = "03",
   cache_subfolder = "bccm_full"
 )
 
@@ -57,7 +61,7 @@ bccm_bottom_temperature_full(
   update = FALSE,
   ask = interactive(),
   force = FALSE,
-  version = "01",
+  version = "03",
   cache_subfolder = "bccm_full"
 )
 
@@ -65,7 +69,7 @@ bccm_surface_oxygen_full(
   update = FALSE,
   ask = interactive(),
   force = FALSE,
-  version = "01",
+  version = "03",
   cache_subfolder = "bccm_full"
 )
 
@@ -73,7 +77,7 @@ bccm_surface_ph_full(
   update = FALSE,
   ask = interactive(),
   force = FALSE,
-  version = "01",
+  version = "03",
   cache_subfolder = "bccm_full"
 )
 
@@ -81,7 +85,7 @@ bccm_surface_salinity_full(
   update = FALSE,
   ask = interactive(),
   force = FALSE,
-  version = "01",
+  version = "03",
   cache_subfolder = "bccm_full"
 )
 
@@ -89,7 +93,7 @@ bccm_surface_temperature_full(
   update = FALSE,
   ask = interactive(),
   force = FALSE,
-  version = "01",
+  version = "03",
   cache_subfolder = "bccm_full"
 )
 
@@ -97,7 +101,7 @@ bccm_avg0to40m_oxygen_full(
   update = FALSE,
   ask = interactive(),
   force = FALSE,
-  version = "01",
+  version = "03",
   cache_subfolder = "bccm_full"
 )
 
@@ -105,7 +109,7 @@ bccm_avg0to40m_ph_full(
   update = FALSE,
   ask = interactive(),
   force = FALSE,
-  version = "01",
+  version = "03",
   cache_subfolder = "bccm_full"
 )
 
@@ -113,7 +117,7 @@ bccm_avg0to40m_salinity_full(
   update = FALSE,
   ask = interactive(),
   force = FALSE,
-  version = "01",
+  version = "03",
   cache_subfolder = "bccm_full"
 )
 
@@ -121,7 +125,7 @@ bccm_avg0to40m_temperature_full(
   update = FALSE,
   ask = interactive(),
   force = FALSE,
-  version = "01",
+  version = "03",
   cache_subfolder = "bccm_full"
 )
 
@@ -129,7 +133,7 @@ bccm_avg40to100m_oxygen_full(
   update = FALSE,
   ask = interactive(),
   force = FALSE,
-  version = "01",
+  version = "03",
   cache_subfolder = "bccm_full"
 )
 
@@ -137,7 +141,7 @@ bccm_avg40to100m_ph_full(
   update = FALSE,
   ask = interactive(),
   force = FALSE,
-  version = "01",
+  version = "03",
   cache_subfolder = "bccm_full"
 )
 
@@ -145,7 +149,7 @@ bccm_avg40to100m_salinity_full(
   update = FALSE,
   ask = interactive(),
   force = FALSE,
-  version = "01",
+  version = "03",
   cache_subfolder = "bccm_full"
 )
 
@@ -153,7 +157,7 @@ bccm_avg40to100m_temperature_full(
   update = FALSE,
   ask = interactive(),
   force = FALSE,
-  version = "01",
+  version = "03",
   cache_subfolder = "bccm_full"
 )
 
@@ -161,7 +165,7 @@ bccm_avg100mtoBot_oxygen_full(
   update = FALSE,
   ask = interactive(),
   force = FALSE,
-  version = "01",
+  version = "03",
   cache_subfolder = "bccm_full"
 )
 
@@ -169,7 +173,7 @@ bccm_avg100mtoBot_ph_full(
   update = FALSE,
   ask = interactive(),
   force = FALSE,
-  version = "01",
+  version = "03",
   cache_subfolder = "bccm_full"
 )
 
@@ -177,7 +181,7 @@ bccm_avg100mtoBot_salinity_full(
   update = FALSE,
   ask = interactive(),
   force = FALSE,
-  version = "01",
+  version = "03",
   cache_subfolder = "bccm_full"
 )
 
@@ -185,7 +189,7 @@ bccm_avg100mtoBot_temperature_full(
   update = FALSE,
   ask = interactive(),
   force = FALSE,
-  version = "01",
+  version = "03",
   cache_subfolder = "bccm_full"
 )
 
@@ -193,7 +197,7 @@ bccm_phytoplankton_full(
   update = FALSE,
   ask = interactive(),
   force = FALSE,
-  version = "01",
+  version = "03",
   cache_subfolder = "bccm_full"
 )
 
@@ -201,7 +205,39 @@ bccm_primaryproduction_full(
   update = FALSE,
   ask = interactive(),
   force = FALSE,
-  version = "01",
+  version = "03",
+  cache_subfolder = "bccm_full"
+)
+
+bccm_surface_u_currentvelocity_full(
+  update = FALSE,
+  ask = interactive(),
+  force = FALSE,
+  version = "03",
+  cache_subfolder = "bccm_full"
+)
+
+bccm_surface_v_currentvelocity_full(
+  update = FALSE,
+  ask = interactive(),
+  force = FALSE,
+  version = "03",
+  cache_subfolder = "bccm_full"
+)
+
+bccm_bottom_u_currentvelocity_full(
+  update = FALSE,
+  ask = interactive(),
+  force = FALSE,
+  version = "03",
+  cache_subfolder = "bccm_full"
+)
+
+bccm_bottom_v_currentvelocity_full(
+  update = FALSE,
+  ask = interactive(),
+  force = FALSE,
+  version = "03",
   cache_subfolder = "bccm_full"
 )
 }
@@ -233,14 +269,14 @@ To download all BCCM data for the full domain, use the function
 the model.
 }
 \details{
-The following 22 functions serve to download specific individual ocean variables
+The following 26 functions serve to download specific individual ocean variables
 of the BCCM model data over its full domain, on a 2 km x 2 km grid. Each
-file is around 120 Mb, but only takes a couple of minutes (on a home
+file is around 150 Mb, but only takes a couple of minutes (on a home
 network, may be slower from a work network because of firewalls). If a
 variable has already been downloaded, the function will simply load data from
 your \verb{paste0(pacea_cache(), "/bccm_full"} folder into your local R environment.
 
-The 22 objects available are desribed below as their respective functions;
+The 26 objects available are desribed below as their respective functions;
 the equivalent functions without \verb{_full} are for the BCCM outputs
 restricted to Canada's EEZ and on a coarser grid for the offshore. The
 objects obtained here are stored on Zenodo, with \code{\link[=get_zenodo_data]{get_zenodo_data()}}
@@ -257,19 +293,23 @@ top cells span depths that vary with the bathymetry, from 0.2 to 1.6 m.
 \code{bccm_*depth*_temperature_full()} Temperature in oC\cr
 \code{bccm_*depth*_ph_full()} pH\cr
 \code{bccm_phytoplankton_full()} Total phytoplankton biomass in mmol-nitrogen m^-2\cr
-\code{bccm_primaryproduction_full()} Total primary production in gC m^-2 d^-1
+\code{bccm_primaryproduction_full()} Total primary production in gC m^-2 d^-1\cr
+\code{bccm_*depth*_u_currentvelocity_full()} Horizontal (eastward) ocean current velocity in m/s\cr
+\code{bccm_*depth*_v_currentvelocity_full()} Vertical (northward) ocean current velocity in m/s
 }
 
 NOTE:\cr
 \code{*depth*} must be replaced by one of the following depth categories:
 
 \describe{
-\code{bottom}{sea bottom}\cr
-\code{0to40}{average between 0m and 40m depth}\cr
-\code{40to100}{average between 40m and 100m depth}\cr
-\code{100tobot} {:  average between 100m depth and sea bottom}\cr
-\code{surface}{sea surface}
+\code{bottom}{ sea bottom}\cr
+\code{0to40}{ average between 0m and 40m depth}\cr
+\code{40to100}{ average between 40m and 100m depth}\cr
+\code{100tobot} { average between 100m depth and sea bottom}\cr
+\code{surface}{ sea surface}
 }
+
+only \code{bottom} and \code{surface} depths are available for current velocity.
 }
 \examples{
 \dontrun{

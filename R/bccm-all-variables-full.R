@@ -2,10 +2,11 @@
 #'
 #' This downloads (in parallel by default) all 26 BCCM full model results from
 #' https://zenodo.org/records/19580988 to your local cache directory given by
-#' `paste0(pacea_cache(), "/bccm_full")`. Each file is around 120 Mb, and only
+#' `paste0(pacea_cache(), "/bccm_full")`. Each file is around 150 Mb, and only
 #' took about two minutes each on a home network (and since was running on 6
 #' parallel cores, it all took less than 10 minutes. Any files that are already
-#' present in your cache directory are not re-downloaded. You can look at your
+#' present in your cache directory are not re-downloaded. You may want to delete
+#' previous versions of the data (numbered sequentially). You can look at your
 #' cache directory to see progress (files should gradually appear).
 #'
 #' The download is done in parallel (by default). Speed depends on network speed
@@ -13,7 +14,7 @@
 #'
 #' You can download individual files, see [bccm_bottom_oxygen_full()], but
 #' since the downloading is a one-time exercise it's likely desirable to just get
-#' them all at once, providing you have the disk space (around 2.4 Gb).
+#' them all at once, providing you have the disk space (around 3.75 Gb).
 #'
 #' If you get an error saying `Windows Defender Firewall has blocked some features of
 #'   this app` when running from RStudio, try running from just R. You may as
@@ -36,7 +37,7 @@
 #' Or you can always just download them manually (download all) from
 #' the Zenodo site given above) and put them in `paste0(pacea_cache(), "/bccm_full")`.
 #'
-#' Type `bccm_data` to view the full list of available variables. See help
+#' Type `bccm_data_full` to view the full list of available variables. See help
 #' files for specific variables for more details on BCCM model results, e.g.
 #' [bccm_bottom_temperature_full()].
 #'
