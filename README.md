@@ -49,7 +49,7 @@ below.
 
 Currently, pacea contains:
 
-- 218,569 calculations of daily sea surface temperature based on data
+- 220,151 calculations of daily sea surface temperature based on data
   from 19 buoys. **Updated monthly.**
 
 - outputs from the spatial British Columbia continental margin (BCCM)
@@ -57,8 +57,8 @@ Currently, pacea contains:
   al. (2019). Variables are available for (a) 40,580 spatial cells
   across Canada’s Pacific Exclusive Economic Zone, and **NEW** (b)
   161,025 spatial cells across a larger domain, extending into US
-  waters. Variables are given as 27 years of monthly means (from 1993 to
-  2019). The variables are:
+  waters. Variables are given as 33 years of monthly means (from 1993 to
+  2025 **VERY NEW**). The variables are:
 
   - dissolved oxygen concentration
   - pH
@@ -181,7 +181,13 @@ the Issues) with latest first:
   [fraser_discharge.html](https://pbs-assess.github.io/pacea/vignettes/fraser_discharge.html)
   vignette.
 
+- added updated results from the BCCM model over its full original
+  domain from 2020-2025 (originally just up to 2019)
+
 ## Brief examples of some questions that can be quickly visualised (see vignettes for full details)
+
+Note that figures here are not automatically updated with the latest
+data, but will be when you run the code yourself.
 
 **How does this year’s sea surface temperature (red curve) in West Dixon
 Entrance compare to previous years, based on the buoy there?**
@@ -311,7 +317,7 @@ example:
 
 ``` r
 oni
-#> # A tibble: 912 × 4
+#> # A tibble: 916 × 4
 #>     year month value anomaly
 #>    <dbl> <dbl> <dbl>   <dbl>
 #>  1  1950     1  24.7   -1.53
@@ -324,7 +330,7 @@ oni
 #>  8  1950     8  26.0   -0.42
 #>  9  1950     9  25.8   -0.39
 #> 10  1950    10  25.6   -0.44
-#> # ℹ 902 more rows
+#> # ℹ 906 more rows
 ```
 
 **What climatic and oceanographic indices are currently available, and
@@ -337,10 +343,10 @@ knitr::kable(pacea_indices)
 | Object | Description | Resolution | Start year | End year |
 |:---|:---|:---|---:|---:|
 | pdo | Pacific Decadal Oscillation | monthly | 1854 | 2026 |
-| npi_monthly | North Pacific Index (monthly) | monthly | 1899 | 2025 |
-| npi_annual | North Pacific Index (annual) | annual | 1899 | 2025 |
+| npi_monthly | North Pacific Index (monthly) | monthly | 1899 | 2026 |
+| npi_annual | North Pacific Index (annual) | annual | 1899 | 2026 |
 | alpi | Aleutian Low Pressure Index | annual | 1900 | 2022 |
-| oni | Oceanic Niño Index | monthly | 1950 | 2025 |
+| oni | Oceanic Niño Index | monthly | 1950 | 2026 |
 | npgo | North Pacific Gyre Oscillation | monthly | 1950 | 2025 |
 | ao | Arctic Oscillation | monthly | 1950 | 2026 |
 | soi | Southern Oscillation Index | monthly | 1951 | 2026 |

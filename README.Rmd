@@ -68,8 +68,8 @@ Currently, pacea contains:
    physical-biogeochemical model by Peña et al. (2019). Variables are available
    for (a) 40,580 spatial cells across Canada's Pacific
    Exclusive Economic Zone, and **NEW** (b) 161,025 spatial cells across a larger
-   domain, extending into US waters. Variables are given as 27 years of monthly means (from
-   1993 to 2019). The variables are:
+   domain, extending into US waters. Variables are given as 33 years of monthly means (from
+   1993 to 2025 **VERY NEW**). The variables are:
    - dissolved oxygen concentration
    - pH
    - salinity
@@ -176,8 +176,14 @@ the Issues) with latest first:
 - added Fraser River discharge values, for each month since 1912. See the
   [fraser_discharge.html](https://pbs-assess.github.io/pacea/vignettes/fraser_discharge.html) vignette.
 
+- added updated results from the BCCM model over its full original domain from
+  2020-2025 (originally just up to 2019)
+
 
 ## Brief examples of some questions that can be quickly visualised (see vignettes for full details)
+
+Note that figures here are not automatically updated with the latest data, but
+will be when you run the code yourself.
 
 **How does this year's sea surface temperature (red curve) in West Dixon Entrance compare to previous
 years, based on the buoy there?**

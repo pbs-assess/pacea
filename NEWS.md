@@ -12,7 +12,10 @@ Developers: for some general tips for writing good bullets see https://style.tid
   horizontal (eastward) component. The updated data are available for the 'full' 
   2km x 2km spatial resolution (use functions: e.g. `bccm_all_variables_full`, 
   `bccm_surface_salinity_full`)
-
+  * indices `ao`, `mei`, `npi_annual`, `npi_monthly`, `oni`,
+  `pdo`, and `soi`, plus `pacea_indices` since several more now extend into 2026.
+  * `buoy_sst` (1,582 new daily temperature calculations)
+  
 * 2026-03-03 Updates for:
   * `oisst_7day` and `oisst_month`
   * indices `ao`, `mei`, `npgo`, `oni`, and `pdo`; See ?mei and ?oni for why some
