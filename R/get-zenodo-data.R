@@ -118,6 +118,9 @@ get_zenodo_data <- function(layer,
                                         # any version number, though not
                                         # worrying about versions yet)
 
+  # zenodo file name
+  zen_file_name <- paste0(layer, "_", version, ".rds")
+  
   ##### CHANGE THIS
   # filename <- paste0(layer,  ## Comment out
   #                    "_",
@@ -186,9 +189,6 @@ get_zenodo_data <- function(layer,
       #      git_file_dir <- git_file_dir[order(git_file_dir, decreasing = TRUE)][1]
       #      git_filename <- strsplit(git_file_dir, "/")[[1]][2]
       #     --
-      
-      # zenodo file name
-      zen_file_name <- paste0(layer, "_", version, ".rds")
 
       # compare versions
       if(local_filename == zen_file_name) {
@@ -302,7 +302,10 @@ get_zenodo_data <- function(layer,
                                             version,
                                             ".rds"),
                              timeout = timeout_value)
-      dat <- load(local_file_dir)   # seems to not be a true .rds file, should contain
+      
+      new_local_file_dir <- paste0(cache_dir, "/", zen_file_name)
+      
+      dat <- load(new_local_file_dir)  # seems to not be a true .rds file, should contain
       # the object 'layer'
       return(get(dat))
     }
