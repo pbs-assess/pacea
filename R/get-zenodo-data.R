@@ -118,14 +118,17 @@ get_zenodo_data <- function(layer,
                                         # any version number, though not
                                         # worrying about versions yet)
 
-  filename <- paste0(layer,
-                     "_",
-                     version,
-                     ".rds")
-
-  local_filename <- filename
-  local_file_dir <- paste0(cache_dir, "/", local_filename)
-
+  ##### CHANGE THIS
+  # filename <- paste0(layer,  ## Comment out
+  #                    "_",
+  #                    version,
+  #                    ".rds")
+  # 
+  # local_filename <- filename
+  # local_file_dir <- paste0(cache_dir, "/", local_filename)
+  ##### CHANGE THIS
+  
+  
     # testthat data functions; end function here
   if (force == "testDataFunctions"){
     stop("testing data functions successful")
@@ -135,7 +138,10 @@ get_zenodo_data <- function(layer,
   #  only be 0 or 1)
   if (length(grep_list) > 0) {
 
-    # local_filename <- grep_list[order(grep_list, decreasing = TRUE)][1]
+    local_filename <- grep_list[order(grep_list, decreasing = TRUE)][1]
+    
+    local_file_dir <- paste0(cache_dir, "/", local_filename)
+    
     # read local data and check if corrupted
     # Original BCCM has readRDS, hotssea and here need load as seemed to have saved slightly
     # differently. dat should automatically be the right name.
@@ -145,7 +151,8 @@ get_zenodo_data <- function(layer,
       # delete previous version in local folder
       unlink(local_file_dir)
 
-      stop("Local version of data is corrupt/incomplete, likely due to an interruption during download. Deleting corrupt file... Now run your same command again (you may need to do this a few times).")
+      stop("Local version of data is corrupt/incomplete, likely due to an interruption during download. Deleting corrupt file... \n",
+           "Now run your same command again (you may need to do this a few times).")
       # nocov end
     }
 
@@ -154,7 +161,8 @@ get_zenodo_data <- function(layer,
       ## internet errors for downloading
       if (!checkInternetConnection() || force == "testInternetError") {
 
-        warning("No access to internet - could not check for updates.", call. = FALSE)
+        warning("No access to internet - could not check for updates. \n",  
+                "Returning local version of data.", call. = FALSE)
 
         dat <- load(local_file_dir)
         return(get(dat))
@@ -178,114 +186,124 @@ get_zenodo_data <- function(layer,
       #      git_file_dir <- git_file_dir[order(git_file_dir, decreasing = TRUE)][1]
       #      git_filename <- strsplit(git_file_dir, "/")[[1]][2]
       #     --
+      
+      # zenodo file name
+      zen_file_name <- paste0(layer, "_", version, ".rds")
 
       # compare versions
-      # if(local_filename == git_filename) {
+      if(local_filename == zen_file_name) {
+        
+        message("Most recent version (", version, ") of data already downloaded in cache folder!")
 
-      # warning("Most recent version (_01) of data already downloaded in cache folder!", call. = FALSE)
+        dat <- load(local_file_dir)
+        return(dat)
 
-      #   dat <- load(local_file_dir)
-      # return(dat)
-
-      # } else {
+      } else {
         # default ans = TRUE
-      ans <- TRUE
-
+        ans <- TRUE
+        
         # interactive or forced download
-      if(ask && !force){
+        if(ask && !force){
+          # nocov start
+          # leave in although only version 01 for now
+          ans <- ask(paste("Newer version of data available and previous version will be deleted from local cache folder:",
+                           cache_dir, "Is that okay?", sep = "\n"))
+          
+          # testthat testing 'ans = FALSE' to deny updating data to cache
+          if(layer == "test_data"){
+            ans <- FALSE
+          }
+          # nocov end
+        }
+        
+        if (!ans) {
+          # nocov start
+          message("Returned local version of data.")
+          
+          dat <- load(local_file_dir)
+          return(get(dat))
+          # nocov end
+        } else {
+          
+          # download data
+          # turl <- paste0("https://github.com/pbs-assess/pacea-data/blob/main/data/", git_filename, "?raw=true")
+          # dat <- dl_data(turl)
+          
+          zen4R::download_zenodo(doi = zenodo_doi,
+                                 path = cache_dir,
+                                 files = paste0(data_row$data_name,
+                                                "_",
+                                                version,
+                                                ".rds"),
+                                 timeout = timeout_value)
+          
+          # create file name with version number
+          #  filename <- paste0(git_filename)
+          #  file_dir <- paste0(cache_dir, "/", filename)
+          
+          #  saveRDS(dat, file = file_dir, compress = "xz")
+          
+          # delete previous version in local folder
+          unlink(local_file_dir)
+          
+          message("Previous version of data removed: ", local_filename)
+          message("Data successfully updated and downloaded to local cache folder!")
+          
+          new_local_file_dir <- paste0(cache_dir, "/", zen_file_name)
+          
+          dat <- load(new_local_file_dir)
+          return(get(dat))
+        }
+      } 
+      
+    } else { # no update
+      
+      dat <- load(local_file_dir)
+      return(get(dat))
+      
+      } 
+    
+    } else { # if file doesn't exist at all
+      
+      ## internet errors for downloading
+      if (!checkInternetConnection() || force == "testInternetError") stop("No access to internet", call. = FALSE)
+      
+      ## interactive ask to store in cache folder - from bcmaps package
+      if (ask && !force) {
         # nocov start
-        # leave in although only version 01 for now
-        ans <- ask(paste("Newer version of data available and previous version will be deleted from local cache folder:",
+        ans <- ask(paste("pacea would like to download and store these data in the directory:",
                          cache_dir, "Is that okay?", sep = "\n"))
-
-        # testthat testing 'ans = FALSE' to deny updating data to cache
+        
+        # testthat testing 'ans = FALSE' to deny downloading to cache
         if(layer == "test_data"){
           ans <- FALSE
         }
+        
+        if (!ans) stop("Exiting...", call. = FALSE)
         # nocov end
       }
-
-      if (!ans) {
-        # nocov start
-        warning("Returned local version of data.", call. = FALSE)
-
-        dat <- load(local_file_dir)
-        return(get(dat))
-        # nocov end
+      
+      # check if directory exists    # Did that above now, but leave here anyway
+      if (!dir.exists(cache_dir)) {
+        message("Creating directory to hold pacea data at \n", cache_dir)
+        dir.create(cache_dir, recursive = TRUE)
       } else {
-
-          # download data
-        # turl <- paste0("https://github.com/pbs-assess/pacea-data/blob/main/data/", git_filename, "?raw=true")
-          # dat <- dl_data(turl)
-
-        zen4R::download_zenodo(doi = zenodo_doi,
-                               path = cache_dir,
-                               files = paste0(data_row$data_name,
-                                              "_",
-                                              version,
-                                              ".rds"),
-                               timeout = timeout_value)
-
-        # create file name with version number
-        #  filename <- paste0(git_filename)
-        #  file_dir <- paste0(cache_dir, "/", filename)
-
-        #  saveRDS(dat, file = file_dir, compress = "xz")
-
-        # delete previous version in local folder
-        unlink(local_file_dir)
-
-        message("Data successfully updated and downloaded to local cache folder!")
-
-        dat <- load(local_file_dir)
-        return(get(dat))
+        message("Saving to pacea cache directory at \n", cache_dir)
       }
-    } else { # no update
-
-      dat <- load(local_file_dir)
+      
+      # need to list files like above (commented code that needs working on) if version other than 01.
+      # list files from github repository
+      
+      zen4R::download_zenodo(doi = zenodo_doi,
+                             path = cache_dir,
+                             files = paste0(data_row$data_name,
+                                            "_",
+                                            version,
+                                            ".rds"),
+                             timeout = timeout_value)
+      dat <- load(local_file_dir)   # seems to not be a true .rds file, should contain
+      # the object 'layer'
       return(get(dat))
     }
-
-  } else { # if file doesn't exist at all
-
-    ## internet errors for downloading
-    if (!checkInternetConnection() || force == "testInternetError") stop("No access to internet", call. = FALSE)
-
-    ## interactive ask to store in cache folder - from bcmaps package
-    if (ask && !force) {
-      # nocov start
-      ans <- ask(paste("pacea would like to download and store these data in the directory:",
-                       cache_dir, "Is that okay?", sep = "\n"))
-
-      # testthat testing 'ans = FALSE' to deny downloading to cache
-      if(layer == "test_data"){
-        ans <- FALSE
-      }
-
-      if (!ans) stop("Exiting...", call. = FALSE)
-      # nocov end
-    }
-
-    # check if directory exists    # Did that above now, but leave here anyway
-    if (!dir.exists(cache_dir)) {
-      message("Creating directory to hold pacea data at \n", cache_dir)
-      dir.create(cache_dir, recursive = TRUE)
-    } else {
-      message("Saving to pacea cache directory at \n", cache_dir)
-    }
-
-    # need to list files like above (commented code that needs working on) if version other than 01.
-    # list files from github repository
-
-    zen4R::download_zenodo(doi = zenodo_doi,
-                           path = cache_dir,
-                           files = paste0(data_row$data_name,
-                                          "_",
-                                          version,
-                                          ".rds"),
-                           timeout = timeout_value)
-    dat <- load(local_file_dir)   # seems to not be a true .rds file, should contain
-                                  # the object 'layer'
-    return(get(dat))
-  }
 }
+

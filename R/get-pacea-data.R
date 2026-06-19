@@ -64,7 +64,8 @@ get_pacea_data <- function(layer,
       # delete previous version in local folder
       unlink(local_file_dir)
 
-      stop("Local version of data is corrupt/incomplete, likely due to an interruption during download. Deleting corrupt file...")
+      stop("Local version of data is corrupt/incomplete, likely due to an interruption during download. Deleting corrupt file... \n",
+           "Rerun last command again to download data.")
       # nocov end
     }
 
@@ -73,7 +74,8 @@ get_pacea_data <- function(layer,
       ## internet errors for downloading
       if (!checkInternetConnection() || force == "testInternetError") {
 
-        warning("No access to internet - could not check for updates.", call. = FALSE)
+        warning("No access to internet - could not check for updates. \n", 
+                "Returning local version of data.", call. = FALSE)
 
         dat <- readRDS(local_file_dir)
         return(dat)
@@ -93,8 +95,8 @@ get_pacea_data <- function(layer,
       # compare versions
       if(local_filename == git_filename) {
 
-        warning("Most recent version of data already downloaded in cache folder!", call. = FALSE)
-
+        message("Most recent version (", version, ") of data already downloaded in cache folder!")
+        
         dat <- readRDS(local_file_dir)
         return(dat)
 
@@ -118,8 +120,8 @@ get_pacea_data <- function(layer,
 
         if (!ans) {
           # nocov start
-          warning("Returned local version of data.", call. = FALSE)
-
+          message("Returned local version of data.")
+          
           dat <- readRDS(local_file_dir)
           return(dat)
           # nocov end
@@ -137,9 +139,10 @@ get_pacea_data <- function(layer,
 
           # delete previous version in local folder
           unlink(local_file_dir)
-
+          
+          message("Previous version of data removed: ", local_filename)
           message("Data successfully updated and downloaded to local cache folder!")
-
+          
           return(dat)
 
         }
