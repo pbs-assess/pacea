@@ -95,7 +95,8 @@ get_pacea_data <- function(layer,
       # compare versions
       if(local_filename == git_filename) {
 
-        message("Most recent version (", version, ") of data already downloaded in cache folder!")
+        warning("Most recent version of data already downloaded in cache folder!", 
+                call. = FALSE)
         
         dat <- readRDS(local_file_dir)
         return(dat)
