@@ -197,7 +197,7 @@ get_zenodo_data <- function(layer,
                 call. = FALSE)
         
         dat <- load(local_file_dir)
-        return(dat)
+        return(get(dat))
 
       } else {
         # default ans = TRUE
