@@ -96,7 +96,10 @@ for(i in 1:length(bccm24.files)){
   tdat_all <- tdat24 |> left_join(st_drop_geometry(tdat25), by = join_by("geostring" == "geostring")) |>
     select(-geostring) |>
     select(-geometry, everything(), geometry)
-  class(tdat_all) <- c("pacea_st", class(tdat_all)[c(1,3,4,5)])
+  
+  # assign pacea class
+  class(tdat_all) <- c("pacea_st", "sf", "tbl_df", "tbl", "data.frame")
+  
   
   # assign data original name 
   assign(dataname, tdat_all)
@@ -365,6 +368,9 @@ for(i in 1:length(nc_filenames)){
     temp.dat <- int.dat[roms_cave,]
     temp.dat <- temp.dat[roms_buff,]
     
+    # assign pacea class
+    class(temp.dat) <- c("pacea_st", "sf", "tbl_df", "tbl", "data.frame")
+    
     # mask using bc_coast shapefile?
     # temp.dat <- st_filter(temp.dat, tbc, .predicate = Negate(st_intersects)) 
     
@@ -462,7 +468,9 @@ time_cols <- setdiff(names(tdat), attr(tdat, "sf_column"))
 cleaned_tdat <- tdat %>%
   mutate(across(all_of(time_cols), ~ ifelse(.x < threshold, NA_real_, .x)))
 
-
+# assign pacea class
+class(tdat) <- c("pacea_st", "sf", "tbl_df", "tbl", "data.frame")
+class(cleaned_tdat) <- c("pacea_st", "sf", "tbl_df", "tbl", "data.frame")
 
 ### Save original data
 # assign data original name 
@@ -473,8 +481,6 @@ filename <- paste0(dpath, dataname, "_", version, "originalwithoutliers.rds")
 
 # save object. when loaded, it will have the same object name
 do.call("save", list(as.name(dataname), file = filename, compress = "xz"))
-
-
 
 ### Save new data without outliers
 # assign data original name 
@@ -488,4 +494,82 @@ do.call("save", list(as.name(dataname), file = filename, compress = "xz"))
 
 
 
+#####
+#
+# Correcting class for each data file for version 03
+#
+
+# Forgot to change up the class of each bccm data object, so will correct it for 
+#  each. Won't need to run this if any of the above are run again as I included 
+#  the correction in the above scripts. 
+
+library(devtools)
+library(dplyr)
+library(sf)
+library(ggplot2)
+
+sf_use_s2(FALSE)  # remove spherical geometry (s2) for sf operations
+
+# load pacea
+load_all()
+
+# pacea-data path
+dpath <- "../pacea-data/data-bccm-full/"
+
+# list of interpolated files
+bccm.files <- list.files(dpath, pattern = "_03")
+bccm.files <- bccm.files[-grep("originalwithoutliers", bccm.files)]
+
+version <- "03"
+
+for(i in 1:length(bccm.files)){
+  print(paste0("i = ", i))
+  
+  # file path
+  fpath <- bccm.files[i]
+
+  # data object name
+  dataname <- substr(fpath, 1, nchar(fpath) - 7)
+  
+  # split string of fpath
+  fpathstring <- strsplit(fpath, "_")
+  
+  # depth string name
+  tdepth <- fpathstring[[1]][2]
+  
+  # variable string name
+  tvar <- fpathstring[[1]][3]
+  if(tvar %in% c("u", "v")){
+    tvar <- paste(fpathstring[[1]][c(3,4)], collapse = "_")
+  }
+  if(tvar %in% c("current")){
+    tvar <- paste(fpathstring[[1]][c(3,4)], collapse = "_")
+  }
+  if(tdepth %in% c("phytoplankton", "primaryproduction")){
+    tvar <- fpathstring[[1]][2]
+  }
+  
+  # load data
+  load(paste0(dpath, fpath))
+  
+  # rename data
+  tdat <- get(dataname)
+  
+  # assign pacea class
+  class(tdat) <- c("pacea_st", "sf", "tbl_df", "tbl", "data.frame")
+  
+  # assign data original name 
+  assign(dataname, tdat)
+  
+  # create filename
+  filename <- paste0(dpath, dataname, "_", version, ".rds")
+  
+  # save object. when loaded, it will have the same object name
+  do.call("save", list(as.name(dataname), file = filename, compress = "xz"))
+  
+  # remove files that aren't needed
+  rm(list = c(dataname))
+  rm(fpath, fpathstring, tdepth, tvar, dataname, tdat, filename)
+  
+}
 
