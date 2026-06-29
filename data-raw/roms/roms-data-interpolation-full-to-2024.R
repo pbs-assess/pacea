@@ -422,9 +422,16 @@ foreach(i = 1:length(nc_filenames)) %dopar% {
 
     # assign units attribute
     attr(t3_sf26, "units") <- jvars_table[which(jvars_table[, 1] == j), 3]
-
+    
     attr(t3_sf26, "bccm_full") <- TRUE  # To then use to automatically
                                         # extend the plotting
+    
+    # assign depth attribute
+    if(ti == "zInt"){
+      attr(t3_sf26, "depth") <- "depth-integrated"
+    } else {
+      attr(t3_sf26, "depth") <- ti
+    }
 
     # name file and write data
     tj <- jvars_table[which(jvars_table[, 1] == j), 2]

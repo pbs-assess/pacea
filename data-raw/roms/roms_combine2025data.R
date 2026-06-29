@@ -503,6 +503,8 @@ do.call("save", list(as.name(dataname), file = filename, compress = "xz"))
 #  each. Won't need to run this if any of the above are run again as I included 
 #  the correction in the above scripts. 
 
+# Also adding in depth as an attribute
+
 library(devtools)
 library(dplyr)
 library(sf)
@@ -557,6 +559,14 @@ for(i in 1:length(bccm.files)){
   
   # assign pacea class
   class(tdat) <- c("pacea_st", "sf", "tbl_df", "tbl", "data.frame")
+  
+  # assign depth attribute
+  if(tdepth %in% c("phytoplankton", "primaryproduction")){
+    attr(tdat, "depth") <- "depth-integrated"
+  } else {
+    attr(tdat, "depth") <- tdepth
+  }
+  
   
   # assign data original name 
   assign(dataname, tdat)

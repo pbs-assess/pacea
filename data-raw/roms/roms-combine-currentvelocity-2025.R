@@ -73,6 +73,11 @@ attr(bccm_surface_current_speed_full, "units") <- "Current velocity (m/s)"
 attr(bccm_surface_current_anglerad_full, "units") <- "Current angle (radians)"
 attr(bccm_surface_current_angledeg_full, "units") <- "Current angle (degrees)"
 
+# assign depth attribute
+attr(bccm_surface_current_speed_full, "depth") <- "surface"
+attr(bccm_surface_current_anglerad_full, "depth") <- "surface"
+attr(bccm_surface_current_angledeg_full, "depth") <- "surface"
+
 # assign bccm_full attribute that will extend plotting (Andy's addition)
 attr(bccm_surface_current_speed_full, "bccm_full") <- TRUE
 attr(bccm_surface_current_anglerad_full, "bccm_full") <- TRUE
@@ -143,6 +148,11 @@ bccm_bottom_current_angledeg_full <- st_drop_geometry(bccm_bottom_current_angled
 attr(bccm_bottom_current_speed_full, "units") <- "Current velocity (m/s)"
 attr(bccm_bottom_current_anglerad_full, "units") <- "Current angle (radians)"
 attr(bccm_bottom_current_angledeg_full, "units") <- "Current angle (degrees)"
+
+# assign depth attribute
+attr(bccm_bottom_current_speed_full, "depth") <- "bottom"
+attr(bccm_bottom_current_anglerad_full, "depth") <- "bottom"
+attr(bccm_bottom_current_angledeg_full, "depth") <- "bottom"
 
 # assign bccm_full attribute that will extend plotting (Andy's addition)
 attr(bccm_bottom_current_speed_full, "bccm_full") <- TRUE
