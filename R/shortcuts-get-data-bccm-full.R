@@ -13,7 +13,7 @@
 #'
 #' @details
 #'
-#' The following 32 functions serve to download specific individual ocean variables
+#' The following 26 functions serve to download specific individual ocean variables
 #'  of the BCCM model data over its full domain, on a 2 km x 2 km grid. Each
 #'  file is around 150 Mb, but only takes a couple of minutes (on a home
 #'  network, may be slower from a work network because of firewalls). If a
@@ -39,10 +39,7 @@
 #'   \code{bccm_phytoplankton_full()} Total phytoplankton biomass in mmol-nitrogen m^-2\cr
 #'   \code{bccm_primaryproduction_full()} Total primary production in gC m^-2 d^-1\cr
 #'   \code{bccm_*depth*_u_currentvelocity_full()} Horizontal (eastward) ocean current velocity in m/s\cr
-#'   \code{bccm_*depth*_v_currentvelocity_full()} Vertical (northward) ocean current velocity in m/s\cr
-#'   \code{bccm_*depth*_current_angledeg_full()} Rotation angle of the total combined current in degrees\cr
-#'   \code{bccm_*depth*_current_anglerad_full()} Rotation angle of the total combined current in radians\cr
-#'   \code{bccm_*depth*_current_speed_full()} Total ocean current velocity in m/s
+#'   \code{bccm_*depth*_v_currentvelocity_full()} Vertical (northward) ocean current velocity in m/s\
 #' }
 #'
 #' NOTE:\cr
@@ -56,7 +53,7 @@
 #'   \code{surface}{ sea surface}
 #' }
 #' 
-#' only \code{bottom} and \code{surface} depths are available for current velocity, angle degrees, angle radians and total speed.
+#' only \code{bottom} and \code{surface} depths are available for current velocity.
 #'
 #' @format A simple features dataframe.
 #'
@@ -309,58 +306,3 @@ bccm_bottom_v_currentvelocity_full <- function(update = FALSE, ask = interactive
   get_zenodo_data("bccm_surface_v_currentvelocity_full", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
 }
-
-#' @rdname bccm_bottom_oxygen_full
-#' @export
-bccm_surface_current_angledeg_full <- function(update = FALSE, ask = interactive(),
-                                               force = FALSE, version = "03",
-                                               cache_subfolder = "bccm_full"){
-  get_zenodo_data("bccm_surface_current_angledeg_full", update = update, ask = ask,
-                  force = force, version = version, cache_subfolder = cache_subfolder)
-}
-
-#' @rdname bccm_bottom_oxygen_full
-#' @export
-bccm_surface_current_anglerad_full <- function(update = FALSE, ask = interactive(),
-                                               force = FALSE, version = "03",
-                                               cache_subfolder = "bccm_full"){
-  get_zenodo_data("bccm_surface_current_anglerad_full", update = update, ask = ask,
-                  force = force, version = version, cache_subfolder = cache_subfolder)
-}
-
-#' @rdname bccm_bottom_oxygen_full
-#' @export
-bccm_surface_current_speed_full <- function(update = FALSE, ask = interactive(),
-                                               force = FALSE, version = "03",
-                                               cache_subfolder = "bccm_full"){
-  get_zenodo_data("bccm_surface_current_speed_full", update = update, ask = ask,
-                  force = force, version = version, cache_subfolder = cache_subfolder)
-}
-
-#' @rdname bccm_bottom_oxygen_full
-#' @export
-bccm_bottom_current_angledeg_full <- function(update = FALSE, ask = interactive(),
-                                               force = FALSE, version = "03",
-                                               cache_subfolder = "bccm_full"){
-  get_zenodo_data("bccm_bottom_current_angledeg_full", update = update, ask = ask,
-                  force = force, version = version, cache_subfolder = cache_subfolder)
-}
-
-#' @rdname bccm_bottom_oxygen_full
-#' @export
-bccm_bottom_current_anglerad_full <- function(update = FALSE, ask = interactive(),
-                                               force = FALSE, version = "03",
-                                               cache_subfolder = "bccm_full"){
-  get_zenodo_data("bccm_bottom_current_anglerad_full", update = update, ask = ask,
-                  force = force, version = version, cache_subfolder = cache_subfolder)
-}
-
-#' @rdname bccm_bottom_oxygen_full
-#' @export
-bccm_bottom_current_speed_full <- function(update = FALSE, ask = interactive(),
-                                            force = FALSE, version = "03",
-                                            cache_subfolder = "bccm_full"){
-  get_zenodo_data("bccm_bottom_current_speed_full", update = update, ask = ask,
-                  force = force, version = version, cache_subfolder = cache_subfolder)
-}
-

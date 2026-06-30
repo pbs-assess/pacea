@@ -276,7 +276,7 @@ network, may be slower from a work network because of firewalls). If a
 variable has already been downloaded, the function will simply load data from
 your \verb{paste0(pacea_cache(), "/bccm_full"} folder into your local R environment.
 
-The 26 objects available are desribed below as their respective functions;
+The 32 objects available are desribed below as their respective functions;
 the equivalent functions without \verb{_full} are for the BCCM outputs
 restricted to Canada's EEZ and on a coarser grid for the offshore. The
 objects obtained here are stored on Zenodo, with \code{\link[=get_zenodo_data]{get_zenodo_data()}}
@@ -295,7 +295,7 @@ top cells span depths that vary with the bathymetry, from 0.2 to 1.6 m.
 \code{bccm_phytoplankton_full()} Total phytoplankton biomass in mmol-nitrogen m^-2\cr
 \code{bccm_primaryproduction_full()} Total primary production in gC m^-2 d^-1\cr
 \code{bccm_*depth*_u_currentvelocity_full()} Horizontal (eastward) ocean current velocity in m/s\cr
-\code{bccm_*depth*_v_currentvelocity_full()} Vertical (northward) ocean current velocity in m/s
+\code{bccm_*depth*_v_currentvelocity_full()} Vertical (northward) ocean current velocity in m/s\
 }
 
 NOTE:\cr

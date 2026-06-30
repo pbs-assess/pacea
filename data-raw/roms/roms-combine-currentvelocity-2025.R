@@ -70,8 +70,8 @@ bccm_surface_current_angledeg_full <- st_drop_geometry(bccm_surface_current_angl
 
 # assign units attribute
 attr(bccm_surface_current_speed_full, "units") <- "Current velocity (m/s)"
-attr(bccm_surface_current_anglerad_full, "units") <- "Current angle (radians)"
-attr(bccm_surface_current_angledeg_full, "units") <- "Current angle (degrees)"
+attr(bccm_surface_current_anglerad_full, "units") <- "Current angle (radians from east)"
+attr(bccm_surface_current_angledeg_full, "units") <- "Current angle (degrees from east)"
 
 # assign depth attribute
 attr(bccm_surface_current_speed_full, "depth") <- "surface"
@@ -146,8 +146,8 @@ bccm_bottom_current_angledeg_full <- st_drop_geometry(bccm_bottom_current_angled
 
 # assign units attribute
 attr(bccm_bottom_current_speed_full, "units") <- "Current velocity (m/s)"
-attr(bccm_bottom_current_anglerad_full, "units") <- "Current angle (radians)"
-attr(bccm_bottom_current_angledeg_full, "units") <- "Current angle (degrees)"
+attr(bccm_bottom_current_anglerad_full, "units") <- "Current angle (radians from east)"
+attr(bccm_bottom_current_angledeg_full, "units") <- "Current angle (degrees from east)"
 
 # assign depth attribute
 attr(bccm_bottom_current_speed_full, "depth") <- "bottom"
