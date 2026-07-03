@@ -10,6 +10,7 @@
   years.plot = c(2018),
   bc = TRUE,
   eez = TRUE,
+  single_current_vector = FALSE,
   ...
 )
 }
@@ -23,6 +24,8 @@
 \item{bc}{logical. Should BC coastline layer be plotted?}
 
 \item{eez}{logical. Should BC EEZ layer be plotted?}
+
+\item{single_current_vector}{logical. For plotting ocean currents as a total vector with arrows (FALSE), or individual vectors(TRUE)}
 
 \item{...}{other arguments to be passed on, but not currently used (\code{?ggplot}
 says the same thing); this should remove a R-CMD-check warning.}
