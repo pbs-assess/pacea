@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,38,19
+/pbs-assess/pacea/tree/main/report/ecosystem-summary-hake,3,1
+/pbs-assess/pacea/tree/main/vignettes,3,1
+/pbs-assess/pacea/blob/main/vignettes/buoys.Rmd,2,1
+/pbs-assess/pacea/network,2,1
+/pbs-assess/pacea/tree/main/data-raw,2,1
+/pbs-assess/PACea,1,1
+/pbs-assess/pacea/blob/3dad7db73c789905bff6357e30efeafccf3598ab/.github/workflows/R-CMD-check.yaml,1,1
+/pbs-assess/pacea/blob/main/DESCRIPTION,1,1
+/pbs-assess/pacea/blob/main/data-raw/roms/README_ROMS_output.txt,1,1
