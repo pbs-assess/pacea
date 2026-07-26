@@ -51,7 +51,7 @@ if(redownload_data){
     dfo_data_raw <- readRDS("dfo_data_raw.Rds")     # A tabledap which is a tibble
 }
 
-dfo_data_raw      # 9.7 million rows
+dfo_data_raw      # 9.8 million rows
 
 # Figuring out time zone conversions. Commenting out, but keeping for reference.
 # orig_time <- dfo_data_raw$time[6000252]        # 7:20 am UTC
