@@ -1,4 +1,4 @@
-#' Calculate climatology ANDY DOING JUST buoy_sst object adapting from Travis's,
+#' Calculate climatology and anomaly ANDY DOING JUST buoy_sst object adapting from Travis's,
 #' want to tailor the options for each pacea object, so use generics. TODO
 #' putting anomaly calcs in here also, then return a list object that has
 #' both. So change name to anomaly at some point.
@@ -32,7 +32,7 @@
 #'
 #' clim_buoy2 <- calc_clim(buot_sst, climatology_time = "week")
 #' }
-calculate_climatology.pacea_buoy <- function(data,
+calculate_anomaly.pacea_buoy <- function(data,
                                              climatology_years = c(1991:2020),
                                              climatology_time = "month",
                                              time_period_return = "all",

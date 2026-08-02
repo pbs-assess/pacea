@@ -24,7 +24,7 @@
 ##' \dontrun{
 ##' # See ?remove_outliers for link to example code
 ##' }
-calculate_climatology <- function(data,
+calculate_anomaly <- function(data,
                                   ...){
-  UseMethod("calculate_climatology")
+  UseMethod("calculate_anomaly")
 }

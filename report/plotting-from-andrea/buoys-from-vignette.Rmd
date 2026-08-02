@@ -105,18 +105,19 @@ sd).
 
 Let's do climatology for each day.
 
-Travis had `calc_clim()`, let's make `calculate_climatology()` and then
+Travis had `calc_clim()`, let's make `calculate_anomaly()` to do climatology and
+anomaly, and then
 generalise it. 
 
 See Issue 96
 
 This works, need to decide what we really want in the output.
 ```{r, anomaly}
-xx <- calculate_climatology(buoy_example,
+xx <- calculate_anomaly(buoy_example,
                             climatology_time = "month")
 xx
 
-yy <- calculate_climatology(buoy_example,
+yy <- calculate_anomaly(buoy_example,
                             climatology_time = "week")
 yy
 
