@@ -1,0 +1,129 @@
+---
+title: "Buoy Sea Surface Temperature Anomalies"
+author: "Andrew Edwards"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Buoy Sea Surface Temperature Anomalies}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+date: "Last rendered on `r format(Sys.time(), '%d %B, %Y')`"
+---
+
+<!-- To build either run
+rmarkdown::render("buoys-from-vignette.Rmd")
+or click the knit button in RStudio -->
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 5.7,
+  fig.height = 5
+)
+```
+
+## Daily average sea surface temperature from buoys - do anomalies
+
+Copying the buoys vignette to here to do some example code for anomalies, then
+move that into a new vignette. Currently not really a vignette, more a train of thought.
+
+```{r setup}
+load_all()
+# library(pacea)
+library(dplyr)
+library(tibble)  # Else prints all of a tibble
+library(ggplot2)
+```
+
+In pacea we include daily average sea surface temperature (SST) that we have calculated from
+measurement from `r nrow(buoy_metadata)` buoys in
+Canadian Pacific waters, yielding over 200,000 daily means.
+Data are from Environment and Climate Change Canada, and Fisheries and
+Oceans Canada. The earliest data are from September 1987, and 14 buoys were still providing data as of May 2023.
+
+See the [buoys
+  vignette](https://pbs-assess.github.io/pacea/vignettes/buoys.html) for
+  background concerning the calculated daily mean sea surface temperatures and
+  associated plotting functions in pacea. Also check out Andrea Hilborn et al.'s
+  [Pacific_SST_Monitoring website](https://ios-osd-dpg.github.io/Pacific_SST_Monitoring_Site/)
+  page for up-to-date graphics (pacea extractions were based on Andrea's code,
+  but we do not have all her great figures as part of pacea). Adapt some of her
+  code/ideas to do time series type plots. Here we are working towards a grid
+  type plot that can be combined with other types of data (e.g. zooplankton anomalies).
+
+Here we focus on constructing climatologies and subsequent anomalies, to plot in
+a standardised way.
+
+Let's choose Halibut Bank buoy C46146 in the Strait of Georgia as our example
+one. It has a good timespan of data (though not back to 1990, which is a common
+start year for a climatology).
+
+```{r buoy}
+one_stn_id_example <- "C46146"
+buoy_example <- buoy_sst %>%
+  filter(stn_id == one_stn_id_example)
+summary(buoy_example)
+tail(buoy_example)
+```
+
+The default pacea plot is
+```{r, plot}
+plot(buoy_sst,
+     stn_id = one_stn_id_example)
+```
+
+TODO Aside. We have not fully refined how to deal with some of the data
+issues (e.g. the odd buoy had large fluctations in early days, but it's hard to
+automate removing those). Acutally the anomaly code might help deal with
+this. But some outliers might still need to be removed manually.
+
+
+
+Next steps:
+
+1. Create a climatology. Nice to have options for daily/weekly/monthly/annual?
+
+2. Do anomalies. 
+
+3. Generalise.
+
+## Climatologies
+
+Andrea does a daily climatology, so let's go with that. For the final plots I
+have in mind, may then need to roll up into weekly/monthly/annual, or should you
+really do those straight away?
+
+The aim is to do ecosystem summaries for stock assessment and management
+purposes. So likely want to be able to specify a time period of interest for
+that particular stock, and then do a climatology/anomaly for that time period.
+
+So do you do each day separately, then average them together? Or take a mean
+over the dates and calculate a climatology and anomaly? Or are they equivalent?
+Think I've thought about this before (see email of the math, but that ignore
+sd).
+
+Let's do climatology for each day.
+
+Travis had `calc_clim()`, let's make `calculate_climatology()` and then
+generalise it. 
+
+See Issue 96
+
+This works, need to decide what we really want in the output.
+```{r, anomaly}
+xx <- calculate_climatology(buoy_example,
+                            climatology_time = "month")
+xx
+
+yy <- calculate_climatology(buoy_example,
+                            climatology_time = "week")
+yy
+
+```
+
+
+
+HERE!
+
+

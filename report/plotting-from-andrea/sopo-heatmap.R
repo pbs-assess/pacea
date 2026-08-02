@@ -1,6 +1,7 @@
 # Adapting andy_share_SOPO_heatmap_annual.R from Andrea to work locally. To then
 # adapt to use for ecosystem summaries.
 
+load_all()  # or library(pacea)
 library(forcats)
 library(ggplot2)
 library(dplyr)
@@ -19,6 +20,7 @@ rename_stns <- function(stn_name) {
   return(stn_name)
 }
 
+# Andy will have data already formatted so might not need this.
 #Let's make a heatmap of SST from a few different regions
 lf = list.files("./andy_share/", pattern = "CRW_5km_SST.csv", full.names = TRUE)
 crw = lapply(1:length(lf), function(k) read.csv(lf[k]))
