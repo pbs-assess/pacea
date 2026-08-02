@@ -111,6 +111,9 @@ generalise it.
 
 See Issue 96
 
+Currently gives anomaly for every day, but makes more sense to use
+`climatology_time`. And add a daily option.
+
 This works, need to decide what we really want in the output.
 ```{r, anomaly}
 xx <- calculate_anomaly(buoy_example,
@@ -123,7 +126,10 @@ yy
 
 ```
 
+Next need to adapt Andrea's ggplot code to do the anomaly plot; can do for
+multiple stn_id's. 
 
+Start with the example in the anomaly function. 
 
 HERE!
 

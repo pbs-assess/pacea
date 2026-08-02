@@ -20,23 +20,24 @@
 #' @importFrom lubridate year
 #' @importFrom stats sd
 #'
-#' @return TODO list object of climatology of data and anomaly
+#' @return TODO list object of climatology of data and anomaly, of class `pacea_buoy_anomaly_list`
 #' @export
 #'
 #' @examples
 #' \dontrun{
 
-#' # pacea buoy sst data
-#' clim_buoy <- calculate_climatology(buoy_sst)
-#' head(clim_buoy)
-#'
-#' clim_buoy2 <- calc_clim(buot_sst, climatology_time = "week")
+#' # Will integrate options into function better TODO
+#' one_stn_id_example <- "C46146"
+#' buoy_example <- buoy_sst %>%
+#'   filter(stn_id == one_stn_id_example)
+#' res <- calculate_anomaly(buoy_example,
+#'                          climatology_time = "month")
 #' }
 calculate_anomaly.pacea_buoy <- function(data,
-                                             climatology_years = c(1991:2020),
-                                             climatology_time = "month",
-                                             time_period_return = "all",
-                                             years_return = NULL) {
+                                         climatology_years = c(1991:2020),
+                                         climatology_time = "month",
+                                         time_period_return = "all",
+                                         years_return = NULL) {
 
 
   # month reference table
@@ -70,28 +71,41 @@ calculate_anomaly.pacea_buoy <- function(data,
   FUN <- match.fun(climatology_time)
   climatology <- data %>%
     mutate(year = lubridate::year(date),
-           time_unit = FUN(date)) %>%
+           time_unit = FUN(date)) %>%   # think using lubridate here based on
+    # choice of month or week
     filter(year %in% climatology_years,
            time_unit %in% time_period_return) %>%
-    group_by(stn_id, time_unit) %>%
-    summarise(clim_value = mean(sst, na.rm = TRUE),
-              clim_sd = sd(sst, na.rm = TRUE),
+    group_by(stn_id,
+             time_unit) %>%
+    summarise(clim_value = mean(sst,
+                                na.rm = TRUE),
+              clim_sd = sd(sst,
+                           na.rm = TRUE),
               clim_n = sum(!is.na(sst))) %>%
     ungroup()
 
-  # Adapting from calc_climatology_anomaly.R
-  # TODO shouldn't this average the data over the time_unit first and then do
-  # the anomaly from the climatology? Or is it the same anyway? Think means are
-  # but not standard deviations.
+  # Adapting from Travis's calc_climatology_anomaly.R
+  # BUT now averaging over the time_unit first and then do
+  # the anomaly from the climatology.
   anomaly <- data %>%
     mutate(year = lubridate::year(date),
            time_unit = FUN(date)) %>%
     filter(year %in% years_return,
            time_unit %in% time_period_return) %>%
+    group_by(stn_id,
+             year,
+             time_unit) %>%
+    summarise(sst_mean = mean(sst,
+                              na.rm = TRUE),
+              sst_n = sum(!is.na(sst))) %>%
+    ungroup() %>%
     left_join(climatology,
               by = join_by(stn_id == stn_id,
                            time_unit == time_unit)) %>%
-    mutate(anom = sst - clim_value)
+    mutate(sst_anomaly = sst_mean - clim_value) %>%
+    select(-c("clim_value",
+              "clim_sd",
+              "clim_n"))    # no point in keep repeating them
 
   # Now rename time_unit column to the actual unit
   colnames(climatology)[which(colnames(climatology) == "time_unit")] <- climatology_time
@@ -107,8 +121,12 @@ calculate_anomaly.pacea_buoy <- function(data,
   attr(anomaly, "units") <- "Temperature (\u00B0C) anomaly"
 
   res <- list(climatology = climatology,
-              anomaly = anomaly)
+              anomaly = anomaly,
+              climatology_years = climatology_years,
+              climatology_time = climatology_time)
 
+  class(res) <- c("pacea_buoy_anomaly_list",
+                  "list")
   return(res)
 }
 
