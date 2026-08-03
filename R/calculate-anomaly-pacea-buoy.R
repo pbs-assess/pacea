@@ -120,6 +120,7 @@ calculate_anomaly.pacea_buoy <- function(data,
   class(anomaly) <- c("pacea_buoy_anomaly", "tbl_df", "tbl", "data.frame")
   attr(anomaly, "units") <- "Temperature (\u00B0C) anomaly"
 
+  # TODO likely need climatology_years per stn_id
   res <- list(climatology = climatology,
               anomaly = anomaly,
               climatology_years = climatology_years,

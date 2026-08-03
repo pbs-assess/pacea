@@ -1,5 +1,6 @@
 # Adapting andy_share_SOPO_heatmap_annual.R from Andrea to work locally. To then
-# adapt to use for ecosystem summaries.
+# adapt to use for ecosystem summaries. Actually, taking the relevant code and
+# putting into buoys-from-vignette.Rmd to then edit and make a function.
 
 load_all()  # or library(pacea)
 library(forcats)
@@ -42,8 +43,6 @@ clim = sub %>%
 
 sub = full_join(sub, clim, by = "regname")
 
-
-
 sub %>%
   filter(#year(Date) >= 1998,
     year(Date) < 2026,
@@ -74,6 +73,8 @@ sub %>%
 ggsave(filename = "Annual_heatmap_meanSST_SOPOregions_allyears.png", width = 9, height = 3., dpi = 300,
        scale = 1.4)
 
+
+# This is the one Andy likes, just red and blue.
 
 sub %>%
   filter(#year(Date) >= 1998,

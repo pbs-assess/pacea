@@ -61,8 +61,11 @@ start year for a climatology).
 
 ```{r buoy}
 one_stn_id_example <- "C46146"
+two_stn_id_example <- c("C46146",
+                        "C46185")
 buoy_example <- buoy_sst %>%
-  filter(stn_id == one_stn_id_example)
+  # filter(stn_id == one_stn_id_example)
+  filter(stn_id %in% two_stn_id_example)
 summary(buoy_example)
 tail(buoy_example)
 ```
@@ -131,6 +134,46 @@ multiple stn_id's.
 
 Start with the example in the anomaly function. 
 
+## Working out the plotting function
+
+COPYING TO `plot.pacea_buoy_anomaly_list()` in  `plot-pacea-buoy-anomaly-list.R`
+in this folder, to tidy up.
+```{r newplot}
+anomaly_plot <- 
+xx$anomaly %>%
+ggplot(aes(x = year, y = stn_id)) +
+  geom_tile(aes(fill = sst_anomaly),
+            colour = "black") +
+  scale_fill_gradientn(colours = pals::ocean.balance(20)[3:18],
+                       limits = c(-1.7, 1.7),
+                       name = bquote("Annual SST anomaly ("*degree*C*")")) +
+  scale_x_continuous(expand = c(0,0), name = NULL,
+                     breaks = 1992:2026) +
+  scale_y_discrete(expand = c(0,0), name = NULL) +
+  theme(legend.position = "bottom",
+        strip.background = element_blank(),
+        strip.text = element_text(face = "bold",
+                                  size = 12),
+        panel.spacing.y = unit(0.1,
+                               "lines")
+  ) +
+    geom_text(aes(label = round(sst_anomaly, 1)),
+              size = 3.5) +
+    guides(fill = guide_colorbar(barwidth = 15, title.position = "top",
+                                 frame.colour = "black",
+                                 ticks.colour = "black")) +
+    labs(caption = "Ooh look at me")
+  # Baseline period: 1991-2020\nDataset: CoralTemp 5km SST")
+
+anomaly_plot
+
+# ggsave(filename = "Annual_heatmap_SST_anomaly_SOPOregions_allyears.png", width = 9, height = 3., dpi = 300,
+#       scale = 1.4)
+
+```
+
+
 HERE!
+
 
 
