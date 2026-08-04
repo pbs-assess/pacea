@@ -1,10 +1,13 @@
-##' Plot anomalies of the buoy seasurface temperature data
+##' Plot anomalies of the buoy sea-surface temperature data
 ##'
+##' TODO
 ##'
 ##' @param pacea_buoy_anomaly_list object of class `pacea_buoy_anomaly_list`
 ##' obtained from running `caclulate_anomaly()` on buoy data.
 ##' @param months numeric vector of months to include (1-12). Default is 4 (April).
-##' @param main title for the plot
+##' @param main title for the plot, if `NULL` then created automatically,
+##' including detailing the months selected. May need to manually specify `main`
+##' if many non-consecutive months are chosen (which seems unlikely).
 ##' @param xlab x-axis label
 ##' @param ylab y-axis label
 ##' @return a ggplot object
@@ -16,6 +19,9 @@
 ##'                              climatology_time = "month")
 ##' all_buoys_plot <- plot.pacea_buoy_anomaly_list(all_buoys_anomalies)
 ##' all_buoys_plot
+##'
+##' all_buoys_plot <- plot.pacea_buoy_anomaly_list(all_buoys_anomalies, months =
+##' 1:4)   # TODO currently gives the title correctly, but need to change the function
 ##' }
 plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
                                          months = 4,
@@ -24,9 +30,12 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
                                          ylab = "Buoy"){
                                          # number_shades = 16){ see TODO below
 
+
   if(is.null(main)){
     main =
-      paste0("Annual sea-surface temperature anomalies from buoys using climatology from ",
+      paste0("Annual sea-surface temperature anomalies for ",
+             summarise_months(months),
+             " from buoys using climatology from ",
              min(pacea_buoy_anomaly_list$climatology_years),
              " to ",
              max(pacea_buoy_anomaly_list$climatology_years),
