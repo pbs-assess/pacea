@@ -1,25 +1,22 @@
-load_all()
-# library(pacea)
-library(dplyr)
-library(tibble)  # Else prints all of a tibble
-library(ggplot2)
 ##' Plot anomalies of the buoy seasurface temperature data
 ##'
 ##'
 ##' @param pacea_buoy_anomaly_list object of class `pacea_buoy_anomaly_list`
 ##' obtained from running `caclulate_anomaly()` on buoy data.
 ##' @param months numeric vector of months to include (1-12). Default is 4 (April).
-##' @param number_shades numeric number of colour shades in the gradient. Default is 16.
 ##' @return a ggplot object
 ##' @export
 ##' @author Andrew Edwards
 ##' @examples
 ##' \dontrun{
-##'
+##' all_buoys_anomalies <- calculate_anomaly(buoy_sst,
+##'                              climatology_time = "month")
+##' all_buoys_plot <- plot.pacea_buoy_anomaly_list(all_buoys_anomalies)
+##' all_buoys_plot
 ##' }
 plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
-                                         months = 4,
-                                         number_shades = 16){
+                                         months = 4){
+                                         # number_shades = 16){ see TODO below
   plot_data <- pacea_buoy_anomaly_list$anomaly %>%
     filter(month %in% months,
            !is.na(sst_anomaly))
@@ -38,7 +35,7 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
               colour = "black") +
     scale_fill_gradientn(colours = pals::ocean.balance(20)[3:18],
     # TODO tried this to generalise it, but gives different colour bar and some
-    # washed out grey.
+    # washed out grey; not bothering for now, colours are good.
     # scale_fill_gradientn(colours = pals::ocean.balance(20)[seq(3, 18, length.out = number_shades)],
                          limits = c(-max_abs, max_abs),
                          name = bquote("Annual SST anomaly ("*degree*C*")")) +
@@ -60,23 +57,3 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
     labs(caption = "Ooh look at me")
   # Baseline period: 1991-2020\nDataset: CoralTemp 5km SST")
 }
-
-two_stn_id_example <- c("C46146",
-                        "C46185")
-buoy_example <- buoy_sst %>%
-  filter(stn_id %in% two_stn_id_example)
-
-xx <- calculate_anomaly(buoy_example,
-                        climatology_time = "month")
-
-anomaly_plot <- plot.pacea_buoy_anomaly_list(xx)
-
-anomaly_plot
-
-all_buoys_anomalies <- calculate_anomaly(buoy_sst,
-                                         climatology_time = "month")
-
-all_buoys_plot <- plot.pacea_buoy_anomaly_list(all_buoys_anomalies,
-                                               number_shades = 4)
- # does not work
-all_buoys_plot
