@@ -28,7 +28,7 @@ both. So change name to anomaly at some point.}
 interest. Defaults to all years in input data}
 }
 \value{
-TODO list object of climatology of data and anomaly
+TODO list object of climatology of data and anomaly, of class \code{pacea_buoy_anomaly_list}
 }
 \description{
 Function for calculating climatology of a buoy_sstpacea data object.
@@ -38,10 +38,11 @@ TODO The functions \code{calc_clim} and \code{calc_anom} output the climatology 
 }
 \examples{
 \dontrun{
-# pacea buoy sst data
-clim_buoy <- calculate_climatology(buoy_sst)
-head(clim_buoy)
-
-clim_buoy2 <- calc_clim(buot_sst, climatology_time = "week")
+# Will integrate options into function better TODO
+one_stn_id_example <- "C46146"
+buoy_example <- buoy_sst \%>\%
+  filter(stn_id == one_stn_id_example)
+res <- calculate_anomaly(buoy_example,
+                         climatology_time = "month")
 }
 }

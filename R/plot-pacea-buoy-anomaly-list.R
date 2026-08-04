@@ -4,6 +4,7 @@
 ##' @param pacea_buoy_anomaly_list object of class `pacea_buoy_anomaly_list`
 ##' obtained from running `caclulate_anomaly()` on buoy data.
 ##' @param months numeric vector of months to include (1-12). Default is 4 (April).
+##' @param main title for the plot
 ##' @return a ggplot object
 ##' @export
 ##' @author Andrew Edwards
@@ -15,11 +16,12 @@
 ##' all_buoys_plot
 ##' }
 plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
-                                         months = 4){
+                                         months = 4,
+                                         main = "Annual sea-surface temperature anomalies from buoys"){
                                          # number_shades = 16){ see TODO below
   plot_data <- pacea_buoy_anomaly_list$anomaly %>%
-    filter(month %in% months,
-           !is.na(sst_anomaly))
+    dplyr::filter(month %in% months,
+                  !is.na(sst_anomaly))
 
   max_abs <- max(abs(plot_data$sst_anomaly),
                  na.rm = TRUE)
@@ -30,7 +32,8 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
 
   anomaly_plot <-
     plot_data %>%
-    ggplot(aes(x = year, y = stn_id)) +
+    ggplot(aes(x = year,
+               y = stn_id)) +
     geom_tile(aes(fill = sst_anomaly),
               colour = "black") +
     scale_fill_gradientn(colours = pals::ocean.balance(20)[3:18],
@@ -39,21 +42,23 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
     # scale_fill_gradientn(colours = pals::ocean.balance(20)[seq(3, 18, length.out = number_shades)],
                          limits = c(-max_abs, max_abs),
                          name = bquote("Annual SST anomaly ("*degree*C*")")) +
-    scale_x_continuous(expand = c(0,0), name = NULL,
+    ggplot2::scale_x_continuous(expand = c(0,0), name = NULL,
                        breaks = year_range) +
-    scale_y_discrete(expand = c(0,0), name = NULL) +
+    ggplot2::scale_y_discrete(expand = c(0,0), name = NULL) +
     theme(legend.position = "bottom",
           strip.background = element_blank(),
           strip.text = element_text(face = "bold",
                                     size = 12),
-          panel.spacing.y = unit(0.1,
-                                 "lines")
-          ) +
-    geom_text(aes(label = round(sst_anomaly, 1)),
-              size = 3.5) +
+          panel.spacing.y = grid::unit(0.1,
+                                       "lines"),
+          panel.background = element_rect(fill = "white", colour = NA),
+          panel.grid = element_blank()) +
+    ggplot2::geom_text(aes(label = round(sst_anomaly, 1)),
+                       size = 3.5) +
     guides(fill = guide_colorbar(barwidth = 15, title.position = "top",
                                  frame.colour = "black",
                                  ticks.colour = "black")) +
-    labs(caption = "Ooh look at me")
+    labs(title = main,
+         caption = "Ooh look at me")
   # Baseline period: 1991-2020\nDataset: CoralTemp 5km SST")
 }
