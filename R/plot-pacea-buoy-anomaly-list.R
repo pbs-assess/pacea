@@ -17,8 +17,18 @@
 ##' }
 plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
                                          months = 4,
-                                         main = "Annual sea-surface temperature anomalies from buoys"){
+                                         main = NULL){
                                          # number_shades = 16){ see TODO below
+
+  if(is.null(main)){
+    main =
+      paste0("Annual sea-surface temperature anomalies from buoys using climatology from ",
+             min(pacea_buoy_anomaly_list$climatology_years),
+             " to ",
+             max(pacea_buoy_anomaly_list$climatology_years),
+             " when available")
+  }
+
   plot_data <- pacea_buoy_anomaly_list$anomaly %>%
     dplyr::filter(month %in% months,
                   !is.na(sst_anomaly))
@@ -58,7 +68,7 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
     guides(fill = guide_colorbar(barwidth = 15, title.position = "top",
                                  frame.colour = "black",
                                  ticks.colour = "black")) +
-    labs(title = main,
-         caption = "Ooh look at me")
-  # Baseline period: 1991-2020\nDataset: CoralTemp 5km SST")
+    labs(title = main)
+         # caption = "Ooh look at me")
+
 }
