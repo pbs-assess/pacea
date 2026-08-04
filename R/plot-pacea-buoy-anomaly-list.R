@@ -5,6 +5,8 @@
 ##' obtained from running `caclulate_anomaly()` on buoy data.
 ##' @param months numeric vector of months to include (1-12). Default is 4 (April).
 ##' @param main title for the plot
+##' @param x_label x-axis label
+##' @param y_label y-axis label
 ##' @return a ggplot object
 ##' @export
 ##' @author Andrew Edwards
@@ -17,7 +19,9 @@
 ##' }
 plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
                                          months = 4,
-                                         main = NULL){
+                                         main = NULL,
+                                         x_label = "Year",
+                                         y_label = "Buoy"){
                                          # number_shades = 16){ see TODO below
 
   if(is.null(main)){
@@ -52,9 +56,9 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
     # scale_fill_gradientn(colours = pals::ocean.balance(20)[seq(3, 18, length.out = number_shades)],
                          limits = c(-max_abs, max_abs),
                          name = bquote("Annual SST anomaly ("*degree*C*")")) +
-    ggplot2::scale_x_continuous(expand = c(0,0), name = NULL,
+    ggplot2::scale_x_continuous(expand = c(0,0), name = x_label,
                        breaks = year_range) +
-    ggplot2::scale_y_discrete(expand = c(0,0), name = NULL) +
+    ggplot2::scale_y_discrete(expand = c(0,0), name = y_label) +
     theme(legend.position = "bottom",
           strip.background = element_blank(),
           strip.text = element_text(face = "bold",
