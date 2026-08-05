@@ -7,7 +7,10 @@
 ##'
 ##' @param pacea_buoy_anomaly_list object of class `pacea_buoy_anomaly_list`
 ##' obtained from running `caclulate_anomaly()` on buoy data.
-##' @param months numeric vector of months to include (1-12). Default is 4 (April).
+##' @param months numeric vector of months to include (1-12). Default is 4
+##' (April). Can have more than one month, e.g. 6:9. For a 'winter' average,
+##' say Nov-Mar, specify the months as `c(11, 12, 1, 2, 3)`. The winter average
+##' anomaly will be calculated and named for the year in which January falls. TODO
 ##' @param main title for the plot, if `NULL` then created automatically,
 ##' including detailing the months selected. May need to manually specify `main`
 ##' if many non-consecutive months are chosen (which seems unlikely).
@@ -24,7 +27,13 @@
 ##' all_buoys_plot
 ##'
 ##' all_buoys_plot <- plot.pacea_buoy_anomaly_list(all_buoys_anomalies, months =
-##' 1:4)   # TODO currently gives the title correctly, but need to change the function
+##' 1:4)
+##' # TODO figure out that
+##' # all_buoys_plot <- plot(all_buoys_anomalies, months = 1:12)
+##' # and
+##' # all_buoys_plot_2 <- plot(all_buoys_anomalies, months = 12:1)
+##' # are correctly different. Latter should really give an error.
+##' # TODO currently gives the title correctly, but need to change the function
 ##' }
 plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
                                          months = 4,
@@ -33,27 +42,63 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
                                          ylab = "Buoy"){
                                          # number_shades = 16){ see TODO below
 
+  # Add a condition that if months are not sequential (Dec Jan is okay) then
+  # main needs to be specified TODO Also 12:1 should not be allowed.
 
-  if(is.null(main)){
-    main =
-      paste0("Annual sea-surface temperature anomalies for ",
-             summarise_months(months),
-             " from buoys using climatology from ",
-             min(pacea_buoy_anomaly_list$climatology_years),
-             " to ",
-             max(pacea_buoy_anomaly_list$climatology_years),
-             " when available")
+  if(which.max(months) == length(months)){
+    # months are increasing and so are in the same year
+
+    if(is.null(main)){
+      main =
+        paste0("Annual sea-surface temperature anomalies for ",
+               summarise_months(months),
+               " from buoys using climatology from ",
+               min(pacea_buoy_anomaly_list$climatology_years),
+               " to ",
+               max(pacea_buoy_anomaly_list$climatology_years),
+               " when available")
+    }
+
+    plot_data <- pacea_buoy_anomaly_list$anomaly %>%
+      dplyr::filter(month %in% months,
+                    !is.na(sst_anomaly)) %>%
+      dplyr::group_by(stn_id,
+                      year) %>%
+      # sst_anomaly becomes the average over the specified months, no need to keep
+      # month column
+
+      dplyr::summarise(sst_anomaly = mean(sst_anomaly)) %>%
+      dplyr::ungroup()
+  } else {
+    # Months are not increasing, for which it is implied a winter average is
+    # being calculated that includes Dec and Jan. TODO think about missing
+    # months, need a condition for having enough (as elsewhere)
+
+    if(is.null(main)){
+      main =
+        paste0("Annual sea-surface temperature anomalies for winter months (",
+               summarise_months(months),
+               ") from buoys using climatology from ",
+               min(pacea_buoy_anomaly_list$climatology_years),
+               " to ",
+               max(pacea_buoy_anomaly_list$climatology_years),
+               " when available; year is the year of the Jan")
+    }
+
+    plot_data <- pacea_buoy_anomaly_list$anomaly %>%
+      dplyr::filter(month %in% months,
+                    !is.na(sst_anomaly)) %>%
+      dplyr::mutate(year_of_january = (year + 1) * (month >= months[1]) +
+                      year * (month < months[1])) %>%    # the year of the january
+    # for the winter
+      dplyr::group_by(stn_id,
+                      year_of_january) %>%
+      # sst_anomaly becomes the average over the specified months, no need to keep
+      # month column
+      dplyr::summarise(sst_anomaly = mean(sst_anomaly)) %>%
+      dplyr::ungroup() %>%
+      dplyr::rename(year = year_of_january)
   }
-
-  plot_data <- pacea_buoy_anomaly_list$anomaly %>%
-    dplyr::filter(month %in% months,
-                  !is.na(sst_anomaly)) %>%
-    dplyr::group_by(stn_id,
-                    year) %>%
-    # sst_anomaly becomes the average over the specified months, no need to keep
-    # month column
-    dplyr::summarise(sst_anomaly = mean(sst_anomaly)) %>%
-    dplyr::ungroup()
 
   max_abs <- max(abs(plot_data$sst_anomaly),
                  na.rm = TRUE)
