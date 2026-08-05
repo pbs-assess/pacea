@@ -7,8 +7,14 @@
 ##'
 ##' @param pacea_buoy_anomaly_list object of class `pacea_buoy_anomaly_list`
 ##' obtained from running `caclulate_anomaly()` on buoy data.
-##' @param months numeric vector of months to include (1-12). Default is 4
-##' (April). Can have more than one month, e.g. 6:9. For a 'winter' average,
+##' @param stn_id_to_plot character vector of station IDs from the `buoy_sst` data
+##' object. If `NULL` (default), anomalies for all buoys (in
+##' `pacea_buoy_anomaly_list_object`) are plotted. If specified, only the
+##' buoys in this vector are plotted. If `length(stn_id_to_plot == 1)` then anomalies
+##' for each month are shown, with January at the top and December at the bottom.
+##' @param months numeric vector of months to include (1-12). If not specified
+##' then defaults to 4
+##' (April), except when only one `stn_id_to_plot` when all months are plotted (unless specified). Can have more than one month, e.g. 6:9. For a 'winter' average,
 ##' say Nov-Mar, specify the months as `c(11, 12, 1, 2, 3)`. The winter average
 ##' anomaly will be calculated and named for the year in which January falls. TODO
 ##' @param main title for the plot, if `NULL` then created automatically,
@@ -36,14 +42,38 @@
 ##' # TODO currently gives the title correctly, but need to change the function
 ##' }
 plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
-                                         months = 4,
+                                         stn_id_to_plot = NULL,
+                                         months = NULL,
                                          main = NULL,
                                          xlab = "Year",
                                          ylab = "Buoy"){
                                          # number_shades = 16){ see TODO below
 
-  # Add a condition that if months are not sequential (Dec Jan is okay) then
+  # Add a stop() condition that if months are not sequential (Dec Jan is okay) then
   # main needs to be specified TODO Also 12:1 should not be allowed.
+
+  if(length(stn_id_to_plot) == 1){
+    if(is.null(months)){
+      months = 1:12         # Default to plot all months
+    }
+
+    anomaly_plot <- plot_pacea_buoy_anomaly_single(pacea_buoy_anomaly_list = pacea_buoy_anomaly_list,
+                                   stn_id_to_plot = stn_id_to_plot,
+                                   months = months,
+                                   main = main,
+                                   xlab = xlab,
+                                   ylab = "Month")
+    return(anomaly_plot)
+  }
+
+  if(is.null(months)){
+    months = 4         # Default plot of April values, but still allow the
+    # single stn_id_to_plot function above to have months specified.
+  }
+
+  if(is.null(stn_id_to_plot)){                 # Plot all of them available
+    stn_id_to_plot = unique(pacea_buoy_anomaly_list$anomaly$stn_id)
+  }
 
   if(which.max(months) == length(months)){
     # months are increasing and so are in the same year
@@ -60,7 +90,8 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
     }
 
     plot_data <- pacea_buoy_anomaly_list$anomaly %>%
-      dplyr::filter(month %in% months,
+      dplyr::filter(stn_id %in% stn_id_to_plot,
+                    month %in% months,
                     !is.na(sst_anomaly)) %>%
       dplyr::group_by(stn_id,
                       year) %>%
@@ -86,7 +117,8 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
     }
 
     plot_data <- pacea_buoy_anomaly_list$anomaly %>%
-      dplyr::filter(month %in% months,
+      dplyr::filter(stn_id %in% stn_id_to_plot,
+                    month %in% months,
                     !is.na(sst_anomaly)) %>%
       dplyr::mutate(year_of_january = (year + 1) * (month >= months[1]) +
                       year * (month < months[1])) %>%    # the year of the january
@@ -118,7 +150,7 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
     # washed out grey; not bothering for now, colours are good.
     # scale_fill_gradientn(colours = pals::ocean.balance(20)[seq(3, 18, length.out = number_shades)],
                          limits = c(-max_abs, max_abs),
-                         name = bquote("Annual SST anomaly ("*degree*C*")")) +
+                         name = bquote("SST anomaly ("*degree*C*")")) +
     ggplot2::scale_x_continuous(expand = c(0,0), name = xlab,
                        breaks = year_range) +
     ggplot2::scale_y_discrete(expand = c(0,0), name = ylab) +
@@ -138,4 +170,5 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
     labs(title = main)
          # caption = "Ooh look at me")
 
+  anomaly_plot
 }
