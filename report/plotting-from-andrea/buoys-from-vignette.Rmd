@@ -150,9 +150,13 @@ all_buoys_plot
 #       scale = 1.4)
 
 ```
+HERE! Next get this working properly, decide what to do about the anomalies for
+multiple months. Just average them, or sum them? Average for sure, it's not
+cumulative. 
 
+Is harder to get a large anomaly over a longer period, maybe?
 
-HERE!
+And if just one stn_id then plot months on the y-axis, January at the top.
 
 
 

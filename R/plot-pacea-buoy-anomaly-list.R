@@ -1,6 +1,9 @@
 ##' Plot anomalies of the buoy sea-surface temperature data
 ##'
-##' TODO
+##' TODO Need to clearly explain methods and run them by someone. And put checks
+##' in for there being enough data in each month. e.g. months = 12 has empty for
+##' C46132 but not for months 11:12, in year 2015. Get code working then figure
+##' out the many caveats.
 ##'
 ##' @param pacea_buoy_anomaly_list object of class `pacea_buoy_anomaly_list`
 ##' obtained from running `caclulate_anomaly()` on buoy data.
@@ -44,7 +47,13 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
 
   plot_data <- pacea_buoy_anomaly_list$anomaly %>%
     dplyr::filter(month %in% months,
-                  !is.na(sst_anomaly))
+                  !is.na(sst_anomaly)) %>%
+    dplyr::group_by(stn_id,
+                    year) %>%
+    # sst_anomaly becomes the average over the specified months, no need to keep
+    # month column
+    dplyr::summarise(sst_anomaly = mean(sst_anomaly)) %>%
+    dplyr::ungroup()
 
   max_abs <- max(abs(plot_data$sst_anomaly),
                  na.rm = TRUE)
