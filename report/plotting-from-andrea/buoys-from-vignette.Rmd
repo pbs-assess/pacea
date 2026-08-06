@@ -76,11 +76,16 @@ plot(buoy_sst,
      stn_id = one_stn_id_example)
 ```
 
-TODO Aside. We have not fully refined how to deal with some of the data
+### TODO Warning and caveats. 
+
+We have not fully refined how to deal with some of the data
 issues (e.g. the odd buoy had large fluctations in early days, but it's hard to
 automate removing those). Acutally the anomaly code might help deal with
-this. But some outliers might still need to be removed manually.
+this. But some outliers might still need to be removed manually. And how many
+daily values do we need a month to produce a climatology/anomaly? Easier to play
+around with these once we have the plots. 
 
+So don't treat the results as exact yet, this is a proof of concept.
 
 
 Next steps:
@@ -93,11 +98,11 @@ Next steps:
 
 ## Climatologies
 
-Andrea does a daily climatology, so let's go with that. For the final plots I
+Andrea does a daily climatology, so had thought to go with that. For the final plots I
 have in mind, may then need to roll up into weekly/monthly/annual, or should you
 really do those straight away?
 
-The aim is to do ecosystem summaries for stock assessment and management
+But, the aim is to do ecosystem summaries for stock assessment and management
 purposes. So likely want to be able to specify a time period of interest for
 that particular stock, and then do a climatology/anomaly for that time period.
 
@@ -129,34 +134,57 @@ yy
 
 ```
 
-Next need to adapt Andrea's ggplot code to do the anomaly plot; can do for
-multiple stn_id's. 
 
-Start with the example in the anomaly function. 
 
 ## Plotting function
 
-Can do all buoys at once! From the help file:
+Can calculate the anomalies for all buoys at once! And then tailor the plots.
+
+The default plot is for the anomalies in April for all buoys:
 
 ```{r, buoyanomalyplot}
-all_buoys_anomalies <- calculate_anomaly(buoy_sst,
-                                         climatology_time = "month")
-all_buoys_plot <- plot(all_buoys_anomalies)
-all_buoys_plot
+all_buoys_anomalies <- calculate_anomaly(buoy_sst)
+plot(all_buoys_anomalies)
 ```
 
-```{r, saveplotmaybe}
+```{r, saveplotmaybe, echo = FALSE}
 # ggsave(filename = "Annual_heatmap_SST_anomaly_SOPOregions_allyears.png", width = 9, height = 3., dpi = 300,
 #       scale = 1.4)
-
 ```
-HERE! Next get this working properly, decide what to do about the anomalies for
-multiple months. Just average them, or sum them? Average for sure, it's not
-cumulative. 
 
-Is harder to get a large anomaly over a longer period, maybe?
+How about the average anomaly for April to June for all buoys:
+```{r, buoyanomalyplot2}
+plot(all_buoys_anomalies,
+     months = 4:6)
+```
+
+We can exclude the three buoys that do not have a long time series (this might
+change when we refine the analyses):
+
+```{r, buoyanomalyplot3}
+
+all_buoys_plot_3 <- plot(all_buoys_anomalies,
+                       months = 4:6)
+all_buoys_plot_3
+```
+
+Can do various options. 
+
+Have averaged the anomalies for multiple months.
+
+
+### Single buoy -- show each month
+
+```{r, singlebuoy}
+plot(all_buoys_anomalies,
+     stn_id_to_plot = "C46206")
+```
+Hopefully self explanatory. 
 
 And if just one stn_id then plot months on the y-axis, January at the top.
 
 
+Get the plots working when `climatology_time = "week"`.
 
+TODO get the buoys in the same order as Andrea's (geographically) when I hear
+back from her.

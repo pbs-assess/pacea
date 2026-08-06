@@ -7,11 +7,12 @@
 ##'
 ##' @param pacea_buoy_anomaly_list object of class `pacea_buoy_anomaly_list`
 ##' obtained from running `caclulate_anomaly()` on buoy data.
-##' @param stn_id_to_plot character vector of station IDs from the `buoy_sst` data
+##' @param stn_id_to_plot character vector of station IDs (`stn_id` values)from the `buoy_sst` data
 ##' object. If `NULL` (default), anomalies for all buoys (in
 ##' `pacea_buoy_anomaly_list_object`) are plotted. If specified, only the
 ##' buoys in this vector are plotted. If `length(stn_id_to_plot == 1)` then anomalies
-##' for each month are shown, with January at the top and December at the bottom.
+##' for each month are shown, with January at the top and December at the
+##' bottom. TODO could make it accept the names instead.
 ##' @param months numeric vector of months to include (1-12). If not specified
 ##' then defaults to 4
 ##' (April), except when only one `stn_id_to_plot` when all months are plotted (unless specified). Can have more than one month, e.g. 6:9. For a 'winter' average,
@@ -22,6 +23,9 @@
 ##' if many non-consecutive months are chosen (which seems unlikely).
 ##' @param xlab x-axis label
 ##' @param ylab y-axis label
+##' @param use_stn_id_name logical, whether to use the name of the buoy
+##' (e.g. `Middle NOMAD`) or the `stn_id` (e.g. C46004). See `buoy_metadata` for
+##' the names.
 ##' @return a ggplot object
 ##' @export
 ##' @author Andrew Edwards
@@ -46,12 +50,15 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
                                          months = NULL,
                                          main = NULL,
                                          xlab = "Year",
-                                         ylab = "Buoy"){
+                                         ylab = "Buoy",
+                                         use_stn_id_name = TRUE){
                                          # number_shades = 16){ see TODO below
+
 
   # Add a stop() condition that if months are not sequential (Dec Jan is okay) then
   # main needs to be specified TODO Also 12:1 should not be allowed.
 
+  # If just one stn_id then plot months on the y-axis
   if(length(stn_id_to_plot) == 1){
     if(is.null(months)){
       months = 1:12         # Default to plot all months
@@ -138,6 +145,21 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
                         na.rm = TRUE),
                     max(plot_data$year,
                         na.rm = TRUE))
+  if(use_stn_id_name){
+    # Replace stn_id with it's name, preserving stn_id order
+    # Create a mapping that preserves the original stn_id order
+    stn_id_order <- unique(plot_data$stn_id)
+    plot_data <-
+      dplyr::left_join(plot_data,
+                       dplyr::select(buoy_metadata,
+                                     stn_id,
+                                     name),
+                       by = join_by(stn_id)) %>%
+      dplyr::select(-c("stn_id")) %>%
+      dplyr::rename(stn_id = name) %>%
+      dplyr::mutate(stn_id = factor(stn_id, 
+                                     levels = buoy_metadata$name[match(stn_id_order, buoy_metadata$stn_id)]))
+  }
 
   anomaly_plot <-
     plot_data %>%
