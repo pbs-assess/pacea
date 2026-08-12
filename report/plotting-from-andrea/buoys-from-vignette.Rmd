@@ -175,16 +175,30 @@ Have averaged the anomalies for multiple months.
 
 ### Single buoy -- show each month
 
+And if just one stn_id then plot months on the y-axis, January at the top:
+
 ```{r, singlebuoy}
 plot(all_buoys_anomalies,
      stn_id_to_plot = "C46206")
 ```
 Hopefully self explanatory. 
 
-And if just one stn_id then plot months on the y-axis, January at the top.
+Thinking of quick look at a relevant buoy for hake migration north with respect
+to hake catches in Canada (which aren't in pacea but could be):
+```{r, singlebuoy2}
+plot(all_buoys_anomalies,
+     stn_id_to_plot = "C46206",
+     months = 4:6)
+```
+If hake catches were added on then would be easy to spot any pattern.
+
+TODO some 0.1 and -0.1 values look white but others aren't. Be good to have no
+white, as then can leave the missing ones empty (I think grey for missing is not needed).
 
 
 Get the plots working when `climatology_time = "week"`.
 
 TODO get the buoys in the same order as Andrea's (geographically) when I hear
 back from her.
+
+TODO Tweak the heading to use the name for the single buoy plot.
