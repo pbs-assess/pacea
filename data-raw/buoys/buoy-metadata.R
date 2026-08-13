@@ -3,7 +3,14 @@
 # Metadata of buoys, location, names etc., that shouldn't really need changing,
 #  but can be updated here if needed.
 
+# 13/8/26 - Andy updating the order (at the end). Andrea's original is in
+# numerical order of wmo_id, but when plotting I want to follow her
+# geographically arranged ones in
+# https://ios-osd-dpg.github.io/Pacific_SST_Monitoring_Site/#buoy-sst-and-sst-anomalies
+# They are not all plotted, so I will manually insert the missing ones.
+
 library(dplyr)
+library(forcats)
 
 buoy_metadata <- tibble::tibble(wmo_id = c("46004", "46036", "46131", "46132",
                                            "46134", "46145", "46146", "46147",
@@ -80,6 +87,62 @@ buoy_metadata <- tibble::tibble(wmo_id = c("46004", "46036", "46131", "46132",
          name_key = paste(stn_id,
                           name)) %>%
   mutate_if(is.character, as.factor)
+
+
+# New order is based somewhat on Andrea's plots, with some changes. Basically
+# going in horizontal bands from west to east, then moving south for each
+# 'band', ending with Strait of Georgia. Plus adding in ones Andrea did not show.
+new_order <- c("C46184",
+               "C46205",
+               "C46145",
+               "C46183",
+               "C46181",
+               "C46208",
+               "C46147",
+               "C46185",
+               "C46004",
+               "C46207",
+               "C46204",
+               "C46036",
+               "C46132",
+               "C46206",
+               "C46131",
+               "C46146",
+               "C46304",
+               "C46303",
+               "C46134"
+               )
+
+# Ones in buoy_metadata that are not listed there. Then manually whittle the
+# above vector down so this becomes empty:
+testthat::expect_equal(length(setdiff(buoy_metadata$stn_id,
+                                      new_order)),
+                       0)
+
+buoy_metadata_new_order <-
+  mutate(buoy_metadata,
+         stn_id = fct_relevel(stn_id,
+                              new_order)) %>%
+  arrange(stn_id)
+
+# Now put levels for all factors (all columns) into the order they appear
+# buoy_metadata, I think needed because then plotting will always be in the same
+# order regardless of what is used to label the buoy s(e.g. stn_id or name or
+# name_key).
+
+# Identify which columns are factors
+factor_cols <- names(buoy_metadata_new_order)[sapply(buoy_metadata_new_order,
+                                                     is.factor)]
+
+# For each factor column, set levels to the order in the data
+for (col in factor_cols){
+  buoy_metadata_new_order[[col]] <- factor(buoy_metadata_new_order[[col]],
+                                 levels = unique(buoy_metadata_new_order[[col]]))
+}
+
+buoy_metadata_new_order
+
+buoy_metadata <- buoy_metadata_new_order
 
 # Buoy comments:
 # ECOBUOY_1: This buoy has been specially modified to serve as a platform for

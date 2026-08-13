@@ -11,6 +11,10 @@
 # 'at least one record every two hours' and 'at least 10 two-hour records per
 # day' criteria for calculating daily means. AND redownloading data.
 
+# 2026-08-13: Reordering levels of buoy_sst at the end to be my new ones in
+# buoy_metadata, which are roughly north-south in bands, rather than simply
+# numerical. Doing at the end so as not to change any of the commented notes.
+
 # Run line-by-line while developing. Can source to update data, check that
 #  redownload_data = TRUE.
 
@@ -996,6 +1000,10 @@ nrow(buoy_sst_new) - nrow(buoy_sst)
 #                                  stn_id)
 # buoy_sst_new_overlap %>% summarise(unique(sst))  # Need to work on.
 
+# Set stn_id levels to match new buoy_metadata order
+buoy_sst_new <- buoy_sst_new %>%
+  mutate(stn_id = factor(stn_id,
+                         levels = buoy_metadata$stn_id))
 
 stop("Do some quick thinking before updating.")  # Could add in code like for indices
 

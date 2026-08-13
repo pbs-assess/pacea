@@ -147,7 +147,8 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
                         na.rm = TRUE))
   if(use_stn_id_name){
     # Replace stn_id with it's name, preserving stn_id order
-    # Create a mapping that preserves the original stn_id order
+    # Create a mapping that preserves the original stn_id order  TODO hoping to
+    # not need this if I get levels of factors fixed in buoy_metadata
     stn_id_order <- unique(plot_data$stn_id)
     plot_data <-
       dplyr::left_join(plot_data,
@@ -157,9 +158,13 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
                        by = join_by(stn_id)) %>%
       dplyr::select(-c("stn_id")) %>%
       dplyr::rename(stn_id = name) %>%
-      dplyr::mutate(stn_id = factor(stn_id, 
+      dplyr::mutate(stn_id = factor(stn_id,
                                      levels = buoy_metadata$name[match(stn_id_order, buoy_metadata$stn_id)]))
   }
+
+  # Reverse the order of stn_id to plot north to south from top to bottom
+  plot_data <- plot_data %>%
+    mutate(stn_id = factor(stn_id, levels = rev(levels(stn_id))))
 
   anomaly_plot <-
     plot_data %>%
