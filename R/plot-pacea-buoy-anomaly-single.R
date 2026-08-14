@@ -11,7 +11,7 @@
 ##' @param sst_plot character, one of:
 ##'   * `"anomaly"` (default) - plots SST anomalies
 ##'   * `"mean"` - plots mean SST values for each month
-##'   * `"number"` - plots count of daily SST values used to calculate monthly mean
+##'   * `"count"` - plots count of daily SST values used to calculate monthly mean
 ##' @return a ggplot object
 ##' @export
 ##' @author Andrew Edwards
@@ -33,19 +33,19 @@ plot_pacea_buoy_anomaly_single <- function(pacea_buoy_anomaly_list,
                                            sst_plot = "anomaly"){
 
   # Validate sst_plot parameter
-  sst_plot <- match.arg(sst_plot, c("anomaly", "mean", "number"))
+  sst_plot <- match.arg(sst_plot, c("anomaly", "mean", "count"))
 
   # Create legend label based on sst_plot
   legend_label <- switch(sst_plot,
                         "anomaly" = bquote("Monthly SST anomaly ("*degree*C*")"),
                         "mean" = bquote("Mean SST ("*degree*C*")"),
-                        "number" = "Count of daily SST values")
+                        "count" = "Count of daily SST values")
 
   if(is.null(main)){
     main_suffix <- switch(sst_plot,
                          "anomaly" = "anomalies",
                          "mean" = "mean values",
-                         "number" = "count of observations")
+                         "count" = "count of observations")
     if(sst_plot == "anomaly"){
       main =
         paste0("Monthly sea-surface temperature ",
@@ -69,13 +69,13 @@ plot_pacea_buoy_anomaly_single <- function(pacea_buoy_anomaly_list,
   na_check_col <- switch(sst_plot,
                         "anomaly" = "sst_anomaly",
                         "mean" = "sst_mean",
-                        "number" = "sst_n")
+                        "count" = "sst_n")
 
   plot_data <- pacea_buoy_anomaly_list$anomaly %>%
     dplyr::filter(stn_id %in% stn_id_to_plot,
                   month %in% months,
                   !is.na(.data[[na_check_col]]),
-                  if(sst_plot == "number") sst_n > 0 else TRUE) %>%
+                  if(sst_plot == "count") sst_n > 0 else TRUE) %>%
     dplyr::mutate(month_as_factor = factor(month,
                                            levels = rev(sort(months)),
                                            labels = rev(month.abb[sort(months)])),

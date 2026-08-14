@@ -29,7 +29,7 @@
 ##' @param sst_plot character, one of:
 ##'   * `"anomaly"` (default) - plots SST anomalies
 ##'   * `"mean"` - plots mean SST values for each month
-##'   * `"number"` - plots count of daily SST values used to calculate monthly mean
+##'   * `"count"` - plots count of daily SST values used to calculate monthly mean
 ##' @return a ggplot object
 ##' @export
 ##' @author Andrew Edwards
@@ -60,7 +60,7 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
                                          # number_shades = 16){ see TODO below
 
   # Validate sst_plot parameter
-  sst_plot <- match.arg(sst_plot, c("anomaly", "mean", "number"))
+  sst_plot <- match.arg(sst_plot, c("anomaly", "mean", "count"))
 
   # Add a stop() condition that if months are not sequential (Dec Jan is okay) then
   # main needs to be specified TODO Also 12:1 should not be allowed.
@@ -120,17 +120,17 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
     na_check_col <- switch(sst_plot,
                           "anomaly" = "sst_anomaly",
                           "mean" = "sst_mean",
-                          "number" = "sst_n")
+                          "count" = "sst_n")
 
     plot_data <- pacea_buoy_anomaly_list$anomaly %>%
       dplyr::filter(stn_id %in% stn_id_to_plot,
                     month %in% months,
                     !is.na(.data[[na_check_col]]),
-                    if(sst_plot == "number") sst_n > 0 else TRUE) %>%
+                    if(sst_plot == "count") sst_n > 0 else TRUE) %>%
       dplyr::group_by(stn_id,
                       year) %>%
       # plot_value becomes the average over the specified months, no need to keep month column
-      dplyr::summarise(sst_plot_value = dplyr::if_else(sst_plot == "number",
+      dplyr::summarise(sst_plot_value = dplyr::if_else(sst_plot == "count",
                                                        sum(sst_n),
                                                        mean(dplyr::if_else(sst_plot == "anomaly",
                                                                           sst_anomaly,
@@ -167,19 +167,19 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
     na_check_col <- switch(sst_plot,
                           "anomaly" = "sst_anomaly",
                           "mean" = "sst_mean",
-                          "number" = "sst_n")
+                          "count" = "sst_n")
 
     plot_data <- pacea_buoy_anomaly_list$anomaly %>%
       dplyr::filter(stn_id %in% stn_id_to_plot,
                     month %in% months,
                     !is.na(.data[[na_check_col]]),
-                    if(sst_plot == "number") sst_n > 0 else TRUE) %>%
+                    if(sst_plot == "count") sst_n > 0 else TRUE) %>%
       dplyr::mutate(year_of_january = (year + 1) * (month >= months[1]) +
                       year * (month < months[1])) %>%    # the year of the january for the winter
       dplyr::group_by(stn_id,
                       year_of_january) %>%
       # plot_value becomes the average over the specified months, no need to keep month column
-      dplyr::summarise(sst_plot_value = dplyr::if_else(sst_plot == "number",
+      dplyr::summarise(sst_plot_value = dplyr::if_else(sst_plot == "count",
                                                        sum(sst_n),
                                                        mean(dplyr::if_else(sst_plot == "anomaly",
                                                                           sst_anomaly,
@@ -192,7 +192,7 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
   legend_label <- switch(sst_plot,
                         "anomaly" = bquote("SST anomaly ("*degree*C*")"),
                         "mean" = bquote("Mean SST ("*degree*C*")"),
-                        "number" = "Count of daily SST values")
+                        "count" = "Count of daily SST values")
 
   # For non-anomaly plots, use different color scale (not symmetric)
   if(sst_plot == "anomaly"){
