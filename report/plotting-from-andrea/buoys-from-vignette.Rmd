@@ -162,6 +162,10 @@ Other options, to add to the help and the testing:
 ```{r, buoyanomalyplot4}
 plot(all_buoys_anomalies, sst_plot = "mean", months = 6:8)
 plot(all_buoys_anomalies, sst_plot = "count", months = c(12, 1, 2))
+plot(all_buoys_anomalies, sst_plot = "count", stn_id = "C46184")
+plot(all_buoys_anomalies, sst_plot = "count")  # check what this is doing, mean
+# count over all years?? Ah no, it's april counts each year each buoy.
+plot(all_buoys_anomalies, sst_plot = "count", count_breaks = c(0, 20, 31))
 ```
 
 Do single buoys also.

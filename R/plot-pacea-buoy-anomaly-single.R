@@ -30,7 +30,8 @@ plot_pacea_buoy_anomaly_single <- function(pacea_buoy_anomaly_list,
                                            main,
                                            xlab,
                                            ylab,
-                                           sst_plot = "anomaly"){
+                                           sst_plot = "anomaly",
+                                           count_breaks = c(0, 10, 15, 20, 31)){
 
   # Validate sst_plot parameter
   sst_plot <- match.arg(sst_plot, c("anomaly", "mean", "count"))
@@ -95,6 +96,23 @@ plot_pacea_buoy_anomaly_single <- function(pacea_buoy_anomaly_list,
                       max_abs)
   }
 
+  # Determine which colour scale to use based on sst_plot
+  if(sst_plot == "count"){
+    # Create a custom color palette: very light yellow to green to navy
+    # Number of colors = length(count_breaks) - 1 (number of bins)
+    n_colors <- length(count_breaks) - 1
+    # Define the palette endpoints and let colorRampPalette generate intermediate colors
+    count_colors <- grDevices::colorRampPalette(c("#FFFFE0", "#ADFF2F", "#32CD32", "#00008B"))(n_colors)
+    color_scale <- ggplot2::scale_fill_stepsn(colours = count_colors,
+                                              breaks = count_breaks,
+                                              name = legend_label,
+                                              limits = c(min(count_breaks), max(count_breaks)))
+  } else {
+    color_scale <- ggplot2::scale_fill_gradientn(colours = pals::ocean.balance(20)[3:18],
+                                                 limits = scale_limits,
+                                                 name = legend_label)
+  }
+
   year_range <- seq(min(plot_data$year,
                         na.rm = TRUE),
                     max(plot_data$year,
@@ -115,9 +133,7 @@ plot_pacea_buoy_anomaly_single <- function(pacea_buoy_anomaly_list,
                y = month_as_factor)) +
     geom_tile(aes(fill = sst_plot_value),
               colour = "black") +
-    scale_fill_gradientn(colours = pals::ocean.balance(20)[3:18],
-                         limits = scale_limits,
-                         name = legend_label) +
+    color_scale +
     ggplot2::scale_x_continuous(expand = c(0, 0),
                                 name = xlab,
                                 breaks = year_range) +

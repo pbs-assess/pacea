@@ -30,6 +30,8 @@
 ##'   * `"anomaly"` (default) - plots SST anomalies
 ##'   * `"mean"` - plots mean SST values for each month
 ##'   * `"count"` - plots count of daily SST values used to calculate monthly mean
+##' @param count_breaks numeric vector of break points for the count plot colour scale.
+##' Only used when `sst_plot = "count"`. Default is `c(0, 10, 15, 20, 31)`.
 ##' @return a ggplot object
 ##' @export
 ##' @author Andrew Edwards
@@ -56,7 +58,8 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
                                          xlab = "Year",
                                          ylab = "Buoy",
                                          use_stn_id_name = TRUE,
-                                         sst_plot = "anomaly"){
+                                         sst_plot = "anomaly",
+                                         count_breaks = c(0, 10, 15, 20, 31)){
                                          # number_shades = 16){ see TODO below
 
   # Validate sst_plot parameter
@@ -78,7 +81,8 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
       main = main,
       xlab = xlab,
       ylab = "Month",
-      sst_plot = sst_plot)
+      sst_plot = sst_plot,
+      count_breaks = count_breaks)
     return(anomaly_plot)
   }
 
@@ -252,18 +256,34 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
     mutate(stn_id = factor(stn_id,
                            levels = rev(levels(stn_id))))
 
+  # Determine which colour scale to use based on sst_plot
+  if(sst_plot == "count"){
+    # Create a custom color palette: very light yellow to green to navy
+    # Number of colors = length(count_breaks) - 1 (number of bins)
+    n_colors <- length(count_breaks) - 1
+    # Define the palette endpoints and let colorRampPalette generate intermediate colors
+    # Use very pale/bright yellow at low end, navy at high end, with greens in middle
+    count_colors <- grDevices::colorRampPalette(c("#FFFFE0", "#ADFF2F", "#32CD32", "#00008B"))(n_colors)
+    color_scale <- ggplot2::scale_fill_stepsn(colours = count_colors,
+                                              breaks = count_breaks,
+                                              name = legend_label,
+                                              limits = c(min(count_breaks), max(count_breaks)))
+  } else {
+    color_scale <- ggplot2::scale_fill_gradientn(colours = pals::ocean.balance(20)[3:18],
+    # TODO tried this to generalise it, but gives different colour bar and some
+    # washed out grey; not bothering for now, colours are good.
+    # scale_fill_gradientn(colours = pals::ocean.balance(20)[seq(3, 18, length.out = number_shades)],
+                                                limits = scale_limits,
+                                                name = legend_label)
+  }
+
   anomaly_plot <-
     plot_data %>%
     ggplot(aes(x = year,
                y = stn_id)) +
     geom_tile(aes(fill = sst_plot_value),
               colour = "black") +
-    scale_fill_gradientn(colours = pals::ocean.balance(20)[3:18],
-    # TODO tried this to generalise it, but gives different colour bar and some
-    # washed out grey; not bothering for now, colours are good.
-    # scale_fill_gradientn(colours = pals::ocean.balance(20)[seq(3, 18, length.out = number_shades)],
-                          limits = scale_limits,
-                          name = legend_label) +
+    color_scale +
     ggplot2::scale_x_continuous(expand = c(0, 0),
                                 name = xlab,
                                 breaks = year_range) +
