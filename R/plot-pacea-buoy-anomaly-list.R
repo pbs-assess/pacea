@@ -130,11 +130,15 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
       dplyr::group_by(stn_id,
                       year) %>%
       # plot_value becomes the average over the specified months, no need to keep month column
-      dplyr::summarise(sst_plot_value = dplyr::if_else(sst_plot == "count",
-                                                       sum(sst_n),
-                                                       mean(dplyr::if_else(sst_plot == "anomaly",
-                                                                          sst_anomaly,
-                                                                          sst_mean)))) %>%
+      dplyr::summarise(sst_plot_value = if(sst_plot == "count"){
+                                          sum(sst_n)
+                                        } else {
+                                          mean(if(sst_plot == "anomaly"){
+                                                sst_anomaly
+                                              } else {
+                                                sst_mean
+                                              })
+                                        }) %>%
       dplyr::ungroup()
   } else {
     # Months are not increasing, for which it is implied a winter average is
@@ -179,11 +183,15 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
       dplyr::group_by(stn_id,
                       year_of_january) %>%
       # plot_value becomes the average over the specified months, no need to keep month column
-      dplyr::summarise(sst_plot_value = dplyr::if_else(sst_plot == "count",
-                                                       sum(sst_n),
-                                                       mean(dplyr::if_else(sst_plot == "anomaly",
-                                                                          sst_anomaly,
-                                                                          sst_mean)))) %>%
+      dplyr::summarise(sst_plot_value = if(sst_plot == "count"){
+                                          sum(sst_n)
+                                        } else {
+                                          mean(if(sst_plot == "anomaly"){
+                                                sst_anomaly
+                                              } else {
+                                                sst_mean
+                                              })
+                                        }) %>%
       dplyr::ungroup() %>%
       dplyr::rename(year = year_of_january)
   }

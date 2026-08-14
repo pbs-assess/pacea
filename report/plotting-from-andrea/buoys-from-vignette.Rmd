@@ -158,6 +158,14 @@ plot(all_buoys_anomalies,
      months = 4:6)
 ```
 
+Other options, to add to the help and the testing:
+```{r, buoyanomalyplot4}
+plot(all_buoys_anomalies, sst_plot = "mean", months = 6:8)
+plot(all_buoys_anomalies, sst_plot = "count", months = c(12, 1, 2))
+```
+
+Do single buoys also.
+
 We can exclude the three buoys that do not have a long time series (this might
 change when we refine the analyses):
 
