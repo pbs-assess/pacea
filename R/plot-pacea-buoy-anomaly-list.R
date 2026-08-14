@@ -98,7 +98,7 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
       main_suffix <- switch(sst_plot,
                            "anomaly" = "anomalies",
                            "mean" = "mean values",
-                           "number" = "count of observations")
+                           "count" = "count of observations")
       if(sst_plot == "anomaly"){
         main =
           paste0("Annual sea-surface temperature ", main_suffix, " for ",
@@ -149,7 +149,7 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
       main_suffix <- switch(sst_plot,
                            "anomaly" = "anomalies",
                            "mean" = "mean values",
-                           "number" = "count of observations")
+                           "count" = "count of observations")
       if(sst_plot == "anomaly"){
         main =
           paste0("Annual sea-surface temperature ", main_suffix, " for winter months (",
@@ -219,16 +219,16 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
                         na.rm = TRUE),
                     max(plot_data$year,
                         na.rm = TRUE))
-  
+
   # Add label column for text display
-  if(sst_plot == "number"){
+  if(sst_plot == "count"){
     plot_data <- plot_data %>%
       dplyr::mutate(label = as.character(round(sst_plot_value, 0)))
   } else {
     plot_data <- plot_data %>%
       dplyr::mutate(label = as.character(round(sst_plot_value, 1)))
   }
-  
+
   if(use_stn_id_name){
     # Replace stn_id with it's name, preserving stn_id order
     # Create a mapping that preserves the original stn_id order  TODO hoping to
@@ -262,8 +262,8 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
     # TODO tried this to generalise it, but gives different colour bar and some
     # washed out grey; not bothering for now, colours are good.
     # scale_fill_gradientn(colours = pals::ocean.balance(20)[seq(3, 18, length.out = number_shades)],
-                         limits = scale_limits,
-                         name = legend_label) +
+                          limits = scale_limits,
+                          name = legend_label) +
     ggplot2::scale_x_continuous(expand = c(0, 0),
                                 name = xlab,
                                 breaks = year_range) +

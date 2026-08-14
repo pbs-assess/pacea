@@ -101,7 +101,7 @@ plot_pacea_buoy_anomaly_single <- function(pacea_buoy_anomaly_list,
                         na.rm = TRUE))
 
   # Add label column for text display
-  if(sst_plot == "number"){
+  if(sst_plot == "count"){
     plot_data <- plot_data %>%
       dplyr::mutate(label = as.character(round(sst_plot_value, 0)))
   } else {
