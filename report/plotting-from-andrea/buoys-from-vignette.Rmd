@@ -166,6 +166,14 @@ plot(all_buoys_anomalies, sst_plot = "count", stn_id = "C46184")
 plot(all_buoys_anomalies, sst_plot = "count")  # check what this is doing, mean
 # count over all years?? Ah no, it's april counts each year each buoy.
 plot(all_buoys_anomalies, sst_plot = "count", count_breaks = c(0, 20, 31))
+
+plot(all_buoys_anomalies, sst_plot = "count", stn_id = "C46184", count_breaks = c(0, 15, 31))
+
+plot(all_buoys_anomalies, sst_plot = "count", return_results = TRUE, months =
+                                                                       6:8)
+
+plot(all_buoys_anomalies, sst_plot = "count", return_results = TRUE, months = 6:8)
+plot(all_buoys_anomalies, sst_plot = "count", return_results = TRUE, months = 6:8, stn_id = "C46184")
 ```
 
 Do single buoys also.
@@ -176,7 +184,7 @@ change when we refine the analyses):
 ```{r, buoyanomalyplot3}
 
 all_buoys_plot_3 <- plot(all_buoys_anomalies,
-                       months = 4:6)
+                         months = 4:6)
 all_buoys_plot_3
 ```
 
@@ -204,13 +212,99 @@ plot(all_buoys_anomalies,
 ```
 If hake catches were added on then would be easy to spot any pattern.
 
-TODO some 0.1 and -0.1 values look white but others aren't. Be good to have no
-white, as then can leave the missing ones empty (I think grey for missing is not needed).
-
-
 Get the plots working when `climatology_time = "week"`.
 
-TODO get the buoys in the same order as Andrea's (geographically) when I hear
-back from her.
 
-TODO Tweak the heading to use the name for the single buoy plot.
+
+### Refining the analyses
+
+Important to be aware of:
+
+Above all assumes our defaults in the calculations as specified in
+`calculate_anomaly.pacea_buoy()`. These are somewhat subjective and can be
+changed by the user. Specifically:
+
+- the number of days needed within a calendar month to use to give a monthly
+  average for calculating climatoloties and anomalies (default is 15 days)
+- the maximum consecutive number of missing days allowed within a calendar
+  month, above which that month is not used to give a monthly
+  average for calculating climatoloties and anomalies (default is 6 days)
+  
+We pragmatically decided on requiring 15 days (roughly half) of daily SST within
+a month, and a maximum consecutive number of missing days of 6. These are the
+defaults, but can be changed by the user (as described below) to `NULL` to allow
+all data and then examine it for plotting.
+
+Similarly, if a user wants to look at average SST for a buoy over the months
+Jan-Jun, a decision has to be made as to how many months should be
+available. Could say a default of >75%, with no details about requiring
+consecutive ones.
+
+Given the huge number of options that users may wish to explore (many buoys,
+many years, many possible combinations of months), users may wish to relax or
+tighten the defaults, and have the power to do so.
+
+Okay:
+
+- add options to calculate function, with NULL being what we normally do, but
+  defaults of 15 days and 6 days.
+
+
+```{r, stop, cache = FALSE}
+knitr::knit_exit()
+```
+
+
+
+### Rough notes, being adopted above somewhat
+
+Need to remove data-poor months. Have some defaults that users can change, and
+tell users to look at data. Elise thinks at least half the month, with no gap of
+more than 5-6 days (no consecutive NA's longer than that).
+Example we had was
+
+```{r ex}
+> yy <- table(all_buoys_anomalies$anomaly$sst_n)
+> yy
+
+   0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15 
+ 777   32   19   29   26   24   29   21   24   26   26   26   36   19   34   34 
+
+  16   17   18   19   20   21   22   23   24   25   26   27   28   29   30   31 
+  57   68   72   59   76   69   94  113  149  171  346  301  727  682 1341 1798 
+
+sum(as.data.frame(yy)$Freq)
+[1] 7305
+> sum(as.data.frame(yy)[21:32, ]$Freq)   # How many overall months have >=20
+days of values.
+[1] 5867
+> 
+```
+
+The one showed up when we were playing around was:
+filter(buoy_sst, stn_id == "C46183", year(date) == 2019, month(date) == 6) %>% a()
+Has 13 missing days but they are kind of spread out, so looks usable. Hence go
+with half a month needed, but no big gaps.
+
+plot(all_buoys_anomalies, months = 1:12)  # North Hecate St 2019 has a big
+anomaly, but it's only from that one month of data, as seen clearly in:
+plot(all_buoys_anomalies, stn_id = "C46183")
+
+Also need to think about climatologies. And whether to put the thinking part in
+the climatology calculations and/or the plotting. Have to be in the climatology
+calculations, as anomalies will change when we change the rules. And then all
+resulting monthly climatologies/anomalies will be valid.
+
+In the plotting we need a condition - how many months out of the requested ones
+need to have anomaly calculations? Since monthly anomalies will have been calculated.
+
+Could do the heatmap type plot on weekly or even daily values (for a single
+buoy) to get an idea of the amount of missing data. Daily would be interesting.
+
+
+Need to think about what then needs to be done in the anomaly calculation
+function. Think have to do go back and forth a bit, therefore need a decent vignette.
+
+- also look at biggest daily swings in temperature, and check if they're always
+  at the start of the time series for a buoy. Implies turned on while on boat,
+  bit like the albatrosses.

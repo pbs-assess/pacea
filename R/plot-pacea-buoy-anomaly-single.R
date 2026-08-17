@@ -4,14 +4,8 @@
 ##'
 ##' @param pacea_buoy_anomaly_list object of class `pacea_buoy_anomaly_list`
 ##' obtained from running `calculate_anomaly()` on buoy data.
-##' @param stn_id_to_plot station ID to plot
-##' @param main title for the plot
-##' @param xlab x-axis label
-##' @param ylab y-axis label
-##' @param sst_plot character, one of:
-##'   * `"anomaly"` (default) - plots SST anomalies
-##'   * `"mean"` - plots mean SST values for each month
-##'   * `"count"` - plots count of daily SST values used to calculate monthly mean
+##' @param stn_id_to_plot single station ID to plot
+##' @rdname plot.pacea_buoy_anomaly_list
 ##' @return a ggplot object
 ##' @export
 ##' @author Andrew Edwards
@@ -31,10 +25,17 @@ plot_pacea_buoy_anomaly_single <- function(pacea_buoy_anomaly_list,
                                            xlab,
                                            ylab,
                                            sst_plot = "anomaly",
-                                           count_breaks = c(0, 10, 15, 20, 31)){
+                                           count_breaks = NULL,
+                                           return_results = FALSE){
 
   # Validate sst_plot parameter
   sst_plot <- match.arg(sst_plot, c("anomaly", "mean", "count"))
+
+  # Set default count_breaks, plotting all months specified so want the
+  # one-month colour bar
+  if(is.null(count_breaks)){
+    count_breaks <- c(0, 10, 15, 20, 31)
+  }
 
   # Create legend label based on sst_plot
   legend_label <- switch(sst_plot,
@@ -156,6 +157,12 @@ plot_pacea_buoy_anomaly_single <- function(pacea_buoy_anomaly_list,
                                  ticks.colour = "black")) +
     labs(title = main)
 
-  anomaly_plot
+  if(return_results){
+    print(anomaly_plot)
+    list(plot = anomaly_plot,
+         results = plot_data)
+  } else {
+    return(anomaly_plot)
+  }
 }
 

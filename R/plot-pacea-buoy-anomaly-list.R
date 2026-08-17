@@ -31,8 +31,13 @@
 ##'   * `"mean"` - plots mean SST values for each month
 ##'   * `"count"` - plots count of daily SST values used to calculate monthly mean
 ##' @param count_breaks numeric vector of break points for the count plot colour scale.
-##' Only used when `sst_plot = "count"`. Default is `c(0, 10, 15, 20, 31)`.
-##' @return a ggplot object
+##' Only used when `sst_plot = "count"`. Default of `NULL` actually defaults to
+##' `c(0, 10, 15, 20, 31) * length(months)` if `months` is specified, else it is
+##' `c(0, 10, 15, 20, 31)`.
+##' @param return_results logical, if `FALSE` (default) returns the plot object only.
+##' If `TRUE`, prints the plot and returns a list with both `plot` and `results`.
+##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot` and `results`
+##' (when `return_results = TRUE`)
 ##' @export
 ##' @author Andrew Edwards
 ##' @examples
@@ -59,7 +64,8 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
                                          ylab = "Buoy",
                                          use_stn_id_name = TRUE,
                                          sst_plot = "anomaly",
-                                         count_breaks = c(0, 10, 15, 20, 31)){
+                                         count_breaks = NULL,
+                                         return_results = FALSE){
                                          # number_shades = 16){ see TODO below
 
   # Validate sst_plot parameter
@@ -74,7 +80,7 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
       months = 1:12         # Default to plot all months
     }
 
-    anomaly_plot <- plot_pacea_buoy_anomaly_single(
+    anomaly_plot_or_list <- plot_pacea_buoy_anomaly_single(
       pacea_buoy_anomaly_list = pacea_buoy_anomaly_list,
       stn_id_to_plot = stn_id_to_plot,
       months = months,
@@ -82,13 +88,21 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
       xlab = xlab,
       ylab = "Month",
       sst_plot = sst_plot,
-      count_breaks = count_breaks)
-    return(anomaly_plot)
+      count_breaks = count_breaks,
+      return_results = return_results)
+    return(anomaly_plot_or_list)
   }
 
   if(is.null(months)){
     months = 4         # Default plot of April values, but still allow the
     # single stn_id_to_plot function above to have months specified.
+  }
+
+  # Set default count_breaks based on number of months
+  if(is.null(count_breaks)){
+    count_breaks <- c(0, 10, 15, 20, 31) * ifelse(!is.null(months),
+                                                  length(months),
+                                                  1)
   }
 
   if(is.null(stn_id_to_plot)){                 # Plot all of them available
@@ -307,5 +321,11 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
     labs(title = main)
          # caption = "Ooh look at me")
 
-  anomaly_plot
+  if(return_results){
+    print(anomaly_plot)
+    return(list(plot = anomaly_plot,
+                results = plot_data))
+  } else {
+    return(anomaly_plot)
+  }
 }
