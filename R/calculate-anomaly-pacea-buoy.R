@@ -17,6 +17,9 @@
 #' @param time_period_return vector of value(s) for the specific time units to estimate climatologies (e.g. '4' for week 4 or April). Set to equal 'all' for all time units.
 #' @param years_return vector of value(s) to return the years of
 #' interest. Defaults to all years in input data
+#' @param min_days_per_month minimum number of daily SST values required in a
+#' time period (month or week) for that period to be included in climatology
+#' calculation and anomaly calculation. Defaults to 15 days per month.
 #'
 #' @importFrom dplyr mutate select filter group_by summarise ungroup left_join join_by rename relocate
 #' @importFrom sf st_drop_geometry st_as_sf
@@ -30,7 +33,7 @@
 #' @examples
 #' \dontrun{
 
-#' # Will integrate options into function better TODO
+#' # Will integrate options into function better TODO see vignette
 #' one_stn_id_example <- "C46146"
 #' buoy_example <- buoy_sst %>%
 #'   filter(stn_id == one_stn_id_example)
@@ -41,7 +44,8 @@ calculate_anomaly.pacea_buoy <- function(data,
                                          climatology_years = c(1991:2020),
                                          climatology_time = "month",
                                          time_period_return = "all",
-                                         years_return = NULL) {
+                                         years_return = NULL,
+                                         min_days_per_month = 15) {
 
   stopifnot("'climatology_time' must have a value of 'month' or 'week'" = climatology_time %in% c("month", "week"))
 
@@ -74,13 +78,21 @@ calculate_anomaly.pacea_buoy <- function(data,
     filter(year %in% climatology_years,
            time_unit %in% time_period_return) %>%
     group_by(stn_id,
+             year,
              time_unit) %>%
-    summarise(clim_value = mean(sst,
-                                na.rm = TRUE),
-              clim_sd = sd(sst,
-                           na.rm = TRUE),
-              clim_n = sum(!is.na(sst))) %>%
-    ungroup()
+    summarise(days_not_NA = sum(!is.na(sst)))
+
+# HERE
+
+
+#    summarise(clim_value = mean(sst,
+#                                na.rm = TRUE),
+#              clim_sd = sd(sst,
+#                           na.rm = TRUE),
+#              clim_n = sum(!is.na(sst))) %>%
+#    ungroup()
+
+#filter(sum(!is.na(sst)) >= min_days_per_month) %>%
 
   # Adapting from Travis's calc_climatology_anomaly.R
   # BUT now averaging over the time_unit first and then do
@@ -93,6 +105,7 @@ calculate_anomaly.pacea_buoy <- function(data,
     group_by(stn_id,
              year,
              time_unit) %>%
+    filter(sum(!is.na(sst)) >= min_days_per_month) %>%
     summarise(sst_mean = mean(sst,
                               na.rm = TRUE),
               sst_n = sum(!is.na(sst))) %>%
