@@ -160,26 +160,54 @@ plot(all_buoys_anomalies,
 
 Other options, to add to the help and the testing:
 ```{r, buoyanomalyplot4}
-plot(all_buoys_anomalies, sst_plot = "mean", months = 6:8)
-plot(all_buoys_anomalies, sst_plot = "count", months = c(12, 1, 2))
-plot(all_buoys_anomalies, sst_plot = "count", stn_id = "C46184")
-plot(all_buoys_anomalies, sst_plot = "count")  # check what this is doing, mean
+plot(all_buoys_anomalies,
+     sst_plot = "mean",
+     months = 6:8)
+
+plot(all_buoys_anomalies,
+     sst_plot = "count",
+     months = c(12, 1, 2))
+
+plot(all_buoys_anomalies,
+     sst_plot = "count",
+     stn_id = "C46184")
+
+plot(all_buoys_anomalies,
+     sst_plot = "count")  # check what this is doing, mean
 # count over all years?? Ah no, it's april counts each year each buoy.
-plot(all_buoys_anomalies, sst_plot = "count", count_breaks = c(0, 20, 31))
 
-plot(all_buoys_anomalies, sst_plot = "count", stn_id = "C46184", count_breaks = c(0, 15, 31))
+plot(all_buoys_anomalies,
+     sst_plot = "count",
+     count_breaks = c(0, 20, 31))
 
-plot(all_buoys_anomalies, sst_plot = "count", return_results = TRUE, months =
-                                                                       6:8)
+plot(all_buoys_anomalies,
+     sst_plot = "count",
+     stn_id = "C46184",
+     count_breaks = c(0, 15, 31))
 
-plot(all_buoys_anomalies, sst_plot = "count", return_results = TRUE, months = 6:8)
-plot(all_buoys_anomalies, sst_plot = "count", return_results = TRUE, months = 6:8, stn_id = "C46184")
+plot(all_buoys_anomalies,
+     sst_plot = "count",
+     return_results = TRUE,
+     months = 6:8)
+
+plot(all_buoys_anomalies,
+     sst_plot = "count",
+     return_results = TRUE,
+     months = 6:8)
+
+plot(all_buoys_anomalies,
+     sst_plot = "count",
+     return_results = TRUE,
+     months = 6:8,
+     stn_id = "C46184")
 ```
 
 Do single buoys also.
 
 We can exclude the three buoys that do not have a long time series (this might
 change when we refine the analyses):
+
+don't need I think:
 
 ```{r, buoyanomalyplot3}
 
@@ -257,6 +285,12 @@ knitr::knit_exit()
 
 
 ### Rough notes, being adopted above somewhat
+
+
+This works, but not for plotting yet, and may need to add options for how many
+days needed in a week.
+
+all_buoys_anomalies_weekly <- calculate_anomaly(buoy_sst, climatology_time = "week")
 
 Need to remove data-poor months. Have some defaults that users can change, and
 tell users to look at data. Elise thinks at least half the month, with no gap of

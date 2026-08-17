@@ -3,13 +3,17 @@
 #' putting anomaly calcs in here also, then return a list object that has
 #' both. So change name to anomaly at some point.
 #'
-#' Function for calculating climatology of a buoy_sstpacea data object.
+#' Function for calculating climatology of a `buoy_sst` pacea data object.
 #' @details
 #' TODO The functions `calc_clim` and `calc_anom` output the climatology of a specified time period and anomaly values relative to a climtological period, respectively. These functions can be used for data from BCCM (e.g. `bccm_surface_temperature()`), OISST (e.g. `oisst_7day`), and buoy SST (e.g. `buoy_sst`).
 #'
 #' @param data `buoy_sst` pacea data object
 #' @param climatology_years climatology period years
-#' @param climatology_time time units (e.g. month) to summarize climatologies
+#' @param climatology_time time units ("month" or "week") to summarize
+#' climatologies and anomalies. Note that the plotting function is not set up
+#' yet to plot weekly results. Contact Andy if this would be useful. Also, for
+#' weekly we have not specified a minimum number of daily SST values to be
+#' available in a week.
 #' @param time_period_return vector of value(s) for the specific time units to estimate climatologies (e.g. '4' for week 4 or April). Set to equal 'all' for all time units.
 #' @param years_return vector of value(s) to return the years of
 #' interest. Defaults to all years in input data
@@ -39,16 +43,10 @@ calculate_anomaly.pacea_buoy <- function(data,
                                          time_period_return = "all",
                                          years_return = NULL) {
 
-
-  # month reference table
-  month_table <- data.frame(month.name = month.name,
-                            month.abb = month.abb,
-                            month.num = 1:12)
-
   stopifnot("'climatology_time' must have a value of 'month' or 'week'" = climatology_time %in% c("month", "week"))
 
   # climatology_time is irrelevant if class != pacea_buoy
-  if("pacea_st" %in% class(data)) climatology_time <- "month"
+  # if("pacea_st" %in% class(data)) climatology_time <- "month"
   if("month" %in% colnames(data)) climatology_time <- "month"
   if("week" %in% colnames(data)) climatology_time <- "week"
 
