@@ -214,6 +214,30 @@ plot(all_buoys_anomalies_all_days)
 # first arg used the original function before we added this in
 ```
 
+And here is the default with the cut off of requiring 15 days:
+```{r, need15days}
+plot(all_buoys_anomalies)
+```
+
+For example, Central Dixon Entrance has a few years that appear when using all
+days but not when using the 15-day-per-month cut off (remember above two plots
+are for April). Can look at that in
+detail, by using the `min_days_per_month = 0` results:
+```{r, cde}
+plot(all_buoys_anomalies_all_days,
+     stn_id = "C46145",
+     sst_plot = "count",
+     count_breaks = c(0, 15, 31))
+```
+
+Workflow should be:
+- do the calculations with the defaults
+- plot the counts for that buoy, with count_breaks as 0,15,31 (could make the
+  default)
+- check if that looks satisfactory, both in terms of calculating the climatology
+  and for doing the anomalies. Hard to automate, so just have to inspect
+  manually (e.g. not too many big gaps).
+- change `min_days_per_month` value if possible. Try 0 at first as an extreme to see if that helps enough.
 
 Do single buoys also.
 
