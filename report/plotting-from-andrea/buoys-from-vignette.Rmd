@@ -202,6 +202,19 @@ plot(all_buoys_anomalies,
      stn_id = "C46184")
 ```
 
+
+All buoys, but no 15-day requirement in the climatology or anomaly, instead use
+all days:
+```{r, usealldays
+all_buoys_anomalies_all_days <- calculate_anomaly(buoy_sst,
+                                                  min_days_per_month = 0)
+plot(all_buoys_anomalies_all_days)
+
+# expect_equal(all_buoys_anomalies, all_buoys_anomalies_all_days) worked when
+# first arg used the original function before we added this in
+```
+
+
 Do single buoys also.
 
 We can exclude the three buoys that do not have a long time series (this might

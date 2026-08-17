@@ -71,33 +71,45 @@ calculate_anomaly.pacea_buoy <- function(data,
 
 
   FUN <- match.fun(climatology_time)
-  climatology <- data %>%
+
+  # First pass: count days per stn_id/year/time_unit in climatology period
+  insufficient_data <- data %>%
     mutate(year = lubridate::year(date),
-           time_unit = FUN(date)) %>%   # think using lubridate here based on
-    # choice of month or week
+           time_unit = FUN(date)) %>%  # lubridate based on choice of month or week
     filter(year %in% climatology_years,
            time_unit %in% time_period_return) %>%
     group_by(stn_id,
              year,
              time_unit) %>%
-    summarise(days_not_NA = sum(!is.na(sst)))
+    summarise(days_not_NA = sum(!is.na(sst))) %>%
+    ungroup() %>%
+    filter(days_not_NA < min_days_per_month)
 
-# HERE
-
-
-#    summarise(clim_value = mean(sst,
-#                                na.rm = TRUE),
-#              clim_sd = sd(sst,
-#                           na.rm = TRUE),
-#              clim_n = sum(!is.na(sst))) %>%
-#    ungroup()
-
-#filter(sum(!is.na(sst)) >= min_days_per_month) %>%
+  # Second pass: set SST to NA for insufficient data, then calculate climatology
+  climatology <- data %>%
+    mutate(year = lubridate::year(date),
+           time_unit = FUN(date)) %>%
+    filter(year %in% climatology_years,
+           time_unit %in% time_period_return) %>%
+    left_join(insufficient_data,
+              by = join_by(stn_id, year, time_unit)) %>%
+    mutate(sst = ifelse(!is.na(days_not_NA), NA_real_, sst)) %>%
+    select(-days_not_NA) %>%
+    group_by(stn_id,
+             time_unit) %>%
+    summarise(clim_value = mean(sst,
+                                na.rm = TRUE),
+              clim_sd = sd(sst,
+                           na.rm = TRUE),
+              clim_n = sum(!is.na(sst))) %>%
+    ungroup()
 
   # Adapting from Travis's calc_climatology_anomaly.R
   # BUT now averaging over the time_unit first and then do
   # the anomaly from the climatology.
-  anomaly <- data %>%
+
+  # First pass: count days per stn_id/year/time_unit for all years
+  insufficient_data_anomaly <- data %>%
     mutate(year = lubridate::year(date),
            time_unit = FUN(date)) %>%
     filter(year %in% years_return,
@@ -105,7 +117,23 @@ calculate_anomaly.pacea_buoy <- function(data,
     group_by(stn_id,
              year,
              time_unit) %>%
-    filter(sum(!is.na(sst)) >= min_days_per_month) %>%
+    summarise(days_not_NA = sum(!is.na(sst))) %>%
+    ungroup() %>%
+    filter(days_not_NA < min_days_per_month)
+
+  # Second pass: set SST to NA for insufficient data, then calculate anomalies
+  anomaly <- data %>%
+    mutate(year = lubridate::year(date),
+           time_unit = FUN(date)) %>%
+    filter(year %in% years_return,
+           time_unit %in% time_period_return) %>%
+    left_join(insufficient_data_anomaly,
+              by = join_by(stn_id, year, time_unit)) %>%
+    mutate(sst = ifelse(!is.na(days_not_NA), NA_real_, sst)) %>%
+    select(-days_not_NA) %>%
+    group_by(stn_id,
+             year,
+             time_unit) %>%
     summarise(sst_mean = mean(sst,
                               na.rm = TRUE),
               sst_n = sum(!is.na(sst))) %>%
