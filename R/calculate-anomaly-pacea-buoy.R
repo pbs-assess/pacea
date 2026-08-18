@@ -20,6 +20,10 @@
 #' @param min_days_per_month minimum number of daily SST values required in a
 #' time period (month or week) for that period to be included in climatology
 #' calculation and anomaly calculation. Defaults to 15 days per month.
+#' @param max_consecutive_missing_days maximum number of consecutive days allowed
+#' to be missing (NA) within a time period (month or week). If a time period has
+#' more than this many consecutive NAs, it is excluded from climatology and anomaly
+#' calculation. Defaults to 6 days.
 #'
 #' @importFrom dplyr mutate select filter group_by summarise ungroup left_join join_by rename relocate
 #' @importFrom sf st_drop_geometry st_as_sf
@@ -27,7 +31,9 @@
 #' @importFrom lubridate year
 #' @importFrom stats sd
 #'
-#' @return TODO list object of climatology of data and anomaly, of class `pacea_buoy_anomaly_list`
+#' @return TODO list object of climatology of data and anomaly, of class
+#' `pacea_buoy_anomaly_list`. Note that `climatology_years` will be the
+#' prescribed years, but these may not be available for all buoys.
 #' @export
 #'
 #' @examples
@@ -45,7 +51,8 @@ calculate_anomaly.pacea_buoy <- function(data,
                                          climatology_time = "month",
                                          time_period_return = "all",
                                          years_return = NULL,
-                                         min_days_per_month = 15) {
+                                         min_days_per_month = 15,
+                                         max_consecutive_missing_days = 6) {
 
   stopifnot("'climatology_time' must have a value of 'month' or 'week'" = climatology_time %in% c("month", "week"))
 
@@ -69,7 +76,6 @@ calculate_anomaly.pacea_buoy <- function(data,
     years_return <- 1800:2100
   }
 
-
   FUN <- match.fun(climatology_time)
 
   # First pass: count days per stn_id/year/time_unit in climatology period
@@ -85,16 +91,49 @@ calculate_anomaly.pacea_buoy <- function(data,
     ungroup() %>%
     filter(days_not_NA < min_days_per_month)
 
+  # Detect excessive consecutive missing days in climatology period
+  excessive_gaps <- data %>%
+    mutate(year = lubridate::year(date),
+           time_unit = FUN(date)) %>%
+    filter(year %in% climatology_years,
+           time_unit %in% time_period_return) %>%
+    group_by(stn_id,
+             year,
+             time_unit) %>%
+    mutate(sst_na = is.na(sst),
+           na_run_id = dplyr::consecutive_id(sst_na)) %>%
+    group_by(na_run_id,
+             .add = TRUE) %>%
+    mutate(na_streak_length = dplyr::if_else(is.na(sst),
+                                             n(),
+                                             0)) %>%  # still has every day
+    ungroup() %>%
+    group_by(stn_id,
+             year,
+             time_unit) %>%
+    summarise(max_na_streak_length = max(na_streak_length)) %>%
+    ungroup() %>%
+    filter(max_na_streak_length > max_consecutive_missing_days) %>%
+    select(stn_id, year, time_unit)
+
+  # Combine insufficient_data and excessive_gaps
+  data_to_exclude_clim <- bind_rows(insufficient_data %>% select(stn_id, year, time_unit),
+                                    excessive_gaps)
+
   # Second pass: set SST to NA for insufficient data, then calculate climatology
   climatology <- data %>%
     mutate(year = lubridate::year(date),
            time_unit = FUN(date)) %>%
     filter(year %in% climatology_years,
            time_unit %in% time_period_return) %>%
-    left_join(insufficient_data,
-              by = join_by(stn_id, year, time_unit)) %>%
-    mutate(sst = ifelse(!is.na(days_not_NA), NA_real_, sst)) %>%
-    select(-days_not_NA) %>%
+    mutate(exclude = interaction(stn_id,
+                                 year,
+                                 time_unit) %in%
+                     interaction(data_to_exclude_clim$stn_id,
+                                 data_to_exclude_clim$year,
+                                 data_to_exclude_clim$time_unit)) %>%
+    mutate(sst = ifelse(exclude, NA, sst)) %>%
+    select(-exclude) %>%
     group_by(stn_id,
              time_unit) %>%
     summarise(clim_value = mean(sst,
@@ -121,16 +160,49 @@ calculate_anomaly.pacea_buoy <- function(data,
     ungroup() %>%
     filter(days_not_NA < min_days_per_month)
 
+  # Detect excessive consecutive missing days in anomaly period
+  excessive_gaps_anomaly <- data %>%
+    mutate(year = lubridate::year(date),
+           time_unit = FUN(date)) %>%
+    filter(year %in% years_return,
+           time_unit %in% time_period_return) %>%
+    group_by(stn_id,
+             year,
+             time_unit) %>%
+    mutate(sst_na = is.na(sst),
+           na_run_id = dplyr::consecutive_id(sst_na)) %>%
+    group_by(na_run_id,
+             .add = TRUE) %>%
+    mutate(na_streak_length = dplyr::if_else(is.na(sst),
+                                             n(),
+                                             0)) %>%  # still has every day
+    ungroup() %>%
+    group_by(stn_id,
+             year,
+             time_unit) %>%
+    summarise(max_na_streak_length = max(na_streak_length)) %>%
+    ungroup() %>%
+    filter(max_na_streak_length > max_consecutive_missing_days) %>%
+    select(stn_id, year, time_unit)
+
+  # Combine insufficient_data_anomaly and excessive_gaps_anomaly
+  data_to_exclude_anom <- bind_rows(insufficient_data_anomaly %>% select(stn_id, year, time_unit),
+                                     excessive_gaps_anomaly)
+
   # Second pass: set SST to NA for insufficient data, then calculate anomalies
   anomaly <- data %>%
     mutate(year = lubridate::year(date),
            time_unit = FUN(date)) %>%
     filter(year %in% years_return,
            time_unit %in% time_period_return) %>%
-    left_join(insufficient_data_anomaly,
-              by = join_by(stn_id, year, time_unit)) %>%
-    mutate(sst = ifelse(!is.na(days_not_NA), NA_real_, sst)) %>%
-    select(-days_not_NA) %>%
+    mutate(exclude = interaction(stn_id, year, time_unit) %in%
+                     interaction(data_to_exclude_anom$stn_id,
+                                 data_to_exclude_anom$year,
+                                 data_to_exclude_anom$time_unit)) %>%
+    mutate(sst = ifelse(exclude,
+                        NA,
+                        sst)) %>%
+    select(-exclude) %>%
     group_by(stn_id,
              year,
              time_unit) %>%
@@ -144,7 +216,7 @@ calculate_anomaly.pacea_buoy <- function(data,
     mutate(sst_anomaly = sst_mean - clim_value) %>%
     select(-c("clim_value",
               "clim_sd",
-              "clim_n"))    # no point in keep repeating them
+              "clim_n")) # no point in keep repeating them
 
   # Now rename time_unit column to the actual unit
   colnames(climatology)[which(colnames(climatology) == "time_unit")] <- climatology_time

@@ -203,6 +203,8 @@ plot(all_buoys_anomalies,
 ```
 
 
+NEED TO ADAPT WITH `max_consecutive_missing_days` once that's working.
+
 All buoys, but no 15-day requirement in the climatology or anomaly, instead use
 all days:
 ```{r, usealldays
@@ -230,6 +232,56 @@ plot(all_buoys_anomalies_all_days,
      count_breaks = c(0, 15, 31))
 ```
 
+Now doing the max consecutive missing days:
+```{r, maxmissing}
+all_buoys_anomalies_all_gaps_allowed <- calculate_anomaly(buoy_sst,
+                                                  max_consecutive_missing_days =
+                                                    32)
+# expect_equal(all_buoys_anomalies, all_buoys_anomalies_all_gaps_allowed) worked when
+# first arg used the original function before we added this in
+```
+
+Need to confirm that does what we want.
+Buoy C46004 has NA's from 1989-11-06 to 1990-07-11, also a run of 7 in August 1990. Let's force 1989 to be in
+climatology and check it those end months get properly ignored.
+
+```{r, climtest}
+test_buoy <- filter(buoy_sst,
+                    stn_id == "C46004")
+test_buoy_anomalies <- calculate_anomaly(test_buoy,
+                                         climatology_years = 1989:1995)
+plot(test_buoy_anomalies)
+
+test_buoy %>% filter(date < "1992-10-01") %>% a()
+
+test_buoy_anomalies$anomaly[1:50,] %>% a()
+```
+That shows some that are wrong. For example
+```{r, wrong}
+test_buoy_march_april_1991 <-
+  filter(test_buoy,
+         date >= "1991-03-01" & date <= "1991-04-30")
+
+# Can see a streak of 3 NA's and one of 4 NA's, with 24 non-NA's in March, but
+# April just has the one NA ...
+test_buoy_march_april_1991 %>% a()  
+
+# ... so the default settings do work, but if we get stricter then they do not
+# for March:
+calculate_anomaly(test_buoy_march_april_1991)
+calculate_anomaly(test_buoy_march_april_1991,
+                  min_days_per_month = 25)
+calculate_anomaly(test_buoy_march_april_1991,
+                  max_consecutive_missing_days = 4) # 4 NA streak allowed
+calculate_anomaly(test_buoy_march_april_1991,
+                  max_consecutive_missing_days = 3) # no climatology
+
+    
+```
+
+
+
+
 Workflow should be:
 - do the calculations with the defaults
 - plot the counts for that buoy, with count_breaks as 0,15,31 (could make the
@@ -238,6 +290,8 @@ Workflow should be:
   and for doing the anomalies. Hard to automate, so just have to inspect
   manually (e.g. not too many big gaps).
 - change `min_days_per_month` value if possible. Try 0 at first as an extreme to see if that helps enough.
+
+Now add max consecutive number of NA's in a row, within a month-year combination.
 
 Do single buoys also.
 

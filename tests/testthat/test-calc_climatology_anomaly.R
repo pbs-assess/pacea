@@ -1,6 +1,5 @@
-test_that("multiplication works", {
-  expect_equal(2 * 2, 4)
-})
+# Travis's original `calc_clim()` functions, that Andy has adapted into
+# calculate_anomaly().
 
 # calc_clim
 test_that("calc_clim works for bccm data", {
