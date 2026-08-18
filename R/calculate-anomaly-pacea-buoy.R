@@ -94,7 +94,8 @@ calculate_anomaly.pacea_buoy <- function(data,
   # Detect excessive consecutive missing days in climatology period
   excessive_gaps <- data %>%
     mutate(year = lubridate::year(date),
-           time_unit = FUN(date)) %>%
+           time_unit = FUN(date),
+           true_days_in_month = lubridate::days_in_month(date)) %>%
     filter(year %in% climatology_years,
            time_unit %in% time_period_return) %>%
     group_by(stn_id,
@@ -111,8 +112,23 @@ calculate_anomaly.pacea_buoy <- function(data,
     group_by(stn_id,
              year,
              time_unit) %>%
-    summarise(max_na_streak_length = max(na_streak_length)) %>%
+    summarise(max_na_streak_length = max(na_streak_length),
+              data_days_in_month = n(),
+              true_days_in_month = unique(true_days_in_month)) %>%
     ungroup() %>%
+    # But then if some days in a month have no data, need to think of those as NA's. And
+    # this is only at the start of each month, as done by running the above part
+    # to here
+    # and checking:
+    # filter(excessive_gaps, data_days_in_month != true_days_in_month) %>% a()
+    # each buoy only had short months at only the start and end of its time series.
+    # Except C46303 which started on 2019-10-01 so that is not short.
+    # C46181 started on 1988-12-07, but had a big run of NA's from 1988-12-14,
+    # so max streak is 18. Only that and C46304 have a longer NA streak than the
+    # missing days.
+    mutate(missing_days_in_month = true_days_in_month - data_days_in_month) %>%
+    mutate(max_na_streak_length = pmax(max_na_streak_length,
+                                       missing_days_in_month))  %>%
     filter(max_na_streak_length > max_consecutive_missing_days) %>%
     select(stn_id, year, time_unit)
 
@@ -167,7 +183,8 @@ calculate_anomaly.pacea_buoy <- function(data,
   # Detect excessive consecutive missing days in anomaly period
   excessive_gaps_anomaly <- data %>%
     mutate(year = lubridate::year(date),
-           time_unit = FUN(date)) %>%
+           time_unit = FUN(date),
+           true_days_in_month = lubridate::days_in_month(date)) %>%
     filter(year %in% years_return,
            time_unit %in% time_period_return) %>%
     group_by(stn_id,
@@ -184,8 +201,13 @@ calculate_anomaly.pacea_buoy <- function(data,
     group_by(stn_id,
              year,
              time_unit) %>%
-    summarise(max_na_streak_length = max(na_streak_length)) %>%
+    summarise(max_na_streak_length = max(na_streak_length),
+              data_days_in_month = n(),
+              true_days_in_month = unique(true_days_in_month)) %>%
     ungroup() %>%
+    mutate(missing_days_in_month = true_days_in_month - data_days_in_month) %>%
+    mutate(max_na_streak_length = pmax(max_na_streak_length,
+                                       missing_days_in_month))  %>%
     filter(max_na_streak_length > max_consecutive_missing_days) %>%
     select(stn_id, year, time_unit)
 
