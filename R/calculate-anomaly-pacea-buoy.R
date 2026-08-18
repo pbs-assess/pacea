@@ -141,7 +141,11 @@ calculate_anomaly.pacea_buoy <- function(data,
               clim_sd = sd(sst,
                            na.rm = TRUE),
               clim_n = sum(!is.na(sst))) %>%
-    ungroup()
+    ungroup() %>%
+    # Replace all NaNs with NAs
+    mutate(across(where(is.numeric),
+                  ~ ifelse(is.nan(.x), NA, .x)))
+
 
   # Adapting from Travis's calc_climatology_anomaly.R
   # BUT now averaging over the time_unit first and then do
@@ -216,7 +220,10 @@ calculate_anomaly.pacea_buoy <- function(data,
     mutate(sst_anomaly = sst_mean - clim_value) %>%
     select(-c("clim_value",
               "clim_sd",
-              "clim_n")) # no point in keep repeating them
+              "clim_n")) %>% # no point in keep repeating them
+   # Replace all NaNs with NAs
+    mutate(across(where(is.numeric),
+                  ~ ifelse(is.nan(.x), NA, .x)))
 
   # Now rename time_unit column to the actual unit
   colnames(climatology)[which(colnames(climatology) == "time_unit")] <- climatology_time
