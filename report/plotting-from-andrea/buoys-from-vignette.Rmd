@@ -203,13 +203,17 @@ plot(all_buoys_anomalies,
 ```
 
 
-NEED TO ADAPT WITH `max_consecutive_missing_days` once that's working.
+HERE - just did this, think about it more. Could add the consectuvie NA values
+(max streak for each month) into the results,
+and then make a plotting option.
 
 All buoys, but no 15-day requirement in the climatology or anomaly, instead use
 all days:
 ```{r, usealldays
 all_buoys_anomalies_all_days <- calculate_anomaly(buoy_sst,
-                                                  min_days_per_month = 0)
+                                                  min_days_per_month = 0,
+                                                  max_consecutive_missing_days =
+                                                  32)
 plot(all_buoys_anomalies_all_days)
 
 # expect_equal(all_buoys_anomalies, all_buoys_anomalies_all_days) worked when
@@ -279,9 +283,6 @@ calculate_anomaly(test_buoy_march_april_1991,
     
 ```
 
-
-
-
 Workflow should be:
 - do the calculations with the defaults
 - plot the counts for that buoy, with count_breaks as 0,15,31 (could make the
@@ -291,7 +292,8 @@ Workflow should be:
   manually (e.g. not too many big gaps).
 - change `min_days_per_month` value if possible. Try 0 at first as an extreme to see if that helps enough.
 
-Now add max consecutive number of NA's in a row, within a month-year combination.
+Now add max consecutive number of NA's in a row, within a month-year
+combination. And suggest that check also.
 
 Do single buoys also.
 

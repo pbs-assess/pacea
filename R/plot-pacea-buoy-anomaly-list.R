@@ -7,12 +7,13 @@
 ##'
 ##' @param pacea_buoy_anomaly_list object of class `pacea_buoy_anomaly_list`
 ##' obtained from running `caclulate_anomaly()` on buoy data.
-##' @param stn_id_to_plot character vector of station IDs (`stn_id` values)from the `buoy_sst` data
+##' @param stn_id_to_plot character vector of station IDs (`stn_id` values OR
+##' `name` values ) from the `buoy_sst` data
 ##' object. If `NULL` (default), anomalies for all buoys (in
 ##' `pacea_buoy_anomaly_list_object`) are plotted. If specified, only the
 ##' buoys in this vector are plotted. If `length(stn_id_to_plot == 1)` then anomalies
 ##' for each month are shown, with January at the top and December at the
-##' bottom. TODO could make it accept the names instead.
+##' bottom.
 ##' @param months numeric vector of months to include (1-12). If not specified
 ##' then defaults to 4
 ##' (April), except when only one `stn_id_to_plot` when all months are plotted (unless specified). Can have more than one month, e.g. 6:9. For a 'winter' average,
@@ -73,6 +74,22 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
 
   # Add a stop() condition that if months are not sequential (Dec Jan is okay) then
   # main needs to be specified TODO Also 12:1 should not be allowed.
+
+  # If stn_id_to_plot[1] does not start with "C4" then all values in
+  # stn_id_to_plot vector are assumed to be names. If this is the case then
+  # replace each element of stn_id_to_plot with its respective stn_id code (of
+  # the form "C4...."). These are found in the data object buoy_metadata, with
+  # the name column being the name and stn_id the required stn_id.
+  if(!is.null(stn_id_to_plot) && !startsWith(stn_id_to_plot[1],
+                                             "C4")){
+    stn_id_to_plot_new <- buoy_metadata$stn_id[match(stn_id_to_plot,
+                                                     buoy_metadata$name)]
+    if(any(is.na(stn_id_to_plot_new))){
+      stop("You have mis-spelled at least one buoy name in stn_id")
+    }
+
+    stn_id_to_plot <- stn_id_to_plot_new
+  }
 
   # If just one stn_id then plot months on the y-axis
   if(length(stn_id_to_plot) == 1){
