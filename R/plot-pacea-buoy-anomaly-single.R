@@ -4,7 +4,7 @@
 ##'
 ##' @param pacea_buoy_anomaly_list object of class `pacea_buoy_anomaly_list`
 ##' obtained from running `calculate_anomaly()` on buoy data.
-##' @param stn_id_to_plot single station ID to plot
+##' @param stn_id_to_plot single `stn_id` to plot
 ##' @rdname plot.pacea_buoy_anomaly_list
 ##' @return a ggplot object
 ##' @export
@@ -24,12 +24,21 @@ plot_pacea_buoy_anomaly_single <- function(pacea_buoy_anomaly_list,
                                            main,
                                            xlab,
                                            ylab,
+                                           use_stn_id_name,
                                            sst_plot = "anomaly",
                                            count_breaks = NULL,
                                            return_results = FALSE){
 
   # Validate sst_plot parameter
   sst_plot <- match.arg(sst_plot, c("anomaly", "mean", "count"))
+
+
+    if(use_stn_id_name){
+      stn_id_to_plot_name <- buoy_metadata$name[match(stn_id_to_plot,
+                                                      buoy_metadata$stn_id)]
+    } else {
+      stn_id_to_plot_name <- stn_id_to_plot
+    }
 
   # Set default count_breaks, plotting all months specified so want the
   # one-month colour bar
@@ -52,8 +61,8 @@ plot_pacea_buoy_anomaly_single <- function(pacea_buoy_anomaly_list,
       main =
         paste0("Monthly sea-surface temperature ",
                main_suffix,
-               " for buoy ",
-               stn_id_to_plot,
+               " for the buoy at ",
+               stn_id_to_plot_name,
                " using climatology from ",
                min(pacea_buoy_anomaly_list$climatology_years),
                " to ",
@@ -62,8 +71,8 @@ plot_pacea_buoy_anomaly_single <- function(pacea_buoy_anomaly_list,
       main =
         paste0("Monthly sea-surface temperature ",
                main_suffix,
-               " for buoy ",
-               stn_id_to_plot)
+               " for the buoy at ",
+               stn_id_to_plot_name)
     }
   }
 

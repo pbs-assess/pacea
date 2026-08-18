@@ -104,6 +104,7 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
       main = main,
       xlab = xlab,
       ylab = "Month",
+      use_stn_id_name = use_stn_id_name,
       sst_plot = sst_plot,
       count_breaks = count_breaks,
       return_results = return_results)
