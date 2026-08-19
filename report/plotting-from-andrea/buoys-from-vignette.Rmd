@@ -18,15 +18,12 @@ or click the knit button in RStudio -->
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.width = 5.7,
-  fig.height = 5
+  fig.width = 14,   #5.7,
+  fig.height = 7  #5
 )
 ```
 
-## Daily average sea surface temperature from buoys - do anomalies
-
-Copying the buoys vignette to here to do some example code for anomalies, then
-move that into a new vignette. Currently not really a vignette, more a train of thought.
+## Daily average sea surface temperature from buoys - climatologies and anomalies
 
 ```{r setup}
 load_all()
@@ -40,112 +37,109 @@ In pacea we include daily average sea surface temperature (SST) that we have cal
 measurement from `r nrow(buoy_metadata)` buoys in
 Canadian Pacific waters, yielding over 200,000 daily means.
 Data are from Environment and Climate Change Canada, and Fisheries and
-Oceans Canada. The earliest data are from September 1987, and 14 buoys were still providing data as of May 2023.
+Oceans Canada. The earliest data are from September 1987, and 18 buoys were
+still providing data as of August 2026.
 
-See the [buoys
-  vignette](https://pbs-assess.github.io/pacea/vignettes/buoys.html) for
-  background concerning the calculated daily mean sea surface temperatures and
-  associated plotting functions in pacea. Also check out Andrea Hilborn et al.'s
-  [Pacific_SST_Monitoring website](https://ios-osd-dpg.github.io/Pacific_SST_Monitoring_Site/)
-  page for up-to-date graphics (pacea extractions were based on Andrea's code,
-  but we do not have all her great figures as part of pacea). Adapt some of her
-  code/ideas to do time series type plots. Here we are working towards a grid
-  type plot that can be combined with other types of data (e.g. zooplankton anomalies).
-
-Here we focus on constructing climatologies and subsequent anomalies, to plot in
+See the
+[buoys_vignette](https://pbs-assess.github.io/pacea/vignettes/buoys.html) and
+the help file `?buoy_sst` 
+for background concerning the calculated daily mean sea surface temperatures
+and associated simple plotting functions in pacea. Here we focus on
+constructing climatologies and subsequent anomalies, to plot in 
 a standardised way.
 
-Let's choose Halibut Bank buoy C46146 in the Strait of Georgia as our example
-one. It has a good timespan of data (though not back to 1990, which is a common
-start year for a climatology).
+TODO rerun that vignette with the new order.
 
-```{r buoy}
-one_stn_id_example <- "C46146"
-two_stn_id_example <- c("C46146",
-                        "C46185")
-buoy_example <- buoy_sst %>%
-  # filter(stn_id == one_stn_id_example)
-  filter(stn_id %in% two_stn_id_example)
-summary(buoy_example)
-tail(buoy_example)
+The locations of the buoys are:
+```{r buoysmap, echo=FALSE, fig.width = 5.7, fig.height = 5, out.width = "90%"}
+knitr::include_graphics(paste0(here::here(),
+                               "/man/figures/buoys_map.png"))
 ```
 
-The default pacea plot is
-```{r, plot}
-plot(buoy_sst,
-     stn_id = one_stn_id_example)
-```
+If you want to quickly get a sense of current temperatures (in the wider
+  northeast Pacific also), check out Andrea Hilborn et al.'s
+  [Pacific_SST_Monitoring website](https://ios-osd-dpg.github.io/Pacific_SST_Monitoring_Site/)
+  page. The extracted buoy SST in pacea were wrangled with the help of
+  Andrea. pacea is more suited for doing your own tailored plots and analyses.
 
-### TODO Warning and caveats. 
+## Calculations and plotting
 
-We have not fully refined how to deal with some of the data
-issues (e.g. the odd buoy had large fluctations in early days, but it's hard to
-automate removing those). Acutally the anomaly code might help deal with
-this. But some outliers might still need to be removed manually. And how many
-daily values do we need a month to produce a climatology/anomaly? Easier to play
-around with these once we have the plots. 
-
-So don't treat the results as exact yet, this is a proof of concept.
-
-
-Next steps:
-
-1. Create a climatology. Nice to have options for daily/weekly/monthly/annual?
-
-2. Do anomalies. 
-
-3. Generalise.
-
-## Climatologies
-
-Andrea does a daily climatology, so had thought to go with that. For the final plots I
-have in mind, may then need to roll up into weekly/monthly/annual, or should you
-really do those straight away?
-
-But, the aim is to do ecosystem summaries for stock assessment and management
-purposes. So likely want to be able to specify a time period of interest for
-that particular stock, and then do a climatology/anomaly for that time period.
-
-So do you do each day separately, then average them together? Or take a mean
-over the dates and calculate a climatology and anomaly? Or are they equivalent?
-Think I've thought about this before (see email of the math, but that ignore
-sd).
-
-Let's do climatology for each day.
-
-Travis had `calc_clim()`, let's make `calculate_anomaly()` to do climatology and
-anomaly, and then
-generalise it. 
-
-See Issue 96
-
-Currently gives anomaly for every day, but makes more sense to use
-`climatology_time`. And add a daily option.
-
-This works, need to decide what we really want in the output.
-```{r, anomaly}
-xx <- calculate_anomaly(buoy_example,
-                            climatology_time = "month")
-xx
-
-yy <- calculate_anomaly(buoy_example,
-                            climatology_time = "week")
-yy
-
-```
-
-
-
-## Plotting function
-
-Can calculate the anomalies for all buoys at once! And then tailor the plots.
-
-The default plot is for the anomalies in April for all buoys:
-
-```{r, buoyanomalyplot}
+We can easily calculate a climatology (by month) and subsequent anomalies for
+each buoy, and plot results:
+```{r, buoyanomalies}
 all_buoys_anomalies <- calculate_anomaly(buoy_sst)
+
 plot(all_buoys_anomalies)
 ```
+
+The plot's title describes that this default plot is for the anomalies **in April** for all
+buoys, and the climatology was 1991-2020 where
+available. Buoys are arranged in a roughly north-to-south order (see map). So each square
+gives the SST anomaly for that buoy for April of that year. Empty (white)
+squares indicate not enough data available for that particular calculation.
+
+The figure clearly shows that April 2015 and April 2016 were warmer than usual warm years of 2015 and 2016 
+
+To show the actual monthly average SST's (rather than anomalies), again for the
+default month of April:
+```{r, buoyanomalies3}
+plot(all_buoys_anomalies,
+     sst_plot = "mean")
+```
+Here you can roughly see the water getting warmer rom north to south, noting
+that the three "NOMAD" buoys are much further offshore than the others, and
+look slightly cooler.
+
+If you specify a buoy, you get the monthly anomalies across the years (again
+with an automated title):
+```{r, buoyanomalies2}
+plot(all_buoys_anomalies,
+     stn_id = "Halibut Bank")   # In the Strait of Georgia
+```
+
+
+
+HERE talk about results.
+
+```{r, buoyanomaliesdetails}
+all_buoys_anomalies
+```
+This is a list object, with `$climatology` giving, for each buoy and month, a mean SST
+(`clim_sst_mean`) and standard deviation (`clim_sst_sd`) and sample size
+(`clim_sst_n`) of the values used for that buoy-month combination.
+
+The default for `calculate_anomaly()` creates a monthly climatology for each
+buoy based on the years 1991-2020 (details of other arguments will be
+investigated later).
+
+The `$anomaly` tibble gives, for each buoy-year-month combination, the anomaly
+for that month compared to the climatology. The first buoy shown is "C46184"
+which is the `r buoy_metadata$name[match("C46184", buoy_metadata$stn_id)]`
+buoy. For October 1987 the mean SST was 10.1 degC (`sst_mean`), which was
+calculated from 29 days (`sst_n`) in that month. The resultig anomaly from the
+climatology is -1.16 (`sst_anomaly`). This can be manually checked -- the
+climatology for buoy C46184 in October is a mean SST of 11.3 (the top tibble),
+the mean SST in October 1987 was 10.1, which is -1.16 less (`sst_anomaly`). This
+should help you understand how calculations are done. 
+
+So the same calculations are done for all buoy-year-month combinations. There
+happen to be a few NA's early on in the data for this buoy (more on that later).
+
+The vector `$climatology_years` gives the years prescribed for the
+climatology in the `calculate_anomaly()` call, for which the default is `1991:2020`.
+
+The attribute given just tells R to use our customised plotting
+function on these results, which is automatically called with `plot()`:
+
+
+TODO confirm understanding - average the Apr anomalies for ECOBUOY, should be 0 as
+they comprise the full climatology.
+
+```{r, stop33, cache = FALSE}
+knitr::knit_exit()
+```
+
+
 
 ```{r, saveplotmaybe, echo = FALSE}
 # ggsave(filename = "Annual_heatmap_SST_anomaly_SOPOregions_allyears.png", width = 9, height = 3., dpi = 300,
@@ -202,10 +196,6 @@ plot(all_buoys_anomalies,
      stn_id = "C46184")
 ```
 
-
-HERE - just did this, think about it more. Could add the consectuvie NA values
-(max streak for each month) into the results,
-and then make a plotting option.
 
 All buoys, but no 15-day requirement in the climatology or anomaly, instead use
 all days:
@@ -455,3 +445,8 @@ function. Think have to do go back and forth a bit, therefore need a decent vign
 - also look at biggest daily swings in temperature, and check if they're always
   at the start of the time series for a buoy. Implies turned on while on boat,
   bit like the albatrosses.
+
+## Weekly anomalies - delete?
+
+Travis's early code can do weekly, it just will not have all the extra
+  functionality we have shown here (but we can modify  

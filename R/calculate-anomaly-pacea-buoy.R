@@ -10,10 +10,8 @@
 #' @param data `buoy_sst` pacea data object
 #' @param climatology_years climatology period years
 #' @param climatology_time time units ("month" or "week") to summarize
-#' climatologies and anomalies. Note that the plotting function is not set up
-#' yet to plot weekly results. Contact Andy if this would be useful. Also, for
-#' weekly we have not specified a minimum number of daily SST values to be
-#' available in a week.
+#' climatologies and anomalies, but only "month" is currently available (there
+#' is some functionality to use "week" also -- contact Andy if this would be useful).
 #' @param time_period_return vector of value(s) for the specific time units to estimate climatologies (e.g. '4' for week 4 or April). Set to equal 'all' for all time units.
 #' @param years_return vector of value(s) to return the years of
 #' interest. Defaults to all years in input data
@@ -47,19 +45,22 @@
 #'                          climatology_time = "month")
 #' }
 calculate_anomaly.pacea_buoy <- function(data,
-                                         climatology_years = c(1991:2020),
+                                         climatology_years = 1991:2020,
                                          climatology_time = "month",
                                          time_period_return = "all",
                                          years_return = NULL,
                                          min_days_per_month = 15,
                                          max_consecutive_missing_days = 6) {
 
-  stopifnot("'climatology_time' must have a value of 'month' or 'week'" = climatology_time %in% c("month", "week"))
+  stopifnot("'climatology_time' must currently have a value of 'month'; if you want 'week' then email Andy or make an Issue, as some of the code will need updating, and we did not think this was the most important thing to work on"
+            = climatology_time %in% c("month"))
+  # Some of the code and plotting code will need thinking about if we want
+  # "week" to work.
 
   # climatology_time is irrelevant if class != pacea_buoy
   # if("pacea_st" %in% class(data)) climatology_time <- "month"
-  if("month" %in% colnames(data)) climatology_time <- "month"
-  if("week" %in% colnames(data)) climatology_time <- "week"
+  # if("month" %in% colnames(data)) climatology_time <- "month"
+  # if("week" %in% colnames(data)) climatology_time <- "week"
 
   # index values for time_period_return to subset from data
   if(time_period_return[1] == "all"){
@@ -152,11 +153,11 @@ calculate_anomaly.pacea_buoy <- function(data,
     select(-exclude) %>%
     group_by(stn_id,
              time_unit) %>%
-    summarise(clim_value = mean(sst,
+    summarise(clim_sst_mean = mean(sst,
                                 na.rm = TRUE),
-              clim_sd = sd(sst,
+              clim_sst_sd = sd(sst,
                            na.rm = TRUE),
-              clim_n = sum(!is.na(sst))) %>%
+              clim_sst_n = sum(!is.na(sst))) %>%
     ungroup() %>%
     # Replace all NaNs with NAs
     mutate(across(where(is.numeric),
@@ -239,10 +240,10 @@ calculate_anomaly.pacea_buoy <- function(data,
     left_join(climatology,
               by = join_by(stn_id == stn_id,
                            time_unit == time_unit)) %>%
-    mutate(sst_anomaly = sst_mean - clim_value) %>%
-    select(-c("clim_value",
-              "clim_sd",
-              "clim_n")) %>% # no point in keep repeating them
+    mutate(sst_anomaly = sst_mean - clim_sst_mean) %>%
+    select(-c("clim_sst_mean",
+              "clim_sst_sd",
+              "clim_sst_n")) %>% # no point in keep repeating them
    # Replace all NaNs with NAs
     mutate(across(where(is.numeric),
                   ~ ifelse(is.nan(.x), NA, .x)))
