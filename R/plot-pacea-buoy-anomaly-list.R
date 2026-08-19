@@ -14,11 +14,13 @@
 ##' buoys in this vector are plotted. If `length(stn_id_to_plot == 1)` then anomalies
 ##' for each month are shown, with January at the top and December at the
 ##' bottom.
-##' @param months numeric vector of months to include (1-12). If not specified
+##' @param months numeric vector of months (1-12) to include. If not specified
 ##' then defaults to 4
 ##' (April), except when only one `stn_id_to_plot` when all months are plotted (unless specified). Can have more than one month, e.g. 6:9. For a 'winter' average,
 ##' say Nov-Mar, specify the months as `c(11, 12, 1, 2, 3)`. The winter average
-##' anomaly will be calculated and named for the year in which January falls. TODO
+##' anomaly will be calculated and named for the year in which January
+##' falls. `months` must be consecutive (except for the overwintering `12, 1` as
+##' in the above example).
 ##' @param main title for the plot, if `NULL` then created automatically,
 ##' including detailing the months selected. May need to manually specify `main`
 ##' if many non-consecutive months are chosen (which seems unlikely).
@@ -72,8 +74,18 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
   # Validate sst_plot parameter
   sst_plot <- match.arg(sst_plot, c("anomaly", "mean", "count"))
 
-  # Add a stop() condition that if months are not sequential (Dec Jan is okay) then
-  # main needs to be specified TODO Also 12:1 should not be allowed.
+  # Check months ar okay
+  if(!is.null(months)){
+    diffs <- diff(months)
+    if(length(diffs) > 0){
+      # All diffs should be 1, except possibly one -11 (wrapping over end of year)
+      invalid_diffs <- diffs[!(diffs == 1 | diffs == -11)]
+      n_wrap_around <- sum(diffs == -11)
+      if(length(invalid_diffs) > 0 || n_wrap_around > 1){
+        stop("'months' must be consecutive, e.g. 1:5, or like c(11, 12, 1, 2) for wrapping over the end of the year.")
+      }
+    }
+  }
 
   # If stn_id_to_plot[1] does not start with "C4" then all values in
   # stn_id_to_plot vector are assumed to be names. If this is the case then

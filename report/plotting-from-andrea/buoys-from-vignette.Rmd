@@ -64,6 +64,8 @@ If you want to quickly get a sense of current temperatures (in the wider
 
 ## Calculations and plotting
 
+### Default plot
+
 We can easily calculate a climatology (by month) and subsequent anomalies for
 each buoy, and plot results:
 ```{r, buoyanomalies}
@@ -78,7 +80,10 @@ available. Buoys are arranged in a roughly north-to-south order (see map). So ea
 gives the SST anomaly for that buoy for April of that year. Empty (white)
 squares indicate not enough data available for that particular calculation.
 
-The figure clearly shows that April 2015 and April 2016 were warmer than usual warm years of 2015 and 2016 
+The figure clearly shows that April 2015 and April 2016 were warmer than usual
+for April, for each buoy. The bottom three buoys clearly have limited data. 
+
+### Absolute SST's
 
 To show the actual monthly average SST's (rather than anomalies), again for the
 default month of April:
@@ -90,6 +95,8 @@ Here you can roughly see the water getting warmer rom north to south, noting
 that the three "NOMAD" buoys are much further offshore than the others, and
 look slightly cooler.
 
+### Full results for a specific buoy
+
 If you specify a buoy, you get the monthly anomalies across the years (again
 with an automated title):
 ```{r, buoyanomalies2}
@@ -97,7 +104,84 @@ plot(all_buoys_anomalies,
      stn_id = "Halibut Bank")   # In the Strait of Georgia
 ```
 
+You can check that the April 2016 high anomaly matches that shown in the first
+anomaly plot shown above.
 
+### Anomalies for all buoys for different months
+
+You can specify a single month (recall the default is 4 for April):
+```{r, buoyanomaliesmonth}
+plot(all_buoys_anomalies,
+     months = 12)
+```
+
+Interestingly, in 2023 the December anomalies are all positive, whereas in the
+first anomaly plot above the April anomalies are all negative (for the available
+buoys in each case).
+
+If you specify multiple consecutive months (e.g. `4:6`), then the plot shows the anomalies
+averaged over those months (and the title is automatically correct):
+```{r, buoyanomaliesmonths}
+plot(all_buoys_anomalies,
+     months = 4:6)
+```
+
+TODO HERE Look at South Nomad and plot it's full data. 2014 only has April (out
+of Apr-Jun) and 2016 has no April, hence the anomalies are a bit
+misleading. Suggest we do insist that all months have values, or at least give
+an option to require a certian proportion, default 100%. 
+Do an example with months 1:12.
+
+And if you want a wintertime index that includes December, that can be done:
+```{r, buoyanomaliesmonths2}
+plot(all_buoys_anomalies,
+     months = c(12, 1, 2, 3))
+```
+
+As stated in the title, the year on the x-axis is the year of the January.
+
+IMPORTANT: Note that for these plots with multiple months, we have not included
+a criteria that each of the requested months has data (or at least some
+proportion of them do). It is a bit tricky to come up with rules for all
+scenarios. Each plotted anomaly is just the mean of the appropriate available monthly
+anomalies.
+
+If you specify `months` and a single buoy, the anomalies for those months are
+all shown:
+```{r, buoyanomaliesmonths3}
+plot(all_buoys_anomalies,
+     months = c(12, 1, 2, 3),
+     stn_id = "Halibut Bank")  
+```
+
+This plot can be used as a check to see what anomalies are available (if you are
+only interested in a particular buoy). Email Andy or make an Issue if you would
+like some automated criteria regarding averaging anomalies over multiple
+months). From that plot it looks like removing years that do not have all four
+the requested months would not lose too many years. But other buoys and/or month
+sequences may not be as forgiving.
+
+### Returning the values shown in the plot
+
+Setting `return_results = TRUE` returns a list containing the plot and then the
+results used for the plot. For the previous plot:
+
+```{r, buoyanomaliesmonths4}
+res <- plot(all_buoys_anomalies,
+     months = c(12, 1, 2, 3),
+     stn_id = "Halibut Bank", return_results = TRUE)  
+res
+```
+
+So `res$plot` will show the above plot again, and `res$results` shows the a
+tibble that includes the values
+in the plot, as `sst_plot_value` and then `label` for the rounded values that are shown
+numerically. You can then use these for analyses if desired.
+
+That tibble contains results that depend on options used in the plotting. But we
+will now examine the full results generated at the very beginning in `all_buoys_anomalies`.
+
+### Examining the climatology and anomalies
 
 HERE talk about results.
 
@@ -134,6 +218,7 @@ function on these results, which is automatically called with `plot()`:
 
 TODO confirm understanding - average the Apr anomalies for ECOBUOY, should be 0 as
 they comprise the full climatology.
+
 
 ```{r, stop33, cache = FALSE}
 knitr::knit_exit()
@@ -272,6 +357,13 @@ calculate_anomaly(test_buoy_march_april_1991,
 
     
 ```
+
+Also maybe do some of (this may be okay now, was while figuring out gaps)
+Why is C46004 March 1991 getting excluded? Should not be. Also:
+ C46004 1992     1       NaN     0          NaN  
+ C46004 1992     7       NaN     0          NaN   Though if max gaps is 7 then
+ it should not be excluded, check.
+
 
 Workflow should be:
 - do the calculations with the defaults
