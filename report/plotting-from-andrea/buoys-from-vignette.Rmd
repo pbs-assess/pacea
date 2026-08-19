@@ -126,7 +126,7 @@ plot(all_buoys_anomalies,
      months = 4:6)
 ```
 
-TODO HERE Look at South Nomad and plot it's full data. 2014 only has April (out
+TODO HERE (when doing 4:6) Look at South Nomad and plot it's full data. 2014 only has April (out
 of Apr-Jun) and 2016 has no April, hence the anomalies are a bit
 misleading. Suggest we do insist that all months have values, or at least give
 an option to require a certian proportion, default 100%. 
@@ -145,6 +145,49 @@ a criteria that each of the requested months has data (or at least some
 proportion of them do). It is a bit tricky to come up with rules for all
 scenarios. Each plotted anomaly is just the mean of the appropriate available monthly
 anomalies.
+
+TODO move to later after have talked about the outputs.
+
+Example of no climatology for some months for S. Georgia Strait buoy, so when
+do:
+```{r, buoyanomaliesmonths46}
+plot(all_buoys_anomalies,
+     months = 4:6)
+```
+
+we lose that buoy in the plot because it does not have a climatology for Jun
+therefore we cannot do a mean climatology for Apr-Jun. 
+
+The climatology is:
+
+```{r, noclimatology}
+all_buoys_anomalies$climatology %>%
+  filter(stn_id == "C46303") %>%
+  a()
+```
+and the anomalies for 2022 (as an example) are:
+```{r, noclimatology2}
+all_buoys_anomalies$anomaly %>%
+  filter(year == 2022,
+         stn_id == "C46303") %>%
+  a()
+```
+where you can see that Jun and Jul have SST values, but no anomaly because there
+is no climatology for those months for this buoy (due to limited data, and the
+default climatology years of 1991-2020). 
+
+However, if we specify that we only require 2 months to be available to make an anomaly for Apr-Jun
+```{r, buoyanomaliesmonths46needless}
+plot(all_buoys_anomalies,
+     months = 4:6,
+     require_requested_months = 2)
+```
+
+
+
+
+
+TODO may have to move:
 
 If you specify `months` and a single buoy, the anomalies for those months are
 all shown:

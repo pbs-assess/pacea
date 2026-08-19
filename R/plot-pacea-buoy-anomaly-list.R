@@ -39,12 +39,17 @@
 ##' `c(0, 10, 15, 20, 31)`.
 ##' @param return_results logical, if `FALSE` (default) returns the plot object only.
 ##' If `TRUE`, prints the plot and returns a list with both `plot` and `results`.
+##' @param require_requested_months numeric, number of months that must be available
+##' out of the requested `months` to compute an average anomaly. If `NULL` (default),
+##' defaults to `length(months)`. Only used when `length(months) > 1` and
+##' `length(stn_id_to_plot) > 1`.
 ##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot` and `results`
 ##' (when `return_results = TRUE`)
 ##' @export
 ##' @author Andrew Edwards
 ##' @examples
 ##' \dontrun{
+##' # TODO prob just say to see vignette
 ##' all_buoys_anomalies <- calculate_anomaly(buoy_sst,
 ##'                              climatology_time = "month")
 ##' all_buoys_plot <- plot.pacea_buoy_anomaly_list(all_buoys_anomalies)
@@ -68,13 +73,14 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
                                          use_stn_id_name = TRUE,
                                          sst_plot = "anomaly",
                                          count_breaks = NULL,
-                                         return_results = FALSE){
+                                         return_results = FALSE,
+                                         require_requested_months = NULL){
                                          # number_shades = 16){ see TODO below
 
   # Validate sst_plot parameter
   sst_plot <- match.arg(sst_plot, c("anomaly", "mean", "count"))
 
-  # Check months ar okay
+  # Check months are consecutive except Dec to Jan
   if(!is.null(months)){
     diffs <- diff(months)
     if(length(diffs) > 0){
@@ -99,7 +105,6 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
     if(any(is.na(stn_id_to_plot_new))){
       stop("You have mis-spelled at least one buoy name in stn_id")
     }
-
     stn_id_to_plot <- stn_id_to_plot_new
   }
 
@@ -120,6 +125,7 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
       sst_plot = sst_plot,
       count_breaks = count_breaks,
       return_results = return_results)
+
     return(anomaly_plot_or_list)
   }
 
@@ -128,6 +134,16 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
     # single stn_id_to_plot function above to have months specified.
   }
 
+  # Set default require_requested_months
+  if(is.null(require_requested_months)){
+    require_requested_months <- length(months)
+  } else {
+    if(require_requested_months > length(months)){
+      stop("Need `require_requested_months <= length(months)`")
+    }
+  }
+
+
   # Set default count_breaks based on number of months
   if(is.null(count_breaks)){
     count_breaks <- c(0, 10, 15, 20, 31) * ifelse(!is.null(months),
@@ -135,10 +151,12 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
                                                   1)
   }
 
-  if(is.null(stn_id_to_plot)){                 # Plot all of them available
+  # Plot all available stn_id's if not specified
+  if(is.null(stn_id_to_plot)){
     stn_id_to_plot = unique(pacea_buoy_anomaly_list$anomaly$stn_id)
   }
 
+  # Automate main title
   if(which.max(months) == length(months)){
     # months are increasing and so are in the same year
 
@@ -173,21 +191,27 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
     plot_data <- pacea_buoy_anomaly_list$anomaly %>%
       dplyr::filter(stn_id %in% stn_id_to_plot,
                     month %in% months,
-                    !is.na(.data[[na_check_col]]),
                     if(sst_plot == "count") sst_n > 0 else TRUE) %>%
       dplyr::group_by(stn_id,
                       year) %>%
       # plot_value becomes the average over the specified months, no need to keep month column
-      dplyr::summarise(sst_plot_value = if(sst_plot == "count"){
-                                          sum(sst_n)
-                                        } else {
-                                          mean(if(sst_plot == "anomaly"){
-                                                sst_anomaly
-                                              } else {
-                                                sst_mean
-                                              })
-                                        }) %>%
-      dplyr::ungroup()
+      dplyr::summarise(
+        n_available = sum(!is.na(.data[[na_check_col]])),
+        sst_plot_value = ifelse(
+          n_available >= require_requested_months,
+          mean(if(sst_plot == "count"){
+                 sst_n
+               } else if(sst_plot == "anomaly"){
+                 sst_anomaly
+               } else {
+                 sst_mean
+               }, na.rm = TRUE),
+          NA
+        )
+      ) %>%
+      dplyr::ungroup() %>%
+      dplyr::filter(!is.na(sst_plot_value)) %>%
+      dplyr::select(-n_available)
   } else {
     # Months are not increasing, for which it is implied a winter average is
     # being calculated that includes Dec and Jan. TODO think about missing
@@ -224,23 +248,29 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
     plot_data <- pacea_buoy_anomaly_list$anomaly %>%
       dplyr::filter(stn_id %in% stn_id_to_plot,
                     month %in% months,
-                    !is.na(.data[[na_check_col]]),
                     if(sst_plot == "count") sst_n > 0 else TRUE) %>%
       dplyr::mutate(year_of_january = (year + 1) * (month >= months[1]) +
                       year * (month < months[1])) %>%    # the year of the january for the winter
       dplyr::group_by(stn_id,
                       year_of_january) %>%
       # plot_value becomes the average over the specified months, no need to keep month column
-      dplyr::summarise(sst_plot_value = if(sst_plot == "count"){
-                                          sum(sst_n)
-                                        } else {
-                                          mean(if(sst_plot == "anomaly"){
-                                                sst_anomaly
-                                              } else {
-                                                sst_mean
-                                              })
-                                        }) %>%
+      dplyr::summarise(
+        n_available = sum(!is.na(.data[[na_check_col]])),
+        sst_plot_value = ifelse(
+          n_available >= require_requested_months,
+          mean(if(sst_plot == "count"){
+                 sst_n
+               } else if(sst_plot == "anomaly"){
+                 sst_anomaly
+               } else {
+                 sst_mean
+               }, na.rm = TRUE),
+          NA
+        )
+      ) %>%
       dplyr::ungroup() %>%
+      dplyr::filter(!is.na(sst_plot_value)) %>%
+      dplyr::select(-n_available) %>%
       dplyr::rename(year = year_of_january)
   }
 
