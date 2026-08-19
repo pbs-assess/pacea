@@ -27,7 +27,8 @@ plot_pacea_buoy_anomaly_single <- function(pacea_buoy_anomaly_list,
                                            use_stn_id_name,
                                            sst_plot = "anomaly",
                                            count_breaks = NULL,
-                                           return_results = FALSE){
+                                           return_results = FALSE,
+                                           scale_limits = NULL){
 
   # Validate sst_plot parameter
   sst_plot <- match.arg(sst_plot, c("anomaly", "mean", "count"))
@@ -94,16 +95,18 @@ plot_pacea_buoy_anomaly_single <- function(pacea_buoy_anomaly_list,
   # TODO do check that again in detail, do some tests
 
   # For non-anomaly plots, use different color scale (not symmetric)
-  if(sst_plot == "anomaly"){
-    max_abs <- max(abs(plot_data$sst_plot_value),
-                   na.rm = TRUE)
-    scale_limits <- c(-max_abs,
-                      max_abs)
-  } else {
-    max_abs <- max(plot_data$sst_plot_value,
-                   na.rm = TRUE)
-    scale_limits <- c(0,
-                      max_abs)
+  if(is.null(scale_limits)){
+    if(sst_plot == "anomaly"){
+      max_abs <- max(abs(plot_data$sst_plot_value),
+                     na.rm = TRUE)
+      scale_limits <- c(-max_abs,
+                        max_abs)
+    } else if(sst_plot == "mean"){
+      max_abs <- max(plot_data$sst_plot_value,
+                     na.rm = TRUE)
+      scale_limits <- c(0,
+                        max_abs)
+    }
   }
 
   # Determine which colour scale to use based on sst_plot

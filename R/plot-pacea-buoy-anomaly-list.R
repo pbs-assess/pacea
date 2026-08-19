@@ -43,6 +43,10 @@
 ##' out of the requested `months` to compute an average anomaly. If `NULL` (default),
 ##' defaults to `length(months)`. Only used when `length(months) > 1` and
 ##' `length(stn_id_to_plot) > 1`.
+##' @param scale_limits numeric vector of length 2 specifying the limits for the colour scale.
+##' If `NULL` (default), limits are calculated automatically based on the data. Only used
+##' for non-count plots. If any plotted values are outside of `scale_limits`
+##' then they are coloured grey.
 ##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot` and `results`
 ##' (when `return_results = TRUE`)
 ##' @export
@@ -74,7 +78,8 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
                                          sst_plot = "anomaly",
                                          count_breaks = NULL,
                                          return_results = FALSE,
-                                         require_requested_months = NULL){
+                                         require_requested_months = NULL,
+                                         scale_limits = NULL){
                                          # number_shades = 16){ see TODO below
 
   # Validate sst_plot parameter
@@ -124,7 +129,8 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
       use_stn_id_name = use_stn_id_name,
       sst_plot = sst_plot,
       count_breaks = count_breaks,
-      return_results = return_results)
+      return_results = return_results,
+      scale_limits = scale_limits)
 
     return(anomaly_plot_or_list)
   }
@@ -280,17 +286,19 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
                         "mean" = bquote("Mean SST ("*degree*C*")"),
                         "count" = "Count of daily SST values")
 
-  # For non-anomaly plots, use different color scale (not symmetric)
-  if(sst_plot == "anomaly"){
-    max_abs <- max(abs(plot_data$sst_plot_value),
-                   na.rm = TRUE)
-    scale_limits <- c(-max_abs,
-                      max_abs)
-  } else {
-    max_abs <- max(plot_data$sst_plot_value,
-                   na.rm = TRUE)
-    scale_limits <- c(0,
-                      max_abs)
+  # For non-anomaly plots, use different colour scale (not symmetric)
+  if(is.null(scale_limits)){
+    if(sst_plot == "anomaly"){
+      max_abs <- max(abs(plot_data$sst_plot_value),
+                     na.rm = TRUE)
+      scale_limits <- c(-max_abs,
+                        max_abs)
+    } else if(sst_plot == "mean"){
+      max_abs <- max(plot_data$sst_plot_value,
+                     na.rm = TRUE)
+      scale_limits <- c(0,
+                        max_abs)
+    }
   }
 
   year_range <- seq(min(plot_data$year,
