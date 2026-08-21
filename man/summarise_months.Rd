@@ -19,6 +19,7 @@ character string summarizing the months
 Summarize a vector of months as a formatted string
 }
 \examples{
+\dontrun{
 summarise_months(4)             # "Apr"
 summarise_months(c(4, 5))       # "Apr" and "May"
 summarise_months(4:6)           # "Apr to Jun"
@@ -26,8 +27,8 @@ summarise_months(c(12, 1:3))    # "Dec, Jan, Feb, and Mar"
 summarise_months(c(12, 1:3),
                  just_first_to_last = TRUE)
                                 # "Dec to Mar"
-Generally thinking we would have consecutive months, but can still spell
-them out even if not:
+# Generally thinking we would have consecutive months, but can still spell
+# them out even if not:
 summarise_months(c(12, 4:8))    #  "Dec, Apr, May, Jun, Jul, and Aug"
-
+}
 }
