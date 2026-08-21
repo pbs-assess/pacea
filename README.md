@@ -49,7 +49,7 @@ below.
 
 Currently, pacea contains:
 
-- 220,151 calculations of daily sea surface temperature based on data
+- 221,739 calculations of daily sea surface temperature based on data
   from 19 buoys. **Updated monthly.**
 
 - outputs from the spatial British Columbia continental margin (BCCM)
@@ -79,7 +79,7 @@ Currently, pacea contains:
   record, that incorporates observations from different platforms
   (satellites, ships, buoys, and Argo floats):
 
-  - provided as weekly and monthly means from Sep 1981 to Jan 2026.
+  - provided as weekly and monthly means from Sep 1981 to May 2026.
     **Updated monthly.**
 
 - outputs from the Hindcast of the Salish Sea (HOTSSea) physical
@@ -317,7 +317,7 @@ example:
 
 ``` r
 oni
-#> # A tibble: 916 × 4
+#> # A tibble: 917 × 4
 #>     year month value anomaly
 #>    <dbl> <dbl> <dbl>   <dbl>
 #>  1  1950     1  24.7   -1.53
@@ -330,7 +330,7 @@ oni
 #>  8  1950     8  26.0   -0.42
 #>  9  1950     9  25.8   -0.39
 #> 10  1950    10  25.6   -0.44
-#> # ℹ 906 more rows
+#> # ℹ 907 more rows
 ```
 
 **What climatic and oceanographic indices are currently available, and
@@ -365,6 +365,9 @@ run them locally you may get more up-to-date values):
 - [buoys.html](https://pbs-assess.github.io/pacea/vignettes/buoys.html)
   Calculated daily mean sea surface temperatures and associated plotting
   functions.
+- [buoy_anomalies.html](https://pbs-assess.github.io/pacea/vignettes/buoys_anomalies.html)
+  Calculating and plotting anomalies of the buoy sea surface
+  temperatures in various ways.
 - [populations.html](https://pbs-assess.github.io/pacea/vignettes/populations.html)
   Estimates of animal populations and associated plotting functions.
 - [oisst.html](https://pbs-assess.github.io/pacea/vignettes/oisst.html)

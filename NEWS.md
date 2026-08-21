@@ -5,6 +5,13 @@ Developers: for some general tips for writing good bullets see https://style.tid
 
 ## Updates by date
 
+* 2026-08-21 Added climatology and anomaly calculations for the buoy SST
+  data. See the new `buoy_anomalies` vignette. Also reordered the buoy order in
+  `buoy_metadata` into a roughly north-south order. Updated `buoy_sst` on
+  2026-08-13. 
+
+* 2026-07-26 Updates for buoy SST and indices: AO, MEI, ONI, PDO, and SOI.
+
 * 2026-06-10 Updates for:
   * BCCM ROMS data; now includes monthly spatial data to 2025 (previous only went 
   to 2019). New variables added for surface and bottom ocean current velocity, in 

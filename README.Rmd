@@ -421,6 +421,9 @@ may get more up-to-date values):
   Climatic and oceanographic indices and associated plotting functions.
 * [buoys.html](https://pbs-assess.github.io/pacea/vignettes/buoys.html)
   Calculated daily mean sea surface temperatures and associated plotting functions.
+* [buoy_anomalies.html](https://pbs-assess.github.io/pacea/vignettes/buoys_anomalies.html) 
+  Calculating and plotting anomalies of the buoy sea surface temperatures in 
+  various ways. 
 * [populations.html](https://pbs-assess.github.io/pacea/vignettes/populations.html)
   Estimates of animal populations and associated plotting functions.
 * [oisst.html](https://pbs-assess.github.io/pacea/vignettes/oisst.html)
