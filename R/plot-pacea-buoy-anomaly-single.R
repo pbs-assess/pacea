@@ -1,37 +1,37 @@
 ##' Plot anomalies for a single buoy, showing months on the y-axis.
-##' Gets called from `plot.pacea_buoy_anomaly_list()` if `stn_id_to_plot` argument for
+##' Gets called from `plot.pacea_buoy_anomalies_list()` if `stn_id_to_plot` argument for
 ##' that has length 1.
 ##'
-##' @param pacea_buoy_anomaly_list object of class `pacea_buoy_anomaly_list`
-##' obtained from running `calculate_anomaly()` on buoy data.
+##' @param pacea_buoy_anomalies_list object of class `pacea_buoy_anomalies_list`
+##' obtained from running `calculate_anomalies()` on buoy data.
 ##' @param stn_id_to_plot single `stn_id` to plot
-##' @rdname plot.pacea_buoy_anomaly_list
+##' @rdname plot.pacea_buoy_anomalies_list
 ##' @return a ggplot object
 ##' @export
 ##' @author Andrew Edwards
 ##' @examples
 ##' \dontrun{
 ##' TODO
-##' all_buoys_anomalies <- calculate_anomaly(buoy_sst,
+##' all_buoys_anomalies <- calculate_anomalies(buoy_sst,
 ##'                              climatology_time = "month")
-##' single_buoy_plot <- plot_pacea_buoy_anomaly_single(all_buoys_anomalies,
+##' single_buoy_plot <- plot_pacea_buoy_anomalies_single(all_buoys_anomalies,
 ##'                                                    stn_id_to_plot = "C46132")
 ##' single_buoy_plot
 ##' }
-plot_pacea_buoy_anomaly_single <- function(pacea_buoy_anomaly_list,
-                                           stn_id_to_plot,
-                                           months,
-                                           main,
-                                           xlab,
-                                           ylab,
-                                           use_stn_id_name,
-                                           sst_plot = "anomaly",
-                                           count_breaks = NULL,
-                                           return_results = FALSE,
-                                           scale_limits = NULL){
+plot_pacea_buoy_anomalies_single <- function(pacea_buoy_anomalies_list,
+                                             stn_id_to_plot,
+                                             months,
+                                             main,
+                                             xlab,
+                                             ylab,
+                                             use_stn_id_name,
+                                             sst_plot = "anomalies",
+                                             count_breaks = NULL,
+                                             return_results = FALSE,
+                                             scale_limits = NULL){
 
   # Validate sst_plot parameter
-  sst_plot <- match.arg(sst_plot, c("anomaly", "mean", "count"))
+  sst_plot <- match.arg(sst_plot, c("anomalies", "mean", "count"))
 
 
     if(use_stn_id_name){
@@ -49,25 +49,25 @@ plot_pacea_buoy_anomaly_single <- function(pacea_buoy_anomaly_list,
 
   # Create legend label based on sst_plot
   legend_label <- switch(sst_plot,
-                        "anomaly" = bquote("Monthly SST anomaly ("*degree*C*")"),
+                        "anomalies" = bquote("Monthly SST anomaly ("*degree*C*")"),
                         "mean" = bquote("Mean SST ("*degree*C*")"),
                         "count" = "Count of daily SST values")
 
   if(is.null(main)){
     main_suffix <- switch(sst_plot,
-                         "anomaly" = "anomalies",
+                         "anomalies" = "anomalies",
                          "mean" = "mean values",
                          "count" = "count of observations")
-    if(sst_plot == "anomaly"){
+    if(sst_plot == "anomalies"){
       main =
         paste0("Monthly sea-surface temperature ",
                main_suffix,
                " for the buoy at ",
                stn_id_to_plot_name,
                " using climatology from ",
-               min(pacea_buoy_anomaly_list$climatology_years),
+               min(pacea_buoy_anomalies_list$climatology_years),
                " to ",
-               max(pacea_buoy_anomaly_list$climatology_years))
+               max(pacea_buoy_anomalies_list$climatology_years))
     } else {
       main =
         paste0("Monthly sea-surface temperature ",
@@ -79,11 +79,11 @@ plot_pacea_buoy_anomaly_single <- function(pacea_buoy_anomaly_list,
 
   # Determine which column to filter NA values from and which column for plotting
   na_check_col <- switch(sst_plot,
-                        "anomaly" = "sst_anomaly",
+                        "anomalies" = "sst_anomaly",
                         "mean" = "sst_mean",
                         "count" = "sst_n")
 
-  plot_data <- pacea_buoy_anomaly_list$anomaly %>%
+  plot_data <- pacea_buoy_anomalies_list$anomalies %>%
     dplyr::filter(stn_id %in% stn_id_to_plot,
                   month %in% months,
                   !is.na(.data[[na_check_col]]),
@@ -96,7 +96,7 @@ plot_pacea_buoy_anomaly_single <- function(pacea_buoy_anomaly_list,
 
   # For non-anomaly plots, use different color scale (not symmetric)
   if(is.null(scale_limits)){
-    if(sst_plot == "anomaly"){
+    if(sst_plot == "anomalies"){
       max_abs <- max(abs(plot_data$sst_plot_value),
                      na.rm = TRUE)
       scale_limits <- c(-max_abs,
@@ -140,7 +140,7 @@ plot_pacea_buoy_anomaly_single <- function(pacea_buoy_anomaly_list,
       dplyr::mutate(label = as.character(round(sst_plot_value, 1)))
   }
 
-  anomaly_plot <-
+  anomalies_plot <-
     plot_data %>%
     ggplot(aes(x = year,
                y = month_as_factor)) +
@@ -170,11 +170,11 @@ plot_pacea_buoy_anomaly_single <- function(pacea_buoy_anomaly_list,
     labs(title = main)
 
   if(return_results){
-    print(anomaly_plot)
-    list(plot = anomaly_plot,
+    print(anomalies_plot)
+    list(plot = anomalies_plot,
          results = plot_data)
   } else {
-    return(anomaly_plot)
+    return(anomalies_plot)
   }
 }
 

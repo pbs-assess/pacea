@@ -69,7 +69,7 @@ If you want to quickly get a sense of current temperatures (in the wider
 We can easily calculate a climatology (by month) and subsequent anomalies for
 each buoy, and plot results:
 ```{r, buoyanomalies}
-all_buoys_anomalies <- calculate_anomaly(buoy_sst)
+all_buoys_anomalies <- calculate_anomalies(buoy_sst)
 
 plot(all_buoys_anomalies)
 ```
@@ -195,11 +195,11 @@ This is a list object, with `$climatology` giving, for each buoy and month, a me
 (`clim_sst_mean`) and standard deviation (`clim_sst_sd`) and sample size
 (`clim_sst_n`) of the values used for that buoy-month combination.
 
-The default for `calculate_anomaly()` creates a monthly climatology for each
+The default for `calculate_anomalies()` creates a monthly climatology for each
 buoy based on the years 1991-2020 (details of other arguments will be
 investigated later).
 
-The `$anomaly` tibble gives, for each buoy-year-month combination, the anomaly
+The `$anomalies` tibble gives, for each buoy-year-month combination, the anomaly
 for that month compared to the climatology. The first buoy shown is "C46184"
 which is the `r buoy_metadata$name[match("C46184", buoy_metadata$stn_id)]`
 buoy. For October 1987 the mean SST was 10.1 degC (`sst_mean`), which was
@@ -213,7 +213,7 @@ So the same calculations are done for all buoy-year-month combinations. There
 happen to be a few NA's early on in the data for this buoy (more on that later).
 
 The vector `$climatology_years` gives the years prescribed for the
-climatology in the `calculate_anomaly()` call, for which the default is `1991:2020`.
+climatology in the `calculate_anomalies()` call, for which the default is `1991:2020`.
 
 The attribute given just tells R to use our customised plotting
 function on these results, which is automatically called with `plot()`:
@@ -250,7 +250,7 @@ all_buoys_anomalies$climatology %>%
 ```
 and the anomalies for 2022 (as an example) are:
 ```{r, noclimatology2}
-all_buoys_anomalies$anomaly %>%
+all_buoys_anomalies$anomalies %>%
   filter(year == 2022,
          stn_id == "C46303") %>%
   a()
@@ -331,10 +331,10 @@ plot(all_buoys_anomalies,
 ```
 
 
-All buoys, but no 15-day requirement in the climatology or anomaly, instead use
+All buoys, but no 15-day requirement in the climatology or anomalies, instead use
 all days:
 ```{r, usealldays
-all_buoys_anomalies_all_days <- calculate_anomaly(buoy_sst,
+all_buoys_anomalies_all_days <- calculate_anomalies(buoy_sst,
                                                   min_days_per_month = 0,
                                                   max_consecutive_missing_days =
                                                   32)
@@ -362,7 +362,7 @@ plot(all_buoys_anomalies_all_days,
 
 Now doing the max consecutive missing days:
 ```{r, maxmissing}
-all_buoys_anomalies_all_gaps_allowed <- calculate_anomaly(buoy_sst,
+all_buoys_anomalies_all_gaps_allowed <- calculate_anomalies(buoy_sst,
                                                   max_consecutive_missing_days =
                                                     32)
 # expect_equal(all_buoys_anomalies, all_buoys_anomalies_all_gaps_allowed) worked when
@@ -376,13 +376,13 @@ climatology and check it those end months get properly ignored.
 ```{r, climtest}
 test_buoy <- filter(buoy_sst,
                     stn_id == "C46004")
-test_buoy_anomalies <- calculate_anomaly(test_buoy,
+test_buoy_anomalies <- calculate_anomalies(test_buoy,
                                          climatology_years = 1989:1995)
 plot(test_buoy_anomalies)
 
 test_buoy %>% filter(date < "1992-10-01") %>% a()
 
-test_buoy_anomalies$anomaly[1:50,] %>% a()
+test_buoy_anomalies$anomalies[1:50,] %>% a()
 ```
 That shows some that are wrong. For example
 ```{r, wrong}
@@ -396,12 +396,12 @@ test_buoy_march_april_1991 %>% a()
 
 # ... so the default settings do work, but if we get stricter then they do not
 # for March:
-calculate_anomaly(test_buoy_march_april_1991)
-calculate_anomaly(test_buoy_march_april_1991,
+calculate_anomalies(test_buoy_march_april_1991)
+calculate_anomalies(test_buoy_march_april_1991,
                   min_days_per_month = 25)
-calculate_anomaly(test_buoy_march_april_1991,
+calculate_anomalies(test_buoy_march_april_1991,
                   max_consecutive_missing_days = 4) # 4 NA streak allowed
-calculate_anomaly(test_buoy_march_april_1991,
+calculate_anomalies(test_buoy_march_april_1991,
                   max_consecutive_missing_days = 3) # no climatology
 
     
@@ -473,7 +473,7 @@ Get the plots working when `climatology_time = "week"`.
 Important to be aware of:
 
 Above all assumes our defaults in the calculations as specified in
-`calculate_anomaly.pacea_buoy()`. These are somewhat subjective and can be
+`calculate_anomalies.pacea_buoy()`. These are somewhat subjective and can be
 changed by the user. Specifically:
 
 - the number of days needed within a calendar month to use to give a monthly
@@ -534,7 +534,7 @@ knitr::knit_exit()
 This works, but not for plotting yet, and may need to add options for how many
 days needed in a week.
 
-all_buoys_anomalies_weekly <- calculate_anomaly(buoy_sst, climatology_time = "week")
+all_buoys_anomalies_weekly <- calculate_anomalies(buoy_sst, climatology_time = "week")
 
 Need to remove data-poor months. Have some defaults that users can change, and
 tell users to look at data. Elise thinks at least half the month, with no gap of
@@ -542,7 +542,7 @@ more than 5-6 days (no consecutive NA's longer than that).
 Example we had was
 
 ```{r ex}
-> yy <- table(all_buoys_anomalies$anomaly$sst_n)
+> yy <- table(all_buoys_anomalies$anomalies$sst_n)
 > yy
 
    0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15 

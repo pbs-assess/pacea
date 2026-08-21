@@ -1,7 +1,4 @@
 ##' TODO this is for `calculate_climatology()`. Edit whole help file.
-##' If already run through `remove_outliers.size_spectrum_mlebins()` then it wil
-##' use `detect_outliers.remove_outliers.mlebins()` and can keep iterating
-##' that. See [remove_outliers] for further details and example code.
 ##'
 ##' @param res One of:
 ##' * `size_spectrum_mlebins` object
@@ -24,7 +21,7 @@
 ##' \dontrun{
 ##' # See ?remove_outliers for link to example code
 ##' }
-calculate_anomaly <- function(data,
-                                  ...){
-  UseMethod("calculate_anomaly")
+calculate_anomalies <- function(data,
+                                ...){
+  UseMethod("calculate_anomalies")
 }

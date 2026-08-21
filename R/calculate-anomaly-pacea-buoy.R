@@ -1,4 +1,4 @@
-#' Calculate climatology and anomaly ANDY DOING JUST buoy_sst object adapting from Travis's,
+#' Calculate climatology and anomalies ANDY DOING JUST buoy_sst object adapting from Travis's,
 #' want to tailor the options for each pacea object, so use generics. TODO
 #' putting anomaly calcs in here also, then return a list object that has
 #' both. So change name to anomaly at some point.
@@ -17,10 +17,10 @@
 #' interest. Defaults to all years in input data
 #' @param min_days_per_month minimum number of daily SST values required in a
 #' time period (month or week) for that period to be included in climatology
-#' calculation and anomaly calculation. Defaults to 15 days per month.
+#' calculation and anomalies calculation. Defaults to 15 days per month.
 #' @param max_consecutive_missing_days maximum number of consecutive days allowed
 #' to be missing (NA) within a time period (month or week). If a time period has
-#' more than this many consecutive NAs, it is excluded from climatology and anomaly
+#' more than this many consecutive NAs, it is excluded from climatology and anomalies
 #' calculation. Defaults to 6 days.
 #'
 #' @importFrom dplyr mutate select filter group_by summarise ungroup left_join join_by rename relocate
@@ -29,8 +29,8 @@
 #' @importFrom lubridate year
 #' @importFrom stats sd
 #'
-#' @return TODO list object of climatology of data and anomaly, of class
-#' `pacea_buoy_anomaly_list`. Note that `climatology_years` will be the
+#' @return TODO list object of climatology of data and anomalies, of class
+#' `pacea_buoy_anomalies_list`. Note that `climatology_years` will be the
 #' prescribed years, but these may not be available for all buoys.
 #' @export
 #'
@@ -41,10 +41,10 @@
 #' one_stn_id_example <- "C46146"
 #' buoy_example <- buoy_sst %>%
 #'   filter(stn_id == one_stn_id_example)
-#' res <- calculate_anomaly(buoy_example,
+#' res <- calculate_anomalies(buoy_example,
 #'                          climatology_time = "month")
 #' }
-calculate_anomaly.pacea_buoy <- function(data,
+calculate_anomalies.pacea_buoy <- function(data,
                                          climatology_years = 1991:2020,
                                          climatology_time = "month",
                                          time_period_return = "all",
@@ -166,10 +166,10 @@ calculate_anomaly.pacea_buoy <- function(data,
 
   # Adapting from Travis's calc_climatology_anomaly.R
   # BUT now averaging over the time_unit first and then do
-  # the anomaly from the climatology.
+  # the anomalies from the climatology.
 
   # First pass: count days per stn_id/year/time_unit for all years
-  insufficient_data_anomaly <- data %>%
+  insufficient_data_anomalies <- data %>%
     mutate(year = lubridate::year(date),
            time_unit = FUN(date)) %>%
     filter(year %in% years_return,
@@ -182,7 +182,7 @@ calculate_anomaly.pacea_buoy <- function(data,
     filter(days_not_NA < min_days_per_month)
 
   # Detect excessive consecutive missing days in anomaly period
-  excessive_gaps_anomaly <- data %>%
+  excessive_gaps_anomalies <- data %>%
     mutate(year = lubridate::year(date),
            time_unit = FUN(date),
            true_days_in_month = lubridate::days_in_month(date)) %>%
@@ -212,12 +212,12 @@ calculate_anomaly.pacea_buoy <- function(data,
     filter(max_na_streak_length > max_consecutive_missing_days) %>%
     select(stn_id, year, time_unit)
 
-  # Combine insufficient_data_anomaly and excessive_gaps_anomaly
-  data_to_exclude_anom <- bind_rows(insufficient_data_anomaly %>% select(stn_id, year, time_unit),
-                                     excessive_gaps_anomaly)
+  # Combine insufficient_data_anomalies and excessive_gaps_anomalies
+  data_to_exclude_anom <- bind_rows(insufficient_data_anomalies %>% select(stn_id, year, time_unit),
+                                     excessive_gaps_anomalies)
 
   # Second pass: set SST to NA for insufficient data, then calculate anomalies
-  anomaly <- data %>%
+  anomalies <- data %>%
     mutate(year = lubridate::year(date),
            time_unit = FUN(date)) %>%
     filter(year %in% years_return,
@@ -256,20 +256,20 @@ calculate_anomaly.pacea_buoy <- function(data,
   attr(climatology, "units") <- "Temperature (\u00B0C)"
 
 
-  colnames(anomaly)[which(colnames(anomaly) == "time_unit")] <- climatology_time
+  colnames(anomalies)[which(colnames(anomalies) == "time_unit")] <- climatology_time
 
-  class(anomaly) <- c("pacea_buoy_anomaly", "tbl_df", "tbl", "data.frame")
-  attr(anomaly, "units") <- "Temperature (\u00B0C) anomaly"
+  class(anomalies) <- c("pacea_buoy_anomalies", "tbl_df", "tbl", "data.frame")
+  attr(anomalies, "units") <- "Temperature (\u00B0C) anomalies"
 
   # Had thought likely need climatology_years per stn_id, though it's kind of obvious
   # once plotted (climatology cannot start in 1990 if data starts in 1995), and
   # so just keep it simple to use for figure title.
   res <- list(climatology = climatology,
-              anomaly = anomaly,
+              anomalies = anomalies,
               climatology_years = climatology_years,
               climatology_time = climatology_time)
 
-  class(res) <- c("pacea_buoy_anomaly_list",
+  class(res) <- c("pacea_buoy_anomalies_list",
                   "list")
   return(res)
 }

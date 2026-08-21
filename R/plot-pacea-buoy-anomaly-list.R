@@ -5,12 +5,12 @@
 ##' C46132 but not for months 11:12, in year 2015. Get code working then figure
 ##' out the many caveats.
 ##'
-##' @param pacea_buoy_anomaly_list object of class `pacea_buoy_anomaly_list`
-##' obtained from running `caclulate_anomaly()` on buoy data.
+##' @param pacea_buoy_anomalies_list object of class `pacea_buoy_anomalies_list`
+##' obtained from running `caclulate_anomalies()` on buoy data.
 ##' @param stn_id_to_plot character vector of station IDs (`stn_id` values OR
 ##' `name` values ) from the `buoy_sst` data
 ##' object. If `NULL` (default), anomalies for all buoys (in
-##' `pacea_buoy_anomaly_list_object`) are plotted. If specified, only the
+##' `pacea_buoy_anomalies_list_object`) are plotted. If specified, only the
 ##' buoys in this vector are plotted. If `length(stn_id_to_plot == 1)` then anomalies
 ##' for each month are shown, with January at the top and December at the
 ##' bottom.
@@ -30,7 +30,7 @@
 ##' (e.g. `Middle NOMAD`) or the `stn_id` (e.g. C46004). See `buoy_metadata` for
 ##' the names.
 ##' @param sst_plot character, one of:
-##'   * `"anomaly"` (default) - plots SST anomalies
+##'   * `"anomalies"` (default) - plots SST anomalies
 ##'   * `"mean"` - plots mean SST values for each month
 ##'   * `"count"` - plots count of daily SST values used to calculate monthly mean
 ##' @param count_breaks numeric vector of break points for the count plot colour scale.
@@ -54,12 +54,12 @@
 ##' @examples
 ##' \dontrun{
 ##' # TODO prob just say to see vignette
-##' all_buoys_anomalies <- calculate_anomaly(buoy_sst,
+##' all_buoys_anomalies <- calculate_anomalies(buoy_sst,
 ##'                              climatology_time = "month")
-##' all_buoys_plot <- plot.pacea_buoy_anomaly_list(all_buoys_anomalies)
+##' all_buoys_plot <- plot.pacea_buoy_anomalies_list(all_buoys_anomalies)
 ##' all_buoys_plot
 ##'
-##' all_buoys_plot <- plot.pacea_buoy_anomaly_list(all_buoys_anomalies, months =
+##' all_buoys_plot <- plot.pacea_buoy_anomalies_list(all_buoys_anomalies, months =
 ##' 1:4)
 ##' # TODO figure out that
 ##' # all_buoys_plot <- plot(all_buoys_anomalies, months = 1:12)
@@ -68,22 +68,22 @@
 ##' # are correctly different. Latter should really give an error.
 ##' # TODO currently gives the title correctly, but need to change the function
 ##' }
-plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
-                                         stn_id_to_plot = NULL,
-                                         months = NULL,
-                                         main = NULL,
-                                         xlab = "Year",
-                                         ylab = "Buoy",
-                                         use_stn_id_name = TRUE,
-                                         sst_plot = "anomaly",
-                                         count_breaks = NULL,
-                                         return_results = FALSE,
-                                         require_requested_months = NULL,
-                                         scale_limits = NULL){
-                                         # number_shades = 16){ see TODO below
+plot.pacea_buoy_anomalies_list <- function(pacea_buoy_anomalies_list,
+                                           stn_id_to_plot = NULL,
+                                           months = NULL,
+                                           main = NULL,
+                                           xlab = "Year",
+                                           ylab = "Buoy",
+                                           use_stn_id_name = TRUE,
+                                           sst_plot = "anomalies",
+                                           count_breaks = NULL,
+                                           return_results = FALSE,
+                                           require_requested_months = NULL,
+                                           scale_limits = NULL){
+                                           # number_shades = 16){ see TODO below
 
   # Validate sst_plot parameter
-  sst_plot <- match.arg(sst_plot, c("anomaly", "mean", "count"))
+  sst_plot <- match.arg(sst_plot, c("anomalies", "mean", "count"))
 
   # Check months are consecutive except Dec to Jan
   if(!is.null(months)){
@@ -119,8 +119,8 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
       months = 1:12         # Default to plot all months
     }
 
-    anomaly_plot_or_list <- plot_pacea_buoy_anomaly_single(
-      pacea_buoy_anomaly_list = pacea_buoy_anomaly_list,
+    anomalies_plot_or_list <- plot_pacea_buoy_anomalies_single(
+      pacea_buoy_anomalies_list = pacea_buoy_anomalies_list,
       stn_id_to_plot = stn_id_to_plot,
       months = months,
       main = main,
@@ -132,7 +132,7 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
       return_results = return_results,
       scale_limits = scale_limits)
 
-    return(anomaly_plot_or_list)
+    return(anomalies_plot_or_list)
   }
 
   if(is.null(months)){
@@ -159,7 +159,7 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
 
   # Plot all available stn_id's if not specified
   if(is.null(stn_id_to_plot)){
-    stn_id_to_plot = unique(pacea_buoy_anomaly_list$anomaly$stn_id)
+    stn_id_to_plot = unique(pacea_buoy_anomalies_list$anomalies$stn_id)
   }
 
   # Automate main title
@@ -168,17 +168,17 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
 
     if(is.null(main)){
       main_suffix <- switch(sst_plot,
-                           "anomaly" = "anomalies",
+                           "anomalies" = "anomalies",
                            "mean" = "mean values",
                            "count" = "count of observations")
-      if(sst_plot == "anomaly"){
+      if(sst_plot == "anomalies"){
         main =
           paste0("Annual sea-surface temperature ", main_suffix, " for ",
                  summarise_months(months),
                  " from buoys using climatology from ",
-                 min(pacea_buoy_anomaly_list$climatology_years),
+                 min(pacea_buoy_anomalies_list$climatology_years),
                  " to ",
-                 max(pacea_buoy_anomaly_list$climatology_years),
+                 max(pacea_buoy_anomalies_list$climatology_years),
                  " when available")
       } else {
         main =
@@ -190,11 +190,11 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
 
     # Determine which column to filter NA values from
     na_check_col <- switch(sst_plot,
-                          "anomaly" = "sst_anomaly",
+                          "anomalies" = "sst_anomaly",
                           "mean" = "sst_mean",
                           "count" = "sst_n")
 
-    plot_data <- pacea_buoy_anomaly_list$anomaly %>%
+    plot_data <- pacea_buoy_anomalies_list$anomalies %>%
       dplyr::filter(stn_id %in% stn_id_to_plot,
                     month %in% months,
                     if(sst_plot == "count") sst_n > 0 else TRUE) %>%
@@ -207,7 +207,7 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
           n_available >= require_requested_months,
           mean(if(sst_plot == "count"){
                  sst_n
-               } else if(sst_plot == "anomaly"){
+               } else if(sst_plot == "anomalies"){
                  sst_anomaly
                } else {
                  sst_mean
@@ -225,17 +225,17 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
 
     if(is.null(main)){
       main_suffix <- switch(sst_plot,
-                           "anomaly" = "anomalies",
+                           "anomalies" = "anomalies",
                            "mean" = "mean values",
                            "count" = "count of observations")
-      if(sst_plot == "anomaly"){
+      if(sst_plot == "anomalies"){
         main =
           paste0("Annual sea-surface temperature ", main_suffix, " for winter months (",
                  summarise_months(months),
                  ") from buoys using climatology from ",
-                 min(pacea_buoy_anomaly_list$climatology_years),
+                 min(pacea_buoy_anomalies_list$climatology_years),
                  " to ",
-                 max(pacea_buoy_anomaly_list$climatology_years),
+                 max(pacea_buoy_anomalies_list$climatology_years),
                  " when available; year is the year of the Jan")
       } else {
         main =
@@ -247,11 +247,11 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
 
     # Determine which column to filter NA values from
     na_check_col <- switch(sst_plot,
-                          "anomaly" = "sst_anomaly",
+                          "anomalies" = "sst_anomaly",
                           "mean" = "sst_mean",
                           "count" = "sst_n")
 
-    plot_data <- pacea_buoy_anomaly_list$anomaly %>%
+    plot_data <- pacea_buoy_anomalies_list$anomalies %>%
       dplyr::filter(stn_id %in% stn_id_to_plot,
                     month %in% months,
                     if(sst_plot == "count") sst_n > 0 else TRUE) %>%
@@ -266,7 +266,7 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
           n_available >= require_requested_months,
           mean(if(sst_plot == "count"){
                  sst_n
-               } else if(sst_plot == "anomaly"){
+               } else if(sst_plot == "anomalies"){
                  sst_anomaly
                } else {
                  sst_mean
@@ -282,13 +282,13 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
 
   # Create legend label based on sst_plot
   legend_label <- switch(sst_plot,
-                        "anomaly" = bquote("SST anomaly ("*degree*C*")"),
+                        "anomalies" = bquote("SST anomaly ("*degree*C*")"),
                         "mean" = bquote("Mean SST ("*degree*C*")"),
                         "count" = "Count of daily SST values")
 
   # For non-anomaly plots, use different colour scale (not symmetric)
   if(is.null(scale_limits)){
-    if(sst_plot == "anomaly"){
+    if(sst_plot == "anomalies"){
       max_abs <- max(abs(plot_data$sst_plot_value),
                      na.rm = TRUE)
       scale_limits <- c(-max_abs,
@@ -359,7 +359,7 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
                                                 name = legend_label)
   }
 
-  anomaly_plot <-
+  anomalies_plot <-
     plot_data %>%
     ggplot(aes(x = year,
                y = stn_id)) +
@@ -390,10 +390,10 @@ plot.pacea_buoy_anomaly_list <- function(pacea_buoy_anomaly_list,
          # caption = "Ooh look at me")
 
   if(return_results){
-    print(anomaly_plot)
-    return(list(plot = anomaly_plot,
+    print(anomalies_plot)
+    return(list(plot = anomalies_plot,
                 results = plot_data))
   } else {
-    return(anomaly_plot)
+    return(anomalies_plot)
   }
 }

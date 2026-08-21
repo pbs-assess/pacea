@@ -27,9 +27,11 @@ buoy_sst
 }
 \description{
 A tibble of daily average calculations of sea surface temperature in coastal
-Canadian Pacific waters. The earliest data are from September 1987, and 14 buoys
-were still providing data as of May 2023. See the example code below to see the
-start and end dates for each buoy.
+Canadian Pacific waters. The earliest data are from September 1987, and 18 buoys
+were still providing data as of August 2026. See the example code below to see the
+start and end dates for each buoy. See the two vignettes for example code
+for visualising and analysing the data, including constructing climatologies
+and anomalies for specific buoys and months of the year.
 }
 \details{
 All buoys are ECCC buoys, with DFO providing the historical and updated data
