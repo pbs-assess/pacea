@@ -1,10 +1,7 @@
 ##' Plot anomalies of the buoy sea-surface temperature data
 ##'
-##' TODO Need to clearly explain methods and run them by someone. And put checks
-##' in for there being enough data in each month. e.g. months = 12 has empty for
-##' C46132 but not for months 11:12, in year 2015. Get code working then figure
-##' out the many caveats.
-##'
+##' TODO Need to write this.
+##' ##'
 ##' @param pacea_buoy_anomalies_list object of class `pacea_buoy_anomalies_list`
 ##' obtained from running `caclulate_anomalies()` on buoy data.
 ##' @param stn_id_to_plot character vector of station IDs (`stn_id` values OR
@@ -53,20 +50,10 @@
 ##' @author Andrew Edwards
 ##' @examples
 ##' \dontrun{
-##' # TODO prob just say to see vignette
+##' # See the vignette for explanations and use of the options.
 ##' all_buoys_anomalies <- calculate_anomalies(buoy_sst,
-##'                              climatology_time = "month")
-##' all_buoys_plot <- plot.pacea_buoy_anomalies_list(all_buoys_anomalies)
-##' all_buoys_plot
-##'
-##' all_buoys_plot <- plot.pacea_buoy_anomalies_list(all_buoys_anomalies, months =
-##' 1:4)
-##' # TODO figure out that
-##' # all_buoys_plot <- plot(all_buoys_anomalies, months = 1:12)
-##' # and
-##' # all_buoys_plot_2 <- plot(all_buoys_anomalies, months = 12:1)
-##' # are correctly different. Latter should really give an error.
-##' # TODO currently gives the title correctly, but need to change the function
+##'                                            climatology_time = "month")
+##' plot(all_buoys_anomalies)
 ##' }
 plot.pacea_buoy_anomalies_list <- function(pacea_buoy_anomalies_list,
                                            stn_id_to_plot = NULL,
@@ -221,7 +208,7 @@ plot.pacea_buoy_anomalies_list <- function(pacea_buoy_anomalies_list,
   } else {
     # Months are not increasing, for which it is implied a winter average is
     # being calculated that includes Dec and Jan. TODO think about missing
-    # months, need a condition for having enough (as elsewhere)
+    # months.
 
     if(is.null(main)){
       main_suffix <- switch(sst_plot,
@@ -231,12 +218,13 @@ plot.pacea_buoy_anomalies_list <- function(pacea_buoy_anomalies_list,
       if(sst_plot == "anomalies"){
         main =
           paste0("Annual sea-surface temperature ", main_suffix, " for winter months (",
-                 summarise_months(months),
+                 summarise_months(months,
+                                  just_first_to_last = TRUE),
                  ") from buoys using climatology from ",
                  min(pacea_buoy_anomalies_list$climatology_years),
                  " to ",
                  max(pacea_buoy_anomalies_list$climatology_years),
-                 " when available; year is the year of the Jan")
+                 "; year is that of the Jan")    # no room for 'when available'
       } else {
         main =
           paste0("Annual sea-surface temperature ", main_suffix, " for winter months (",

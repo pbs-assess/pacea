@@ -11,12 +11,7 @@
 ##' @author Andrew Edwards
 ##' @examples
 ##' \dontrun{
-##' TODO
-##' all_buoys_anomalies <- calculate_anomalies(buoy_sst,
-##'                              climatology_time = "month")
-##' single_buoy_plot <- plot_pacea_buoy_anomalies_single(all_buoys_anomalies,
-##'                                                    stn_id_to_plot = "C46132")
-##' single_buoy_plot
+##' # See the vignette
 ##' }
 plot_pacea_buoy_anomalies_single <- function(pacea_buoy_anomalies_list,
                                              stn_id_to_plot,
