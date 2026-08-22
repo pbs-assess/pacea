@@ -365,7 +365,7 @@ run them locally you may get more up-to-date values):
 - [buoys.html](https://pbs-assess.github.io/pacea/vignettes/buoys.html)
   Calculated daily mean sea surface temperatures and associated plotting
   functions.
-- [buoy_anomalies.html](https://pbs-assess.github.io/pacea/vignettes/buoys_anomalies.html)
+- [buoy_anomalies.html](https://pbs-assess.github.io/pacea/vignettes/buoy_anomalies.html)
   Calculating and plotting anomalies of the buoy sea surface
   temperatures in various ways.
 - [populations.html](https://pbs-assess.github.io/pacea/vignettes/populations.html)
