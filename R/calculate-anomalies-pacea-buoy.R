@@ -1,11 +1,6 @@
-#' Calculate climatology and anomalies ANDY DOING JUST buoy_sst object adapting from Travis's,
-#' want to tailor the options for each pacea object, so use generics. TODO
-#' putting anomaly calcs in here also, then return a list object that has
-#' both. So change name to anomaly at some point.
+#' Calculate climatology and anomalies for buoy SST data.
 #'
-#' Function for calculating climatology of a `buoy_sst` pacea data object.
-#' @details
-#' TODO The functions `calc_clim` and `calc_anom` output the climatology of a specified time period and anomaly values relative to a climtological period, respectively. These functions can be used for data from BCCM (e.g. `bccm_surface_temperature()`), OISST (e.g. `oisst_7day`), and buoy SST (e.g. `buoy_sst`).
+#' Function for calculating climatology and subsequent anomalies of a `buoy_sst` pacea data object.
 #'
 #' @param data `buoy_sst` pacea data object
 #' @param climatology_years climatology period years
@@ -29,20 +24,14 @@
 #' @importFrom lubridate year
 #' @importFrom stats sd
 #'
-#' @return TODO list object of climatology of data and anomalies, of class
+#' @return pacea_buoy_anomalies_list object (also a list) of climatology of data and anomalies, of class
 #' `pacea_buoy_anomalies_list`. Note that `climatology_years` will be the
 #' prescribed years, but these may not be available for all buoys.
 #' @export
 #'
 #' @examples
 #' \dontrun{
-
-#' # Will integrate options into function better TODO see vignette
-#' one_stn_id_example <- "C46146"
-#' buoy_example <- buoy_sst %>%
-#'   filter(stn_id == one_stn_id_example)
-#' res <- calculate_anomalies(buoy_example,
-#'                          climatology_time = "month")
+#' # See [climatology and anomalies vignette](https://pbs-assess.github.io/pacea/vignettes/buoy_anomalies.html)
 #' }
 calculate_anomalies.pacea_buoy <- function(data,
                                          climatology_years = 1991:2020,
