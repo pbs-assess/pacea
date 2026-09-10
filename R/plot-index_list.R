@@ -234,6 +234,9 @@ plot_index_list <- function(...,
 
   anomalies_plot <-
     plot_data %>%
+    dplyr::mutate(index = ifelse(index %in% pacea_indices$Object,
+                                 toupper(index),
+                                 index)) %>% # capitalise for plotting
     ggplot(aes(x = year,
                y = index)) +
     geom_tile(aes(fill = index_plot_value),
