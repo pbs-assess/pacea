@@ -31,15 +31,15 @@
 ##' xx <- plot_index_list(oni, pdo, mei, alpi, bi, months = 1:12, return_results = TRUE)
 ##' xx
 ##' }
-plot_index_list <- function(...,
-                            months = NULL,
-                            years = 1970:(lubridate::year(lubridate::today())),
-                            main = NULL,
-                            xlab = "Year",
-                            ylab = "Index",
-                            return_results = FALSE,
-                            require_requested_months = NULL,
-                            scale_limits = NULL){
+plot_pacea_indices <- function(...,
+                               months = NULL,
+                               years = 1970:(lubridate::year(lubridate::today())),
+                               main = NULL,
+                               xlab = "Year",
+                               ylab = "Index",
+                               return_results = FALSE,
+                               require_requested_months = NULL,
+                               scale_limits = NULL){
 
   # Check months are consecutive except Dec to Jan
   if(!is.null(months)){
