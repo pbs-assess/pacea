@@ -34,12 +34,12 @@
 #' # See [climatology and anomalies vignette](https://pbs-assess.github.io/pacea/vignettes/buoy_anomalies.html)
 #' }
 calculate_anomalies.pacea_buoy <- function(data,
-                                         climatology_years = 1991:2020,
-                                         climatology_time = "month",
-                                         time_period_return = "all",
-                                         years_return = NULL,
-                                         min_days_per_month = 15,
-                                         max_consecutive_missing_days = 6) {
+                                           climatology_years = 1991:2020,
+                                           climatology_time = "month",
+                                           time_period_return = "all",
+                                           years_return = NULL,
+                                           min_days_per_month = 15,
+                                           max_consecutive_missing_days = 6) {
 
   stopifnot("'climatology_time' must currently have a value of 'month'; if you want 'week' then email Andy or make an Issue, as some of the code will need updating, and we did not think this was the most important thing to work on"
             = climatology_time %in% c("month"))
