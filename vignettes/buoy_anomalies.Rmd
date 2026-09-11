@@ -1,6 +1,6 @@
 ---
 title: "Buoy Sea Surface Temperature Anomalies"
-author: "Andrew Edwards"
+author: "Andrew Edwards and Andrea Hilborn"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Buoy Sea Surface Temperature Anomalies}
