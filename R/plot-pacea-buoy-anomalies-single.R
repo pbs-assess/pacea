@@ -8,7 +8,7 @@
 ##' @rdname plot.pacea_buoy_anomalies_list
 ##' @return a ggplot object
 ##' @export
-##' @author Andrew Edwards
+##' @author Andrew Edwards and Andrea Hilborn
 ##' @examples
 ##' \dontrun{
 ##' # See the vignette

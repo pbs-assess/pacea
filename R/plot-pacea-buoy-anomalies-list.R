@@ -47,7 +47,7 @@
 ##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot` and `results`
 ##' (when `return_results = TRUE`)
 ##' @export
-##' @author Andrew Edwards
+##' @author Andrew Edwards and Andrea Hilborn
 ##' @examples
 ##' \dontrun{
 ##' # See the vignette for explanations and use of the options.
