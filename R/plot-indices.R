@@ -19,14 +19,17 @@
 ##' \dontrun{
 ##' # See the vignette for explanations and use of the options.
 ##' hake_recruitment_index <- create_index(hake_recruitment)   # so standardises it
-##' hake_rec_over_2010_index <- create_index(hake_recruitment_over_2010,
-##' index_label = "Rec over 2010")   # Just to get it working, values should be
-##' close TODO think about why 2021 values don't match, others seem to
+##' herring_wcvi_recruitment_index <- create_index(herring_recruitment)   # default is WCVI
 ##' plot_indices(hake_recruitment_index,
-##'              hake_recruitment_index)  # just to get it working
-##' xx <- plot_pacea_indices(oni, pdo, mei, alpi, bi, months = 1:12,
-##' return_results = TRUE) TODO
-##' xx
+##'              herring_wcvi_recruitment index)
+##' # hake_rec_over_2010_index <- create_index(hake_recruitment_over_2010,
+##' # index_label = "Rec over 2010")   # Just to get it working, values should be
+##' # close TODO think about why 2021 values don't match, others seem to
+##'
+##'
+##' # Do example with:
+##' # return_results = TRUE)
+##'
 ##' }
 plot_indices <- function(...,
                          years = NULL,

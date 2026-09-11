@@ -1,7 +1,7 @@
 ##' Plot anomalies of the buoy sea-surface temperature data
 ##'
 ##' TODO Need to write this.
-##' ##'
+##'
 ##' @param pacea_buoy_anomalies_list object of class `pacea_buoy_anomalies_list`
 ##' obtained from running `caclulate_anomalies()` on buoy data.
 ##' @param stn_id_to_plot character vector of station IDs (`stn_id` values OR
@@ -67,7 +67,7 @@ plot.pacea_buoy_anomalies_list <- function(pacea_buoy_anomalies_list,
                                            return_results = FALSE,
                                            require_requested_months = NULL,
                                            scale_limits = NULL){
-                                           # number_shades = 16){ see TODO below
+                                           # number_shades = 16){ see below
 
   # Validate sst_plot parameter
   sst_plot <- match.arg(sst_plot, c("anomalies", "mean", "count"))
