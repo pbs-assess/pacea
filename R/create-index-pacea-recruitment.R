@@ -2,7 +2,7 @@
 ##' @rdname create_index
 create_index.pacea_recruitment <- function(data,
                                            years = NULL,
-                                           index_label = "Hake recruitment",
+                                           index_label = "Hake age-0 recruitment",
                                            index_name = NULL){
   if(is.null(years)){
     years <- min(data$year):max(data$year)

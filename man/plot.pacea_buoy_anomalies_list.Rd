@@ -159,24 +159,14 @@ in this way -- this is likely something to be discussed with a wider audience.
 \examples{
 \dontrun{
 # See the vignette for explanations and use of the options.
-hake_recruitment_index <- create_index(hake_recruitment)   # so standardises it
+hake_recruitment_index <- create_index(hake_recruitment)
 herring_wcvi_recruitment_index <- create_index(herring_recruitment)   # default is WCVI
 plot_indices(hake_recruitment_index,
-             herring_wcvi_recruitment index)
+             herring_wcvi_recruitment_index)
 # hake_rec_over_2010_index <- create_index(hake_recruitment_over_2010,
 # index_label = "Rec over 2010")   # Just to get it working, values should be
 # close TODO think about why 2021 values don't match, others seem to
 
-# Do recruitment for each herring region, and show on one plot
-her_wcvi <- create_index(herring_recruitment)
-her_cc <- create_index(herring_recruitment, herring_region = "CC")
-her_hg <- create_index(herring_recruitment, herring_region = "HG")
-her_prd <- create_index(herring_recruitment, herring_region = "PRD")
-her_sog <- create_index(herring_recruitment, herring_region = "SOG")
-plot_indices(her_hg, her_prd, her_cc, her_sog, her_wcvi)
-
-# Do example with:
-# return_results = TRUE)
 
 }
 \dontrun{
