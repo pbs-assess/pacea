@@ -3,7 +3,8 @@
 create_index.pacea_recruitment <- function(data,
                                            years = NULL,
                                            index_label = "Hake age-0 recruitment",
-                                           index_name = NULL){
+                                           index_name = NULL,
+                                           index_statistic = "median"){
   if(is.null(years)){
     years <- min(data$year):max(data$year)
   }
@@ -16,7 +17,7 @@ create_index.pacea_recruitment <- function(data,
   }
 
   res <- res %>%
-    dplyr::mutate(value = standardise(median),
+    dplyr::mutate(value = standardise(.data[[index_statistic]]),
                   index = index_name,
                   index_label = index_label) %>%
     dplyr::select(index,
