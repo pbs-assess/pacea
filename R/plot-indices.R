@@ -12,8 +12,9 @@
 ##' were used to create the standardised index), then the mean of the values
 ##' shown in the plot for that index will obviously not be 0.
 ##' @param angle_year_labels logical, whether to put the year labels at 45
-##' degrees, which is needed to avoid overlapping when there are many years
-##' @rdname plot.pacea_buoy_anomalies_list TODO maybe
+##' degrees, which is needed to avoid overlapping when there are many
+##' years. TODO maybe need the next rdname:
+##' @rdname plot.pacea_buoy_anomalies_list
 ##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot` and `results`
 ##' (when `return_results = TRUE`)
 ##' @export
@@ -21,24 +22,14 @@
 ##' @examples
 ##' \dontrun{
 ##' # See the vignette for explanations and use of the options.
-##' hake_recruitment_index <- create_index(hake_recruitment)   # so standardises it
+##' hake_recruitment_index <- create_index(hake_recruitment)
 ##' herring_wcvi_recruitment_index <- create_index(herring_recruitment)   # default is WCVI
 ##' plot_indices(hake_recruitment_index,
-##'              herring_wcvi_recruitment index)
+##'              herring_wcvi_recruitment_index)
 ##' # hake_rec_over_2010_index <- create_index(hake_recruitment_over_2010,
 ##' # index_label = "Rec over 2010")   # Just to get it working, values should be
 ##' # close TODO think about why 2021 values don't match, others seem to
 ##'
-##' # Do recruitment for each herring region, and show on one plot
-##' her_wcvi <- create_index(herring_recruitment)
-##' her_cc <- create_index(herring_recruitment, herring_region = "CC")
-##' her_hg <- create_index(herring_recruitment, herring_region = "HG")
-##' her_prd <- create_index(herring_recruitment, herring_region = "PRD")
-##' her_sog <- create_index(herring_recruitment, herring_region = "SOG")
-##' plot_indices(her_hg, her_prd, her_cc, her_sog, her_wcvi)
-##'
-##' # Do example with:
-##' # return_results = TRUE)
 ##'
 ##' }
 plot_indices <- function(...,
@@ -141,10 +132,14 @@ plot_indices <- function(...,
           panel.background = element_rect(fill = "white",
                                           colour = NA),
           panel.grid = element_blank()) +
-    if (angle_year_labels) {
-      theme(axis.text.x = element_text(angle = 45,
-                                       hjust = 1,
-                                       vjust = 1))
+    {
+      if(angle_year_labels){
+        theme(axis.text.x = element_text(angle = 45,
+                                         hjust = 1,
+                                         vjust = 1))
+      } else {
+        theme()
+      }
     } +
     ggplot2::geom_text(aes(label = label),
                        size = 3.5) +
