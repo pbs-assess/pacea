@@ -5,7 +5,8 @@
 ##'
 ##'
 ##' @param ... the indices you want to plot, using names you gave them when
-##' using [create_index()], e.g. hake_recruitment_index, etc.,
+##' using [create_index()], e.g. hake_recruitment_index, etc. They are plotted
+##' from top to bottom in the order given.
 ##' @param years numeric vector of the years to show, default is the range that
 ##' encompasses all the indices. If some years of an index are not plotted (but
 ##' were used to create the standardised index), then the mean of the values
@@ -26,6 +27,13 @@
 ##' # index_label = "Rec over 2010")   # Just to get it working, values should be
 ##' # close TODO think about why 2021 values don't match, others seem to
 ##'
+##' # Do recruitment for each herring region, and show on one plot
+##' her_wcvi <- create_index(herring_recruitment)
+##' her_cc <- create_index(herring_recruitment, herring_region = "CC")
+##' her_hg <- create_index(herring_recruitment, herring_region = "HG")
+##' her_prd <- create_index(herring_recruitment, herring_region = "PRD")
+##' her_sog <- create_index(herring_recruitment, herring_region = "SOG")
+##' plot_indices(her_hg, her_prd, her_cc, her_sog, her_wcvi)
 ##'
 ##' # Do example with:
 ##' # return_results = TRUE)
@@ -58,7 +66,20 @@ plot_indices <- function(...,
   }
 
   combined_indices <- index_list %>%
-    dplyr::bind_rows(.id = "index")
+    dplyr::bind_rows(.id = "index") %>%
+    dplyr::mutate(index = factor(index,
+                                 levels = names(index_list)))
+
+  # Get unique index_labels in the order of the index factor levels
+  index_label_levels <- combined_indices %>%
+    dplyr::distinct(index,
+                    index_label) %>%
+    dplyr::arrange(index) %>%
+    dplyr::pull(index_label)
+
+  combined_indices <- combined_indices %>%
+    dplyr::mutate(index_label = factor(index_label,
+                                       levels = index_label_levels))
 
   if(is.null(main)){
     main = paste0("Standardised value of each index")
@@ -106,7 +127,8 @@ plot_indices <- function(...,
                                 name = xlab,
                                 breaks = years) +
     ggplot2::scale_y_discrete(expand = c(0, 0),
-                              name = ylab) +
+                              name = ylab,
+                              limits = rev) +
     theme(legend.position = "bottom",
           strip.background = element_blank(),
           strip.text = element_text(face = "bold",
