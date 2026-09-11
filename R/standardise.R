@@ -1,5 +1,6 @@
 ##' Standardise a vector of values to a mean of 0 and standard deviation of 1
 ##'
+##' Can be used in [dplyr::mutate()] call.
 ##' @param x numeric
 ##' @param range indices for which the mean and standard deviation should be
 ##'   calculated over (default is to use all of `x`)

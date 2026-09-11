@@ -1,4 +1,4 @@
-##' Create an index time series based on hake recruitment estimates.
+##' Create an annual index time series based on hake recruitment estimates.
 ##'
 ##' TODO put all the helps into create_index() when done.
 ##'
@@ -36,17 +36,17 @@ create_index.pacea_recruitment <- function(data,
   res <- dplyr::filter(data,
                        year %in% years)
 
-  value_mean <- mean(res$median)
-  value_sd <- sd(res$median)
-
   index_name <- deparse(substitute(data))
   res <- res %>%
-    dplyr::mutate(index_plot_value =
-                    (median - value_mean) / value_sd,
-                  index = index_name) %>%
+    dplyr::mutate(value = standardise(median),
+                  index = index_name,
+                  index_label = index_label) %>%
     dplyr::select(index,
                   year,
-                  index_plot_value)
+                  value,
+                  index_label)
+
+  class(res)[1] <- "pacea_standardised_index"
 
   res
 }

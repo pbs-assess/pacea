@@ -1,7 +1,8 @@
-##' Create an index time series based on data in a pacea object
+##' Create an annual standardised index based on a pacea object
 ##'
 ##' Create an annual index based on a pacea object. The annual value can be
-##' tailored to be anything. See the examples and vignette TODO
+##' tailored to be anything (e.g. PDO for Apr to Sep). See the examples and
+##' vignette TODO
 ##' Calculations are based on the class of the object.
 ##'
 ##' The index is normalised (subtract the mean and divide by the standard
@@ -14,11 +15,12 @@
 ##' * `size_spectrum_mlebins` object
 ##' * `determine_xmin_and_fit_mlebins` object
 ##' * `remove_outliers_mlebins` object
-##' @param ... arguments passed onto the respective `detect_outliers.<class>` function
+##' @param ... arguments passed onto the respective `create_index.<class>` function
 ##' @return tibble containing columns of
 ##'   * `index` - name of the index
 ##'   * `year` - year of the value
-##'   * `index_plot_value` - the value of the index in that year
+##'   * `value` - the value of the index in that year
+##'   * `index_label` - label to be used for plotting
 ##' @export
 ##' @author Andrew Edwards
 ##' @examples

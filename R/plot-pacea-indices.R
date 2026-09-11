@@ -1,8 +1,8 @@
 ##' Plot multiple indices together in a similar heatmap style to the buoy SST plot.
 ##'
-##' Takes any number of the indices, such as those in
-##' `pacea_indices`. In theory should work for any kind of index that has the
-##' required columns (`year`, `month`, `anomaly`).
+##' Takes any number of the climatological and oceanographic indices, such as those in
+##' `pacea_indices`. For plotting standard time series of one index just use
+##' [plot()] which then calls [plot.pacea_index()].
 ##'
 ##' Not currently set up to use `npi_monthly` and `npi_annual` as
 ##' they are absolute values and so need a climatology defined (contact Andrew
@@ -27,8 +27,8 @@
 ##' @examples
 ##' \dontrun{
 ##' # See the vignette for explanations and use of the options.
-##' plot_index_list(oni, pdo, mei)
-##' xx <- plot_index_list(oni, pdo, mei, alpi, bi, months = 1:12, return_results = TRUE)
+##' plot_pacea_indices(oni, pdo, mei)
+##' xx <- plot_pacea_indices(oni, pdo, mei, alpi, bi, months = 1:12, return_results = TRUE)
 ##' xx
 ##' }
 plot_pacea_indices <- function(...,
@@ -82,7 +82,7 @@ plot_pacea_indices <- function(...,
       months = 1:12         # Default to plot all months
     }
 
-    anomalies_plot_or_list <- plot_index_list_single(
+    anomalies_plot_or_list <- plot_pacea_indices_single(
       # TODO
       pacea_buoy_anomalies_list = pacea_buoy_anomalies_list,
       stn_id_to_plot = stn_id_to_plot,
@@ -119,7 +119,7 @@ plot_pacea_indices <- function(...,
 
     if(is.null(main)){
         main =
-          ifelse(months == 1:12,
+          ifelse(length(months) == 12,
                  paste0("Average of each index for the full year"),
                  paste0("Average of each index for ",
                         summarise_months(months)))
@@ -148,15 +148,11 @@ plot_pacea_indices <- function(...,
       if("alpi" %in% names(index_list)){
         alpi_to_add <- alpi %>%
           dplyr::filter(year %in% years)
-        # alpi has absolute units of 10^6 km^2, so normalise the anomalies
+        # alpi has absolute units of 10^6 km^2, so standardise the anomalies
         # (won't be exactly the same idea as other indices, but brings value more
         # similar to other indices)
-        alpi_anomaly_mean <- mean(alpi_to_add$anomaly)
-        alpi_anomaly_sd <- sd(alpi_to_add$anomaly)
-
         alpi_to_add <- alpi_to_add %>%
-          dplyr::mutate(index_plot_value =
-                          (anomaly - alpi_anomaly_mean) / alpi_anomaly_sd,
+          dplyr::mutate(index_plot_value = standardise(anomaly),
                         index = "alpi") %>%
           dplyr::select(index,
                         year,
