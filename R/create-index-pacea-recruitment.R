@@ -2,7 +2,8 @@
 ##' @rdname create_index
 create_index.pacea_recruitment <- function(data,
                                            years = NULL,
-                                           index_label = "Hake recruitment"){
+                                           index_label = "Hake recruitment",
+                                           index_name = NULL){
   if(is.null(years)){
     years <- min(data$year):max(data$year)
   }
@@ -10,7 +11,10 @@ create_index.pacea_recruitment <- function(data,
   res <- dplyr::filter(data,
                        year %in% years)
 
-  index_name <- deparse(substitute(data))
+  if(is.null(index_name)){
+    index_name <- deparse(substitute(data))
+  }
+
   res <- res %>%
     dplyr::mutate(value = standardise(median),
                   index = index_name,

@@ -17,6 +17,9 @@
 ##' @param ... arguments passed onto the respective `create_index.<class>`
 ##' function, such as:
 ##' @param years numeric vector years to restrict the data to, and then to normalise over.
+##' @param index_name character string for the name of the index. If `NULL` (default),
+##' the name is derived from the variable name of `data`. Used internally when delegating
+##' between `create_index` methods to preserve the original variable name.
 ##' @param herring_region string for the region to be used when making an index related
 ##' to `herring_recruitment` or TODO
 ##'
