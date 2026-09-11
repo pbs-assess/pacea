@@ -6,7 +6,7 @@
 \alias{create_index}
 \title{Create an index time series based on hake recruitment estimates.}
 \usage{
-\method{create_index}{pacea_recruitment}(data, years = NULL, ...)
+\method{create_index}{pacea_recruitment}(data, years = NULL, index_label = "Hake recruitment", ...)
 
 create_index(data, ...)
 }
@@ -58,7 +58,7 @@ are given in the original data, though functions may have choices
 }
 \examples{
 \dontrun{
-
+create_index(hake_recruitment)
 }
 \dontrun{
 # See ?remove_outliers for link to example code
