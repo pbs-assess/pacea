@@ -117,7 +117,6 @@ a ggplot object (when \code{return_results = FALSE}) or a list with \code{plot} 
 }
 \description{
 TODO Need to write this.
-##'
 
 Takes any number of the climatological and oceanographic indices, such as those in
 \code{pacea_indices}. For plotting standard time series of one index just use
