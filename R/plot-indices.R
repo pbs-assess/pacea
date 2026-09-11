@@ -11,6 +11,8 @@
 ##' encompasses all the indices. If some years of an index are not plotted (but
 ##' were used to create the standardised index), then the mean of the values
 ##' shown in the plot for that index will obviously not be 0.
+##' @param angle_year_labels logical, whether to put the year labels at 45
+##' degrees, which is needed to avoid overlapping when there are many years
 ##' @rdname plot.pacea_buoy_anomalies_list TODO maybe
 ##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot` and `results`
 ##' (when `return_results = TRUE`)
@@ -45,7 +47,8 @@ plot_indices <- function(...,
                          xlab = "Year",
                          ylab = "Index",
                          return_results = FALSE,
-                         scale_limits = NULL){
+                         scale_limits = NULL,
+                         angle_year_labels = TRUE){
 
   # Make a long tibble from the indices in ..., in a similar way to what we did
   # for buoy_sst data, so plotting can be similar.
@@ -82,7 +85,7 @@ plot_indices <- function(...,
                                        levels = index_label_levels))
 
   if(is.null(main)){
-    main = paste0("Standardised value of each index")
+    main = paste0("Ecosystem summary plot showing standardised value of each index")
   }
 
   if(is.null(years)){
@@ -138,6 +141,11 @@ plot_indices <- function(...,
           panel.background = element_rect(fill = "white",
                                           colour = NA),
           panel.grid = element_blank()) +
+    if (angle_year_labels) {
+      theme(axis.text.x = element_text(angle = 45,
+                                       hjust = 1,
+                                       vjust = 1))
+    } +
     ggplot2::geom_text(aes(label = label),
                        size = 3.5) +
     guides(fill = guide_colorbar(barwidth = 15,
