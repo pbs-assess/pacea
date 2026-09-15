@@ -139,7 +139,34 @@ if(any(names(zooplankton_sog_new) !=
                 expression(paste(plain(Siphonophorae) * " " * plain(anomaly) * ", " * log[10] * " " * g * " " * m^-2))),
   in_perry_fig_s1 = c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE,
                       TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE,
-                      TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, TRUE))
+                      TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, TRUE),
+  heatmap_axis_name =
+    c("Total zooplankton SOG",
+      "Gammarid amphipods SOG",
+      "Hyperiid amphipods SOG",
+      "Benthic larvae SOG",
+                "Calanoid copepods SOG - large",
+                "Calanoid copepods SOG - medium",
+                "Calanoid copepods SOG - small",
+                "Cephalopoda SOG",
+                "Chaetognatha SOG",
+                "Cladocera SOG",
+                "Ctenophora SOG",
+                "Euphausiids SOG",
+                "Larval fish SOG",
+                "Larvacea SOG",
+                "Medusae SOG",
+                "Mysids SOG",
+                "Natantia SOG",
+                "Non-calanoid copeopods SOG",
+                "Ostracoda SOG",
+                "Other zooplankton taxa SOG",
+                "Pelagic polychaeta SOG",
+                "Pteropods SOG",
+                "Repantia SOG",
+                "Scyphozoa SOG",
+                "Siphonophorae SOG"))
+
 
   zooplankton_sog_axis_names <- zooplankton_sog_axis_names_new
   usethis::use_data(zooplankton_sog_axis_names,

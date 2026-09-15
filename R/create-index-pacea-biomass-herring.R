@@ -18,6 +18,7 @@ create_index.pacea_biomass_herring <- function(data,
                          tolower(herring_region))
   }
 
+  # Can use this, even though we're doing biomass
   create_index.pacea_recruitment_herring(data = data,
                                          years = years,
                                          herring_region = herring_region,

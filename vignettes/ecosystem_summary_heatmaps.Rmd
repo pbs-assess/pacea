@@ -71,6 +71,9 @@ herring_recruitment_sog_index <- create_index(herring_recruitment,
 herring_recruitment_wcvi_index <- create_index(herring_recruitment,
                                               herring_region = "WCVI")
 
+herring_biomass_sog_index <- create_index(herring_spawning_biomass,
+                                           herring_region = "SOG")
+
 herring_biomass_wcvi_index <- create_index(herring_spawning_biomass,
                                            herring_region = "WCVI")
 
@@ -78,11 +81,18 @@ hake_recruitment_index <- create_index(hake_recruitment)
 
 hake_biomass_index <- create_index(hake_biomass)
 
-harbour_seals_wcvi <- create_index(harbour_seals)  
+harbour_seals_wcvi_index <- create_index(harbour_seals)  
 
-harbour_seals_sog <- create_index(harbour_seals, seal_region = "SOG")  # more
+harbour_seals_sog_index <- create_index(harbour_seals, seal_region = "SOG")  # more
 # interesting as not just increasing like WCVI
 
+total_zooplankton_sog_index <- create_index(zooplankton_sog,
+                                            zooplankton_species_group = "total_biomass")
+
+calanoid_copepods_large_sog_index <- create_index(zooplankton_sog,
+                                            zooplankton_species_group = "calanoid_copepods_large")
+
+# Adding example as I go:
 plot_indices(herring_recruitment_hg_index,
              herring_recruitment_prd_index,
              herring_recruitment_cc_index,
@@ -91,8 +101,18 @@ plot_indices(herring_recruitment_hg_index,
              herring_biomass_wcvi_index,             
              hake_recruitment_index,
              hake_biomass_index,
-             harbour_seals_wcvi,
-             harbour_seals_sog)
+             harbour_seals_wcvi_index,
+             harbour_seals_sog_index,
+             total_zooplankton_sog_index)
+```
+
+How about just Strait of Georgia indices:
+```{r, sogplot}
+plot_indices(calanoid_copepods_large_sog_index,
+             total_zooplankton_sog_index,
+             herring_recruitment_sog_index,
+             herring_biomass_sog_index,             
+             harbour_seals_sog_index)
 
 
 # Do example with:

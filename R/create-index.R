@@ -7,7 +7,11 @@
 ##' Calculations are based on the class of the object: [create_index()] is a generic function that calls `create_index.<class>()`
 ##' where `<class>` is `class(data)`. [create_index.pacea_recruitment()] is a
 ##' kind of master file that gets used by others when possible (could not for
-##' herring). [create_index.pacea_harbour_seals()] linearly interpolates the
+##' herring), and just needs columns `year` and a column named
+##' `index_statistic`, other information is supplied from other functions in the
+##' arguments.
+##'
+##' [create_index.pacea_harbour_seals()] linearly interpolates the
 ##' roughly eight-monthly population estimates to the 1st January to give a
 ##' single value for each year. (Hake assessment outputs are also for the start
 ##' of the year, TODO herring I think might be 1st April).
