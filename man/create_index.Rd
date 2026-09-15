@@ -2,13 +2,15 @@
 % Please edit documentation in R/create-index-pacea-biomass-herring.R,
 %   R/create-index-pacea-biomass.R, R/create-index-pacea-harbour-seals.R,
 %   R/create-index-pacea-recruitment-herring.R,
-%   R/create-index-pacea-recruitment.R, R/create-index.R
+%   R/create-index-pacea-recruitment.R, R/create-index-pacea-zooplankton.R,
+%   R/create-index.R
 \name{create_index.pacea_biomass_herring}
 \alias{create_index.pacea_biomass_herring}
 \alias{create_index.pacea_biomass}
 \alias{create_index.pacea_harbour_seals}
 \alias{create_index.pacea_recruitment_herring}
 \alias{create_index.pacea_recruitment}
+\alias{create_index.pacea_zooplankton}
 \alias{create_index}
 \title{Create an annual standardised index based on a pacea object}
 \usage{
@@ -25,7 +27,7 @@
 \method{create_index}{pacea_harbour_seals}(
   data,
   years = NULL,
-  region = "WCVI",
+  seal_region = "WCVI",
   index_label = NULL,
   index_name = NULL,
   index_statistic = "mean"
@@ -36,7 +38,8 @@
   years = NULL,
   herring_region = "WCVI",
   index_label = NULL,
-  index_name = NULL
+  index_name = NULL,
+  index_statistic = "median"
 )
 
 \method{create_index}{pacea_recruitment}(
@@ -45,6 +48,15 @@
   index_label = "Hake age-0 recruitment",
   index_name = NULL,
   index_statistic = "median"
+)
+
+\method{create_index}{pacea_zooplankton}(
+  data,
+  years = NULL,
+  zooplankton_species_group = "total_biomass",
+  index_label = NULL,
+  index_name = NULL,
+  index_statistic = "anomaly"
 )
 
 create_index(data, ...)
@@ -92,10 +104,18 @@ calculated from annual values, such as \code{hake_recruitment}, or averaged for
 specific monthly values (e.g. PDO for Apr to Sep). See the examples and
 vignette TODO
 Calculations are based on the class of the object: \code{\link[=create_index]{create_index()}} is a generic function that calls \verb{create_index.<class>()}
-where \verb{<class>} is \code{class(data)}. \code{\link[=create-index.pacea_recruitment]{create-index.pacea_recruitment()}} is a
-kind of master file that gets used by others when possible (could not for herring).
+where \verb{<class>} is \code{class(data)}. \code{\link[=create_index.pacea_recruitment]{create_index.pacea_recruitment()}} is a
+kind of master file that gets used by others when possible (could not for
+herring), and just needs columns \code{year} and a column named
+\code{index_statistic}, other information is supplied from other functions in the
+arguments.
 }
 \details{
+\code{\link[=create_index.pacea_harbour_seals]{create_index.pacea_harbour_seals()}} linearly interpolates the
+roughly eight-monthly population estimates to the 1st January to give a
+single value for each year. (Hake assessment outputs are also for the start
+of the year, TODO herring I think might be 1st April).
+
 The index is normalised (subtract the mean and divide by the standard
 deviation) across the specified years. This means that different types of
 indices can be compared to each other. Indices are returned in a
