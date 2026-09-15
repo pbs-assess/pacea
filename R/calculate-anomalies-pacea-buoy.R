@@ -123,7 +123,9 @@ calculate_anomalies.pacea_buoy <- function(data,
     select(stn_id, year, time_unit)
 
   # Combine insufficient_data and excessive_gaps
-  data_to_exclude_clim <- bind_rows(insufficient_data %>% select(stn_id, year, time_unit),
+  data_to_exclude_clim <- bind_rows(insufficient_data %>% select(stn_id,
+                                                                 year,
+                                                                 time_unit),
                                     excessive_gaps)
 
   # Second pass: set SST to NA for insufficient data, then calculate climatology

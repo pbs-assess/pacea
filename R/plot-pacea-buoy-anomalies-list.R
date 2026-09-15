@@ -70,7 +70,10 @@ plot.pacea_buoy_anomalies_list <- function(pacea_buoy_anomalies_list,
                                            # number_shades = 16){ see below
 
   # Validate sst_plot parameter
-  sst_plot <- match.arg(sst_plot, c("anomalies", "mean", "count"))
+  sst_plot <- match.arg(sst_plot,
+                        c("anomalies",
+                          "mean",
+                          "count"))
 
   # Check months are consecutive except Dec to Jan
   if(!is.null(months)){

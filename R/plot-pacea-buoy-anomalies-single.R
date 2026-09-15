@@ -26,8 +26,10 @@ plot_pacea_buoy_anomalies_single <- function(pacea_buoy_anomalies_list,
                                              scale_limits = NULL){
 
   # Validate sst_plot parameter
-  sst_plot <- match.arg(sst_plot, c("anomalies", "mean", "count"))
-
+  sst_plot <- match.arg(sst_plot,
+                        c("anomalies",
+                          "mean",
+                          "count"))
 
     if(use_stn_id_name){
       stn_id_to_plot_name <- buoy_metadata$name[match(stn_id_to_plot,

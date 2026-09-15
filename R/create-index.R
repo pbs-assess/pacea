@@ -40,6 +40,14 @@
 ##' uses the `mean`.
 ##' @param herring_region string for the region to be used when making an index related
 ##' to `herring_recruitment` or TODO
+##' @param stn_id string of the station IDs (`stn_id` values OR
+##' `name` values ) to create an index from the `buoy_sst` data
+##' object.
+##' @param require_requested_months numeric, number of months that must be available
+##' out of the requested `months` to compute an average anomaly. If `NULL` (default),
+##' defaults to `length(months)`.
+##' @param ... arguments passed onto the respective method, and also onto
+##' [calculate_anomalies.pacea_buoy()] for `buoy_sst` data.
 ##'
 ##' @return tibble of class `pacea_standardised_index` containing columns of
 ##'   * `index` - name of the index

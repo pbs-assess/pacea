@@ -106,19 +106,26 @@ plot_indices(herring_recruitment_hg_index,
              total_zooplankton_sog_index)
 ```
 
-How about just Strait of Georgia indices:
+How about just Strait of Georgia indices, basing the start year on the shortest
+of those (zooplankton data):
 ```{r, sogplot}
 plot_indices(calanoid_copepods_large_sog_index,
              total_zooplankton_sog_index,
              herring_recruitment_sog_index,
              herring_biomass_sog_index,             
-             harbour_seals_sog_index)
+             harbour_seals_sog_index,
+             years = 1996:2025)
 
 
 # Do example with:
 # return_results = TRUE)
 
 ```
+
+TODO should the years argument then require indices to be recalculated across
+just those years? Question for the audience maybe..., show the consequences of
+that. Historically good/bad versus short-term good/bad. Will need both options,
+decide on default.
 
 For comparing disparate types of ecosystem information, we standardise each time
 series (by subtracting the mean and dividing by the standard deviation across
