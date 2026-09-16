@@ -184,6 +184,8 @@ plot.pacea_buoy_anomalies_list <- function(pacea_buoy_anomalies_list,
                           "mean" = "sst_mean",
                           "count" = "sst_n")
 
+    # Some of this was adapted and simplified in create_index.pacea_buoy(), so
+    # if do any major changes here check there as well.
     plot_data <- pacea_buoy_anomalies_list$anomalies %>%
       dplyr::filter(stn_id %in% stn_id_to_plot,
                     month %in% months,
