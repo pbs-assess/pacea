@@ -116,13 +116,28 @@ plot_indices(calanoid_copepods_large_sog_index,
              herring_recruitment_sog_index,
              herring_biomass_sog_index,             
              harbour_seals_sog_index,
-             sst_west_dixon_apr_using_anomalies,
+             years = 1996:2025)
+```
+
+Now add in some temperature data. Looking at the [buoy_anomalies](https://pbs-assess.github.io/pacea/vignettes/buoy_anomalies.html)
+vignette, let's use the Halibut Bank buoy in the SoG, as has a good amount of
+data, and just pick April::
+
+```{r, buoyhb}
+sst_buoy_halibut_bank_apr <- create_index(buoy_sst,
+                                          months = 4,
+                                          stn_id = "Halibut Bank")
+
+plot_indices(sst_buoy_halibut_bank_apr,
+             calanoid_copepods_large_sog_index,
+             total_zooplankton_sog_index,
+             herring_recruitment_sog_index,
+             herring_biomass_sog_index,             
+             harbour_seals_sog_index,
              years = 1996:2025)
 
 
 
-# Do example with:
-# return_results = TRUE)
 
 ```
 
@@ -139,7 +154,11 @@ expect_equal(sst_west_dixon_apr_using_anomalies,
 # Not convinced that will always hold though, I think only difference would be
 # if you did not have a climatology for a particular month, which does not
 # happen with the default years. So probably best to keep the generality. TODO
-             
+
+# Different examples:
+buoy_1 <- create_index(buoy_sst, months = 5)
+buoy_2 <- create_index(buoy_sst, months = 5:6)
+buoy_3 <- create_index(buoy_sst, months = c(11, 12, 1, 2, 3))
 ```
 
 
@@ -160,6 +179,11 @@ are all dimensionless and can be compared on equivalent scales.
 
 
 ```{r, stop123, cache = FALSE}
+# Do example index with:
+# return_results = TRUE)
+
+
+
 knitr::knit_exit()
 ```
 

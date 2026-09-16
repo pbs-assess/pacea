@@ -4,7 +4,8 @@
 ##' @param x numeric
 ##' @param range indices for which the mean and standard deviation should be
 ##'   calculated over (default is to use all of `x`)
-##' @return numeric with standardised value corresponding to each value of `x`
+##' @return numeric with standardised value corresponding to each value of `x`,
+##' NA's are ignored
 ##' @export
 ##' @author Andrew Edwards
 ##' @examples
@@ -22,8 +23,10 @@
 ##' }
 standardise <- function(x,
                         range = 1:length(x)){
-  x_mean <- mean(x[range])
-  x_sd <- sd(x[range])
+  x_mean <- mean(x[range],
+                 na.rm = TRUE)
+  x_sd <- sd(x[range],
+             na.rm = TRUE)
 
   (x - x_mean)/x_sd
 }
