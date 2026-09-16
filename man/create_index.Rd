@@ -33,7 +33,8 @@
   stn_id = "C46205",
   index_label = NULL,
   index_name = NULL,
-  index_statistic = "median",
+  index_statistic = "anomalies",
+  require_requested_months = NULL,
   ...
 )
 
@@ -80,7 +81,11 @@ create_index(data, ...)
 \item \code{hake_recruitment} (of class \code{pacea_recruitment}).
 }}
 
-\item{years}{numeric vector years to restrict the data to, and then to normalise over.}
+\item{years}{numeric vector years to restrict the data to, and then to
+normalise over. If \code{NULL}, the default, then use the full range available
+for the type of data being used. For \code{buoy_sst} this will be the available
+data for the chosen \code{stn_id} buoy. TODO check what happens for other types
+of data.}
 
 \item{herring_region}{string for the region to be used when making an index related
 to \code{herring_recruitment} or TODO}
@@ -94,17 +99,32 @@ automated; currently there are no other recruitments in pacea).}
 the name is derived from the variable name of \code{data}. Used internally when delegating
 between \code{create_index} methods to preserve the original variable name.}
 
-\item{stn_id}{string of the station IDs (\code{stn_id} values OR
-\code{name} values ) to create an index from the \code{buoy_sst} data
+\item{months}{vector of months (default \code{4} for April) for \code{buoy_sst}
+data. See \code{\link[=plot.pacea_buoy_anomalies_list]{plot.pacea_buoy_anomalies_list()}} for full details of options
+(e.g. \code{c(11, 12, 1, 2, 3)} for a winter average).}
+
+\item{stn_id}{string of the station ID (\code{stn_id} value OR
+\code{name} value from \code{buoy_metadata}) to create an index from the \code{buoy_sst} data
 object.}
 
 \item{index_statistic}{string for the column of \code{data} to use to create the
 index. Default is \code{median} (for hake recruitment), but user can choose any
 column of the data. When looking at harbour seals the function automatically
-uses the \code{mean}.}
+uses the \code{mean}. For \code{buoy_sst} it is either \code{anomalies} or
+\code{mean}, to prescribe whether to create the index based on means of anomalies
+(over the presribed months) from a climatology, or just the means of the
+actual SST values. These may well be the same anyway, or only differ if no
+climatology can be built (which can depend on the years used for the climatology).}
 
-\item{...}{arguments passed onto the respective \verb{create_index.<class>}
-function, such as:}
+\item{require_requested_months}{number of months that must be available
+out of the requested \code{months} to compute an average anomaly to then use to
+create the index. If \code{NULL} (default), defaults to \code{length(months)}. See
+\code{\link[=calculate_anomalies.pacea_buoy]{calculate_anomalies.pacea_buoy()}} also for more options for \code{buoy_sst} data, such as the
+minimum daily SST values required in a month to do the calculations.
+(i.e. every month requested needs enough daily values).}
+
+\item{...}{arguments passed onto the respective method, and also onto
+\code{\link[=calculate_anomalies.pacea_buoy]{calculate_anomalies.pacea_buoy()}} for \code{buoy_sst} data. TODO test these}
 }
 \value{
 tibble of class \code{pacea_standardised_index} containing columns of

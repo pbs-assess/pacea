@@ -6,10 +6,7 @@ create_index.pacea_buoy <- function(data,
                                     stn_id = "C46205",  # can be name also
                                     index_label = NULL,
                                     index_name = NULL,
-                                    buoy_statistic = "anomalies",  # or mean
-                                    # TODO add to help
-                                    # index_statistic = "sst_anomaly_mean", # TODO, maybe
-                                    # not needed
+                                    index_statistic = "anomalies",
                                     require_requested_months = NULL,
                                     ...){
 
@@ -21,11 +18,13 @@ create_index.pacea_buoy <- function(data,
   # climatology, and has the options for min_days_per_month and
   # max_consecutive_missing_days that we can pass on from here.
 
-  # Then plot.pacea_buoy_anomalies_list() does some of the aggregating for
-  # multiple months. Think we just adapt some of that here to use, as calling
-  # that seems a bit overkill.
+  # Then adapting some of plot.pacea_buoy_anomalies_list() here to do some of the aggregating for
+  # multiple months.
 
   stopifnot(length(stn_id) == 1)
+
+  stopifnot(index_statistic %in% c("anomalies",
+                                   "mean"))
 
   # If stn_id does not start with "C4" then it is the name, so replace
   #  it with it's stn_id code for filtering.
@@ -75,11 +74,11 @@ create_index.pacea_buoy <- function(data,
       filter(buoy_metadata,
              stn_id == station) %>%
       dplyr::pull(name) %>%
+      paste0("_sst_",
+             tolower(summarise_months(months))) %>%
       tolower() %>%
       stringr::str_replace_all(" ",
-                               "_") %>%
-      paste0("_sst_",
-             tolower(summarise_months(months)))
+                               "_")
   }
 
   # Just the one station and then the desired years
@@ -96,20 +95,11 @@ create_index.pacea_buoy <- function(data,
                            year %in% years)
 
   res_calculate_anomalies <- calculate_anomalies(data_stn,   # class pacea_buoy
+                                                 months = months,
                                                  ...)
   # that has class pacea_buoy_anomalies_list.
 
-  # Below will take what we need from plot.pacea_buoy_anomalies_list() and make an index
-
-
-  # Copied from plot.pacea_buoy_anomalies_list:
-
-  # HERE
-  # Determine which column to filter NA values from. TODO internally   not
-  # correct yet as maybe need after the calcs, not actually used TODO fix
-  # na_check_col <- switch(buoy_statistic,
-  #                       "anomalies" = "sst_anomaly",
-  #                       "mean" = "sst_mean")
+  # Taking what we need from plot.pacea_buoy_anomalies_list().
 
   if(which.max(months) == length(months)){
     # months are increasing and so are in the same year
@@ -144,29 +134,27 @@ create_index.pacea_buoy <- function(data,
       dplyr::group_by(year_of_january) %>%
       # value becomes the average over the specified months, no need to keep month column
       dplyr::summarise(
-        # TODO copy same as above
-        # n_available = sum(!is.na(.data[[na_check_col]])),
-        sst_mean_of_monthly_anomalies = ifelse(n_available >= require_requested_months,
-                                  mean(sst_anomaly,
-                                       na.rm = TRUE),
-                                  NA),
-        sst_mean_of_monthly_means = ifelse(n_available >= require_requested_months,
-                               mean(sst_mean,
-                                    na.rm = TRUE),
-                               NA)) %>%
+        n_available_anomalies = sum(!is.na("anomalies")),
+        n_available_mean = sum(!is.na("mean")),
+        sst_mean_of_monthly_anomalies = ifelse(n_available_anomalies >= require_requested_months,
+                                               mean(sst_anomaly,
+                                                    na.rm = TRUE),
+                                               NA),
+        sst_mean_of_monthly_means = ifelse(n_available_mean >= require_requested_months,
+                                           mean(sst_mean,
+                                                na.rm = TRUE),
+                                           NA)) %>%
       dplyr::ungroup() %>%
       dplyr::filter(!is.na(sst_mean_of_monthly_anomalies) | !is.na(sst_mean_of_monthly_means)) %>%
-      #  TODO check all as above
-      dplyr::select(-n_available) %>%
+      dplyr::select(-c("n_available_anomalies",
+                       "n_available_mean"))
       dplyr::rename(year = year_of_january)
   }
 
-  browser()
-  index_statistic <- switch(buoy_statistic,
+  index_statistic <- switch(index_statistic,
                            "anomalies" = "sst_mean_of_monthly_anomalies",
                            "mean" = "sst_mean_of_monthly_means")
 
-  # Want to remove any NA's? Probably.
   ret <- create_index.pacea_recruitment(data = res,
                                         years = years,
                                         index_label = index_label,
