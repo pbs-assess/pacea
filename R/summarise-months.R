@@ -2,8 +2,9 @@
 ##'
 ##' @param months numeric vector of month numbers (1-12)
 ##'
-##' @param just_first_to_last force function to return just the first and last
-##' months in of `months`; generally wouldn't have gaps anyway
+##' @param just_first_to_last logical to force function to return just the first and last
+##' months in of `months`; generally wouldn't have gaps anyway (not allowing
+##' gaps in some functions, so changing this default to `TRUE`).
 ##' @return character string summarizing the months
 ##' @export
 ##'
@@ -21,7 +22,7 @@
 ##' summarise_months(c(12, 4:8))    #  "Dec, Apr, May, Jun, Jul, and Aug"
 ##' }
 summarise_months <- function(months,
-                             just_first_to_last = FALSE) {
+                             just_first_to_last = TRUE) {
   if(length(months) == 1){
     return(month.abb[months])
   }
