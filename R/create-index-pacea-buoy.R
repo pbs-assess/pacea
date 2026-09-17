@@ -42,6 +42,10 @@ create_index.pacea_buoy <- function(data,
       stop("You have mis-spelled the buoy name in `stn_id`")
     }
   } else {
+    if(!(stn_id %in% buoy_metadata$stn_id)){
+      stop("You have mis-spelled the buoy `stn_id`; this buoy does not exist")
+    }
+
     station <- stn_id      # Can't use stn_id in filter(stn_id == stn_id)
   }
 

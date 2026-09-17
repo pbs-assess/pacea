@@ -135,10 +135,6 @@ plot_indices(sst_buoy_halibut_bank_apr,
              herring_biomass_sog_index,             
              harbour_seals_sog_index,
              years = 1996:2025)
-
-
-
-
 ```
 
 Buoy SST getting working, need to prove if normalised index of mean anomalies is same
