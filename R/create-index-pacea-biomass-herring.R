@@ -9,7 +9,7 @@ create_index.pacea_biomass_herring <- function(data,
   if(is.null(index_label)){
     index_label <- paste0("Herring ",
                           herring_region,
-                          " biomass")
+                          " spawning biomass")
   }
 
   if(is.null(index_name)){

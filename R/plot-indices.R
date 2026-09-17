@@ -3,6 +3,8 @@
 ##' Takes any number standardised annual indices created using [create_index()] and
 ##' plots a heatmap style plot.
 ##'
+##' To display square tiles for each data point, manually adjust your figure
+##' dimensions when saving.
 ##'
 ##' @param ... the indices you want to plot, using names you gave them when
 ##' using [create_index()], e.g. hake_recruitment_index, etc. They are plotted
@@ -16,7 +18,8 @@
 ##' years. TODO maybe need the next rdname:
 ##' @param gap_after character vector (or NULL, the default) of index names
 ##' to add a gap after in the plot. For example,
-##' `gap_after = "herring_recruitment_cc_index"` will add a gap after that index.
+##' `gap_after = "herring_recruitment_sog_index"` (which is an index you have
+##' created and named using `create_index()`) will add a gap after that index.
 ##' Multiple indices can be specified: `gap_after = c("index1", "index2")`.
 ##' @param gap_size numeric value controlling the size of the gaps in cm
 ##' (default 0.2, roughly 1/5 of the box height).
