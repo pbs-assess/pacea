@@ -14,7 +14,7 @@ rmarkdown::render("buoy_anomalies.Rmd")
 or click the knit button in RStudio -->
 
 
-```{r, include = FALSE}
+```{r, start, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -26,8 +26,8 @@ knitr::opts_chunk$set(
 ## Customisable ecosystem summary heatmaps
 
 ```{r setup}
-# load_all()    # for developer
-library(pacea)  # for user
+load_all()    # for developer
+# library(pacea)  # for user
 library(dplyr)
 library(tibble)  # Else prints all of a tibble
 library(ggplot2)
@@ -50,125 +50,99 @@ pacea. Importantly the user can choose:
 The aim of pacea is to
 facilitate inclusion of ecosystem information in advice to fisheries management,
 such as stock assessments. Given the multitude of stocks in DFO's Pacific
-Region, both the diversity of species and many stock-specific areas, we decided
-to create user-customisable plots that easily summarise the relevant ecosystem
+Region, both the diversity of species and the many stock-specific spatial areas, we decided
+to create functions for user-customisable plots that easily summarise the relevant ecosystem
 information.
 
 Expert knowledge can be used to suggest relevant ecosystem information to be
-used for a particular stock, but also the ease of generating the heatmaps can
-allow exploration and quick hypothesis testing.
+used for a particular stock. Futhermore, the ease of generating the heatmaps can
+allow exploration, formulation of ideas, and quick hypothesis testing.
 
 For comparing disparate types of ecosystem information, we standardise each time
 series (by subtracting the mean and dividing by the standard deviation across
-the time series, which might not be all fully plotted). This is done in the
-`create_index()` function, to create an object of class
-`pacea_standardised_index`, not matter what type the ecosystem information is. 
-
+the time series, which might not be all fully plotted). 
 This is so that indices
-are all dimensionless and can be compared on equivalent scales. 
+are all dimensionless and can be compared on equivalent scales, and shown on a
+single heatmap style plot.
 
-Example code while developing, also check the help file of `plot_indices()`
+As an example, let's use various ecosystem information for the Strait of Georgia
+(SOG). We create an index for each type of ecosystem information in turn and
+then make the plot. We just need to use `create_index()` multiple times to
+create the indices, and then `plot_indices()` to make the function (we will
+explain them in more detail later):
 ```{r, examples}
-herring_recruitment_hg_index <- create_index(herring_recruitment,
-                                             herring_region= "HG")
-herring_recruitment_prd_index <- create_index(herring_recruitment,
-                                              herring_region = "PRD")
-herring_recruitment_cc_index <- create_index(herring_recruitment,
-                                             herring_region = "CC")
-herring_recruitment_sog_index <- create_index(herring_recruitment,
-                                              herring_region = "SOG")
-herring_recruitment_wcvi_index <- create_index(herring_recruitment,
-                                              herring_region = "WCVI")
-
-herring_biomass_sog_index <- create_index(herring_spawning_biomass,
-                                           herring_region = "SOG")
-
-herring_biomass_wcvi_index <- create_index(herring_spawning_biomass,
-                                           herring_region = "WCVI")
-
-hake_recruitment_index <- create_index(hake_recruitment)
-
-hake_biomass_index <- create_index(hake_biomass)
-
-harbour_seals_wcvi_index <- create_index(harbour_seals)  
-
-harbour_seals_sog_index <- create_index(harbour_seals, seal_region = "SOG")  # more
-# interesting as not just increasing like WCVI
-
-total_zooplankton_sog_index <- create_index(zooplankton_sog,
-                                            zooplankton_species_group = "total_biomass")
-
-calanoid_copepods_large_sog_index <- create_index(zooplankton_sog,
-                                            zooplankton_species_group = "calanoid_copepods_large")
-
-# Adding example as I go:
-plot_indices(herring_recruitment_hg_index,
-             herring_recruitment_prd_index,
-             herring_recruitment_cc_index,
-             herring_recruitment_sog_index,
-             herring_recruitment_wcvi_index,
-             herring_biomass_wcvi_index,             
-             hake_recruitment_index,
-             hake_biomass_index,
-             harbour_seals_wcvi_index,
-             harbour_seals_sog_index,
-             total_zooplankton_sog_index)
-```
-
-
-
-How about just Strait of Georgia indices, basing the start year on the shortest
-of those (zooplankton data):
-```{r, sogplot}
-plot_indices(calanoid_copepods_large_sog_index,
-             total_zooplankton_sog_index,
-             herring_recruitment_sog_index,
-             herring_biomass_sog_index,             
-             harbour_seals_sog_index,
-             years = 1996:2025)
-```
-
-Now add in some temperature data. Looking at the [buoy_anomalies](https://pbs-assess.github.io/pacea/vignettes/buoy_anomalies.html)
-vignette, let's use the Halibut Bank buoy in the SoG, as has a good amount of
-data, and just pick April::
-
-```{r, buoyhb}
+# Average sea surface temperature in April from a buoy in the SOG
 sst_buoy_halibut_bank_apr <- create_index(buoy_sst,
                                           months = 4,
                                           stn_id = "Halibut Bank")
 
-plot_indices(sst_buoy_halibut_bank_apr,
-             calanoid_copepods_large_sog_index,
-             total_zooplankton_sog_index,
-             herring_recruitment_sog_index,
-             herring_biomass_sog_index,             
-             harbour_seals_sog_index,
-             years = 1996:2025)
+# Large calanoid copepods in the SOG 
+calanoid_copepods_large_sog_index <- create_index(zooplankton_sog,
+                                                  zooplankton_species_group =
+                                              "calanoid_copepods_large")
+
+# Total zooplankton in the SOG
+total_zooplankton_sog_index <- create_index(zooplankton_sog,
+                                            zooplankton_species_group = "total_biomass")
+
+# Annual age-2 herring recruitment in the SOG
+herring_recruitment_sog_index <- create_index(herring_recruitment,
+                                              herring_region = "SOG")
+
+# Annual herring spawning biomass in the SOG
+herring_biomass_sog_index <- create_index(herring_spawning_biomass,
+                                          herring_region = "SOG")
+
+# Annual population estimates of Harbour Seals in the SOG
+harbour_seals_sog_index <- create_index(harbour_seals,
+                                        seal_region = "SOG")
 ```
 
-The restriction of the years being shown is why the seal index is always
-positive (it is negative earlier in the time series; by definition the mean
-should be 0). TODO Add an option in the plot function to restandardise across the years specified?
-
-
-To delineate different types of ecosystem information in the plot
-(e.g. here we have temperature, zooplankton, fish, mammals), we can use the
-`gap_after` argument to add a small gap after the specified indices:
-```{r, gap}
+Now make the plot, manually basing the start year on the shortest
+of those (zooplankton data):
+```{r, sogplot, fig.height = 4}
 plot_indices(sst_buoy_halibut_bank_apr,
              calanoid_copepods_large_sog_index,
              total_zooplankton_sog_index,
              herring_recruitment_sog_index,
              herring_biomass_sog_index,             
              harbour_seals_sog_index,
-             years = 1996:2025,
+             years = 1996:2026,
              gap_after = c("sst_buoy_halibut_bank_apr",
                            "total_zooplankton_sog_index",
                            "herring_biomass_sog_index"))
 ```
 
+The first six arguments are the indices that we created above, and `years`
+restricts the plot to the years specified.
+To delineate different types of ecosystem information in the plot
+(e.g. here we have temperature, zooplankton, fish, mammals), we used the optional
+`gap_after` argument to add a small gap after the specified indices.
+
+The restriction of the years being shown is why the seal index is always
+positive. By definition the mean of the index 
+should be 0, and so it is negative earlier in the time series. A quick check of
+the absolute seal populations numbers confirms the population has indeed
+increased:
+
+```{r, sealplot, fig.width = 5.7, fig.height = 5}
+plot(harbour_seals,
+     region = "SOG")
+```
 
 
+TODO Add an option in the plot function to restandardise across the years specified?
+
+(see the
+relevant vignettes and help files for details of the pacea objects used here as
+the first argument). The first is from the buoy sea surface temperature, looking at the [buoy_anomalies](https://pbs-assess.github.io/pacea/vignettes/buoy_anomalies.html)
+vignette we will use the Halibut Bank buoy in the SoG, which has good timespans of
+data, and just pick April. We then create indices for other types of ecosystem
+information (we will do into details 
+
+This is done in the
+`create_index()` function, to create an object of class
+`pacea_standardised_index`, no matter what type the ecosystem information is. 
 
 
 Buoy SST getting working, need to prove if normalised index of mean anomalies is same
@@ -224,6 +198,39 @@ recommend, but are showing as examples to help understanding, and to show that
 arguments get correctly passed onto further functions).
 
 
+Further examples (originally had above while generating the code), also check
+the help file of `plot_indices()` and add to that TODO
+```{r, furthrexamples}
+herring_recruitment_hg_index <- create_index(herring_recruitment,
+                                             herring_region= "HG")
+herring_recruitment_prd_index <- create_index(herring_recruitment,
+                                              herring_region = "PRD")
+herring_recruitment_cc_index <- create_index(herring_recruitment,
+                                             herring_region = "CC")
+herring_recruitment_wcvi_index <- create_index(herring_recruitment,
+                                              herring_region = "WCVI")
+herring_biomass_wcvi_index <- create_index(herring_spawning_biomass,
+                                           herring_region = "WCVI")
+
+hake_recruitment_index <- create_index(hake_recruitment)
+
+hake_biomass_index <- create_index(hake_biomass)
+
+harbour_seals_wcvi_index <- create_index(harbour_seals)  
+
+# Many examples (adding as go along), likely not really needed:
+plot_indices(herring_recruitment_hg_index,
+             herring_recruitment_prd_index,
+             herring_recruitment_cc_index,
+             herring_recruitment_sog_index,
+             herring_recruitment_wcvi_index,
+             herring_biomass_wcvi_index,             
+             hake_recruitment_index,
+             hake_biomass_index,
+             harbour_seals_wcvi_index,
+             harbour_seals_sog_index,
+             total_zooplankton_sog_index)
+```
 
 See the test for more examples. Summarise here maybe. 
 
@@ -239,8 +246,6 @@ decide on default.
 ```{r, stop123, cache = FALSE}
 # Do example index with:
 # return_results = TRUE)
-
-
 
 knitr::knit_exit()
 ```
