@@ -30,7 +30,7 @@ anomaly data values of same class as input pacea data
 Function for calculating climatology of a pacea data object.
 }
 \details{
-The functions \code{calc_clim} and \code{calc_anom} output the climatology of a specified time period and anomaly values relative to a climtological period, respectively. These functions can be used for data from BCCM (e.g. \code{bccm_surface_temperature()}), OISST (e.g. \code{oisst_7day}), and buoy SST (e.g. \code{buoy_sst}).
+The functions \code{calc_clim} and \code{calc_anom} output the climatology of a specified time period and anomaly values relative to a climatological period, respectively. These functions can be used for data from BCCM (e.g. \code{bccm_surface_temperature()}), OISST (e.g. \code{oisst_7day}), and buoy SST (e.g. \code{buoy_sst}).
 }
 \examples{
 \dontrun{

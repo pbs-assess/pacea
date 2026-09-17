@@ -17,7 +17,9 @@ plot_indices(
   ylab = "Index",
   return_results = FALSE,
   scale_limits = NULL,
-  angle_year_labels = TRUE
+  angle_year_labels = TRUE,
+  gap_after = NULL,
+  gap_size = 0.2
 )
 
 \method{plot}{pacea_buoy_anomalies_list}(
@@ -89,6 +91,15 @@ then they are coloured grey.}
 degrees, which is needed to avoid overlapping when there are many
 years. TODO maybe need the next rdname:}
 
+\item{gap_after}{character vector (or NULL, the default) of index names
+to add a gap after in the plot. For example,
+\code{gap_after = "herring_recruitment_sog_index"} (which is an index you have
+created and named using \code{create_index()}) will add a gap after that index.
+Multiple indices can be specified: \code{gap_after = c("index1", "index2")}.}
+
+\item{gap_size}{numeric value controlling the size of the gaps in cm
+(default 0.2, roughly 1/5 of the box height).}
+
 \item{pacea_buoy_anomalies_list}{object of class \code{pacea_buoy_anomalies_list}
 obtained from running \code{calculate_anomalies()} on buoy data.}
 
@@ -146,6 +157,9 @@ Takes any number of the climatological and oceanographic indices, such as those 
 \code{\link[=plot]{plot()}} which then calls \code{\link[=plot.pacea_index]{plot.pacea_index()}}.
 }
 \details{
+To display square tiles for each data point, manually adjust your figure
+dimensions when saving.
+
 Not currently set up to use \code{npi_monthly} and \code{npi_annual} as
 they are absolute values and so need a climatology defined (contact Andrew
 Edwards if you want that implemented; they also have the only \code{NAs}, namely

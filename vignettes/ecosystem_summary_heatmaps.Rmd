@@ -241,7 +241,35 @@ that. Historically good/bad versus short-term good/bad. Will need both options,
 decide on default.
 
 
+## OISST data
 
+Just doing examples here for now (might plot strange with so many pltos)
+```{r, oisst1}
+oisst_anomalies <- calculate_anomalies(oisst_month)
+
+plot(oisst_anomalies)
+
+oisst_anomalies_area_126 <- calculate_anomalies(oisst_month,
+                                                area = "pfma_area_126")
+
+plot(oisst_anomalies_area_126)
+
+# Examples with the options:
+plot(oisst_anomalies_area_126, months.plot = 3)
+
+plot(oisst_anomalies, months.plot = 3)
+
+# Shows MHW coming on. Then suggests an index to create, e.g. average of the
+# whole area for Jan to Jun (TODO)
+plot(oisst_anomalies,
+     months.plot = 1:12,
+     years.plot = 2014:2016)
+
+
+
+```
+
+TODO need options for total area to show
 
 ```{r, stop123, cache = FALSE}
 # Do example index with:

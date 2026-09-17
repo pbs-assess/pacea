@@ -4,13 +4,14 @@
 \alias{summarise_months}
 \title{Summarize a vector of months as a formatted string}
 \usage{
-summarise_months(months, just_first_to_last = FALSE)
+summarise_months(months, just_first_to_last = TRUE)
 }
 \arguments{
 \item{months}{numeric vector of month numbers (1-12)}
 
-\item{just_first_to_last}{force function to return just the first and last
-months in of \code{months}; generally wouldn't have gaps anyway}
+\item{just_first_to_last}{logical to force function to return just the first and last
+months in of \code{months}; generally wouldn't have gaps anyway (not allowing
+gaps in some functions, so changing this default to \code{TRUE}).}
 }
 \value{
 character string summarizing the months

@@ -50,3 +50,6 @@ Function for calculating climatology and subsequent anomalies of a \code{buoy_ss
 # See [climatology and anomalies vignette](https://pbs-assess.github.io/pacea/vignettes/buoy_anomalies.html)
 }
 }
+\author{
+Andrew Edwards and Travis Tai
+}
