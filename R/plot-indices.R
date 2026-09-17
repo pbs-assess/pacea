@@ -14,6 +14,12 @@
 ##' @param angle_year_labels logical, whether to put the year labels at 45
 ##' degrees, which is needed to avoid overlapping when there are many
 ##' years. TODO maybe need the next rdname:
+##' @param gap_after character vector (or NULL, the default) of index names
+##' to add a gap after in the plot. For example,
+##' `gap_after = "herring_recruitment_cc_index"` will add a gap after that index.
+##' Multiple indices can be specified: `gap_after = c("index1", "index2")`.
+##' @param gap_size numeric value controlling the size of the gaps in cm
+##' (default 0.2, roughly 1/5 of the box height).
 ##' @rdname plot.pacea_buoy_anomalies_list
 ##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot` and `results`
 ##' (when `return_results = TRUE`)
@@ -39,7 +45,9 @@ plot_indices <- function(...,
                          ylab = "Index",
                          return_results = FALSE,
                          scale_limits = NULL,
-                         angle_year_labels = TRUE){
+                         angle_year_labels = TRUE,
+                         gap_after = NULL,
+                         gap_size = 0.2){
 
   # Make a long tibble from the indices in ..., in a similar way to what we did
   # for buoy_sst data, so plotting can be similar.
@@ -105,13 +113,34 @@ plot_indices <- function(...,
   plot_data <- plot_data %>%
     dplyr::mutate(label = as.character(round(value, 1)))
 
+  # Create grouping for gaps if gap_after is specified
+  if(!is.null(gap_after)){
+    if(!all(gap_after %in% combined_indices$index)){
+      stop("gap_after needs to be one of your prescribed indices in plot_indices()")
+    }
+    # Get unique indices with their labels and assign gap groups
+    index_groups <- plot_data %>%
+      dplyr::distinct(index, index_label) %>%
+      dplyr::mutate(
+        gap_group = 1 + cumsum(dplyr::lag(index %in% gap_after,
+                                          default = FALSE))
+      )
+
+    plot_data_with_groups <- plot_data %>%
+      dplyr::left_join(index_groups,
+                       by = c("index", "index_label"))
+  } else {
+    plot_data_with_groups <- plot_data %>%
+      dplyr::mutate(gap_group = 1)
+  }
+
   # Colour scale
   color_scale <- ggplot2::scale_fill_gradientn(colours = pals::ocean.balance(20)[3:18],
                                                limits = scale_limits,
                                                name = legend_label)
 
   indices_plot <-
-    plot_data %>%
+    plot_data_with_groups %>%
     ggplot(aes(x = year,
                y = index_label)) +
     geom_tile(aes(fill = value),
@@ -123,12 +152,22 @@ plot_indices <- function(...,
     ggplot2::scale_y_discrete(expand = c(0, 0),
                               name = ylab,
                               limits = rev) +
+    {
+      if(!is.null(gap_after)){
+        ggplot2::facet_grid(gap_group ~ .,
+                            scales = "free_y",
+                            space = "free_y")
+      } else {
+        NULL
+      }
+    } +
     theme(legend.position = "bottom",
           strip.background = element_blank(),
           strip.text = element_text(face = "bold",
                                     size = 12),
-          panel.spacing.y = grid::unit(0.1,
-                                       "lines"),
+          strip.text.y = element_blank(),
+          panel.spacing.y = grid::unit(if(!is.null(gap_after)) gap_size else 0.1,
+                                       if(!is.null(gap_after)) "cm" else "lines"),
           panel.background = element_rect(fill = "white",
                                           colour = NA),
           panel.grid = element_blank()) +

@@ -146,6 +146,31 @@ plot_indices(sst_buoy_halibut_bank_apr,
              years = 1996:2025)
 ```
 
+The restriction of the years being shown is why the seal index is always
+positive (it is negative earlier in the time series; by definition the mean
+should be 0). TODO Add an option in the plot function to restandardise across the years specified?
+
+
+To delineate different types of ecosystem information in the plot
+(e.g. here we have temperature, zooplankton, fish, mammals), we can use the
+`gap_after` argument to add a small gap after the specified indices:
+```{r, gap}
+plot_indices(sst_buoy_halibut_bank_apr,
+             calanoid_copepods_large_sog_index,
+             total_zooplankton_sog_index,
+             herring_recruitment_sog_index,
+             herring_biomass_sog_index,             
+             harbour_seals_sog_index,
+             years = 1996:2025,
+             gap_after = c("sst_buoy_halibut_bank_apr",
+                           "total_zooplankton_sog_index",
+                           "herring_biomass_sog_index"))
+```
+
+
+
+
+
 Buoy SST getting working, need to prove if normalised index of mean anomalies is same
 as normalised index of mean of means. Think so since both relative to the same
 climatology. TODO. Also it's still based on climatology; does mean of actual
@@ -173,7 +198,7 @@ create_index(buoy_sst,
              months = c(11, 12, 1, 2, 3))
 ```
 
-Note that in the first examplewe have a value for 1992, but not in the second
+Note that in the first example we have a value for 1992, but not in the second
 one. This must be because June 1992 does not have enough daily values for this
 particular buoy, which we can confirm from the raw data:
 ```{r, confirm}
