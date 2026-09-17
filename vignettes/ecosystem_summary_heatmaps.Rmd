@@ -58,6 +58,15 @@ Expert knowledge can be used to suggest relevant ecosystem information to be
 used for a particular stock, but also the ease of generating the heatmaps can
 allow exploration and quick hypothesis testing.
 
+For comparing disparate types of ecosystem information, we standardise each time
+series (by subtracting the mean and dividing by the standard deviation across
+the time series, which might not be all fully plotted). This is done in the
+`create_index()` function, to create an object of class
+`pacea_standardised_index`, not matter what type the ecosystem information is. 
+
+This is so that indices
+are all dimensionless and can be compared on equivalent scales. 
+
 Example code while developing, also check the help file of `plot_indices()`
 ```{r, examples}
 herring_recruitment_hg_index <- create_index(herring_recruitment,
@@ -150,12 +159,48 @@ expect_equal(sst_west_dixon_apr_using_anomalies,
 # Not convinced that will always hold though, I think only difference would be
 # if you did not have a climatology for a particular month, which does not
 # happen with the default years. So probably best to keep the generality. TODO
-
-# Different examples:
-buoy_1 <- create_index(buoy_sst, months = 5)
-buoy_2 <- create_index(buoy_sst, months = 5:6)
-buoy_3 <- create_index(buoy_sst, months = c(11, 12, 1, 2, 3))
 ```
+
+Some examples of different choices of months, and how `index` and `index_label`
+get automatically prescribed:
+```{r, createindmonths}
+# Different examples:
+create_index(buoy_sst,
+             months = 5)
+create_index(buoy_sst,
+             months = 5:6)
+create_index(buoy_sst,
+             months = c(11, 12, 1, 2, 3))
+```
+
+Note that in the first examplewe have a value for 1992, but not in the second
+one. This must be because June 1992 does not have enough daily values for this
+particular buoy, which we can confirm from the raw data:
+```{r, confirm}
+filter(buoy_sst,
+       stn_id == "C46205",   # default in create_index.pacea_buoy()
+       date >= "1992-06-01",
+       date <= "1992-06-30",
+       !is.na(sst))
+```
+So there are only 6 daily SST values for this buoy in June 1992, and so an
+anomaly is not calculated for that month. We could force an anomaly to be
+calculated by changing the arguments `min_days_per_month` (default 15) and 
+`max_consecutive_missing_days` (default 6) that get passed onto
+`calculate_anomalies.pacea_buoy()`:
+```{r, confirmchange}
+create_index(buoy_sst,
+             months = 5:6,
+             min_days_per_month = 6,
+             max_consecutive_missing_days = 24)
+```
+thus giving an index value for 1992, given these definitions (which we do not
+recommend, but are showing as examples to help understanding, and to show that
+arguments get correctly passed onto further functions).
+
+
+
+See the test for more examples. Summarise here maybe. 
 
 
 TODO should the years argument then require indices to be recalculated across
@@ -163,14 +208,6 @@ just those years? Question for the audience maybe..., show the consequences of
 that. Historically good/bad versus short-term good/bad. Will need both options,
 decide on default.
 
-For comparing disparate types of ecosystem information, we standardise each time
-series (by subtracting the mean and dividing by the standard deviation across
-the time series, which might not be all fully plotted). This is done in the
-`create_index()` function, to create an object of class
-`pacea_standardised_index`, not matter what type the ecosystem information is. 
-
-This is so that indices
-are all dimensionless and can be compared on equivalent scales. 
 
 
 
