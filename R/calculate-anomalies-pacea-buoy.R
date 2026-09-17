@@ -29,6 +29,7 @@
 #' prescribed years, but these may not be available for all buoys.
 #' @export
 #'
+#' @author Andrew Edwards and Travis Tai
 #' @examples
 #' \dontrun{
 #' # See [climatology and anomalies vignette](https://pbs-assess.github.io/pacea/vignettes/buoy_anomalies.html)

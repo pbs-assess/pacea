@@ -4,7 +4,7 @@
 #' Function for calculating climatology of a pacea data object.
 #'
 #' @details
-#' The functions `calc_clim` and `calc_anom` output the climatology of a specified time period and anomaly values relative to a climtological period, respectively. These functions can be used for data from BCCM (e.g. `bccm_surface_temperature()`), OISST (e.g. `oisst_7day`), and buoy SST (e.g. `buoy_sst`).
+#' The functions `calc_clim` and `calc_anom` output the climatology of a specified time period and anomaly values relative to a climatological period, respectively. These functions can be used for data from BCCM (e.g. `bccm_surface_temperature()`), OISST (e.g. `oisst_7day`), and buoy SST (e.g. `buoy_sst`).
 #'
 #' @param data pacea data object: BCCM, OISST, buoy_sst data only
 #' @param clim_years climatology period years
@@ -171,7 +171,7 @@ calc_clim <- function(data, clim_years = c(1991:2020), clim_time = "month", time
 #' Function for calculating climatology of a pacea data object.
 #'
 #' @details
-#' The functions `calc_clim` and `calc_anom` output the climatology of a specified time period and anomaly values relative to a climtological period, respectively. These functions can be used for data from BCCM (e.g. `bccm_surface_temperature()`), OISST (e.g. `oisst_7day`), and buoy SST (e.g. `buoy_sst`).
+#' The functions `calc_clim` and `calc_anom` output the climatology of a specified time period and anomaly values relative to a climatological period, respectively. These functions can be used for data from BCCM (e.g. `bccm_surface_temperature()`), OISST (e.g. `oisst_7day`), and buoy SST (e.g. `buoy_sst`).
 #'
 #' @param data pacea data object: BCCM, OISST, buoy_sst data only
 #' @param clim_years climatology period years

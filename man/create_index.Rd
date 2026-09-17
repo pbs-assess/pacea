@@ -29,7 +29,6 @@
 \method{create_index}{pacea_buoy}(
   data,
   years = NULL,
-  months = 4,
   stn_id = "C46205",
   index_label = NULL,
   index_name = NULL,
@@ -76,9 +75,18 @@
 create_index(data, ...)
 }
 \arguments{
-\item{data}{One of: TODO
+\item{data}{One of the data objects (or a reduced version that retains the
+class of the object) in pacea:
+Biological populations:
 \itemize{
-\item \code{hake_recruitment} (of class \code{pacea_recruitment}).
+\item \code{herring_recruitment}
+\item \code{herring_spawning_biomass}
+\item \code{hake_recruitment}
+\item \code{hake_biomass}
+\item \code{harbour_seals}
+\item \code{zooplankton_sog} (zooplankton data in the Strait of Georgia)
+Oceanography:
+\item \code{buoy_sst} - sea-surface temperature from buoys
 }}
 
 \item{years}{numeric vector years to restrict the data to, and then to
@@ -98,10 +106,6 @@ automated; currently there are no other recruitments in pacea).}
 \item{index_name}{character string for the name of the index. If \code{NULL} (default),
 the name is derived from the variable name of \code{data}. Used internally when delegating
 between \code{create_index} methods to preserve the original variable name.}
-
-\item{months}{vector of months (default \code{4} for April) for \code{buoy_sst}
-data. See \code{\link[=plot.pacea_buoy_anomalies_list]{plot.pacea_buoy_anomalies_list()}} for full details of options
-(e.g. \code{c(11, 12, 1, 2, 3)} for a winter average).}
 
 \item{stn_id}{string of the station ID (\code{stn_id} value OR
 \code{name} value from \code{buoy_metadata}) to create an index from the \code{buoy_sst} data
@@ -125,6 +129,10 @@ minimum daily SST values required in a month to do the calculations.
 
 \item{...}{arguments passed onto the respective method, and also onto
 \code{\link[=calculate_anomalies.pacea_buoy]{calculate_anomalies.pacea_buoy()}} for \code{buoy_sst} data. TODO test these}
+
+\item{months}{vector of months (default \code{4} for April) for \code{buoy_sst}
+data. See \code{\link[=plot.pacea_buoy_anomalies_list]{plot.pacea_buoy_anomalies_list()}} for full details of options
+(e.g. \code{c(11, 12, 1, 2, 3)} for a winter average).}
 }
 \value{
 tibble of class \code{pacea_standardised_index} containing columns of
