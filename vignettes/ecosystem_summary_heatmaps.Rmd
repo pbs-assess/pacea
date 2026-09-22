@@ -308,15 +308,43 @@ oisst_anomalies_area_smaller_than_126 <-
 
 # This has just 5 entries, area_126 had 20. So fine for a test run.
 oisst_anomalies_area_smaller_than_126 %>% filter(year == 1981, month == 9)
+# TODO try area option in create_index, see below
+
 
 # Get it working for area 126, then for the defined subset of area26
 
+oisst_area_126_apr <-
+  create_index.pacea_oisst_anomalies_list(oisst_anomalies_area_126)
+oisst_area_126_apr
+
+# Average sea surface temperature in April from a buoy nearby (maybe in 126?)
+sst_buoy_south_brooks_apr <- create_index(buoy_sst,
+                                          months = 4,
+                                          stn_id = "South Brooks")
+plot_indices(oisst_area_126_apr,
+             sst_buoy_south_brooks_apr)
+
+# Then restrict to 1995 onwards as that's when the buoy starts
+oisst_area_126_apr_from_1995 <-
+  create_index.pacea_oisst_anomalies_list(oisst_anomalies_area_126,
+                                          years = 1995:2026)
+
+plot_indices(oisst_area_126_apr_from_1995,
+             sst_buoy_south_brooks_apr)
 
 
+# Try smaller area option
+oisst_area_smaller_than_126_apr_from_1995 <-
+  create_index.pacea_oisst_anomalies_list(oisst_anomalies_area_126,
+                                          area = area_smaller_than_126_polygon,
+                                          years = 1995:2026,
+                                          index_name = "smaller",
+                                          index_label = "smaller")
+oisst_area_smaller_than_126_apr_from_1995
+plot_indices(oisst_area_126_apr_from_1995,
+             oisst_area_smaller_than_126_apr_from_1995,
+             sst_buoy_south_brooks_apr)
 
-
-
-#    data_for_area <- data[area_polygon, ]
 ```
 
 
