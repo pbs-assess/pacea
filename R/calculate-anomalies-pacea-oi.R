@@ -1,4 +1,4 @@
-#' TODO all the help Calculate climatology and anomalies for buoy SST data.
+#' TODO all the help Calculate climatology and anomalies for oisst data.
 #'
 #' Function for calculating climatology and subsequent anomalies of a `buoy_sst` pacea data object.
 #'
