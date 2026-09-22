@@ -63,8 +63,6 @@ create_index.pacea_oisst_anomalies_list <- function(data,
                                "_")
   }
 
-browser()
-
   data_to_use <- filter(anomalies_sf,
                         year %in% years,
                         month %in% months)
