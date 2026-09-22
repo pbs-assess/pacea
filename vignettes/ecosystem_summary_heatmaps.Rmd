@@ -257,9 +257,10 @@ oisst_anomalies_area_126 <- calculate_anomalies(oisst_month,
 plot(oisst_anomalies_area_126)
 
 # Examples with the options:
-plot(oisst_anomalies_area_126, months.plot = 3)
+plot(oisst_anomalies_area_126, months = 3)
 
-plot(oisst_anomalies, months.plot = 3)
+plot(oisst_anomalies, months = 3)
+
 
 # Shows MHW coming on. Then suggests an index to create, e.g. average of the
 # whole area for Jan to Jun (TODO)
@@ -268,10 +269,56 @@ plot(oisst_anomalies,
      years.plot = 2014:2016)
 
 
+plot(oisst_anomalies_area_126,
+     year = c(2015, 2016, 2026),
+     month = 3:6)
 
 ```
 
 TODO need options for total area to show
+
+Now do the index, playing around for now:
+```{r, oisstindex}
+oisst_anomalies_area_126
+create_index.pacea_oisst_anomalies_list(oisst_anomalies_area_126)
+
+# Taking area 126 then making a slightly smaller polygon
+## area_as_list_of_matrix <-
+##         list(matrix(c(-127.1506, -128.2331, -129.3492, -127.9167, -127.1847,
+##                       -126.8200, -127.1506,
+##                       49.85766, 49.00000, 48.99991, 50.11915, 50.40183,
+##                       50.24466, 49.85766),
+##                     ncol = 2))    # From Travis's OISST vignette
+area_smaller_than_126_as_list <-
+  list(matrix(c(-128, -129.3492, -127.9167, -127.1847,
+                      -126.8200, -128,
+                      49.85766, 48.99991, 50.11915, 50.40183,
+                      50.24466, 49.85766),
+               ncol = 2))
+
+
+area_smaller_than_126_polygon <-
+  sf::st_sfc(sf::st_polygon(area_smaller_than_126_as_list),
+             crs = 4326) %>%
+  sf::st_as_sf()
+
+# Check we have less values:
+oisst_anomalies_area_smaller_than_126 <-
+  oisst_anomalies_area_126$anomalies[area_smaller_than_126_polygon, ]
+
+# This has just 5 entries, area_126 had 20. So fine for a test run.
+oisst_anomalies_area_smaller_than_126 %>% filter(year == 1981, month == 9)
+
+# Get it working for area 126, then for the defined subset of area26
+
+
+
+
+
+
+#    data_for_area <- data[area_polygon, ]
+```
+
 
 ```{r, stop123, cache = FALSE}
 # Do example index with:
