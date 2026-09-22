@@ -243,7 +243,9 @@ decide on default.
 
 ## OISST data
 
-Just doing examples here for now (might plot strange with so many pltos)
+Just doing examples here for now (might plot strange with so many plots), may
+move to new vignette.
+
 ```{r, oisst1}
 oisst_anomalies <- calculate_anomalies(oisst_month)
 
