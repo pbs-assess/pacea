@@ -8,7 +8,7 @@ create_index.pacea_oisst_anomalies_list <- function(data,
                                                     area = NULL,
                                                     require_requested_months = NULL,
                                                     ...){
-  stopifnot(index_statistic %in% c("anomalies"))    # TODO help, note it's the mean
+  stopifnot(index_statistic %in% c("anomalies"))
   # of the anomalies
 
   anomalies_sf <- data[["anomalies"]]  # The anomalies sf object
@@ -69,8 +69,7 @@ create_index.pacea_oisst_anomalies_list <- function(data,
   if(!is.null(area)){
     data_to_use <- sf::st_filter(data_to_use,
                                  area,
-                                 .predicate = sf::st_within)   # TODO check with
-    # Travis
+                                 .predicate = sf::st_intersects)
   }
 
   data_to_use <- sf::st_drop_geometry(data_to_use)    # done with the spatial

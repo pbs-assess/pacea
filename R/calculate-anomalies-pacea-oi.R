@@ -48,7 +48,7 @@ calculate_anomalies.pacea_oi <- function(data,                # TODO only for
   # named area (only pfma_area_126 at the moment), or data.frame, tibble, or
   # matrix with columns as latitude and longitude of points around the region,
   # with the final point equalling the first one (so defining a closed
-  # polygon). If NULL then the whole region of data.
+  # polygon). If NULL then the whole region of data. TODO
 
   if(is.matrix(area) | is.data.frame(area)){
     area_as_list_of_matrix <- list(area)

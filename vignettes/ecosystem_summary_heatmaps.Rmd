@@ -284,7 +284,7 @@ TODO HERE go through these, checking can do the anomalies and create an index,
 and get the same index if just creating them directly from `oisst_month` with the
 area option.
 
-Having calcualted the full anomalies, can create a variety of indices.
+Having calculated the full anomalies, can create a variety of indices.
 
 Now do the index, playing around for now:
 ```{r, oisstindex}
@@ -333,6 +333,8 @@ sst_buoy_south_brooks_apr <- create_index(buoy_sst,
 plot_indices(oisst_area_126_apr,
              sst_buoy_south_brooks_apr)
 
+# TODO phase plot example when I've written it
+
 # Then restrict to 1995 onwards as that's when the buoy starts
 oisst_area_126_apr_from_1995 <-
   create_index(oisst_anomalies_area_126,
@@ -356,7 +358,7 @@ plot_indices(oisst_area_126_apr_from_1995,
 
 ```
 
-You can create an index directly from the `oisst_month` data, for which the
+You can also create an index directly from the `oisst_month` data, for which the
 anomalies are calculated internally. Though it might be a good idea to calculate
 full spatial anomalies for your area to take a look at them first, as we did
 above. But `create_index()` will work directly on `oisst_month`, with various options.
@@ -374,10 +376,10 @@ expect_equal(oisst_area_smaller_than_126_apr_from_1995_directly$value,
              oisst_area_smaller_than_126_apr_from_1995$value)
 
 # As expected, these are the same:
-plot_indices(oisst_area_smaller_than_126_apr_from_1995_directly,
-             oisst_area_smaller_than_126_apr_from_1995)
+# plot_indices(oisst_area_smaller_than_126_apr_from_1995_directly,
+#              oisst_area_smaller_than_126_apr_from_1995)
 
-# Keeping plot.pacea_oisst_anomalies_list.Rd as an option, so explain that.
+# Keeping plot.pacea_oisst_anomalies_list.Rd as an option, so explain that. TODO
 
 
 ```
@@ -390,11 +392,15 @@ spatial ones.
 # Averages over the whole domain (default):
 
 # Should be able to replace with
-plot(oisst_anomalies, heatmap_style = TRUE)   # when document() etc.
-plot_pacea_oisst_anomalies_heatmap_style(oisst_anomalies)
+plot(oisst_anomalies_area_126,
+     heatmap_style = TRUE,
+     area_name = "Area 126")
 
-plot_pacea_oisst_anomalies_heatmap_style(oisst_anomalies_area_126,
-                                         area_name = "Area 126")
+# Just do a few months of interest:
+plot(oisst_anomalies_area_126,
+     heatmap_style = TRUE,
+     area_name = "Area 126",
+     months = 3:5)
 
 ```
 
