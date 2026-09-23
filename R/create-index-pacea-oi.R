@@ -82,8 +82,8 @@ create_index.pacea_oi <- function(data,
   if(!is.null(area)){
     anomalies_to_use <- sf::st_filter(anomalies_to_use,
                                       area,
-                                      .predicate = sf::st_within)   # TODO check with
-    # Travis. Also, area is an argument in calculate_anomalies.pacea_oi so prob
+                                      .predicate = sf::st_intersects)   # TODO
+    # Also, area is an argument in calculate_anomalies.pacea_oi so prob
     # dont' need to filter on it once I have that working. TODO come back to.
   }
 

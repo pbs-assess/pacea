@@ -112,6 +112,7 @@ Biological populations:
 \item \code{zooplankton_sog} (zooplankton data in the Strait of Georgia)
 Oceanography:
 \item \code{buoy_sst} - sea-surface temperature from buoys
+\item \code{oisst_month} - optimally interpolated sea-surface temperature
 }}
 
 \item{years}{numeric vector years to restrict the data to, and then to
@@ -141,9 +142,10 @@ index. Default is \code{median} (for hake recruitment), but user can choose any
 column of the data. When looking at harbour seals the function automatically
 uses the \code{mean}. For \code{buoy_sst} it is either \code{anomalies} or
 \code{mean}, to prescribe whether to create the index based on means of anomalies
-(over the presribed months) from a climatology, or just the means of the
+(over the prescribed months) from a climatology, or just the means of the
 actual SST values. These may well be the same anyway, or only differ if no
-climatology can be built (which can depend on the years used for the climatology).}
+climatology can be built (which can depend on the years used for the
+climatology). For \code{oisst_month} only \code{anomalies} (the default) can be used.}
 
 \item{require_requested_months}{number of months that must be available
 out of the requested \code{months} to compute an average anomaly to then use to
@@ -155,7 +157,8 @@ minimum daily SST values required in a month to do the calculations.
 \item{...}{arguments passed onto the respective method, and also onto
 \code{\link[=calculate_anomalies.pacea_buoy]{calculate_anomalies.pacea_buoy()}} for \code{buoy_sst} data. TODO test these}
 
-\item{months}{vector of months (default \code{4} for April) for \code{buoy_sst}
+\item{months}{vector of months (default \code{4} for April) for \code{buoy_sst} and
+\code{oisst_month}
 data. See \code{\link[=plot.pacea_buoy_anomalies_list]{plot.pacea_buoy_anomalies_list()}} for full details of options
 (e.g. \code{c(11, 12, 1, 2, 3)} for a winter average).}
 }
@@ -185,6 +188,20 @@ arguments.
 roughly eight-monthly population estimates to the 1st January to give a
 single value for each year. (Hake assessment outputs are also for the start
 of the year, TODO herring I think might be 1st April).
+
+\code{\link[=create_index.pacea_oi]{create_index.pacea_oi()}} works directly on the \code{oisst_month} data,
+by using \code{\link[=calculate_anomalies.pacea_oi]{calculate_anomalies.pacea_oi()}} and then calculating a mean
+anomaly averaged over the specified \code{months} specified and spatial \code{area} (one value for
+each year)
+
+\code{\link[=create_index.pacea_oisst_anomalies_list]{create_index.pacea_oisst_anomalies_list()}} works on the results of
+\code{\link[=calculate_anomalies]{calculate_anomalies()}} on \code{oisst_month} data, which can be used before
+calculating the index  to show spatial variation. The resulting
+\code{\link[=create_index]{create_index()}} on the results then
+creates an annual index of the mean anomaly averaged over the specified \code{months}
+and spatial \code{area} (one value for  each year).
+
+TODO add a test to make sure they match, and default months is always April.
 
 The index is normalised (subtract the mean and divide by the standard
 deviation) across the specified years. This means that different types of

@@ -16,6 +16,20 @@
 ##' single value for each year. (Hake assessment outputs are also for the start
 ##' of the year, TODO herring I think might be 1st April).
 ##'
+##' [create_index.pacea_oi()] works directly on the `oisst_month` data,
+##' by using [calculate_anomalies.pacea_oi()] and then calculating a mean
+##' anomaly averaged over the specified `months` specified and spatial `area` (one value for
+##' each year)
+##'
+##' [create_index.pacea_oisst_anomalies_list()] works on the results of
+##' [calculate_anomalies()] on `oisst_month` data, which can be used before
+##' calculating the index  to show spatial variation. The resulting
+##' [create_index()] on the results then
+##' creates an annual index of the mean anomaly averaged over the specified `months`
+##' and spatial `area` (one value for  each year).
+##'
+##' TODO add a test to make sure they match, and default months is always April.
+##'
 ##' The index is normalised (subtract the mean and divide by the standard
 ##' deviation) across the specified years. This means that different types of
 ##' indices can be compared to each other. Indices are returned in a
@@ -32,7 +46,7 @@
 ##' * `zooplankton_sog` (zooplankton data in the Strait of Georgia)
 ##' Oceanography:
 ##' * `buoy_sst` - sea-surface temperature from buoys
-##'
+##' * `oisst_month` - optimally interpolated sea-surface temperature
 ##' @param ... arguments passed onto the respective `create_index.<class>`
 ##' function, such as:
 ##' @param years numeric vector years to restrict the data to, and then to
@@ -52,12 +66,14 @@
 ##' column of the data. When looking at harbour seals the function automatically
 ##' uses the `mean`. For `buoy_sst` it is either `anomalies` or
 ##' `mean`, to prescribe whether to create the index based on means of anomalies
-##' (over the presribed months) from a climatology, or just the means of the
+##' (over the prescribed months) from a climatology, or just the means of the
 ##' actual SST values. These may well be the same anyway, or only differ if no
-##' climatology can be built (which can depend on the years used for the climatology).
+##' climatology can be built (which can depend on the years used for the
+##' climatology). For `oisst_month` only `anomalies` (the default) can be used.
 ##' @param herring_region string for the region to be used when making an index related
 ##' to `herring_recruitment` or TODO
-##' @param months vector of months (default `4` for April) for `buoy_sst`
+##' @param months vector of months (default `4` for April) for `buoy_sst` and
+##' `oisst_month`
 ##' data. See [plot.pacea_buoy_anomalies_list()] for full details of options
 ##' (e.g. `c(11, 12, 1, 2, 3)` for a winter average).
 ##' @param stn_id string of the station ID (`stn_id` value OR

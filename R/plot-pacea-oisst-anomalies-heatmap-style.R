@@ -1,29 +1,46 @@
-##' Plot anomalies of OISST data averaged over a defined area, shown
+##' Plot anomalies of OISST data averaged over a defined area, shown with
 ##' months on the y-axis in a heatmap style plot.
 ##'
 ##' Gets called from `plot.pacea_oisst_anomalies_list()` if `heatmap_style ==
-##' TRUE`. TODO delete when done: adapting from `plot.pacea_buoy_anomalies_list()`
+##' TRUE`.
 ##'
 ##' @param dat `pacea_oisst_anomalies_list` class object from running
 ##' `calculate_anomalies()` on an object of class `pacea_oi` (the `sst_month`
 ##' data).
 ##' @param area sf object of the area to average the SST over to get a single
-##' value for each month
+##' value for each month (uses any cell of the OISST data that intersects with `area`.
 ##' @param area_name character string of the name of the area to use in the
 ##' title of the plot. If `NULL` then no area is specified (but we recommend
 ##' specifying one for clarity).
-##' @rdname plot.pacea_oisst_anomalies_list
-##' @return a ggplot object
+##' @param main title for the plot, if left as `NULL` then
+##' created automatically, including using `area_name`. May need to manually
+##' specify `main` as it is hard to fully automate.
+##' @param months numeric vector of months (1-12) to show; default (`NULL`)
+##' shows all 12 months.
+##' @param xlab x-axis label
+##' @param ylab y-axis label
+##' @param return_results logical, if `FALSE` (default) returns (plots) the ggplot object only.
+##' If `TRUE`, prints the plot and returns a list with both `plot` and `results`.
+##'
+##' @param scale_limits numeric vector of length 2 specifying the limits for the colour scale.
+##' If `NULL` (default), limits are calculated automatically to give a symmetric
+##' scale based on the anomalies. If any plotted values are outside of `scale_limits`
+##' then they are coloured grey.
+##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot` and `results`
+##' (when `return_results = TRUE`)
 ##' @export
 ##' @author Andrew Edwards and Andrea Hilborn
 ##' @examples
 ##' \dontrun{
-##' # See the vignette
+##' # See the vignette for explanations and use of the options.
+##' oisst_anomalies <- calculate_anomalies(oisst_month)
+##' plot(oisst_anomalies)         # spatial map of anomalies for most recent much
+##' plot(oisst_anomalies, heatmap_style = TRUE)   # mean anomaly for each month
+##'                                    # averaged over the whole spatial domain
 ##' }
 plot_pacea_oisst_anomalies_heatmap_style <- function(dat,
                                                      area = NULL,
                                                      area_name = NULL,
-                                             # months,
                                                      main = NULL,
                                                      months = NULL,
                                                      xlab = "Year",
@@ -60,8 +77,7 @@ plot_pacea_oisst_anomalies_heatmap_style <- function(dat,
   if(!is.null(area)){
     plot_data <- sf::st_filter(plot_data,
                                area,
-                               .predicate = sf::st_within)   # TODO check with
-    # Travis
+                               .predicate = sf::st_intersects)
   }
 
   plot_data <- sf::st_drop_geometry(plot_data)    # no need for spatial any more
