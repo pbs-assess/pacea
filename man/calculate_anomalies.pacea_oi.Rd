@@ -2,7 +2,7 @@
 % Please edit documentation in R/calculate-anomalies-pacea-oi.R
 \name{calculate_anomalies.pacea_oi}
 \alias{calculate_anomalies.pacea_oi}
-\title{TODO all the help Calculate climatology and anomalies for buoy SST data.}
+\title{TODO all the help Calculate climatology and anomalies for oisst data.}
 \usage{
 \method{calculate_anomalies}{pacea_oi}(
   data,

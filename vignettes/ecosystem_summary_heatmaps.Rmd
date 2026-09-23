@@ -246,8 +246,8 @@ decide on default.
 Just doing examples here for now (might plot strange with so many plots), may
 move to new vignette. You might want to do the anomalies first to look at them
 spatially, and can then calculate an index directly from the anomalies list, or
-directly from oisst_month (which can then call `calculate_anomalies()` and then
-`create_index.pacea_oisst_anomalies_list()`. 
+directly from `create_index(oisst_month)` with options, which will then call `calculate_anomalies()` and then
+`create_index.pacea_oisst_anomalies_list()`, but only return the index.
 
 ```{r, oisst1}
 oisst_anomalies <- calculate_anomalies(oisst_month)
@@ -353,15 +353,17 @@ plot_indices(oisst_area_126_apr_from_1995,
 Now try calculating the index directly (the anomalies are then just calculated
 internally):
 ```{r, oisstindex}
-oisst_area_smaller_than_126_apr_from_1995_directly <- create_index(oisst_month,
+# TODO change to create_index
+oisst_area_smaller_than_126_apr_from_1995_directly <- create_index.pacea_oi(oisst_month,
                                                                    area = area_smaller_than_126_polygon,
                                                                    years = 1995:2026,
                                                                    index_name = "small_direct",
                                                                    index_label =
                                                                      "Small area directly calculated")
 
-oisst_area_smaller_than_126_apr_from_1995_directly
+oisst_area_smaller_than_126_apr_from_1995_directly   # gives same answer as earlier
 
+# Keeping plot.pacea_oisst_anomalies_list.Rd as an option, so explain that.
 
                                                                    
 
