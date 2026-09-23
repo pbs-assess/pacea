@@ -247,7 +247,7 @@ Just doing examples here for now (might plot strange with so many plots), may
 move to new vignette. You might want to do the anomalies first to look at them
 spatially, and can then calculate an index directly from the anomalies list, or
 directly from `create_index(oisst_month)` with options, which will then call `calculate_anomalies()` and then
-`create_index.pacea_oisst_anomalies_list()`, but only return the index.
+`create_index.pacea_oisst_anomalies_list()` , but only return the index.
 
 ```{r, oisst1}
 oisst_anomalies <- calculate_anomalies(oisst_month)
@@ -255,7 +255,7 @@ oisst_anomalies <- calculate_anomalies(oisst_month)
 plot(oisst_anomalies)
 
 oisst_anomalies_area_126 <- calculate_anomalies(oisst_month,
-                                                area = "pfma_area_126")
+                                                area = "pfma_area_126")  # hardwired in at the moment TODO
 
 plot(oisst_anomalies_area_126)
 
@@ -280,11 +280,16 @@ plot(oisst_anomalies_area_126,
 
 TODO need options for total area to show
 
+TODO HERE go through these, checking can do the anomalies and create an index,
+and get the same index if just creating them directly from `oisst_month` with the
+area option.
+
+Having calcualted the full anomalies, can create a variety of indices.
+
 Now do the index, playing around for now:
 ```{r, oisstindex}
 oisst_anomalies_area_126
-create_index.pacea_oisst_anomalies_list(oisst_anomalies_area_126)
-
+xx <- create_index(oisst_anomalies_area_126)
 # Taking area 126 then making a slightly smaller polygon
 ## area_as_list_of_matrix <-
 ##         list(matrix(c(-127.1506, -128.2331, -129.3492, -127.9167, -127.1847,
@@ -299,7 +304,6 @@ area_smaller_than_126_as_list <-
                       50.24466, 49.85766),
                ncol = 2))
 
-
 area_smaller_than_126_polygon <-
   sf::st_sfc(sf::st_polygon(area_smaller_than_126_as_list),
              crs = 4326) %>%
@@ -309,18 +313,20 @@ area_smaller_than_126_polygon <-
 oisst_anomalies_area_smaller_than_126 <-
   oisst_anomalies_area_126$anomalies[area_smaller_than_126_polygon, ]
 
-# This has just 5 entries, area_126 had 20. So fine for a test run.
+# This has just 5 entries, area_126 has 20 (shown next). So fine for a test run.
 oisst_anomalies_area_smaller_than_126 %>% filter(year == 1981, month == 9)
-# TODO try area option in create_index, see below
 
+oisst_anomalies_area_126$anomalies %>% filter(year == 1981, month == 9)
+
+# TODO try area option in create_index, see below
 
 # Get it working for area 126, then for the defined subset of area26
 
 oisst_area_126_apr <-
-  create_index.pacea_oisst_anomalies_list(oisst_anomalies_area_126)
+  create_index(oisst_anomalies_area_126)
 oisst_area_126_apr
 
-# Average sea surface temperature in April from a buoy nearby (maybe in 126?)
+# Average sea surface temperature in April from a buoy within area 126
 sst_buoy_south_brooks_apr <- create_index(buoy_sst,
                                           months = 4,
                                           stn_id = "South Brooks")
@@ -329,20 +335,20 @@ plot_indices(oisst_area_126_apr,
 
 # Then restrict to 1995 onwards as that's when the buoy starts
 oisst_area_126_apr_from_1995 <-
-  create_index.pacea_oisst_anomalies_list(oisst_anomalies_area_126,
-                                          years = 1995:2026)
+  create_index(oisst_anomalies_area_126,
+               years = 1995:2026)
 
 plot_indices(oisst_area_126_apr_from_1995,
              sst_buoy_south_brooks_apr)
 
-
 # Try smaller area option
 oisst_area_smaller_than_126_apr_from_1995 <-
-  create_index.pacea_oisst_anomalies_list(oisst_anomalies_area_126,
-                                          area = area_smaller_than_126_polygon,
-                                          years = 1995:2026,
-                                          index_name = "smaller",
-                                          index_label = "smaller")
+  create_index(oisst_anomalies_area_126,
+               area = area_smaller_than_126_polygon,
+               years = 1995:2026,
+               index_name = "smaller_area",
+               index_label = "Smaller area than 126")
+
 oisst_area_smaller_than_126_apr_from_1995
 plot_indices(oisst_area_126_apr_from_1995,
              oisst_area_smaller_than_126_apr_from_1995,
@@ -350,11 +356,12 @@ plot_indices(oisst_area_126_apr_from_1995,
 
 ```
 
-Now try calculating the index directly (the anomalies are then just calculated
-internally):
+You can create an index directly from the `oisst_month` data, for which the
+anomalies are calculated internally. Though it might be a good idea to calculate
+full spatial anomalies for your area to take a look at them first, as we did
+above. But `create_index()` will work directly on `oisst_month`, with various options.
 ```{r, oisstindex}
-# TODO change to create_index
-oisst_area_smaller_than_126_apr_from_1995_directly <- create_index.pacea_oi(oisst_month,
+oisst_area_smaller_than_126_apr_from_1995_directly <- create_index(oisst_month,
                                                                    area = area_smaller_than_126_polygon,
                                                                    years = 1995:2026,
                                                                    index_name = "small_direct",
@@ -363,12 +370,19 @@ oisst_area_smaller_than_126_apr_from_1995_directly <- create_index.pacea_oi(oiss
 
 oisst_area_smaller_than_126_apr_from_1995_directly   # gives same answer as earlier
 
-# Keeping plot.pacea_oisst_anomalies_list.Rd as an option, so explain that.
+expect_equal(oisst_area_smaller_than_126_apr_from_1995_directly$value,
+             oisst_area_smaller_than_126_apr_from_1995$value)
 
-                                                                   
+# As expected, these are the same:
+plot_indices(oisst_area_smaller_than_126_apr_from_1995_directly,
+             oisst_area_smaller_than_126_apr_from_1995)
+
+# Keeping plot.pacea_oisst_anomalies_list.Rd as an option, so explain that.
 
 
 ```
+
+
 
 ```{r, stop123, cache = FALSE}
 # Do example index with:

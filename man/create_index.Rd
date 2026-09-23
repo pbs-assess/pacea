@@ -2,6 +2,7 @@
 % Please edit documentation in R/create-index-pacea-biomass-herring.R,
 %   R/create-index-pacea-biomass.R, R/create-index-pacea-buoy.R,
 %   R/create-index-pacea-harbour-seals.R, R/create-index-pacea-oi.R,
+%   R/create-index-pacea-oisst-anomalies-list.R,
 %   R/create-index-pacea-recruitment-herring.R,
 %   R/create-index-pacea-recruitment.R, R/create-index-pacea-zooplankton.R,
 %   R/create-index.R
@@ -11,6 +12,7 @@
 \alias{create_index.pacea_buoy}
 \alias{create_index.pacea_harbour_seals}
 \alias{create_index.pacea_oi}
+\alias{create_index.pacea_oisst_anomalies_list}
 \alias{create_index.pacea_recruitment_herring}
 \alias{create_index.pacea_recruitment}
 \alias{create_index.pacea_zooplankton}
@@ -48,6 +50,17 @@
 )
 
 \method{create_index}{pacea_oi}(
+  data,
+  years = NULL,
+  index_label = NULL,
+  index_name = NULL,
+  index_statistic = "anomalies",
+  area = NULL,
+  require_requested_months = NULL,
+  ...
+)
+
+\method{create_index}{pacea_oisst_anomalies_list}(
   data,
   years = NULL,
   index_label = NULL,
