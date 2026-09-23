@@ -436,20 +436,20 @@ NOTE:\cr
 \code{*depth*} must be replaced by one of the following depth categories:
 
 \describe{
-\code{surface}{sea surface, the top model cell at that location}\cr
-\code{avg0to30m}{depth-integrated average over 0-30 m}\cr
-\code{avg30to150m}{depth-integrated average over 30-150 m}\cr
-\code{150toBot} {depth-integrated from 150 m to the bottom cell}\cr
-\code{bottom}{sea bottom, the bottom model cell at that location}
+\item{surface}{sea surface, the top model cell at that location}
+\item{avg0to30m}{depth-integrated average over 0-30 m}
+\item{avg30to150m}{depth-integrated average over 30-150 m}
+\item{150toBot}{depth-integrated from 150 m to the bottom cell}
+\item{bottom}{sea bottom, the bottom model cell at that location}
 }
 
 #' \code{*statistic*} must be replaced by one of the following statistics:
 
 \describe{
-\code{min}{minimum daily mean over the month}\cr
-\code{mean}{mean daily mean over the month}\cr
-\code{max}{maximum daily mean over the month}\cr
-\code{std} {standard deviation of the daily means for the month}\cr
+\item{min}{minimum daily mean over the month}
+\item{mean}{mean daily mean over the month}
+\item{max}{maximum daily mean over the month}
+\item{std}{standard deviation of the daily means for the month}
 }
 
 The five permissable depth values for four types of statistics for both
