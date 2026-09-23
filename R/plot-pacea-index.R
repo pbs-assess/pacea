@@ -55,6 +55,9 @@
 ##' @param event_pch `pch` for events
 ##' @param event_cex `cex` for events
 ##' @param event_col `col` for events
+##' @param y_axis_reverse logical, if TRUE then reverse the y-axis; used for
+##' when a lower value of the index is good for, say, the hake stock, so we flip
+##' the y-axis so that up is good for hake (but negative for the index).
 ##' @param ... optional arguments passed onto `plot()`. Note that the x-axis is
 ##'   constructed using a lubridate `date` object, so `xlim` needs to be a
 ##'   `date` object (see example).

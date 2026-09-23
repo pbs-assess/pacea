@@ -10,13 +10,12 @@
 #' @param time_period_return vector of value(s) for the specific time units to estimate climatologies (e.g. '4' for week 4 or April). Set to equal 'all' for all time units.
 #' @param years_return vector of value(s) to return the years of
 #' interest. Defaults to all years in input data
-#' @param min_days_per_month minimum number of daily SST values required in a
-#' time period (month or week) for that period to be included in climatology
-#' calculation and anomalies calculation. Defaults to 15 days per month.
-#' @param max_consecutive_missing_days maximum number of consecutive days allowed
-#' to be missing (NA) within a time period (month or week). If a time period has
-#' more than this many consecutive NAs, it is excluded from climatology and anomalies
-#' calculation. Defaults to 6 days.
+#' @param area  characters string of a named area (only `pfma_area_126` at the
+#' moment, which is harwired into the function and will be removed), or
+#' data.frame, tibble, or matrix with columns as latitude and longitude of
+#' points around the region, with the final point equalling the first one (so
+#' defining a closed  polygon). If NULL then the whole region of data. TODO NOT
+#' ALL IMPLEMENTED YET
 #'
 #' @importFrom dplyr mutate select filter group_by summarise ungroup left_join join_by rename relocate
 #' @importFrom sf st_drop_geometry st_as_sf
@@ -28,7 +27,7 @@
 #' `pacea_buoy_anomalies_list`. Note that `climatology_years` will be the
 #' prescribed years, but these may not be available for all buoys.
 #' @export
-#'
+#' @rdname calculate_anomalies
 #' @author Andrew Edwards and Travis Tai
 #' @examples
 #' \dontrun{
@@ -44,18 +43,15 @@ calculate_anomalies.pacea_oi <- function(data,                # TODO only for
                                          climatology_time = "month",
                                          time_period_return = "all",
                                          years_return = NULL,
-                                         area = NULL){  # characters string of a
-  # named area (only pfma_area_126 at the moment), or data.frame, tibble, or
-  # matrix with columns as latitude and longitude of points around the region,
-  # with the final point equalling the first one (so defining a closed
-  # polygon). If NULL then the whole region of data. TODO
+                                         area = NULL){
 
   if(is.matrix(area) | is.data.frame(area)){
     area_as_list_of_matrix <- list(area)
   }
 
   if(is.character(area)){
-    # TODO move to a function, need data objects at some point, maybe as sf
+    # TODO move to a function, need data objects at some point, maybe as sf,
+    # update help, generalise to different types of user-defined area.
     if(area == "pfma_area_126"){
       area_as_list_of_matrix <-
         list(matrix(c(-127.1506, -128.2331, -129.3492, -127.9167, -127.1847,

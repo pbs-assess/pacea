@@ -97,6 +97,10 @@ For more control instead use \code{event_lub}.}
 
 \item{event_col}{\code{col} for events}
 
+\item{y_axis_reverse}{logical, if TRUE then reverse the y-axis; used for
+when a lower value of the index is good for, say, the hake stock, so we flip
+the y-axis so that up is good for hake (but negative for the index).}
+
 \item{...}{optional arguments passed onto \code{plot()}. Note that the x-axis is
 constructed using a lubridate \code{date} object, so \code{xlim} needs to be a
 \code{date} object (see example).}

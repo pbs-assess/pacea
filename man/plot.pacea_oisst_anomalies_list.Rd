@@ -10,18 +10,21 @@ single or series of spatial plots, or a heatmap style.}
 \arguments{
 \item{pacea_oisst_anomalies_list}{object of class \code{pacea_oisst_anomalies_list}
 obtained from running \code{caclulate_anomalies()} on oisst values.}
-}
-\description{
-Does a spatial plot of the absolute anomalies with one map for each month and year
-(default is the latest month of data) if \code{heatmap_style = FALSE}. See
-\code{\link[=plot.pacea_oianom]{plot.pacea_oianom()}} for arguments.
-}
-\details{
+
+\item{heatmap_style}{logical, if \code{FALSE} (default) then do a spatial plot of
+the absolute anomalies with one map for each month and year, with default
+(\code{months = NULL} being the latest month of data. See \code{\link[=plot.pacea_oianom]{plot.pacea_oianom()}} for arguments.
 If \code{heatmap_style = TRUE} then do a heatmap style figure showing the
 absolute anomalies for each month averaged over the designated area. Has
 January at the top and December at the bottom of the y-axis, with years
 along the x-axis. See \code{\link[=plot_pacea_oisst_anomalies_heatmap_style]{plot_pacea_oisst_anomalies_heatmap_style()}} for
-arguments.
+arguments.}
+
+\item{...}{arguments to be passed onto
+\code{\link[=plot_pacea_oisst_anomalies_heatmap_style]{plot_pacea_oisst_anomalies_heatmap_style()}} or \code{\link[=plot.pacea_oianom]{plot.pacea_oianom()}}.}
+}
+\description{
+See \code{heatmap_style} arguments for the resulting type of plot.
 }
 \examples{
 \dontrun{

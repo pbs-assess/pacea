@@ -1,6 +1,6 @@
 ##' TODO this is for `calculate_climatology()`. Edit whole help file.
 ##'
-##' @param res One of:
+##' @param data One of:
 ##' * `size_spectrum_mlebins` object
 ##' * `determine_xmin_and_fit_mlebins` object
 ##' * `remove_outliers_mlebins` object

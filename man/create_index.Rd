@@ -122,7 +122,7 @@ data for the chosen \code{stn_id} buoy. TODO check what happens for other types
 of data.}
 
 \item{herring_region}{string for the region to be used when making an index related
-to \code{herring_recruitment} or TODO}
+to \code{herring_recruitment} or \code{herring_spawning_biomass}.}
 
 \item{index_label}{character string for the name to be used as the label in
 the plotting. Default is for hake recruitment, and will need to be manually
@@ -157,9 +157,16 @@ minimum daily SST values required in a month to do the calculations.
 \item{...}{arguments passed onto the respective method, and also onto
 \code{\link[=calculate_anomalies.pacea_buoy]{calculate_anomalies.pacea_buoy()}} for \code{buoy_sst} data. TODO test these}
 
+\item{seal_region}{string for the region to be used when making an index related
+to \code{harbour_seals}.}
+
+\item{`zooplankton_species_group`}{string for the zooplankton species group
+to be used from \code{zooplankton_sog}, must be one of the biological columns
+(\code{total_biomass} onwards) of \code{zooplankton_sog}.}
+
 \item{months}{vector of months (default \code{4} for April) for \code{buoy_sst} and
 \code{oisst_month}
-data. See \code{\link[=plot.pacea_buoy_anomalies_list]{plot.pacea_buoy_anomalies_list()}} for full details of options
+data, over which to average the values to create the annual index. See \code{\link[=plot.pacea_buoy_anomalies_list]{plot.pacea_buoy_anomalies_list()}} for full details of options
 (e.g. \code{c(11, 12, 1, 2, 3)} for a winter average).}
 }
 \value{
