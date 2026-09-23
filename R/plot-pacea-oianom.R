@@ -1,5 +1,8 @@
 #' Plot anomaly of OISST spatiotemporal data layer
 #'
+#' Gets called from `pacea_oisst_anomalies_list()`, which uses the newer format
+#' of climatology and anomalies TODO. Ensure consistent.
+#'
 #' @param x an OISST `pacea_oianom` object; output from using `calc_anom()` of `oisst_7day` or `oisst_month` data
 #' @param weeks.plot weeks to plot. Defaults to current week (if available)
 #' @param months.plot months to plot. Defaults to current month (if available)

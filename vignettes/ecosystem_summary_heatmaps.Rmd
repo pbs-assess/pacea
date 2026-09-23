@@ -267,7 +267,7 @@ plot(oisst_anomalies, months = 3)
 
 # Shows MHW coming on. Then suggests an index to create, e.g. average of the
 # whole area for Jan to Jun (TODO)
-plot(oisst_anomalies,
+plot(oisst_anomaliesl,
      months.plot = 1:12,
      years.plot = 2014:2016)
 
@@ -382,6 +382,21 @@ plot_indices(oisst_area_smaller_than_126_apr_from_1995_directly,
 
 ```
 
+How about showing every month of a spatially averaged anomaly in a heatmap style
+plot - nicely abstracts many spatial maps into one plot. Can't show all the
+spatial ones.
+
+```{r, oisstheatmap}
+# Averages over the whole domain (default):
+
+# Should be able to replace with
+plot(oisst_anomalies, heatmap_style = TRUE)   # when document() etc.
+plot_pacea_oisst_anomalies_heatmap_style(oisst_anomalies)
+
+plot_pacea_oisst_anomalies_heatmap_style(oisst_anomalies_area_126,
+                                         area_name = "Area 126")
+
+```
 
 
 ```{r, stop123, cache = FALSE}

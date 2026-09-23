@@ -37,7 +37,8 @@ says the same thing); this should remove a R-CMD-check warning.}
 plot of the spatial data to the current device (returns nothing)
 }
 \description{
-Plot anomaly of OISST spatiotemporal data layer
+Gets called from \code{pacea_oisst_anomalies_list()}, which uses the newer format
+of climatology and anomalies TODO. Ensure consistent.
 }
 \examples{
 \dontrun{

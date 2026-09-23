@@ -56,7 +56,13 @@
 ##' plot(all_buoys_anomalies)
 ##' }
 plot.pacea_oisst_anomalies_list <- function(pacea_oisst_anomalies_list,
+                                            heatmap_style = FALSE,
                                             ...){
-  plot.pacea_oianom(pacea_oisst_anomalies_list$anomalies,
-                    ...)
+  if(heatmap_style){
+    plot_pacea_oisst_anomalies_heatmap_style(pacea_oisst_anomalies_list,
+                                    ...)
+  } else {
+    plot.pacea_oianom(pacea_oisst_anomalies_list$anomalies,
+                      ...)
+  }
 }
