@@ -58,9 +58,9 @@ Expert knowledge can be used to suggest relevant ecosystem information to be
 used for a particular stock. Futhermore, the ease of generating the heatmaps can
 allow exploration, formulation of ideas, and quick hypothesis testing.
 
-For comparing disparate types of ecosystem information, we standardise each time
-series (by subtracting the mean and dividing by the standard deviation across
-the time series, which might not be all fully plotted). 
+For comparing disparate types of ecosystem information, we calculate an annual
+index which is standardised (by subtracting the mean and dividing by the standard deviation across
+the time series; all values might not get fully plotted). 
 This is so that indices
 are all dimensionless and can be compared on equivalent scales, and shown on a
 single heatmap style plot.
@@ -386,7 +386,7 @@ expect_equal(oisst_area_smaller_than_126_apr_from_1995_directly$value,
 
 How about showing every month of a spatially averaged anomaly in a heatmap style
 plot - nicely abstracts many spatial maps into one plot. Can't show all the
-spatial ones.
+spatial ones. (These are NOT annual indices).
 
 ```{r, oisstheatmap}
 # Averages over the whole domain (default):

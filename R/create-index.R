@@ -71,10 +71,15 @@
 ##' climatology can be built (which can depend on the years used for the
 ##' climatology). For `oisst_month` only `anomalies` (the default) can be used.
 ##' @param herring_region string for the region to be used when making an index related
-##' to `herring_recruitment` or TODO
+##' to `herring_recruitment` or `herring_spawning_biomass`.
+##' @param seal_region string for the region to be used when making an index related
+##' to `harbour_seals`.
+##' @param `zooplankton_species_group` string for the zooplankton species group
+##' to be used from `zooplankton_sog`, must be one of the biological columns
+##' (`total_biomass` onwards) of `zooplankton_sog`.
 ##' @param months vector of months (default `4` for April) for `buoy_sst` and
 ##' `oisst_month`
-##' data. See [plot.pacea_buoy_anomalies_list()] for full details of options
+##' data, over which to average the values to create the annual index. See [plot.pacea_buoy_anomalies_list()] for full details of options
 ##' (e.g. `c(11, 12, 1, 2, 3)` for a winter average).
 ##' @param stn_id string of the station ID (`stn_id` value OR
 ##' `name` value from `buoy_metadata`) to create an index from the `buoy_sst` data
