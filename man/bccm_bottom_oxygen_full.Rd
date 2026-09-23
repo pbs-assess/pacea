@@ -302,11 +302,11 @@ NOTE:\cr
 \code{*depth*} must be replaced by one of the following depth categories:
 
 \describe{
-\code{bottom}{ sea bottom}\cr
-\code{0to40}{ average between 0m and 40m depth}\cr
-\code{40to100}{ average between 40m and 100m depth}\cr
-\code{100tobot} { average between 100m depth and sea bottom}\cr
-\code{surface}{ sea surface}
+\item{bottom}{sea bottom}
+\item{0to40}{average between 0m and 40m depth}
+\item{40to100}{average between 40m and 100m depth}
+\item{100tobot}{average between 100m depth and sea bottom}
+\item{surface}{sea surface}
 }
 
 only \code{bottom} and \code{surface} depths are available for current velocity.
