@@ -1,21 +1,18 @@
 ##' @export
 ##' @rdname create_index
-create_index.pacea_oisst_anomalies_list <- function(data,
-                                                    years = NULL,
-                                                    index_label = NULL,
-                                                    index_name = NULL,
-                                                    index_statistic = "anomalies",
-                                                    area = NULL,
-                                                    require_requested_months = NULL,
-                                                    ...){
-  stopifnot(index_statistic %in% c("anomalies"))    # TODO help, note it's the mean
-  # of the anomalies
+create_index.pacea_oi <- function(data,
+                                  years = NULL,
+                                  index_label = NULL,
+                                  index_name = NULL,
+                                  index_statistic = "anomalies",
+                                  area = NULL,
+                                  require_requested_months = NULL,
+                                  ...){
+  # data is oisst_monthly or similar, need some checks as to what can be used
+  # TODO
 
-  anomalies_sf <- data[["anomalies"]]  # The anomalies sf object
-
-  if(is.null(years)){
-    years <- min(anomalies_sf$year):max(anomalies_sf$year)
-  }
+  # Originally did this on the anomalies list, but now creating that directly
+  # like for create_index.pacea_buoy(). TODO can delete this when finalised it.
 
   # Extract months from ..., default to 4 if not provided
   months <- list(...)$months
@@ -23,6 +20,9 @@ create_index.pacea_oisst_anomalies_list <- function(data,
   if(is.null(months)){
     months <- 4
   }
+
+  stopifnot(index_statistic %in% c("anomalies"))    # TODO help, note it's the mean
+  # of the anomalies
 
   # Check months are consecutive except Dec to Jan
   if(!is.null(months)){
@@ -63,22 +63,36 @@ create_index.pacea_oisst_anomalies_list <- function(data,
                                "_")
   }
 
-  data_to_use <- filter(anomalies_sf,
-                        year %in% years,
-                        month %in% months)
-  if(!is.null(area)){
-    data_to_use <- sf::st_filter(data_to_use,
-                                 area,
-                                 .predicate = sf::st_within)   # TODO check with
-    # Travis
+  # Could reduce the years and months here but there is `climatology_years` also
+  # which can be an option. So might be calculating un-needed things (e.g. Dec
+  # when you only want Apr). TODO reduce the data here if running speed becomes
+  # an issue.
+
+  if(is.null(years)){
+    years <- min(data$year):max(data$year)
   }
 
-  data_to_use <- sf::st_drop_geometry(data_to_use)    # done with the spatial
+  res_calculate_anomalies <- dots_parser(calculate_anomalies.pacea_oi,
+                                         data = data,
+                                         ...)    # TODO check if can include years_return
+
+  anomalies_to_use <- filter(res_calculate_anomalies$anomalies,
+                             year %in% years,
+                             month %in% months)
+  if(!is.null(area)){
+    anomalies_to_use <- sf::st_filter(anomalies_to_use,
+                                      area,
+                                      .predicate = sf::st_within)   # TODO check with
+    # Travis. Also, area is an argument in calculate_anomalies.pacea_oi so prob
+    # dont' need to filter on it once I have that working. TODO come back to.
+  }
+
+  anomalies_to_use <- sf::st_drop_geometry(anomalies_to_use)    # done with the spatial
 
   # Adapting from create-index.pacea_buoy()
   if(which.max(months) == length(months)){
     # months are increasing and so are in the same year
-    res <- data_to_use %>%
+    res <- anomalies_to_use %>%
       dplyr::group_by(year) %>%
       # value becomes the average over the specified months, no need to
       # keep month column
@@ -97,7 +111,7 @@ create_index.pacea_oisst_anomalies_list <- function(data,
   } else {
     # Months are not increasing, for which it is implied a winter average is
     # being calculated that includes Dec and Jan.
-    res <- data_to_use %>%
+    res <- anomalies_to_use %>%
       dplyr::mutate(year_of_january = (year + 1) * (month >= months[1]) +
                       year * (month < months[1])) %>%    # the year of the january for the winter
       dplyr::group_by(year_of_january) %>%
