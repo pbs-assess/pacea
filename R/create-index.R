@@ -74,13 +74,14 @@
 ##' to `herring_recruitment` or `herring_spawning_biomass`.
 ##' @param seal_region string for the region to be used when making an index related
 ##' to `harbour_seals`.
-##' @param `zooplankton_species_group` string for the zooplankton species group
+##' @param zooplankton_species_group string for the zooplankton species group
 ##' to be used from `zooplankton_sog`, must be one of the biological columns
 ##' (`total_biomass` onwards) of `zooplankton_sog`.
 ##' @param months vector of months (default `4` for April) for `buoy_sst` and
 ##' `oisst_month`
 ##' data, over which to average the values to create the annual index. See [plot.pacea_buoy_anomalies_list()] for full details of options
-##' (e.g. `c(11, 12, 1, 2, 3)` for a winter average).
+##' (e.g. `c(11, 12, 1, 2, 3)` for a winter average). TODO does not seem to be
+##' used at the moment, according to `check_man()`, 24/9/26.
 ##' @param stn_id string of the station ID (`stn_id` value OR
 ##' `name` value from `buoy_metadata`) to create an index from the `buoy_sst` data
 ##' object.
@@ -90,7 +91,14 @@
 ##' [calculate_anomalies.pacea_buoy()] also for more options for `buoy_sst` data, such as the
 ##' minimum daily SST values required in a month to do the calculations.
 ##' (i.e. every month requested needs enough daily values).
-##' @param ... arguments passed onto the respective method, and also onto
+#' @param area  characters string of a named area for creating an index as an
+#' average of a spatial area, only for OISST at the moment TODO update. Also (only `pfma_area_126` at the
+#' moment, which is hardwired into the function and will be removed), or
+#' data.frame, tibble, or matrix with columns as latitude and longitude of
+#' points around the region, with the final point equalling the first one (so
+#' defining a closed  polygon). If NULL then the whole region of data. TODO NOT
+#' ALL IMPLEMENTED YET
+##' @param ... other arguments passed onto the respective method, and also onto
 ##' [calculate_anomalies.pacea_buoy()] for `buoy_sst` data. TODO test these
 ##'
 ##' @return tibble of class `pacea_standardised_index` containing columns of

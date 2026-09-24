@@ -15,7 +15,7 @@
 #' data.frame, tibble, or matrix with columns as latitude and longitude of
 #' points around the region, with the final point equalling the first one (so
 #' defining a closed  polygon). If NULL then the whole region of data. TODO NOT
-#' ALL IMPLEMENTED YET
+#' ALL IMPLEMENTED YET. Also changecreate-index.R help.
 #'
 #' @importFrom dplyr mutate select filter group_by summarise ungroup left_join join_by rename relocate
 #' @importFrom sf st_drop_geometry st_as_sf
