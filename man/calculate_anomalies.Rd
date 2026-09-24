@@ -41,7 +41,7 @@ moment, which is harwired into the function and will be removed), or
 data.frame, tibble, or matrix with columns as latitude and longitude of
 points around the region, with the final point equalling the first one (so
 defining a closed  polygon). If NULL then the whole region of data. TODO NOT
-ALL IMPLEMENTED YET}
+ALL IMPLEMENTED YET. Also changecreate-index.R help.}
 
 \item{...}{arguments passed onto the respective \verb{detect_outliers.<class>} function}
 }

@@ -6,6 +6,7 @@ create_index.pacea_oi <- function(data,
                                   index_name = NULL,
                                   index_statistic = "anomalies",
                                   area = NULL,
+                                  months = NULL,
                                   require_requested_months = NULL,
                                   ...){
   # data is oisst_monthly or similar, need some checks as to what can be used
@@ -14,8 +15,10 @@ create_index.pacea_oi <- function(data,
   # Originally did this on the anomalies list, but now creating that directly
   # like for create_index.pacea_buoy(). TODO can delete this when finalised it.
 
+  # Don't think need this here, and want months to be in ?create_index, so
+  # making explicit. Think ... was for something more complex.
   # Extract months from ..., default to 4 if not provided
-  months <- list(...)$months
+  # months <- list(...)$months
 
   if(is.null(months)){
     months <- 4

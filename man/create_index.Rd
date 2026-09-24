@@ -56,6 +56,7 @@
   index_name = NULL,
   index_statistic = "anomalies",
   area = NULL,
+  months = NULL,
   require_requested_months = NULL,
   ...
 )
@@ -154,20 +155,29 @@ create the index. If \code{NULL} (default), defaults to \code{length(months)}. S
 minimum daily SST values required in a month to do the calculations.
 (i.e. every month requested needs enough daily values).}
 
-\item{...}{arguments passed onto the respective method, and also onto
+\item{...}{other arguments passed onto the respective method, and also onto
 \code{\link[=calculate_anomalies.pacea_buoy]{calculate_anomalies.pacea_buoy()}} for \code{buoy_sst} data. TODO test these}
 
 \item{seal_region}{string for the region to be used when making an index related
 to \code{harbour_seals}.}
 
-\item{`zooplankton_species_group`}{string for the zooplankton species group
-to be used from \code{zooplankton_sog}, must be one of the biological columns
-(\code{total_biomass} onwards) of \code{zooplankton_sog}.}
+\item{area}{characters string of a named area for creating an index as an
+average of a spatial area, only for OISST at the moment TODO update. Also (only \code{pfma_area_126} at the
+moment, which is hardwired into the function and will be removed), or
+data.frame, tibble, or matrix with columns as latitude and longitude of
+points around the region, with the final point equalling the first one (so
+defining a closed  polygon). If NULL then the whole region of data. TODO NOT
+ALL IMPLEMENTED YET}
 
 \item{months}{vector of months (default \code{4} for April) for \code{buoy_sst} and
 \code{oisst_month}
 data, over which to average the values to create the annual index. See \code{\link[=plot.pacea_buoy_anomalies_list]{plot.pacea_buoy_anomalies_list()}} for full details of options
-(e.g. \code{c(11, 12, 1, 2, 3)} for a winter average).}
+(e.g. \code{c(11, 12, 1, 2, 3)} for a winter average). TODO does not seem to be
+used at the moment, according to \code{check_man()}, 24/9/26.}
+
+\item{zooplankton_species_group}{string for the zooplankton species group
+to be used from \code{zooplankton_sog}, must be one of the biological columns
+(\code{total_biomass} onwards) of \code{zooplankton_sog}.}
 }
 \value{
 tibble of class \code{pacea_standardised_index} containing columns of
