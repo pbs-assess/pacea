@@ -1811,3 +1811,24 @@
 #'
 #' @source Generated from running `data-raw/areas/sasquatch.R"
 "sasquatch"
+
+#' Temporary PFMA Area 126 sf object for testing area options in code
+#'
+#' A simple features object of PFMA Area 126 to test code.
+
+#' @format A simple features polygon dataframe.
+#' @examples
+#' \dontrun{
+#' pfma_area_126_temp
+#' plot(pfma_area_126_temp)    # just draws the polygon of the area
+#' # Plot the latest OISST data plus draw the polygon of the area
+#' p <- plot(oisst_month)
+#'
+#' p + geom_sf(data = pfma_area_126_temp,
+#'             fill = NA,
+#'             colour = "black",
+#'             linewidth = 1)
+#' }
+#'
+#' @source Generated from running `data-raw/areas/pfma-area-126-temp.R"
+"pfma_area_126_temp"
