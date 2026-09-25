@@ -1778,3 +1778,36 @@
 
 ##' @rdname fraser_discharge_mean
 "fraser_discharge_peak"
+
+#' Sasquatch sf object for testing area options in code
+#'
+#' A simple features object of a sasquatch, maruading off the west coast of
+#' Vancouver Island and in Queen Charlotte Sound.
+#
+#' @format A simple features polygon dataframe.
+#' @examples
+#' \dontrun{
+#' sasquatch
+#' plot(sasquatch)
+#' p <- plot(oisst_month)
+#' p + geom_sf(data = sasquatch,
+#'             fill = NA,
+#'             colour = "black",
+#'             linewidth = 1)
+#' # Extract SST within the sasquatch
+#' sasquatch_sst <- oisst_month[sasquatch, ]
+#' class(sasquatch_sst) <- class(oisst_month)    # will make a function for that,
+#'    or an option in the plotting, at some point
+#' plot(sasquatch_sst)    # full coastline, no sasquatch outline
+#'
+#' pp <- plot(sasquatch_sst)
+#' pp + geom_sf(data = sasquatch,
+#'              fill = NA,
+#'              colour = "black",
+#'              linewidth = 1)
+#' # Can see that, as Kelsey explained, it's the centres of the SST squares that
+#' # determine whether the square is considered part of the area or not.
+#' }
+#'
+#' @source Generated from running `data-raw/areas/sasquatch.R"
+"sasquatch"
