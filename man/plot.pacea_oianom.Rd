@@ -13,6 +13,9 @@
   bc = TRUE,
   eez = TRUE,
   restrict_plot = FALSE,
+  buffer_proportion = 0.2,
+  x_axis_labels = NULL,
+  y_axis_labels = NULL,
   ...
 )
 }
@@ -34,6 +37,19 @@
 \item{restrict_plot}{logical. Should the plot be restricted to the spatial
 domain of the data? If TRUE, the plot extent matches the data bounds and
 bc_coast and bc_eez layers will not expand the plot limits. Default is FALSE.}
+
+\item{buffer_proportion}{numeric. Buffer proportion to add around the data
+bounds when restrict_plot is TRUE. Default is 0.2 (20\% in each
+direction). Note that locations may be based on the centres of the grid
+cells, hence you may need to play with \code{buffer_proportion} depending on your plot.}
+
+\item{x_axis_labels}{numeric vector. X-axis breaks to label when restrict_plot
+is TRUE. If NULL, automatically hides overlapping labels. Allows fine control
+over which longitude values are displayed.}
+
+\item{y_axis_labels}{numeric vector. Y-axis breaks to label when restrict_plot
+is TRUE. If NULL, automatically hides overlapping labels. Allows fine control
+over which latitude values are displayed.}
 
 \item{...}{other arguments to be passed on, but not currently used (\code{?ggplot}
 says the same thing); this should remove a R-CMD-check warning.}
