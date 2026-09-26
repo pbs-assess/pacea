@@ -12,6 +12,7 @@
   clim.dat,
   bc = TRUE,
   eez = TRUE,
+  restrict_plot = FALSE,
   ...
 )
 }
@@ -29,6 +30,10 @@
 \item{bc}{logical. Should BC coastline layer be plotted? Can only be plotted with one plot layer.}
 
 \item{eez}{logical. Should BC EEZ layer be plotted? Can only be plotted with one plot layer.}
+
+\item{restrict_plot}{logical. Should the plot be restricted to the spatial
+domain of the data? If TRUE, the plot extent matches the data bounds and
+bc_coast and bc_eez layers will not expand the plot limits. Default is FALSE.}
 
 \item{...}{other arguments to be passed on, but not currently used (\code{?ggplot}
 says the same thing); this should remove a R-CMD-check warning.}
