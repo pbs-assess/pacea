@@ -404,6 +404,65 @@ plot(oisst_anomalies_area_126,
 
 ```
 
+## To go elsehwere, just while I'm developing them
+
+Need to mention `create_area_sf_polygon()` somewhere TODO
+
+
+Restrict spatiotemporal data to an area:
+```{r, areaplots}
+oisst_sasquatch <- restrict_to_area(oisst_month, sasquatch)
+plot(oisst_sasquatch,
+     years = 2015:2016,
+     months = 1:12)
+
+oisst_area_126 <- restrict_to_area(oisst_month,
+                                   pfma_area_126_temp)
+plot(oisst_area_126,
+     years = 2015:2016,
+     months = 1:12)
+```
+
+```{r, anomaliessqtch}
+oisst_anomalies_sasquatch <- calculate_anomalies(oisst_month,
+                                                 area = sasquatch)
+# TODO replace with plot, think NAMESPACE just temporarily messed up
+plot.pacea_oisst_anomalies_list(oisst_anomalies_sasquatch)
+
+plot.pacea_oisst_anomalies_list(oisst_anomalies_sasquatch, years = 2014:2026)
+
+# In average years he hides away, so only comes out when it's warm or
+# cold. Probably hibernating.
+
+plot.pacea_oisst_anomalies_list(oisst_anomalies_sasquatch,
+                                months = 9,
+                                years = 2014:2025)
+
+
+plot.pacea_oisst_anomalies_list(oisst_anomalies_sasquatch, heatmap_style = TRUE)
+
+
+```
+
+Now create an index
+```{r, sasindex}
+sasquatch_index <- create_index(oisst_anomalies_sasquatch,
+                                months = 4,
+                                index_label = "OISST in Sasquatch for Apr")
+# TODO HERE redo the area126 stuff, can simplify lots of things above
+oisst_area_126_anomalies <- calculate_anomalies(oisst_month,
+                                                 area = pfma_area_126_temp)
+# TODO see if can do it one go, without calculate_anomalies part.
+oisst_area_126_index <- create_index(oisst_area_126_anomalies,
+                                     months = 4,
+                                     index_label = "OISST in Area 126 for Apr")
+
+plot_indices(sasquatch_index,
+             oisst_area_126_index,
+             sst_buoy_halibut_bank_apr)
+
+
+```
 
 ```{r, stop123, cache = FALSE}
 # Do example index with:
