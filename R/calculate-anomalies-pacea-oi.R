@@ -10,12 +10,12 @@
 #' @param time_period_return vector of value(s) for the specific time units to estimate climatologies (e.g. '4' for week 4 or April). Set to equal 'all' for all time units.
 #' @param years_return vector of value(s) to return the years of
 #' interest. Defaults to all years in input data
-#' @param area  characters string of a named area (only `pfma_area_126` at the
+#' @param area TODO characters string of a named area (only `pfma_area_126` at the
 #' moment, which is harwired into the function and will be removed), or
 #' data.frame, tibble, or matrix with columns as latitude and longitude of
 #' points around the region, with the final point equalling the first one (so
 #' defining a closed  polygon). If NULL then the whole region of data. TODO NOT
-#' ALL IMPLEMENTED YET. Also changecreate-index.R help.
+#' ALL IMPLEMENTED YET. Also change create-index.R help.
 #'
 #' @importFrom dplyr mutate select filter group_by summarise ungroup left_join join_by rename relocate
 #' @importFrom sf st_drop_geometry st_as_sf
@@ -31,7 +31,7 @@
 #' @author Andrew Edwards and Travis Tai
 #' @examples
 #' \dontrun{
-#' area_126 <- tibble(
+#' TODO area_126 <- tibble(
 #'   lat = c(-127.1506, -128.2331, -129.3492, -127.9167, -127.1847, -126.8200,
 #' -127.1506),
 #'   lon = c(49.85766, 49.00000, 48.99991, 50.11915, 50.40183, 50.24466, 49.85766))
@@ -45,45 +45,16 @@ calculate_anomalies.pacea_oi <- function(data,                # TODO only for
                                          years_return = NULL,
                                          area = NULL){
 
-  if(is.matrix(area) | is.data.frame(area)){
-    area_as_list_of_matrix <- list(area)
-  }
-
-  if(is.character(area)){
-    # TODO move to a function, need data objects at some point, maybe as sf,
-    # update help, generalise to different types of user-defined area.
-    if(area == "pfma_area_126"){
-      area_as_list_of_matrix <-
-        list(matrix(c(-127.1506, -128.2331, -129.3492, -127.9167, -127.1847,
-                      -126.8200, -127.1506,
-                      49.85766, 49.00000, 48.99991, 50.11915, 50.40183,
-                      50.24466, 49.85766),
-                    ncol = 2))    # From Travis's OISST vignette
-    } else {
-      stop("`area` not accepted yet as a character string")
-    }
-  }
-
-
-
   # Reduce data to the area specified
   if(is.null(area)){
     data_for_area <- data
   } else {
-    # Create polygon object with lat-lon WGS 84 projection (4326)
-    area_polygon <- sf::st_sfc(sf::st_polygon(area_as_list_of_matrix),
-                               crs = 4326) %>%
-      sf::st_as_sf()
+    if(!("sf" %in% class(area))){
+      stop("`area` needs to be an sf object; use `create_area_sf_polygon()` to properly create your area")
+    }
 
-    data_for_area <- data[area_polygon, ]
+    data_for_area <- data[area, ]
   }
-
-
-
-  # example area:
-  #  list(matrix(c(-127.1506, -128.2331, -129.3492, -127.9167, -127.1847, -126.8200, -127.1506,
-  #                    49.85766, 49.00000, 48.99991, 50.11915, 50.40183, 50.24466, 49.85766),
-  #                  ncol = 2))
 
   stopifnot("'climatology_time' must currently have a value of 'month'; if you want 'week' then email Andy or make an Issue, as some of the code will need updating, and we did not think this was the most important thing to work on"
             = climatology_time %in% c("month"))

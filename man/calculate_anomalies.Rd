@@ -36,12 +36,12 @@ is some functionality to use "week" also -- contact Andy if this would be useful
 \item{years_return}{vector of value(s) to return the years of
 interest. Defaults to all years in input data}
 
-\item{area}{characters string of a named area (only \code{pfma_area_126} at the
+\item{area}{TODO characters string of a named area (only \code{pfma_area_126} at the
 moment, which is harwired into the function and will be removed), or
 data.frame, tibble, or matrix with columns as latitude and longitude of
 points around the region, with the final point equalling the first one (so
 defining a closed  polygon). If NULL then the whole region of data. TODO NOT
-ALL IMPLEMENTED YET. Also changecreate-index.R help.}
+ALL IMPLEMENTED YET. Also change create-index.R help.}
 
 \item{...}{arguments passed onto the respective \verb{detect_outliers.<class>} function}
 }
@@ -68,7 +68,7 @@ Function for calculating climatology and subsequent anomalies of a \code{buoy_ss
 }
 \examples{
 \dontrun{
-area_126 <- tibble(
+TODO area_126 <- tibble(
   lat = c(-127.1506, -128.2331, -129.3492, -127.9167, -127.1847, -126.8200,
 -127.1506),
   lon = c(49.85766, 49.00000, 48.99991, 50.11915, 50.40183, 50.24466, 49.85766))
