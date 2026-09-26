@@ -14,6 +14,7 @@
 ##' arguments.
 ##' @param ... arguments to be passed onto
 ##' [plot_pacea_oisst_anomalies_heatmap_style()] or [plot.pacea_oianom()].
+##' @export
 ##' @author Andrew Edwards and Andrea Hilborn
 ##' @examples
 ##' \dontrun{

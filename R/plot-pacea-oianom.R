@@ -10,6 +10,19 @@
 #' @param clim.dat climatology data, obtained from using `calc_clim()`. If used, contours of deviations from climatology mean will be plotted
 #' @param eez logical. Should BC EEZ layer be plotted? Can only be plotted with one plot layer.
 #' @param bc logical. Should BC coastline layer be plotted? Can only be plotted with one plot layer.
+#' @param restrict_plot logical. Should the plot be restricted to the spatial
+#'   domain of the data? If TRUE, the plot extent matches the data bounds and
+#'   bc_coast and bc_eez layers will not expand the plot limits. Default is FALSE.
+#' @param buffer_proportion numeric. Buffer proportion to add around the data
+#'   bounds when restrict_plot is TRUE. Default is 0.2 (20% in each
+#' direction). Note that locations may be based on the centres of the grid
+#' cells, hence you may need to play with `buffer_proportion` depending on your plot.
+#' @param x_axis_labels numeric vector. X-axis breaks to label when restrict_plot 
+#'   is TRUE. If NULL, automatically hides overlapping labels. Allows fine control 
+#'   over which longitude values are displayed.
+#' @param y_axis_labels numeric vector. Y-axis breaks to label when restrict_plot 
+#'   is TRUE. If NULL, automatically hides overlapping labels. Allows fine control 
+#'   over which latitude values are displayed.
 #' @param ... other arguments to be passed on, but not currently used (`?ggplot`
 #'   says the same thing); this should remove a R-CMD-check warning.
 #'
@@ -34,6 +47,10 @@ plot.pacea_oianom <- function(x,
                               clim.dat,
                               bc = TRUE,
                               eez = TRUE,
+                              restrict_plot = FALSE,
+                              buffer_proportion = 0.2,
+                              x_axis_labels = NULL,
+                              y_axis_labels = NULL,
                               ...) {
 
   # create new names for plot
@@ -162,6 +179,23 @@ plot.pacea_oianom <- function(x,
                         "#FFFFFF",
                         "#FFFF7F", "#FFFF00", "#ff7f00", "#FF0000", "#bf0000", "#820000")
 
+  # Get data bounds for restrict_plot functionality
+  if(restrict_plot){
+    data_bbox <- sf::st_bbox(tobj)
+    xmin <- as.numeric(data_bbox["xmin"])
+    xmax <- as.numeric(data_bbox["xmax"])
+    ymin <- as.numeric(data_bbox["ymin"])
+    ymax <- as.numeric(data_bbox["ymax"])
+
+    # Add buffer in each direction
+    x_width <- xmax - xmin
+    y_height <- ymax - ymin
+    data_coords <- c(xmin = xmin - buffer_proportion * x_width,
+                     xmax = xmax + buffer_proportion * x_width,
+                     ymin = ymin - buffer_proportion * y_height,
+                     ymax = ymax + buffer_proportion * y_height)
+  }
+
   # parameters for plotting
   pfill <- obj_unit
   pcol <- gmt_jet
@@ -207,6 +241,29 @@ plot.pacea_oianom <- function(x,
   if(bc == TRUE){
     tplot <- tplot +
       geom_sf(data = bc_coast, fill = "darkgrey")
+  }
+
+  # Apply coordinate limits if restrict_plot is TRUE
+  if(restrict_plot){
+    tplot <- tplot +
+      ggplot2::coord_sf(xlim = c(data_coords["xmin"], data_coords["xmax"]),
+                        ylim = c(data_coords["ymin"], data_coords["ymax"]),
+                        expand = FALSE)
+    
+    if(is.null(x_axis_labels)){
+      tplot <- tplot +
+        ggplot2::scale_x_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE))
+    } else {
+      tplot <- tplot +
+        ggplot2::scale_x_continuous(breaks = x_axis_labels, 
+                                    labels = paste0(abs(x_axis_labels), "°W"))
+    }
+    
+    if(!is.null(y_axis_labels)){
+      tplot <- tplot +
+        ggplot2::scale_y_continuous(breaks = y_axis_labels, 
+                                    labels = paste0(y_axis_labels, "°N"))
+    }
   }
 
   suppressWarnings(print(tplot))

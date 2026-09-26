@@ -249,15 +249,34 @@ spatially, and can then calculate an index directly from the anomalies list, or
 directly from `create_index(oisst_month)` with options, which will then call `calculate_anomalies()` and then
 `create_index.pacea_oisst_anomalies_list()` , but only return the index.
 
+First, let's look at the full domain of the OISST data:
 ```{r, oisst1}
 oisst_anomalies <- calculate_anomalies(oisst_month)
 
 plot(oisst_anomalies)
+```
 
+The default above is for the most recent month of data. We can specify months
+and years:
+```{r, oisst2}
+plot(oisst_anomalies,
+     months = 1:12,
+     years = 2014:2016)
+```
+That shows the marine heatwave forming. 
+
+We can restrict the calculations to a specific area, such as Pacific Marine
+Fisheries Area 126:  (TODO we use a temporary data object for that is currently in
+pacea, pending many areas being imported):
+```{r, 
 oisst_anomalies_area_126 <- calculate_anomalies(oisst_month,
-                                                area = "pfma_area_126")  # hardwired in at the moment TODO
+                                                area = pfma_area_126_temp)
 
-plot(oisst_anomalies_area_126)
+plot(oisst_anomalies_area_126,
+     months = 1:12,
+     years = 2014:2016,
+     bc = FALSE,
+     eez = FALSE)
 
 # Examples with the options:
 plot(oisst_anomalies_area_126, months = 3)
@@ -265,16 +284,11 @@ plot(oisst_anomalies_area_126, months = 3)
 plot(oisst_anomalies, months = 3)
 
 
-# Shows MHW coming on. Then suggests an index to create, e.g. average of the
-# whole area for Jan to Jun (TODO)
-plot(oisst_anomaliesl,
-     months.plot = 1:12,
-     years.plot = 2014:2016)
 
 
 plot(oisst_anomalies_area_126,
-     year = c(2015, 2016, 2026),
-     month = 3:6)
+     years = c(2015, 2016, 2026),
+     months = 3:6)
 
 ```
 
