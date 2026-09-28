@@ -9,7 +9,7 @@
 ##' @param data a 2-column matrix with longitude in the first column and
 ##' latitude in the second, or a data.frame with named columns `lat` and `lon`,
 ##' representing a
-##' polygon (continuous outline, no doughnuts with holes in). If it does not
+##' polygon (continuous outline, no doughnuts/teacups with holes in). If it does not
 ##' create an enclosed polygon then the first point is then repeated at the end
 ##' to make a polygon.
 ##' @return sf polygon object using co-ordinate reference system WGS84 (4326).
@@ -34,16 +34,29 @@
 ##' }
 ##'
 create_area_sf_polygon <- function(data){
+
   if("tbl_df" %in% class(data)){
     stopifnot("lon" %in% names(data) & "lat" %in% names(data))
 
+    # If not an enclosed polygon then add first point to the last
+    if(any(data[1,] != data[nrow(data), ])){
+      data <- rbind(data,
+                    data[1, ])
+    }
+
     area_as_list_of_matrix <- list(
-      matrix(data[, "lon"],
-             data[, "lat"],
+      matrix(c(data$lon,
+               data$lat),
              ncol = 2))
   }
 
   if("matrix" %in% class(data)){
+    # If not an enclosed polygon then add first point to the last
+    if(any(data[1,] != data[nrow(data), ])){
+      data <- rbind(data,
+                    data[1, ])
+    }
+
     area_as_list_of_matrix <- list(data)
   }
 
