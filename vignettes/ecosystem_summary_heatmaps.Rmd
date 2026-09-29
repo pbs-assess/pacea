@@ -270,16 +270,14 @@ specific spatial region, and also specific months.
 
 We can restrict the calculations to a specific area, such as Pacific Marine
 Fisheries Area 126: (TODO we use a temporary data object for that is currently in
-pacea, pending many areas being imported):
+pacea, pending many areas being imported; also change in test):
 ```{r, area126plot}
 oisst_anomalies_area_126 <- calculate_anomalies(oisst_month,
                                                 area = pfma_area_126_temp)
 
-# Default plot still shows the full coast for the latest month of data
 plot(oisst_anomalies_area_126)
 ```
-
-We can show multiple months and years, and add some options to improve the figure:
+The default plot shows the full coast for the latest month of data. We can show multiple months and years, and add some options to improve the figure:
 ```{r, oisst126plots}
 plot(oisst_anomalies_area_126,
      months = 1:12,
@@ -288,12 +286,12 @@ plot(oisst_anomalies_area_126,
      buffer_proportion = 0.6,       # add a buffer proportion to zoom out a bit
      x_axis_labels = c(-130, -128)) # specify the x-axis labels to be shown
 ```
-(Some of those are hard to automate with multiple panels, so users may need to
+(Some of those settings are hard to automate with multiple panels, so users may need to
 tweak the options).
 
 For investigating plots (rather than doing analyses), we can also use the `area`
 argument when plotting the full `oisst_anomalies`, giving the same plot as above
-(not shown here):
+(so we have not shown it again here):
 ```{r, area126inplot, eval = FALSE}
 plot(oisst_anomalies,
      area = pfma_area_126_temp,
@@ -304,85 +302,45 @@ plot(oisst_anomalies,
      x_axis_labels = c(-130, -128))
 ```
 
-
-
-TODO HERE go through these, checking can do the anomalies and create an index,
-and get the same index if just creating them directly from `oisst_month` with the
-area option.
-
 Having calculated the full anomalies, can create a variety of indices.
 
 Now do the index, playing around for now:
 ```{r, oisstindex}
 oisst_anomalies_area_126
-xx <- create_index(oisst_anomalies_area_126)
-# Taking area 126 then making a slightly smaller polygon
-## area_as_list_of_matrix <-
-##         list(matrix(c(-127.1506, -128.2331, -129.3492, -127.9167, -127.1847,
-##                       -126.8200, -127.1506,
-##                       49.85766, 49.00000, 48.99991, 50.11915, 50.40183,
-##                       50.24466, 49.85766),
-##                     ncol = 2))    # From Travis's OISST vignette
-area_smaller_than_126_as_list <-
-  list(matrix(c(-128, -129.3492, -127.9167, -127.1847,
-                      -126.8200, -128,
-                      49.85766, 48.99991, 50.11915, 50.40183,
-                      50.24466, 49.85766),
-               ncol = 2))
+oisst_area_126_apr <- create_index(oisst_anomalies_area_126)
 
-area_smaller_than_126_polygon <-
-  sf::st_sfc(sf::st_polygon(area_smaller_than_126_as_list),
-             crs = 4326) %>%
-  sf::st_as_sf()
-
-# Check we have less values:
-oisst_anomalies_area_smaller_than_126 <-
-  oisst_anomalies_area_126$anomalies[area_smaller_than_126_polygon, ]
-
-# This has just 5 entries, area_126 has 20 (shown next). So fine for a test run.
-oisst_anomalies_area_smaller_than_126 %>% filter(year == 1981, month == 9)
-
-oisst_anomalies_area_126$anomalies %>% filter(year == 1981, month == 9)
-
-# TODO try area option in create_index, see below
-
-# Get it working for area 126, then for the defined subset of area26
-
-oisst_area_126_apr <-
-  create_index(oisst_anomalies_area_126)
 oisst_area_126_apr
-
-# Average sea surface temperature in April from a buoy within area 126
+```
+We can also calculate Average sea surface temperature in April from a buoy
+within area 126
+```{r, buoy126}
 sst_buoy_south_brooks_apr <- create_index(buoy_sst,
                                           months = 4,
                                           stn_id = "South Brooks")
 plot_indices(oisst_area_126_apr,
              sst_buoy_south_brooks_apr)
-
 # TODO phase plot example when I've written it
-
-# Then restrict to 1995 onwards as that's when the buoy starts
+```
+It makes sense to restrict the plot to 1995 onwards when we have both types of
+data. You can either restrict the years in the plot, or recalculate the OISST
+anomalies from 1995 onwards. Note how these give slightly different figures;
+restrict the plot:
+```{r, buoy126b}
+plot_indices(oisst_area_126_apr,
+             sst_buoy_south_brooks_apr,
+             years = 1995:2026)
+```
+or recalculate a restricted index:
+```{r, buoy126c}
 oisst_area_126_apr_from_1995 <-
   create_index(oisst_anomalies_area_126,
                years = 1995:2026)
 
 plot_indices(oisst_area_126_apr_from_1995,
              sst_buoy_south_brooks_apr)
-
-# Try smaller area option
-oisst_area_smaller_than_126_apr_from_1995 <-
-  create_index(oisst_anomalies_area_126,
-               area = area_smaller_than_126_polygon,
-               years = 1995:2026,
-               index_name = "smaller_area",
-               index_label = "Smaller area than 126")
-
-oisst_area_smaller_than_126_apr_from_1995
-plot_indices(oisst_area_126_apr_from_1995,
-             oisst_area_smaller_than_126_apr_from_1995,
-             sst_buoy_south_brooks_apr)
-
 ```
+
+HERE, check the above if we have a create_index directly. 
 
 You can also create an index directly from the `oisst_month` data, for which the
 anomalies are calculated internally. Though it might be a good idea to calculate

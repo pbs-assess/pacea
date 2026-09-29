@@ -1,4 +1,5 @@
-# These are for Andy's new calculate_anomaly.pacea_buoy().
+# These are for Andy's new calculate_anomaly.pacea_buoy() and then further
+# create_index.<class>() functions
 
 # buoy_sst data
 test_that("create_index.pacea_buoy() gives expected errors", {
@@ -90,5 +91,22 @@ test_that("create_index.pacea_buoy() works with different options", {
                                stn_id = "C46181",
                                index_statistic = "mean",
                                require_requested_months = 1),
+                  "pacea_standardised_index")
+})
+
+test_that("create_index.pacea_oisst_anomalies_list() works with different options, and gives same results regarding area",
+{
+  oisst_anomalies <- calculate_anomalies(oisst_month)
+  oisst_anomalies_area_126 <- calculate_anomalies(oisst_month,
+                                                  area = pfma_area_126_temp)
+
+  # Two ways of calculating an index for an area for default of April
+  expect_equal(create_index(oisst_anomalies,
+                            area = pfma_area_126_temp),
+               create_index(oisst_anomalies_area_126))
+
+  # Months variations
+  expect_s3_class(create_index(buoy_sst,
+                               months = 5),
                   "pacea_standardised_index")
 })
