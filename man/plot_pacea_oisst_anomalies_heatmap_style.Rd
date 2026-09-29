@@ -23,7 +23,9 @@ plot_pacea_oisst_anomalies_heatmap_style(
 data).}
 
 \item{area}{sf object of the area to average the SST over to get a single
-value for each month (uses any cell of the OISST data that intersects with \code{area}.}
+value for each month (uses any cell of the OISST data for which the  middle
+of the cell is within \code{area}; OISST data are stored as points represented the
+middle of the cell, which is a bit different to the BCCM data).}
 
 \item{area_name}{character string of the name of the area to use in the
 title of the plot. If \code{NULL} then no area is specified (but we recommend

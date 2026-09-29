@@ -8,7 +8,9 @@
 ##' `calculate_anomalies()` on an object of class `pacea_oi` (the `sst_month`
 ##' data).
 ##' @param area sf object of the area to average the SST over to get a single
-##' value for each month (uses any cell of the OISST data that intersects with `area`.
+##' value for each month (uses any cell of the OISST data for which the  middle
+##' of the cell is within `area`; OISST data are stored as points represented the
+##' middle of the cell, which is a bit different to the BCCM data).
 ##' @param area_name character string of the name of the area to use in the
 ##' title of the plot. If `NULL` then no area is specified (but we recommend
 ##' specifying one for clarity).
@@ -77,7 +79,8 @@ plot_pacea_oisst_anomalies_heatmap_style <- function(dat,
   if(!is.null(area)){
     plot_data <- sf::st_filter(plot_data,
                                area,
-                               .predicate = sf::st_intersects)
+                               .predicate = sf::st_intersects)  # st_within
+                            # would give same result as OISST data are POINTS
   }
 
   plot_data <- sf::st_drop_geometry(plot_data)    # no need for spatial any more
@@ -93,7 +96,6 @@ plot_pacea_oisst_anomalies_heatmap_style <- function(dat,
                                            labels =
                                              rev(month.abb[sort(months)]))) %>%
     dplyr::select(-c("month"))
-# browser()
 
   # TODO can remove more for simplicity if any left
 

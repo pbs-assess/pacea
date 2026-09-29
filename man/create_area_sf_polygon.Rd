@@ -10,7 +10,7 @@ create_area_sf_polygon(data)
 \item{data}{a 2-column matrix with longitude in the first column and
 latitude in the second, or a data.frame with named columns \code{lat} and \code{lon},
 representing a
-polygon (continuous outline, no doughnuts with holes in). If it does not
+polygon (continuous outline, no doughnuts/teacups with holes in). If it does not
 create an enclosed polygon then the first point is then repeated at the end
 to make a polygon.}
 }
