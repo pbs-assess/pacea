@@ -7,7 +7,13 @@
 #' @param weeks.plot weeks to plot. Defaults to current week (if available)
 #' @param months.plot months to plot. Defaults to current month (if available)
 #' @param years.plot years to plot. Defaults to current year (if available)
-#' @param clim.dat climatology data, obtained from using `calc_clim()`. If used, contours of deviations from climatology mean will be plotted
+#' @param clim.dat climatology data, obtained from using `calc_clim()`. If used,
+#' contours of deviations from climatology mean will be plotted. Does not work
+#' when automatically called from [plot.pacea_oisst_anomalies_list()].
+#' @param area sf object of the spatial area to restrict the anaomlies to. Includes
+#'   any cell of the OISST data for which the  middle
+#'   of the cell is within `area`; OISST data are stored as points represented the
+#'   middle of the cell (which is a bit different to the BCCM data).
 #' @param eez logical. Should BC EEZ layer be plotted? Can only be plotted with one plot layer.
 #' @param bc logical. Should BC coastline layer be plotted? Can only be plotted with one plot layer.
 #' @param restrict_plot logical. Should the plot be restricted to the spatial
@@ -17,11 +23,11 @@
 #'   bounds when restrict_plot is TRUE. Default is 0.2 (20% in each
 #' direction). Note that locations may be based on the centres of the grid
 #' cells, hence you may need to play with `buffer_proportion` depending on your plot.
-#' @param x_axis_labels numeric vector. X-axis breaks to label when restrict_plot 
-#'   is TRUE. If NULL, automatically hides overlapping labels. Allows fine control 
+#' @param x_axis_labels numeric vector. X-axis breaks to label when restrict_plot
+#'   is TRUE. If NULL, automatically hides overlapping labels. Allows fine control
 #'   over which longitude values are displayed.
-#' @param y_axis_labels numeric vector. Y-axis breaks to label when restrict_plot 
-#'   is TRUE. If NULL, automatically hides overlapping labels. Allows fine control 
+#' @param y_axis_labels numeric vector. Y-axis breaks to label when restrict_plot
+#'   is TRUE. If NULL, automatically hides overlapping labels. Allows fine control
 #'   over which latitude values are displayed.
 #' @param ... other arguments to be passed on, but not currently used (`?ggplot`
 #'   says the same thing); this should remove a R-CMD-check warning.
@@ -45,6 +51,7 @@ plot.pacea_oianom <- function(x,
                               months.plot,
                               years.plot,
                               clim.dat,
+                              area = NULL,
                               bc = TRUE,
                               eez = TRUE,
                               restrict_plot = FALSE,
@@ -134,6 +141,13 @@ plot.pacea_oianom <- function(x,
              tunit.name = month.name) %>%
       mutate(plot.date = paste(year, tunit.name, sep = " ")) %>%
       arrange(year, tunit)
+  }
+
+  if(!is.null(area)){
+    tobj <- sf::st_filter(tobj,
+                          area,
+                          .predicate = sf::st_intersects)  # st_within
+    # would give same result as OISST data are POINTS
   }
 
   # get coordinates
@@ -249,19 +263,19 @@ plot.pacea_oianom <- function(x,
       ggplot2::coord_sf(xlim = c(data_coords["xmin"], data_coords["xmax"]),
                         ylim = c(data_coords["ymin"], data_coords["ymax"]),
                         expand = FALSE)
-    
+
     if(is.null(x_axis_labels)){
       tplot <- tplot +
         ggplot2::scale_x_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE))
     } else {
       tplot <- tplot +
-        ggplot2::scale_x_continuous(breaks = x_axis_labels, 
+        ggplot2::scale_x_continuous(breaks = x_axis_labels,
                                     labels = paste0(abs(x_axis_labels), "°W"))
     }
-    
+
     if(!is.null(y_axis_labels)){
       tplot <- tplot +
-        ggplot2::scale_y_continuous(breaks = y_axis_labels, 
+        ggplot2::scale_y_continuous(breaks = y_axis_labels,
                                     labels = paste0(y_axis_labels, "°N"))
     }
   }

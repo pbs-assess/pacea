@@ -10,6 +10,7 @@
   months.plot,
   years.plot,
   clim.dat,
+  area = NULL,
   bc = TRUE,
   eez = TRUE,
   restrict_plot = FALSE,
@@ -28,7 +29,14 @@
 
 \item{years.plot}{years to plot. Defaults to current year (if available)}
 
-\item{clim.dat}{climatology data, obtained from using \code{calc_clim()}. If used, contours of deviations from climatology mean will be plotted}
+\item{clim.dat}{climatology data, obtained from using \code{calc_clim()}. If used,
+contours of deviations from climatology mean will be plotted. Does not work
+when automatically called from \code{\link[=plot.pacea_oisst_anomalies_list]{plot.pacea_oisst_anomalies_list()}}.}
+
+\item{area}{sf object of the spatial area to restrict the anaomlies to. Includes
+any cell of the OISST data for which the  middle
+of the cell is within \code{area}; OISST data are stored as points represented the
+middle of the cell (which is a bit different to the BCCM data).}
 
 \item{bc}{logical. Should BC coastline layer be plotted? Can only be plotted with one plot layer.}
 

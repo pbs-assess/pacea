@@ -291,8 +291,20 @@ plot(oisst_anomalies_area_126,
 (Some of those are hard to automate with multiple panels, so users may need to
 tweak the options).
 
+For investigating plots (rather than doing analyses), we can also use the `area`
+argument when plotting the full `oisst_anomalies`, giving the same plot as above
+(not shown here):
+```{r, area126inplot, eval = FALSE}
+plot(oisst_anomalies,
+     area = pfma_area_126_temp,
+     months = 1:12,
+     years = 2014:2016,
+     restrict_plot = TRUE,
+     buffer_proportion = 0.6,
+     x_axis_labels = c(-130, -128))
+```
 
-TODO need options for total area to show in the plotting code?  HERE add area option
+
 
 TODO HERE go through these, checking can do the anomalies and create an index,
 and get the same index if just creating them directly from `oisst_month` with the
@@ -405,6 +417,7 @@ spatial ones. (These are NOT annual indices).
 ```{r, oisstheatmap}
 # Averages over the whole domain (default):
 
+# TODO can add area as an argument
 # Should be able to replace with
 plot(oisst_anomalies_area_126,
      heatmap_style = TRUE,
