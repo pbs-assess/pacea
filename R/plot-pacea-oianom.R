@@ -263,21 +263,22 @@ plot.pacea_oianom <- function(x,
       ggplot2::coord_sf(xlim = c(data_coords["xmin"], data_coords["xmax"]),
                         ylim = c(data_coords["ymin"], data_coords["ymax"]),
                         expand = FALSE)
+  }
 
-    if(is.null(x_axis_labels)){
-      tplot <- tplot +
-        ggplot2::scale_x_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE))
-    } else {
-      tplot <- tplot +
-        ggplot2::scale_x_continuous(breaks = x_axis_labels,
-                                    labels = paste0(abs(x_axis_labels), "°W"))
-    }
+  # Apply axis labels
+  if(is.null(x_axis_labels)){
+    tplot <- tplot +
+      ggplot2::scale_x_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE))
+  } else {
+    tplot <- tplot +
+      ggplot2::scale_x_continuous(breaks = x_axis_labels,
+                                  labels = paste0(abs(x_axis_labels), "°W"))
+  }
 
-    if(!is.null(y_axis_labels)){
-      tplot <- tplot +
-        ggplot2::scale_y_continuous(breaks = y_axis_labels,
-                                    labels = paste0(y_axis_labels, "°N"))
-    }
+  if(!is.null(y_axis_labels)){
+    tplot <- tplot +
+      ggplot2::scale_y_continuous(breaks = y_axis_labels,
+                                  labels = paste0(y_axis_labels, "°N"))
   }
 
   suppressWarnings(print(tplot))
