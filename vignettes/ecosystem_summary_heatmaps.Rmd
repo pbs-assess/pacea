@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
   fig.width = 14,   # 14 #5.7,
   fig.height = 5.25    # 7  #5  
 )
-fig_height_two_row_heatmap <- 3
+fig_height_two_row_heatmap <- 3    
 # fig_height_three_row_heatmap <- 3  #
 fig_height_five_row_heatmap <- 4   # Looks good, scale others to this kind of
 fig_height_six_row_heatmap <- 4.33 
@@ -235,7 +235,7 @@ plot(oisst_anomalies,
      x_axis_labels = c(-135, -125)) # specify the x-axis labels to be shown     
 ```
 
-We can create an index of the mean anomaly each year averaged over Apr-Jun, over the
+We can create an index of the mean anomaly each year averaged over, say, Apr-Jun, over the
 full domain shown (which is Canada's Exclusive Economic Zone):
 
 ```{r, fulldomain}
@@ -266,6 +266,8 @@ however you like and easily compare it).
 In practice, we likely want to restrict an index (and annual summary figure) to a
 specific spatial region, and also specific months.
 
+### Restricting an index over a spatial area
+
 To create anomalies for a specific area, such as Pacific Marine
 Fisheries Area 126: (TODO we use a temporary data object for that is currently in
 pacea, pending many areas being imported; also change in test), again showing
@@ -284,7 +286,7 @@ plot(oisst_anomalies_area_126,
 (Some of those settings are hard to automate with multiple panels, so users may need to
 tweak the options).
 
-For investigating plots (rather than doing analyses), we can also use the `area`
+For investigating plots (rather than doing analyses), we can also simply use the `area`
 argument when plotting the full `oisst_anomalies`, giving the same plot as above
 (so we have not shown it again here):
 ```{r, area126inplot, eval = FALSE}
@@ -297,14 +299,15 @@ plot(oisst_anomalies,
      x_axis_labels = c(-130, -128))
 ```
 
-Now do the index for Area 126:
+To calculate the index for Area 126:
 ```{r, oisstindex}
 oisst_area_126_apr_index <- create_index(oisst_anomalies_area_126)   # April is the default
 
 oisst_area_126_apr_index
 ```
-We can also calculate Average sea surface temperature in April from a buoy
+For comparison we can also calculate the mean sea surface temperature for April from a buoy
 within area 126
+HERE - tweak the size
 ```{r, buoy126, fig.height = fig_height_two_row_heatmap}
 sst_buoy_south_brooks_apr_index <- create_index(buoy_sst,
                                                 months = 4,
@@ -450,11 +453,16 @@ plot(oisst_area_126,
      months = 1:12)
 ```
 
+Now do anomalies:
+
 ```{r, anomaliessqtch}
 oisst_anomalies_sasquatch <- calculate_anomalies(oisst_month,
                                                  area = sasquatch)
 
-plot(oisst_anomalies_sasquatch)
+plot(oisst_anomalies_sasquatch,
+     restrict_plot = TRUE,
+     buffer_proportion = 1,
+     area_outline = sasquatch)
 
 # In average years he hides away, so only comes out when it's warm or
 # cold. Probably hibernating.
