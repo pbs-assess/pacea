@@ -21,8 +21,8 @@ knitr::opts_chunk$set(
   fig.width = 14,   # 14 #5.7,
   fig.height = 5.25    # 7  #5  
 )
-fig_height_two_row_heatmap <- 3    
-# fig_height_three_row_heatmap <- 3  #
+fig_height_two_row_heatmap <- 2.7    
+fig_height_three_row_heatmap <- 3  #
 fig_height_five_row_heatmap <- 4   # Looks good, scale others to this kind of
 fig_height_six_row_heatmap <- 4.33 
 fig_height_ten_row_heatmap <- 6.2   
@@ -57,13 +57,13 @@ of ecosystem information, thus bringing together the various data objects in
 pacea. Importantly the user can choose:
 
 - the types of ecosystem information to be included, tailored to their
-  particular stock
-- the area over which spatial information is summarised
+  particular stock;
+- the area over which spatial information is summarised.
 
 The aim of pacea is to
 facilitate inclusion of ecosystem information in advice to fisheries management,
 such as stock assessments. Given the multitude of stocks in DFO's Pacific
-Region, both the diversity of species and the many stock-specific spatial areas, we decided
+Region, both in terms of the diversity of species and the many stock-specific spatial areas, we decided
 to create functions for user-customisable plots that easily summarise the relevant ecosystem
 information.
 
@@ -73,21 +73,21 @@ allow exploration, formulation of ideas, and quick hypothesis testing.
 
 For comparing disparate types of ecosystem information, we calculate an annual
 index which is standardised (by subtracting the mean and dividing by the standard deviation across
-the time series; all values might not get fully plotted). 
+the time series; note that all years might not get shown in a plot).
 This is so that indices
 are all dimensionless and can be compared on equivalent scales, and shown on a
 single heatmap style plot.
 
-As an example, let's use various ecosystem information for the Strait of Georgia
-(SOG). We create an index for each type of ecosystem information in turn and
+As an example, let's use some example ecosystem information for the Strait of Georgia
+(SOG) that is in pacea. We create an index for each type of ecosystem information in turn and
 then make the plot. We just need to use `create_index()` multiple times to
 create the indices, and then `plot_indices()` to make the function (we will
-explain them in more detail after):
+explain the functions in more detail later):
 ```{r, examples}
 # Average sea surface temperature in April from a buoy in the SOG
 sst_buoy_halibut_bank_apr_index <- create_index(buoy_sst,
-                                          months = 4,
-                                          stn_id = "Halibut Bank")
+                                                months = 4,
+                                                stn_id = "Halibut Bank")
 
 # Large calanoid copepods in the SOG 
 calanoid_copepods_large_sog_index <- create_index(zooplankton_sog,
@@ -112,7 +112,7 @@ harbour_seals_sog_index <- create_index(harbour_seals,
 ```
 See the
 relevant vignettes and help files for details of the pacea objects used for each
-index. The first index is from the buoy sea surface temperature, looking at the [buoy_anomalies](https://pbs-assess.github.io/pacea/vignettes/buoy_anomalies.html)
+index. The first index is from the buoy sea surface temperature. Looking at the [buoy_anomalies](https://pbs-assess.github.io/pacea/vignettes/buoy_anomalies.html)
 vignette we have used the Halibut Bank buoy in the SoG, which has good timespans of
 data, and just pick April. 
 
@@ -146,21 +146,31 @@ giving the exact standardised anomaly (number of standard deviations above the
 mean), as used for the colour coding. 
 
 The restriction of the years being shown is why the seal index is always
-positive. By definition the mean of the index 
-should be 0, and so it is negative earlier in the time series. A quick check of
-the absolute seal populations numbers confirms the population has indeed
-increased:
+positive. By definition the mean of an index across its full time series 
+is 0, and so the seal index must be negative earlier in the time series. A quick check of
+the absolute seal populations numbers confirms this, in that the  population has
+indeed 
+increased from the early years:
 
 ```{r, sealplot, fig.width = 5, fig.height = 4}
 plot(harbour_seals,
      region = "SOG")
 ```
 
+Here are the details of what is in the buoy SST index object created above:
+```{r, indexdetails}
+sst_buoy_halibut_bank_apr_index
+```
+It is a tibble, with a value for each year, plus an `index` to refer to in code,
+and an `index_label` to use for the labels in the plot (these are repeated in
+each row, which just makes things easier at the plotting stage). 
 
-Some examples of different choices of months, and how `index` and `index_label`
-get automatically prescribed:
+We can chose multiple months. Note that `index` and `index_label`
+get automatically prescribed;
+examine the arguments and results for these three indices (for the default buoy,
+namely that 
+in West Dixon Entrance):
 ```{r, createindmonths}
-# Different examples:
 create_index(buoy_sst,
              months = 5)
 create_index(buoy_sst,
@@ -168,6 +178,8 @@ create_index(buoy_sst,
 create_index(buoy_sst,
              months = c(11, 12, 1, 2, 3))
 ```
+In the third example note how the months are specified from November to March -
+the year indicated is the year of the January.
 
 Note that in the first example we have a value for 1992, but not in the second
 one. This must be because June 1992 does not have enough daily values for this
@@ -180,7 +192,8 @@ filter(buoy_sst,
        !is.na(sst))
 ```
 So there are only 6 daily SST values for this buoy in June 1992, and so an
-anomaly is not calculated for that month. We could force an anomaly to be
+anomaly is not calculated for that month because the default is to require 15
+daily SST values in a month. We could force an anomaly to be
 calculated by changing the arguments `min_days_per_month` (default 15) and 
 `max_consecutive_missing_days` (default 6) that get passed onto
 `calculate_anomalies.pacea_buoy()`:
@@ -192,18 +205,22 @@ create_index(buoy_sst,
 ```
 thus giving an index value for 1992, given these definitions (which we do not
 recommend, but are showing as examples to help understanding, and to show that
-arguments get correctly passed onto further functions).
+arguments get correctly passed onto further functions). 
+
+For any type of pacea object, check the exact calculations and further options
+by checking `class(object)` and then `?create_index.<class>`. For example
+`?create_index.pacea_buoy` for the `buoy_sst` data.
 
 
 ## OISST spatiotemporal data
 
-We now create various index from the Optimally Interpolated Sea Surface
+We now create various indices from the Optimally Interpolated Sea Surface
 Temperature (OISST) spatiotemporal data. An index is a single standardised value
 for each year, and for SST would be based on the mean anomalies over a given
 area.
 
 It is first best to plot the spatial anomalies for the area of interest, to
-verify the area and understand what is going. We wil then calculate an index
+verify the area and understand what is going on. We wil then calculate an index
 directly from the anomalies list, or 
 directly from `create_index(oisst_month)` with various options.
 
@@ -269,8 +286,7 @@ specific spatial region, and also specific months.
 ### Restricting an index over a spatial area
 
 To create anomalies for a specific area, such as Pacific Marine
-Fisheries Area 126: (TODO we use a temporary data object for that is currently in
-pacea, pending many areas being imported; also change in test), again showing
+Fisheries Area 126, again showing
 the heatwave progressing
 ```{r, area126plot, fig.height = fig_height_three_map}
 oisst_anomalies_area_126 <- calculate_anomalies(oisst_month,
@@ -284,7 +300,8 @@ plot(oisst_anomalies_area_126,
      x_axis_labels = c(-130, -128)) # specify the x-axis labels to be shown
 ```
 (Some of those settings are hard to automate with multiple panels, so users may need to
-tweak the options).
+tweak the options; also `pfma_area_126_temp` is a temporary data object in pacea
+and will change names when we import many fisheries management areas).
 
 For investigating plots (rather than doing analyses), we can also simply use the `area`
 argument when plotting the full `oisst_anomalies`, giving the same plot as above
@@ -307,7 +324,6 @@ oisst_area_126_apr_index
 ```
 For comparison we can also calculate the mean sea surface temperature for April from a buoy
 within area 126
-HERE - tweak the size
 ```{r, buoy126, fig.height = fig_height_two_row_heatmap}
 sst_buoy_south_brooks_apr_index <- create_index(buoy_sst,
                                                 months = 4,
@@ -324,7 +340,7 @@ It makes sense to restrict the plot to 1995 onwards when we have both types of
 data. You can either restrict the years in the plot, or recalculate the OISST
 anomalies from 1995 onwards. Note how these give slightly different figures;
 restricting the plot:
-```{r, buoy126b}
+```{r, buoy126b, fig.height = fig_height_two_row_heatmap}
 plot_indices(oisst_area_126_apr_index,
              sst_buoy_south_brooks_apr_index,
              years = 1995:2026)
@@ -339,214 +355,38 @@ plot_indices(oisst_area_126_apr_from_1995_index,
              sst_buoy_south_brooks_apr_index)
 ```
 
-HERE, check the above if we have a create_index directly. 
-
 You can also create an index directly from the `oisst_month` data, for which the
-anomalies are calculated internally. Though it might be a good idea to calculate
-full spatial anomalies for your area to take a look at them first, as we did
-above. But `create_index()` will work directly on `oisst_month`, with various
-options.
-NOT RUNNING:
-```{r, oisstindex2, eval = FALSE}
-oisst_area_smaller_than_126_apr_from_1995_directly <- create_index(oisst_month,
-                                                                   area = area_smaller_than_126_polygon,
-                                                                   years = 1995:2026,
-                                                                   index_name = "small_direct",
-                                                                   index_label =
-                                                                     "Small area directly calculated")
+anomalies are calculated internally. Though it seems better to calculate
+the full spatial anomalies for your area to take a look at them first, as we did
+above. Nevertheless, `create_index()` will work directly on `oisst_month`, with
+the `area` option, giving the same result as above
+```{r, oisstindex2}
+oisst_area_126_apr_index_directly <- create_index(oisst_month,
+                                                  area = pfma_area_126_temp)
 
-oisst_area_smaller_than_126_apr_from_1995_directly   # gives same answer as earlier
-
-expect_equal(oisst_area_smaller_than_126_apr_from_1995_directly$value,
-             oisst_area_smaller_than_126_apr_from_1995$value)
-
-# As expected, these are the same:
-# plot_indices(oisst_area_smaller_than_126_apr_from_1995_directly,
-#              oisst_area_smaller_than_126_apr_from_1995)
-
-# Keeping plot.pacea_oisst_anomalies_list.Rd as an option, so explain that. TODO
-
-
+expect_equal(oisst_area_126_apr_index,
+             oisst_area_126_apr_index_directly)
 ```
 
-How about showing every month of a spatially averaged anomaly in a heatmap style
-plot - nicely abstracts many spatial maps into one plot. Can't show all the
-spatial ones. (These are NOT annual indices).
+We can also show every month of a spatially averaged anomaly in a heatmap style
+plot, like in the
+[buoy_anomalies](https://pbs-assess.github.io/pacea/vignettes/buoy_anomalies.html)
+vignette. This nicely summarises the many spatial maps (which can't all easily
+digested by a reader) into one plot. Note that these are NOT annual indices:
 
 ```{r, oisstheatmap}
-# Averages over the whole domain (default):
-
-# TODO can add area as an argument
-# Should be able to replace with
 plot(oisst_anomalies_area_126,
      heatmap_style = TRUE,
      area_name = "Area 126")
+```
 
-# Just do a few months of interest:
+You can just do a few months of interest:
+```{r, oisstheatmap2, fig.height = fig_height_three_row_heatmap}
 plot(oisst_anomalies_area_126,
      heatmap_style = TRUE,
      area_name = "Area 126",
      months = 3:5)
-
 ```
 
-## For new Area vignette
-
-
-For new Areas vignette. TODO mention here.
-
-We will have many fisheries management areas imported into pacea soon, explain
- those.
- 
-TODO:
-update with new vignette when done. Copy the next bit to that to show how to
-create your own area.
-
-If necessary, you can create your own area (as an sf object) from a matrix or tibble of latitude
-and longitude values, using our `create_area_sf_polygon()` function (if the
-first and last rows are different then the function repeats the first row as the
-last to make an enclosed polygon). Using a matrix or tibble gives the same result:
-```{r, myarea}
-my_area_matrix <- matrix(c(-130, -132, -130, -128,
-                           48, 50, 52, 50),
-                         ncol = 2)
-my_area_matrix
-my_area_1 <- create_area_sf_polygon(my_area_matrix)
-my_area_1
-
-my_area_tibble <- tibble::tibble(
-  lon = c(-130, -132, -130, -128),
-  lat = c(48, 50, 52, 50))
-my_area_tibble
-my_area_2 <- create_area_sf_polygon(my_area_tibble)
-expect_equal(my_area_1,
-             my_area_2)
-```
-
-Travis: 
-Hmmm. Looking at the oisst data, the geometry coordinates are stored as points (centre of each cell). However with BCCM, they were staored as polygons (each corner of the cell). I'm not 100% sure why I did this but it's likely because of the different 2x2 and 6x6 grid we initially went with for bccm. If we just stored the centre of coordinates for the bccm data, it would reduce the size a bit, but I don't think by that much. 
- 
-st_intersects is TRUE if any part of the geometry is within your defined area. 
- 
-For POINTS data, st_intersects and st_within act the same as each 'cell' is just one coordinate point. Therefore the centre of the cell has to be within your defined area. 
- 
-If we had POLYGON geometries, then st_intersects and st_within act different. st_intersects is any one of the coordinates (corners) for each cell can be in the defined area for it to be TRUE. Whereas st_within requires all coordinates of the polygon (cell) to be in the area
- 
-Me: That makes sense, thanks. (The Sasquatch was super useful in noticing this). So doing the same thing for BCCM  will look a bit different.
-Don't think I've downloaded BCCM data yet but plan to soon, had to clear up my full hard drive a bit.
- 
-Suggest we don't mess with the current storage of the data. I guess I can't make an option to make them agree (by switching between st_within and st_intersects, as neither will exactly match up). Okay, just have to mention this somewhere. In reality, it shouldn't make such a difference provided areas are not too small. And areas will usually be less topologically interesting than a sasquatch.
- 
-
-
-Restrict spatiotemporal data to an area:
-```{r, areaplots}
-oisst_sasquatch <- restrict_to_area(oisst_month, sasquatch)
-plot(oisst_sasquatch,
-     years = 2015:2016,
-     months = 1:12)
-
-oisst_area_126 <- restrict_to_area(oisst_month,
-                                   pfma_area_126_temp)
-plot(oisst_area_126,
-     years = 2015:2016,
-     months = 1:12)
-```
-
-Now do anomalies:
-
-```{r, anomaliessqtch}
-oisst_anomalies_sasquatch <- calculate_anomalies(oisst_month,
-                                                 area = sasquatch)
-
-plot(oisst_anomalies_sasquatch,
-     restrict_plot = TRUE,
-     buffer_proportion = 1,
-     area_outline = sasquatch)
-
-# In average years he hides away, so only comes out when it's warm or
-# cold. Probably hibernating.
-plot(oisst_anomalies_sasquatch,
-     months = 4,
-     years = 2014:2026)
-
-plot(oisst_anomalies_sasquatch,
-     heatmap_style = TRUE)
-```
-
-Now create an index
-```{r, sasindex}
-sasquatch_index <- create_index(oisst_anomalies_sasquatch,
-                                months = 4,
-                                index_label = "OISST in Sasquatch for Apr")
-# TODO HERE redo the area126 stuff, can simplify lots of things above
-oisst_area_126_anomalies <- calculate_anomalies(oisst_month,
-                                                 area = pfma_area_126_temp)
-# TODO see if can do it one go, without calculate_anomalies part.
-oisst_area_126_index <- create_index(oisst_area_126_anomalies,
-                                     months = 4,
-                                     index_label = "OISST in Area 126 for Apr")
-
-plot_indices(sasquatch_index,
-             oisst_area_126_index,
-             sst_buoy_halibut_bank_apr_index)
-```
-
-## <span style="color: purple;">Let's Go Crazy</span>
-
-TODO maybe do as many examples as possible in a giant heatmap, to make a
-point. These were various examples while generating the code. Or at least do
-several heatmaps.
-
-Further examples (originally had above while generating the code), also check
-the help file of `plot_indices()` and add to that TODO
-```{r, furthrexamples, fig.height = fig_height_ten_row_heatmap, fig.width = 18}
-herring_recruitment_hg_index <- create_index(herring_recruitment,
-                                             herring_region= "HG")
-herring_recruitment_prd_index <- create_index(herring_recruitment,
-                                              herring_region = "PRD")
-herring_recruitment_cc_index <- create_index(herring_recruitment,
-                                             herring_region = "CC")
-herring_recruitment_wcvi_index <- create_index(herring_recruitment,
-                                              herring_region = "WCVI")
-herring_biomass_wcvi_index <- create_index(herring_spawning_biomass,
-                                           herring_region = "WCVI")
-
-hake_recruitment_index <- create_index(hake_recruitment)
-
-hake_biomass_index <- create_index(hake_biomass)
-
-harbour_seals_wcvi_index <- create_index(harbour_seals)  
-
-# Many examples (adding as go along), likely not really needed:
-plot_indices(herring_recruitment_hg_index,
-             herring_recruitment_prd_index,
-             herring_recruitment_cc_index,
-             herring_recruitment_sog_index,
-             herring_recruitment_wcvi_index,
-             herring_biomass_wcvi_index,             
-             hake_recruitment_index,
-             hake_biomass_index,
-             harbour_seals_wcvi_index,
-             harbour_seals_sog_index,
-             total_zooplankton_sog_index,
-             years = 1965:2026)    # it ignores 2026 if no values though
-```
-
-See the test for more examples. Summarise here maybe. 
-
-
-Quick example to check that the normalised index of mean anomalies is same
-as normalised index of mean of means. Think so since both relative to the same
-climatology. TODO. Also it's still based on climatology; so does mean of actual
-values just give the same? 
-
-```{r, buoysst}
-sst_west_dixon_apr_using_anomalies <- create_index(buoy_sst)
-sst_west_dixon_apr_using_mean <- create_index(buoy_sst, buoy_statistic = "mean")
-expect_equal(sst_west_dixon_apr_using_anomalies,
-             sst_west_dixon_apr_using_mean)
-# Not convinced that will always hold though, I think only difference would be
-# if you did not have a climatology for a particular month, which does not
-# happen with the default years. So probably best to keep the generality.
-```
+See the code of the vignette (specifically the chunk headers) to see how to get
+the figure sizes looking good; these are not automated in the functions.

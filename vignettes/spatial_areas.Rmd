@@ -1,0 +1,210 @@
+---
+title: "Spatial Areas"
+author: "Andrew Edwards"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Spatial Areas}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+date: "Last rendered on `r format(Sys.time(), '%d %B, %Y')`"
+---
+
+<!-- To build either run
+rmarkdown::render("spatial_areas.Rmd")
+or click the knit button in RStudio -->
+
+
+```{r, start, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 14,   # 14 #5.7,
+  fig.height = 5.25    # 7  #5  
+)
+fig_height_two_row_heatmap <- 2.7    
+fig_height_three_row_heatmap <- 3  #
+fig_height_five_row_heatmap <- 4   # Looks good, scale others to this kind of
+fig_height_six_row_heatmap <- 4.33 
+fig_height_ten_row_heatmap <- 6.2   
+
+fig_height_one_map <- 4
+fig_width_one_map <- 4
+fig_height_two_map <- 4
+fig_height_three_map <- 4       # width depends how many in each row, so do manually
+```
+
+```{r setup}
+load_all()    # for developer
+# library(pacea)  # for user
+library(dplyr)
+library(tibble)  # Else prints all of a tibble
+library(ggplot2)
+```
+
+## Spatial areas available in pacea, and how to create your own
+
+We have some spatial areas saved as sf (spatial features) data objects in
+pacea. We hope to include many fisheries management areas soon, as being
+discussed in our [GitHub Issue](https://github.com/pbs-assess/pacea/issues/8). 
+
+
+## For new Area vignette
+
+
+For new Areas vignette. TODO mention here.
+
+We will have many fisheries management areas imported into pacea soon, explain
+ those.
+ 
+TODO:
+update with new vignette when done. Copy the next bit to that to show how to
+create your own area.
+
+If necessary, you can create your own area (as an sf object) from a matrix or tibble of latitude
+and longitude values, using our `create_area_sf_polygon()` function (if the
+first and last rows are different then the function repeats the first row as the
+last to make an enclosed polygon). Using a matrix or tibble gives the same result:
+```{r, myarea}
+my_area_matrix <- matrix(c(-130, -132, -130, -128,
+                           48, 50, 52, 50),
+                         ncol = 2)
+my_area_matrix
+my_area_1 <- create_area_sf_polygon(my_area_matrix)
+my_area_1
+
+my_area_tibble <- tibble::tibble(
+  lon = c(-130, -132, -130, -128),
+  lat = c(48, 50, 52, 50))
+my_area_tibble
+my_area_2 <- create_area_sf_polygon(my_area_tibble)
+expect_equal(my_area_1,
+             my_area_2)
+```
+
+Travis: 
+Hmmm. Looking at the oisst data, the geometry coordinates are stored as points (centre of each cell). However with BCCM, they were staored as polygons (each corner of the cell). I'm not 100% sure why I did this but it's likely because of the different 2x2 and 6x6 grid we initially went with for bccm. If we just stored the centre of coordinates for the bccm data, it would reduce the size a bit, but I don't think by that much. 
+ 
+st_intersects is TRUE if any part of the geometry is within your defined area. 
+ 
+For POINTS data, st_intersects and st_within act the same as each 'cell' is just one coordinate point. Therefore the centre of the cell has to be within your defined area. 
+ 
+If we had POLYGON geometries, then st_intersects and st_within act different. st_intersects is any one of the coordinates (corners) for each cell can be in the defined area for it to be TRUE. Whereas st_within requires all coordinates of the polygon (cell) to be in the area
+ 
+Me: That makes sense, thanks. (The Sasquatch was super useful in noticing this). So doing the same thing for BCCM  will look a bit different.
+Don't think I've downloaded BCCM data yet but plan to soon, had to clear up my full hard drive a bit.
+ 
+Suggest we don't mess with the current storage of the data. I guess I can't make an option to make them agree (by switching between st_within and st_intersects, as neither will exactly match up). Okay, just have to mention this somewhere. In reality, it shouldn't make such a difference provided areas are not too small. And areas will usually be less topologically interesting than a sasquatch.
+ 
+
+
+Restrict spatiotemporal data to an area:
+```{r, areaplots}
+oisst_sasquatch <- restrict_to_area(oisst_month, sasquatch)
+plot(oisst_sasquatch,
+     years = 2015:2016,
+     months = 1:12)
+
+oisst_area_126 <- restrict_to_area(oisst_month,
+                                   pfma_area_126_temp)
+plot(oisst_area_126,
+     years = 2015:2016,
+     months = 1:12)
+```
+
+Now do anomalies:
+
+```{r, anomaliessqtch}
+oisst_anomalies_sasquatch <- calculate_anomalies(oisst_month,
+                                                 area = sasquatch)
+
+plot(oisst_anomalies_sasquatch,
+     restrict_plot = TRUE,
+     buffer_proportion = 1,
+     area_outline = sasquatch)
+
+# In average years he hides away, so only comes out when it's warm or
+# cold. Probably hibernating.
+plot(oisst_anomalies_sasquatch,
+     months = 4,
+     years = 2014:2026)
+
+plot(oisst_anomalies_sasquatch,
+     heatmap_style = TRUE)
+```
+
+Now create an index
+```{r, sasindex}
+sasquatch_index <- create_index(oisst_anomalies_sasquatch,
+                                months = 4,
+                                index_label = "OISST in Sasquatch for Apr")
+# TODO HERE redo the area126 stuff, can simplify lots of things above
+oisst_area_126_anomalies <- calculate_anomalies(oisst_month,
+                                                 area = pfma_area_126_temp)
+# TODO see if can do it one go, without calculate_anomalies part.
+oisst_area_126_index <- create_index(oisst_area_126_anomalies,
+                                     months = 4,
+                                     index_label = "OISST in Area 126 for Apr")
+
+plot_indices(sasquatch_index,
+             oisst_area_126_index,
+             sst_buoy_halibut_bank_apr_index)
+```
+
+## <span style="color: purple;">Let's Go Crazy</span>
+
+TODO maybe do as many examples as possible in a giant heatmap, to make a
+point. These were various examples while generating the code. Or at least do
+several heatmaps.
+
+Further examples (originally had above while generating the code), also check
+the help file of `plot_indices()` and add to that TODO
+```{r, furthrexamples, fig.height = fig_height_ten_row_heatmap, fig.width = 18}
+herring_recruitment_hg_index <- create_index(herring_recruitment,
+                                             herring_region= "HG")
+herring_recruitment_prd_index <- create_index(herring_recruitment,
+                                              herring_region = "PRD")
+herring_recruitment_cc_index <- create_index(herring_recruitment,
+                                             herring_region = "CC")
+herring_recruitment_wcvi_index <- create_index(herring_recruitment,
+                                              herring_region = "WCVI")
+herring_biomass_wcvi_index <- create_index(herring_spawning_biomass,
+                                           herring_region = "WCVI")
+
+hake_recruitment_index <- create_index(hake_recruitment)
+
+hake_biomass_index <- create_index(hake_biomass)
+
+harbour_seals_wcvi_index <- create_index(harbour_seals)  
+
+# Many examples (adding as go along), likely not really needed:
+plot_indices(herring_recruitment_hg_index,
+             herring_recruitment_prd_index,
+             herring_recruitment_cc_index,
+             herring_recruitment_sog_index,
+             herring_recruitment_wcvi_index,
+             herring_biomass_wcvi_index,             
+             hake_recruitment_index,
+             hake_biomass_index,
+             harbour_seals_wcvi_index,
+             harbour_seals_sog_index,
+             total_zooplankton_sog_index,
+             years = 1965:2026)    # it ignores 2026 if no values though
+```
+
+See the test for more examples. Summarise here maybe. 
+
+
+Quick example to check that the normalised index of mean anomalies is same
+as normalised index of mean of means. Think so since both relative to the same
+climatology. TODO. Also it's still based on climatology; so does mean of actual
+values just give the same? 
+
+```{r, buoysst}
+sst_west_dixon_apr_using_anomalies <- create_index(buoy_sst)
+sst_west_dixon_apr_using_mean <- create_index(buoy_sst, buoy_statistic = "mean")
+expect_equal(sst_west_dixon_apr_using_anomalies,
+             sst_west_dixon_apr_using_mean)
+# Not convinced that will always hold though, I think only difference would be
+# if you did not have a climatology for a particular month, which does not
+# happen with the default years. So probably best to keep the generality.
+```
