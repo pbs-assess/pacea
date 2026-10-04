@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/pbs-assess/pacea,52,15
+/pbs-assess/pacea/issues,15,3
+/pbs-assess/pacea/issues/8,13,3
+/pbs-assess/pacea/issues/new,7,1
+/pbs-assess/pacea/issues/101,6,3
+/pbs-assess/pacea/tree/main,6,3
+/pbs-assess/pacea/commit/105320d23c743fdbb8d32aec26bfc604aa86f971,6,1
+/pbs-assess/pacea/tree/main/vignettes,5,3
+/pbs-assess/pacea/tree/dev-andy,4,2
+/pbs-assess/pacea/blame/main/R/get-zenodo-data.R,4,1
