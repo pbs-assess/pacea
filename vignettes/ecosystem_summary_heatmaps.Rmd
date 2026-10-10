@@ -461,4 +461,29 @@ Perfect. The values are slightly different as expected, but the colours come out
 exactly the same. So standardising is fine to do for oni at least. TODO think a
 little more.
 
-Now to get heatmap-monthly style plot.
+Now to get heatmap-monthly style plot, like we did for buoys.
+
+So we want to have a plot like
+`plot_pacea_buoy_anomalies_single()`, but it can actually just work on the oni
+values. Stick with only needing to create a standardised index when wanting to
+compare to other types of indices. 
+
+So when we call `plot.pacea_index()`, add a `monthly_heatmap` option to then call
+`plot_pacea_index_monthly_heatmap()`. Then do need to check how it works for each type
+of index. But do the `plot_pacea_index_monthly_heatmap()` first to get that
+going, based on `plot_pacea_buoy_anomalies_single()`.
+
+Default:
+```{r, oniplot7}
+plot_pacea_index_monthly_heatmap(oni,
+                                 years = 1980:2026)
+```
+
+Neutral conditions are between -0.5 and +0.5, and so we can make those just grey
+as we do not really care so much about slight differencs in this range, using:
+```{r, oniplot7}
+plot_pacea_index_monthly_heatmap(oni,
+                                 years = 1980:2026,
+                                 neutral_oni_one_colour = TRUE)
+```
+
