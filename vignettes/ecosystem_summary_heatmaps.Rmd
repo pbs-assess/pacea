@@ -390,3 +390,75 @@ plot(oisst_anomalies_area_126,
 
 See the code of the vignette (specifically the chunk headers) to see how to get
 the figure sizes looking good; these are not automated in the functions.
+
+## Climatological and oceanographic indices
+
+HERE actually first make a heatmap style plot for an index. ONI would be
+great. Have not committed yet; see what I did and whether to undo the
+standardise_index option (not implemented yet though).
+
+TODO move up when done.
+
+If averaging over a few months, should we still standardise over those months
+and across years. Kind of think no when the known indices are already
+standardised in a well-defined way. But yes if we want to make them into an
+ecosystem summary heatmap.
+
+TODO have to think about, ask Jennifer, Chris, Mike Jacox....
+
+TODO BUT what does it mean for standard deviations?
+
+Do both here then make an Issue and ask people.
+
+```{r, oniindex}
+oni_index <- create_index_oni(oni,
+                              months = 5,
+                              standardise_index = FALSE)
+
+oni_index_2 <- create_index_oni(oni,
+                                months = 3:5,
+                                standardise_index = FALSE)                                
+
+plot_indices(oni_index_2)
+
+oni_index_3 <- create_index_oni(oni,
+                                months = 10:12,
+                                standardise_index = FALSE)                                
+
+plot_indices(oni_index_3)
+```
+
+That works, TODO but colourscale caption is not correct.
+
+Now try not standardising:
+```{r, oniindex2}
+oni_index_std <- create_index_oni(oni,
+                              months = 5,
+                              standardise_index = TRUE)
+
+oni_index_std_2 <- create_index_oni(oni,
+                                months = 3:5,
+                                standardise_index = TRUE)                                
+
+plot_indices(oni_index_std_2)
+
+oni_index_std_3 <- create_index_oni(oni,
+                                months = 10:12,
+                                standardise_index = TRUE,
+                                index_label = "standardised")
+
+plot_indices(oni_index_std_3,
+             oni_index_3,
+             years = 1972:2026)
+
+# Standardised:
+oni_index_std_3
+# Not standardised:
+oni_index_3
+```
+
+Perfect. The values are slightly different as expected, but the colours come out
+exactly the same. So standardising is fine to do for oni at least. TODO think a
+little more.
+
+Now to get heatmap-monthly style plot.
