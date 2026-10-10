@@ -28,7 +28,7 @@
 ##' @param neutral_oni_one_colour logical; if TRUE (and `value` is "anomaly" or "anom"),
 ##'   anomalies between -0.5 and 0.5 are coloured with the colour specified in
 ##'   `neutral_oni_colour` to indicate neutral conditions. Default is FALSE.
-##'   This is particularly useful for ONI where neutral ENSO conditions are
+##'   This is for ONI where neutral ENSO conditions are
 ##'   defined as ±0.5°C anomalies.
 ##' @param neutral_oni_colour character string specifying the colour to use for
 ##'   neutral anomalies (between -0.5 and 0.5) when `neutral_oni_one_colour = TRUE`.

@@ -58,8 +58,13 @@
 ##' @param y_axis_reverse logical, if TRUE then reverse the y-axis; used for
 ##' when a lower value of the index is good for, say, the hake stock, so we flip
 ##' the y-axis so that up is good for hake (but negative for the index).
-##' @param ... optional arguments passed onto `plot()`. Note that the x-axis is
-##'   constructed using a lubridate `date` object, so `xlim` needs to be a
+##' @param heatmap_style logical; if TRUE and the index has monthly data, creates
+##'   a heatmap-style plot using [plot_pacea_index_monthly_heatmap()] instead of
+##'   the temporal plot. Default is FALSE.
+##' @param ... optional arguments passed onto `plot()` for temporal plots, or onto
+##'   [plot_pacea_index_monthly_heatmap()] for heatmap-style plots. Note that the x-axis is
+##'   constructed using a lubridate `date` object for temporal plots of the
+##' former kind, so `xlim` needs to be a
 ##'   `date` object (see example).
 ##'
 ##' @return plot of the time series to the current device (returns nothing)
@@ -74,6 +79,10 @@
 ##' plot(npi_monthly,
 ##'      value = "value")
 ##'
+##' # Heatmap-style plot of ONI
+##' plot(oni, heatmap_style = TRUE)
+##' plot(oni, heatmap_style = TRUE, neutral_oni_one_colour = TRUE)
+##'
 ##' # For these, `value` gets automatically set to the "value" column and style to "plain".
 ##' plot(fraser_discharge_max)
 ##' plot(fraser_discharge_peak)
@@ -82,7 +91,7 @@
 ##' # rare sighting of a Bluntnose Sixgill Shark by divers in Port Alberni, that garnered
 ##' # [media attention](https://www.timescolonist.com/local-news/divers-encounter-deep-water-shark-in-alberni-inlet-7102038).
 ##' # A lunchtime conversation with Maxime Veilleux led to the question of whether catches
-##' # f these sharks in BC waters are related to El Niño. Specifically, as the data from
+##' # of these sharks in BC waters are related to El Niño. Specifically, as the data from
 ##' # the International Pacific Halibut Commission annual longline survey are
 ##' # readily available in the [gfiphc](https://github.com/pbs-assess/gfiphc)
 ##' # package, we looked at years which caught a Bluntnose Sixgill Shark (at a
@@ -118,6 +127,7 @@ plot.pacea_index <- function(obj,
                              event_cex = 3,
                              event_col = "grey",
                              y_axis_reverse = FALSE,
+                             heatmap_style = FALSE,
                              ...
                              ){
   # No anomaly column for fraser_river_mean or fraser_river_peak, so change
@@ -135,6 +145,16 @@ plot.pacea_index <- function(obj,
       value = "value"
       style = "plain"
     }
+  }
+
+  # If heatmap_style is TRUE, use the heatmap plotting function
+  if(heatmap_style){
+    stopifnot("heatmap_style requires monthly data (a 'month' column)" =
+              "month" %in% names(obj))
+    return(dots_parser(plot_pacea_index_monthly_heatmap,
+                       pacea_index_obj = obj,
+                       value = value,
+                       ...))
   }
 
   stopifnot("value must be a column of the pacea_index object" =
@@ -158,26 +178,29 @@ plot.pacea_index <- function(obj,
   }
 
   if(style == "red_blue"){
-    plot_red_blue(obj_lub,
-                  value = value,
-                  xlab = xlab,
-                  ylab = ylab,
-                  type = type,
-                  ...)
+    dots_parser(plot_red_blue,
+                obj_lub = obj_lub,
+                value = value,
+                xlab = xlab,
+                ylab = ylab,
+                type = type,
+                ...)
   } else if(style == "red_blue_bar") {
-    plot_red_blue_bar(obj_lub,
-                      value = value,
-                      xlab = xlab,
-                      ylab = ylab,
-                      type = type,
-                      ...)
+    dots_parser(plot_red_blue_bar,
+                obj_lub = obj_lub,
+                value = value,
+                xlab = xlab,
+                ylab = ylab,
+                type = type,
+                ...)
   } else {
-    plot.default(obj_lub$date,
-                 obj_lub[[value]], # [[]] returns a vector not a tibble
-                 xlab = xlab,
-                 ylab = ylab,
-                 type = type,
-                 ...)
+    dots_parser(plot.default,
+                x = obj_lub$date,
+                y = obj_lub[[value]],
+                xlab = xlab,
+                ylab = ylab,
+                type = type,
+                ...)
   }
 
 
@@ -222,139 +245,4 @@ plot.pacea_index <- function(obj,
              col = event_col)
     }
   }
-}
-
-##' Plot the red/blue style of anomaly plot, linearly interpolating to make
-##' smooth (needed when crossing x-axis); internal function called from `plot-pacea_index()`.
-##'
-##' Adapted from
-##' https://stackoverflow.com/questions/74902499/shading-below-line-graph-in-r/74903305#74903305
-##' and interpolated.
-##'
-##' @param obj_lub obj a `pacea_index` object, which is a time series, with a date
-##'   column that is the lubridate `date` class.
-##' @inherit plot.pacea_index
-##' @return plot of time series
-##' @author Andrew Edwards
-##' @examples
-##' \dontrun{
-##' # see plot.pacea_index()
-##' }
-plot_red_blue <- function(obj_lub,
-                          value,
-                          xlab,
-                          ylab,
-                          type,
-                          ...){
-  # TODO check if 0 within range, or test it works for all positive anomalies
-
-  # Need to interpolate (do to 1 day) to make the crossing of time axis smooth,
-  #  else get red and blue for same point in time:
-  obj_lub_interp_list <- approx(x = obj_lub$date,
-                                y = obj_lub[[value]],
-                                xout = seq(min(obj_lub$date),
-                                           max(obj_lub$date),
-                                           "days"))
-
-  obj_lub_interp <- tibble::tibble(date = obj_lub_interp_list$x,
-                                         y = obj_lub_interp_list$y)
-  names(obj_lub_interp)[2] <- value
-
-  obj_lub_interp$y_pos <- ifelse(obj_lub_interp[[value]] >= 0,
-                          obj_lub_interp[[value]],
-                          0)
-  obj_lub_interp$y_neg <- ifelse(obj_lub_interp[[value]] < 0,
-                          obj_lub_interp[[value]],
-                          0)
-
-  plot(obj_lub_interp$date,
-       obj_lub_interp[[value]], # [[]] returns a vector not a tibble
-       type = type,
-       xlab = xlab,
-       ylab = ylab,
-       ...)
-  abline(h = 0)
-
-  polygon(c(obj_lub_interp$date[1],
-            obj_lub_interp$date,
-            tail(obj_lub_interp$date, 1)),
-          c(0,
-            obj_lub_interp$y_pos,
-            0),
-          col = "red")
-
-  polygon(c(obj_lub_interp$date[1],
-            obj_lub_interp$date,
-            tail(obj_lub_interp$date, 1)),
-          c(0,
-            obj_lub_interp$y_neg,
-            0),
-          col = "blue")
-  invisible()
-}
-
-
-##' Plot the red/blue style of anomaly plot as barplots without any smoothing; internal function called from `plot.pacea_index()`.
-##'
-##' Adapted from `plot_red_blue()`.
-##'
-##' @param obj_lub obj a `pacea_index` object, which is a time series, with a date
-##'   column that is the lubridate `date` class.
-##' @inherit plot.pacea_index
-##' @return plot of time series
-##' @author Andrew Edwards
-##' @examples
-##' \dontrun{
-##' # see plot.pacea_index()
-##' }
-plot_red_blue_bar <- function(obj_lub,
-                              value,
-                              xlab,
-                              ylab,
-                              type,
-                              ...){
-  # TODO check if 0 within range
-
-  obj_lub$y_pos <- ifelse(obj_lub[[value]] >= 0,
-                          obj_lub[[value]],
-                          0)
-  obj_lub$y_neg <- ifelse(obj_lub[[value]] < 0,
-                          obj_lub[[value]],
-                          0)
-  bar_col <- ifelse(obj_lub[[value]] >= 0,
-                    "red",
-                    "blue")
-
-  plot(obj_lub$date,
-       obj_lub[[value]], # [[]] returns a vector not a tibble
-       type = "h",
-       xlab = xlab,
-       ylab = ylab,
-       col = bar_col,
-       lend = 1,
-       ...)
-  abline(h = 0)
-
-  # GOA code:
-  # segments(topX,topY,topX,e_md+e_sd,lwd=2*SC,col="#FFCC00",lend="square" )
-  # TODO. They use spline also, which will likely work for me also; unless we
-  # want just single bars for annual values, I'd rather avoid smoothing. Maybe
-  # do spline for monthly ones.
-
-  ## polygon(c(obj_lub$date[1],
-  ##           obj_lub$date,
-  ##           tail(obj_lub$date, 1)),
-  ##         c(0,
-  ##           obj_lub$y_pos,
-  ##           0),
-  ##         col = "red")
-
-  ## polygon(c(obj_lub$date[1],
-  ##           obj_lub$date,
-  ##           tail(obj_lub$date, 1)),
-  ##         c(0,
-  ##           obj_lub$y_neg,
-  ##           0),
-  ##         col = "blue")
-  invisible()
 }
