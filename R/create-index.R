@@ -31,7 +31,9 @@
 ##' TODO add a test to make sure they match, and default months is always April.
 ##'
 ##' The index is normalised (subtract the mean and divide by the standard
-##' deviation) across the specified years. This means that different types of
+##' deviation) across the specified years, except for climatological and
+##' oceanographic indices as these are already anomalies that have specific
+##' meanings TODO check each of them in turn. This means that different types of
 ##' indices can be compared to each other. Indices are returned in a
 ##' standardised format for plotting. TODO: Medians are used if there is uncertainties
 ##' are given in the original data, though functions may have choices
@@ -70,6 +72,11 @@
 ##' actual SST values. These may well be the same anyway, or only differ if no
 ##' climatology can be built (which can depend on the years used for the
 ##' climatology). For `oisst_month` only `anomalies` (the default) can be used.
+##' @param standardise_index logical as to whether to standardise the index or
+##' not. It is `TRUE` except for the oceanographic and climatological indices
+##' TODO check them all, because these are already calculated as anomalies with
+##' well known definitions. TODO see vignette, decide what to do. May help to
+##' plot heatmap style first.
 ##' @param herring_region string for the region to be used when making an index related
 ##' to `herring_recruitment` or `herring_spawning_biomass`.
 ##' @param seal_region string for the region to be used when making an index related
