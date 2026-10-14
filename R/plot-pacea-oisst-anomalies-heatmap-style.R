@@ -25,11 +25,13 @@
 ##' If `TRUE`, prints the plot and returns a list with both `plot` and `results`.
 ##'
 ##' @param scale_limits numeric vector of length 2 specifying the limits for the colour scale.
-##' If `NULL` (default), limits are calculated automatically to give a symmetric
-##' scale based on the anomalies. If any plotted values are outside of `scale_limits`
-##' then they are coloured grey.
+##'   If `NULL` (default), limits are calculated automatically to give a symmetric
+##'   scale based on the anomalies. If any plotted values are outside of `scale_limits`
+##'   then they are coloured grey.
+##' @param heatmap_colours numeric vector of colours to use for the heatmap.
+##'   Default is `pals::ocean.balance(20)[2:19]`, which provides 18 colours.
 ##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot` and `results`
-##' (when `return_results = TRUE`)
+##'   (when `return_results = TRUE`)
 ##' @export
 ##' @author Andrew Edwards and Andrea Hilborn
 ##' @examples
@@ -48,7 +50,8 @@ plot_pacea_oisst_anomalies_heatmap_style <- function(dat,
                                                      xlab = "Year",
                                                      ylab = "Month",
                                                      return_results = FALSE,
-                                                     scale_limits = NULL){
+                                                     scale_limits = NULL,
+                                                     heatmap_colours = pals::ocean.balance(20)[2:19]){
 
   legend_label <- bquote("Monthly SST anomaly ("*degree*C*")")
 
@@ -106,7 +109,7 @@ plot_pacea_oisst_anomalies_heatmap_style <- function(dat,
                         max_abs)
   }
 
-  color_scale <- ggplot2::scale_fill_gradientn(colours = pals::ocean.balance(20)[3:18],
+  color_scale <- ggplot2::scale_fill_gradientn(colours = heatmap_colours,
                                                limits = scale_limits,
                                                name = legend_label)
 

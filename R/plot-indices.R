@@ -22,7 +22,9 @@
 ##' created and named using `create_index()`) will add a gap after that index.
 ##' Multiple indices can be specified: `gap_after = c("index1", "index2")`.
 ##' @param gap_size numeric value controlling the size of the gaps in cm
-##' (default 0.2, roughly 1/5 of the box height).
+##'   (default 0.2, roughly 1/5 of the box height).
+##' @param heatmap_colours numeric vector of colours to use for the heatmap.
+##'   Default is `pals::ocean.balance(20)[2:19]`, which provides 18 colours.
 ##' @rdname plot.pacea_buoy_anomalies_list
 ##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot` and `results`
 ##' (when `return_results = TRUE`)
@@ -50,7 +52,8 @@ plot_indices <- function(...,
                          scale_limits = NULL,
                          angle_year_labels = TRUE,
                          gap_after = NULL,
-                         gap_size = 0.2){
+                         gap_size = 0.2,
+                         heatmap_colours = pals::ocean.balance(20)[2:19]){
 
   # Make a long tibble from the indices in ..., in a similar way to what we did
   # for buoy_sst data, so plotting can be similar.
@@ -138,7 +141,7 @@ plot_indices <- function(...,
   }
 
   # Colour scale
-  color_scale <- ggplot2::scale_fill_gradientn(colours = pals::ocean.balance(20)[3:18],
+  color_scale <- ggplot2::scale_fill_gradientn(colours = heatmap_colours,
                                                limits = scale_limits,
                                                name = legend_label)
 

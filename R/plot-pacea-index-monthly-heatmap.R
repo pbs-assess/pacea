@@ -33,6 +33,9 @@
 ##' @param neutral_oni_colour character string specifying the colour to use for
 ##'   neutral anomalies (between -0.5 and 0.5) when `neutral_oni_one_colour = TRUE`.
 ##'   Default is "grey60".
+##' @param heatmap_colours numeric vector of colours to use for the heatmap.
+##'   Default is `pals::ocean.balance(20)[2:19]`, which provides 18 colours.
+##'   When `neutral_oni_one_colour = TRUE`, must have an even number of colours.
 ##'
 ##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot`
 ##'   and `results` (when `return_results = TRUE`)
@@ -71,7 +74,8 @@ plot_pacea_index_monthly_heatmap <- function(pacea_index_obj,
                                              return_results = FALSE,
                                              scale_limits = NULL,
                                              neutral_oni_one_colour = FALSE,
-                                             neutral_oni_colour = "grey60"){
+                                             neutral_oni_colour = "grey60",
+                                             heatmap_colours = pals::ocean.balance(20)[2:19]){
 
   # Validate input is a pacea_index object
   stopifnot("Input must be a pacea_index object" =
@@ -154,26 +158,53 @@ plot_pacea_index_monthly_heatmap <- function(pacea_index_obj,
 
   # Define colour scale
   if(neutral_oni_one_colour && value %in% c("anomaly", "anom")){
+    # Validate that heatmap_colours has an even number of colours
+    n_colours <- length(heatmap_colours)
+    if(n_colours %% 2 != 0){
+      stop("When neutral_oni_one_colour = TRUE, heatmap_colours must have an even number of colours. ",
+           "The palette you provided has ", n_colours, " colours. ",
+           "Please use a palette with an even number of colours (e.g., pals::ocean.balance(20)[2:19] has 18 colours).")
+    }
+
     # Custom scale with specified colour for ±0.5, but same colours as the original palette outside that range
     min_val <- scale_limits[1]
     max_val <- scale_limits[2]
 
     # Calculate where -0.5 and +0.5 map to in the [0, 1] value space
-    pos_neg_05 <- scales::rescale(-0.5, to = c(0, 1), from = c(min_val, max_val))
-    pos_pos_05 <- scales::rescale(0.5, to = c(0, 1), from = c(min_val, max_val))
+    position_neg_05 <- scales::rescale(-0.5,
+                                  to = c(0, 1),
+                                  from = c(min_val, max_val))
+    position_pos_05 <- scales::rescale(0.5,
+                                  to = c(0, 1),
+                                  from = c(min_val, max_val))
+
+    # Split palette in half: blue/cool colours on left, red/warm colours on right
+    mid_point <- n_colours / 2
+    cool_colours <- heatmap_colours[1:mid_point]
+    warm_colours <- heatmap_colours[(mid_point + 1):n_colours]
 
     # Use the blue and red halves of the palette, with specified colour in the middle
     colour_scale <- ggplot2::scale_fill_gradientn(
-      colours = c(pals::ocean.balance(20)[3:10], neutral_oni_colour, neutral_oni_colour, pals::ocean.balance(20)[11:18]),
-      values = c(scales::rescale(seq(min_val, -0.5, length.out = 8), to = c(0, pos_neg_05 - 0.001)),
-                 pos_neg_05,
-                 pos_pos_05,
-                 scales::rescale(seq(0.5, max_val, length.out = 8), to = c(pos_pos_05 + 0.001, 1))),
+      colours = c(cool_colours,
+                  neutral_oni_colour,
+                  neutral_oni_colour,
+                  warm_colours),
+      values = c(scales::rescale(seq(min_val,
+                                     -0.5,
+                                     length.out = mid_point),
+                                 to = c(0,
+                                        position_neg_05 - 0.000001)),
+                 position_neg_05,
+                 position_pos_05,
+                 scales::rescale(seq(0.5,
+                                     max_val,
+                                     length.out = mid_point),
+                                 to = c(position_pos_05 + 0.000001, 1))),
       limits = scale_limits,
       name = legend_label)
   } else {
     # Standard scale for non-anomalies or when neutral_oni_one_colour is FALSE
-    colour_scale <- ggplot2::scale_fill_gradientn(colours = pals::ocean.balance(20)[3:18],
+    colour_scale <- ggplot2::scale_fill_gradientn(colours = heatmap_colours,
                                                   limits = scale_limits,
                                                   name = legend_label)
   }

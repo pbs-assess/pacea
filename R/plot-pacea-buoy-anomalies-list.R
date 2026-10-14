@@ -41,11 +41,13 @@
 ##' defaults to `length(months)`. Only used when `length(months) > 1` and
 ##' `length(stn_id_to_plot) > 1`.
 ##' @param scale_limits numeric vector of length 2 specifying the limits for the colour scale.
-##' If `NULL` (default), limits are calculated automatically based on the data. Only used
-##' for non-count plots. If any plotted values are outside of `scale_limits`
-##' then they are coloured grey.
+##'   If `NULL` (default), limits are calculated automatically based on the data. Only used
+##'   for non-count plots. If any plotted values are outside of `scale_limits`
+##'   then they are coloured grey.
+##' @param heatmap_colours numeric vector of colours to use for the heatmap.
+##'   Default is `pals::ocean.balance(20)[2:19]`, which provides 18 colours.
 ##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot` and `results`
-##' (when `return_results = TRUE`)
+##'   (when `return_results = TRUE`)
 ##' @export
 ##' @author Andrew Edwards and Andrea Hilborn
 ##' @examples
@@ -66,7 +68,8 @@ plot.pacea_buoy_anomalies_list <- function(pacea_buoy_anomalies_list,
                                            count_breaks = NULL,
                                            return_results = FALSE,
                                            require_requested_months = NULL,
-                                           scale_limits = NULL){
+                                           scale_limits = NULL,
+                                           heatmap_colours = pals::ocean.balance(20)[2:19]){
                                            # number_shades = 16){ see below
 
   # Validate sst_plot parameter
@@ -120,7 +123,8 @@ plot.pacea_buoy_anomalies_list <- function(pacea_buoy_anomalies_list,
       sst_plot = sst_plot,
       count_breaks = count_breaks,
       return_results = return_results,
-      scale_limits = scale_limits)
+      scale_limits = scale_limits,
+      heatmap_colours = heatmap_colours)
 
     return(anomalies_plot_or_list)
   }
@@ -344,7 +348,7 @@ plot.pacea_buoy_anomalies_list <- function(pacea_buoy_anomalies_list,
                                               name = legend_label,
                                               limits = c(min(count_breaks), max(count_breaks)))
   } else {
-    color_scale <- ggplot2::scale_fill_gradientn(colours = pals::ocean.balance(20)[3:18],
+    color_scale <- ggplot2::scale_fill_gradientn(colours = heatmap_colours,
     # TODO tried this to generalise it, but gives different colour bar and some
     # washed out grey; not bothering for now, colours are good.
     # scale_fill_gradientn(colours = pals::ocean.balance(20)[seq(3, 18, length.out = number_shades)],
