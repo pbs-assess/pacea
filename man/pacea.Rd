@@ -24,6 +24,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item A. M. Edwards \email{andrew.edwards@dfo-mpo.gc.ca} (\href{https://orcid.org/0000-0003-2749-8198}{ORCID})
   \item T. C. Tai \email{travis.tai@dfo-mpo.gc.ca} (\href{https://orcid.org/0000-0001-7013-1901}{ORCID})
   \item J. Watson (\href{https://orcid.org/0000-0002-4773-1631}{ORCID})
   \item M. A. Peña \email{angelica.pena@dfo-mpo.gc.ca} (\href{https://orcid.org/0000-0001-8002-3402}{ORCID})

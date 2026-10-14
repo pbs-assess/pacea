@@ -14,7 +14,8 @@ plot_pacea_oisst_anomalies_heatmap_style(
   xlab = "Year",
   ylab = "Month",
   return_results = FALSE,
-  scale_limits = NULL
+  scale_limits = NULL,
+  heatmap_colours = pals::ocean.balance(20)[2:19]
 )
 }
 \arguments{
@@ -49,6 +50,9 @@ If \code{TRUE}, prints the plot and returns a list with both \code{plot} and \co
 If \code{NULL} (default), limits are calculated automatically to give a symmetric
 scale based on the anomalies. If any plotted values are outside of \code{scale_limits}
 then they are coloured grey.}
+
+\item{heatmap_colours}{numeric vector of colours to use for the heatmap.
+Default is \code{pals::ocean.balance(20)[2:19]}, which provides 18 colours.}
 }
 \value{
 a ggplot object (when \code{return_results = FALSE}) or a list with \code{plot} and \code{results}

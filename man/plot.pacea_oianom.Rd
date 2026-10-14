@@ -11,6 +11,9 @@
   years.plot,
   clim.dat,
   area = NULL,
+  area_outline = NULL,
+  area_outline_col = "black",
+  area_outline_linewidth = 1,
   bc = TRUE,
   eez = TRUE,
   restrict_plot = FALSE,
@@ -37,6 +40,13 @@ when automatically called from \code{\link[=plot.pacea_oisst_anomalies_list]{plo
 any cell of the OISST data for which the  middle
 of the cell is within \code{area}; OISST data are stored as points represented the
 middle of the cell (which is a bit different to the BCCM data).}
+
+\item{area_outline}{sf object whose outline will be drawn on the plot. If
+provided, the boundary of this object will be plotted as a line. Default is NULL.}
+
+\item{area_outline_col}{character. Colour for the area_outline. Default is "black".}
+
+\item{area_outline_linewidth}{numeric. Line width for the area_outline. Default is 1.}
 
 \item{bc}{logical. Should BC coastline layer be plotted? Can only be plotted with one plot layer.}
 

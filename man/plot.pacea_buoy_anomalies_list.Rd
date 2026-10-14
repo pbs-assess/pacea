@@ -19,7 +19,8 @@ plot_indices(
   scale_limits = NULL,
   angle_year_labels = TRUE,
   gap_after = NULL,
-  gap_size = 0.2
+  gap_size = 0.2,
+  heatmap_colours = pals::ocean.balance(20)[2:19]
 )
 
 \method{plot}{pacea_buoy_anomalies_list}(
@@ -34,7 +35,8 @@ plot_indices(
   count_breaks = NULL,
   return_results = FALSE,
   require_requested_months = NULL,
-  scale_limits = NULL
+  scale_limits = NULL,
+  heatmap_colours = pals::ocean.balance(20)[2:19]
 )
 
 plot_pacea_buoy_anomalies_single(
@@ -48,7 +50,8 @@ plot_pacea_buoy_anomalies_single(
   sst_plot = "anomalies",
   count_breaks = NULL,
   return_results = FALSE,
-  scale_limits = NULL
+  scale_limits = NULL,
+  heatmap_colours = pals::ocean.balance(20)[2:19]
 )
 
 plot_pacea_indices(
@@ -60,7 +63,8 @@ plot_pacea_indices(
   ylab = "Index",
   return_results = FALSE,
   require_requested_months = NULL,
-  scale_limits = NULL
+  scale_limits = NULL,
+  heatmap_colours = pals::ocean.balance(20)[2:19]
 )
 }
 \arguments{
@@ -99,6 +103,9 @@ Multiple indices can be specified: \code{gap_after = c("index1", "index2")}.}
 
 \item{gap_size}{numeric value controlling the size of the gaps in cm
 (default 0.2, roughly 1/5 of the box height).}
+
+\item{heatmap_colours}{numeric vector of colours to use for the heatmap.
+Default is \code{pals::ocean.balance(20)[2:19]}, which provides 18 colours.}
 
 \item{pacea_buoy_anomalies_list}{object of class \code{pacea_buoy_anomalies_list}
 obtained from running \code{calculate_anomalies()} on buoy data.}
@@ -154,7 +161,7 @@ TODO Need to write this.
 
 Takes any number of the climatological and oceanographic indices, such as those in
 \code{pacea_indices}. For plotting standard time series of one index just use
-\code{\link[=plot]{plot()}} which then calls \code{\link[=plot.pacea_index]{plot.pacea_index()}}.
+\code{plot()} which then calls \code{\link[=plot.pacea_index]{plot.pacea_index()}}.
 }
 \details{
 To display square tiles for each data point, manually adjust your figure
