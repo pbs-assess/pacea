@@ -475,15 +475,262 @@ going, based on `plot_pacea_buoy_anomalies_single()`.
 
 Default:
 ```{r, oniplot7}
-plot_pacea_index_monthly_heatmap(oni,
-                                 years = 1980:2026)
+plot(oni,
+     years = 1980:2026,
+     heatmap_style = TRUE)
 ```
 
 Neutral conditions are between -0.5 and +0.5, and so we can make those just grey
 as we do not really care so much about slight differencs in this range, using:
-```{r, oniplot7}
-plot_pacea_index_monthly_heatmap(oni,
-                                 years = 1980:2026,
-                                 neutral_oni_one_colour = TRUE)
+```{r, oniplot8}
+plot(oni,
+     years = 1980:2026,
+     neutral_oni_one_colour = TRUE,
+     heatmap_style = TRUE)
 ```
+
+Users might be prefer one or the other.
+
+Need to test each type of index in turn. TODO.
+
+
+TODO see this, need to understand why historical values have changed (again?).
+
+First want to update indices values and check how the figure looks. Quick cheat
+as the index has changed so I don't want to save it into pacea yet (not
+evaluating as do not want to keep downloading it):
+```{r, updateoni, eval = FALSE}
+download.file("https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+              destfile="oni.txt",
+              mode="wb",
+              quiet = FALSE)
+```
+
+```{r, updateoni2}
+oni_new <- readr::read_table("oni.txt")
+
+stopifnot(colnames(oni_new) == c("SEAS", "YR", "TOTAL", "ANOM"),
+          oni_new[1, 1] == "DJF")    # If this fails then months as factors
+                                     #  below will become incorrect because it
+                                     #  assumes first one is January
+
+colnames(oni_new)<-c("month",
+                     "year",
+                     "value",
+                     "anomaly")
+
+oni_new <- dplyr::relocate(oni_new,
+                           year)
+
+oni_new$month <- as.numeric(factor(oni_new$month,
+                                   levels=unique(oni_new$month),
+                                   ordered=TRUE))
+class(oni_new) <- c("pacea_index",
+                    class(oni_new))
+
+attr(oni_new, "axis_name") <- "Oceanic Niño Index"
+
+plot(oni_new,
+     years = 1980:2026,
+     neutral_oni_one_colour = TRUE,
+     heatmap_style = TRUE)
+
+```
+
+Copying and pasting these in, not running:
+```{r, eval = FALSE}
+# My installed version:
+> pacea::pacea_installed()
+You last locally installed pacea on 2026-10-08 which is 6 days ago.
+# Also Cameron's:
+ You last locally installed pacea on 2026-09-28 which is 16 days ago.
+# Elise:
+You last locally installed pacea on 2026-01-27 which is 260 days ago.
+
+> pacea::oni
+# A tibble: 917 × 4
+    year month value anomaly
+   <dbl> <dbl> <dbl>   <dbl>
+ 1  1950     1  24.7   -1.53
+ 2  1950     2  25.2   -1.34
+ 3  1950     3  25.8   -1.16
+ 4  1950     4  26.1   -1.18
+ 5  1950     5  26.3   -1.07
+ 6  1950     6  26.3   -0.85
+ 7  1950     7  26.2   -0.54
+ 8  1950     8  26.0   -0.42
+ 9  1950     9  25.8   -0.39
+10  1950    10  25.6   -0.44
+# ℹ 907 more rows
+# ℹ Use `print(n = ...)` to see more rows
+
+# The new values downloaded on 9th October from https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt
+> oni_new
+# A tibble: 920 × 4
+    year month value anomaly
+   <dbl> <dbl> <dbl>   <dbl>
+ 1  1950     1  25.0   -1.32
+ 2  1950     2  25.4   -1.2 
+ 3  1950     3  25.9   -1.12
+ 4  1950     4  26.2   -1.08
+ 5  1950     5  26.4   -1.1 
+ 6  1950     6  26.3   -0.9 
+ 7  1950     7  26.2   -0.62
+ 8  1950     8  25.9   -0.57
+ 9  1950     9  25.8   -0.56
+10  1950    10  25.6   -0.62
+# ℹ 910 more rows
+# ℹ Use `print(n = ...)` to see more rows
+
+
+
+# Dates of last commits that changed oni.rda on pacea/main:
+
+2026-07-26
+2026-10-26  - this rebuilt the README.Md and has -1.53 as 1950-1 anomaly,
+unchanged from previous README.Md commit. Aha - this line in README has not
+changed since Nov 2023. 
+2026-03-03 NEWS update says: In particular for ONI we are now in a new five-year
+baseline period for recent anomalies so all ONI values since 2010 have been
+recalculated, presumably related to:
+2026-03-02
+2025-02-25
+
+
+
+```
+
+Using the link from Andrea: https://psl.noaa.gov/data/timeseries/month/
+
+Oceanic Nino index:
+
+https://psl.noaa.gov/data/correlation/oni.data    
+
+starts with Jan 1950 being -1.53. So the same that I used to have, but not the
+same as the link I have been using.
+
+This has (saved in oni-from-psl-noaa-gov-from-andrea.csv):
+```{r, eval = FALSE}
+1950-01-01,   -1.530
+1950-02-01,   -1.340
+
+2026-01-01,   -0.390
+2026-02-01,   -0.210
+2026-03-01,    0.110
+2026-04-01,    0.460
+2026-05-01,    0.950
+2026-06-01,    1.390
+2026-07-01,    1.800
+2026-08-01, -9999.000
+```
+
+Currently in my `load_all()` pacea (`oni.rda` is dated 2026-07-26):
+```{r, eval = FALSE}
+> oni
+ 1  1950     1  24.7   -1.53
+ 2  1950     2  25.2   -1.34
+
+> tail(oni)
+# A tibble: 6 × 4
+   year month value anomaly
+  <dbl> <dbl> <dbl>   <dbl>
+1  2025    12  26.0   -0.54
+2  2026     1  26.1   -0.37
+3  2026     2  26.6   -0.14
+4  2026     3  27.3    0.13
+5  2026     4  28.1    0.51
+6  2026     5  28.7    0.98
+```
+
+So, confusingly, the 1950s values match the PSL values. But the recent ones do
+not. Values can change with updates, but I thought only in the final few months.
+
+Let's look at both for 1999 as a middle year:
+```{r, eval = FALSE}
+# PSL values:
+1999-01-01,   -1.550
+1999-02-01,   -1.300
+1999-03-01,   -1.070
+1999-04-01,   -0.980
+1999-05-01,   -1.020
+1999-06-01,   -1.040
+1999-07-01,   -1.100
+1999-08-01,   -1.110
+1999-09-01,   -1.160
+1999-10-01,   -1.260
+1999-11-01,   -1.460
+1999-12-01,   -1.650
+
+> filter(oni, year == 1999)
+    year month value anomaly
+   <dbl> <dbl> <dbl>   <dbl>
+ 1  1999     1  25.1   -1.55
+ 2  1999     2  25.6   -1.3 
+ 3  1999     3  26.2   -1.07
+ 4  1999     4  26.6   -0.98
+ 5  1999     5  26.7   -1.02
+ 6  1999     6  26.5   -1.04
+ 7  1999     7  26.1   -1.1 
+ 8  1999     8  25.8   -1.11
+ 9  1999     9  25.6   -1.16
+10  1999    10  25.4   -1.26
+11  1999    11  25.2   -1.46
+12  1999    12  24.9   -1.65
+```
+
+Okay, so they match. So recent values must still be getting updated in the PSL
+or usual one.
+
+Also, `oni_new` is different for 1999:
+```{r, eval = FALSE}
+> filter(oni_new, year == 1999)
+# A tibble: 12 × 4
+    year month value anomaly
+   <dbl> <dbl> <dbl>   <dbl>
+ 1  1999     1  25.1   -1.51
+ 2  1999     2  25.6   -1.25
+ 3  1999     3  26.3   -0.93
+ 4  1999     4  26.8   -0.8 
+ 5  1999     5  26.9   -0.79
+ 6  1999     6  26.7   -0.84
+ 7  1999     7  26.3   -0.9 
+ 8  1999     8  26.0   -0.94
+ 9  1999     9  25.8   -1   
+10  1999    10  25.6   -1.13
+11  1999    11  25.3   -1.35
+12  1999    12  25.1   -1.53
+```
+
+So, issue is that historical Jan 1950 (versions in pacea) has always seemed to
+be -1.53. Same as the current PSL one. But different to where I usually get oni
+from, which is:
+
+https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt
+
+and Jan 1950 is now -1.32. The latter is currently in this vignette as
+`oni_new`:
+```{r, oninew}
+oni_new
+filter(oni_new, year == 2026)
+```
+
+Original `oni`:
+```{r, oniheatmap}
+plot(oni,
+     heatmap_style = TRUE,
+     years = 1980:2026,
+     neutral_oni_one_colour = TRUE)
+```
+and `oni_new`:
+```{r, oninewheatmap}
+plot(oni_new,
+     heatmap_style = TRUE,
+     years = 1980:2026,
+     neutral_oni_one_colour = TRUE)
+```
+
+
+
+
+
 
