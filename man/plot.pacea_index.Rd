@@ -24,6 +24,7 @@
   event_cex = 3,
   event_col = "grey",
   y_axis_reverse = FALSE,
+  heatmap_style = FALSE,
   ...
 )
 }
@@ -101,8 +102,14 @@ For more control instead use \code{event_lub}.}
 when a lower value of the index is good for, say, the hake stock, so we flip
 the y-axis so that up is good for hake (but negative for the index).}
 
-\item{...}{optional arguments passed onto \code{plot()}. Note that the x-axis is
-constructed using a lubridate \code{date} object, so \code{xlim} needs to be a
+\item{heatmap_style}{logical; if TRUE and the index has monthly data, creates
+a heatmap-style plot using \code{\link[=plot_pacea_index_monthly_heatmap]{plot_pacea_index_monthly_heatmap()}} instead of
+the temporal plot. Default is FALSE.}
+
+\item{...}{optional arguments passed onto \code{plot()} for temporal plots, or onto
+\code{\link[=plot_pacea_index_monthly_heatmap]{plot_pacea_index_monthly_heatmap()}} for heatmap-style plots. Note that the x-axis is
+constructed using a lubridate \code{date} object for temporal plots of the
+former kind, so \code{xlim} needs to be a
 \code{date} object (see example).}
 }
 \value{
@@ -122,6 +129,10 @@ plot(oni,
 plot(npi_monthly,
      value = "value")
 
+# Heatmap-style plot of ONI
+plot(oni, heatmap_style = TRUE)
+plot(oni, heatmap_style = TRUE, neutral_oni_one_colour = TRUE)
+
 # For these, `value` gets automatically set to the "value" column and style to "plain".
 plot(fraser_discharge_max)
 plot(fraser_discharge_peak)
@@ -130,7 +141,7 @@ plot(fraser_discharge_peak)
 # rare sighting of a Bluntnose Sixgill Shark by divers in Port Alberni, that garnered
 # [media attention](https://www.timescolonist.com/local-news/divers-encounter-deep-water-shark-in-alberni-inlet-7102038).
 # A lunchtime conversation with Maxime Veilleux led to the question of whether catches
-# f these sharks in BC waters are related to El Niño. Specifically, as the data from
+# of these sharks in BC waters are related to El Niño. Specifically, as the data from
 # the International Pacific Halibut Commission annual longline survey are
 # readily available in the [gfiphc](https://github.com/pbs-assess/gfiphc)
 # package, we looked at years which caught a Bluntnose Sixgill Shark (at a

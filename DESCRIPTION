@@ -87,7 +87,6 @@ Imports:
     usethis,
     utils,
     zen4R
-RoxygenNote: 7.3.3
 Roxygen: list(markdown = TRUE)
 Remotes: github::pbs-assess/gfiphc
 Suggests:
@@ -117,3 +116,4 @@ Suggests:
     here
 VignetteBuilder: knitr
 Config/testthat/edition: 3
+Config/roxygen2/version: 8.1.0

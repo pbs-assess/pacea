@@ -86,6 +86,7 @@ export(create_area_sf_polygon)
 export(create_data)
 export(create_herring_object)
 export(create_index)
+export(create_index_oni)
 export(dots_parser)
 export(get_pacea_data)
 export(get_zenodo_data)
@@ -140,107 +141,128 @@ export(pacea_wide)
 export(plot_buoy_sst_single)
 export(plot_indices)
 export(plot_pacea_buoy_anomalies_single)
+export(plot_pacea_index_monthly_heatmap)
 export(plot_pacea_indices)
 export(plot_pacea_oisst_anomalies_heatmap_style)
 export(plot_with_uncertainty_discrete)
 export(restrict_to_area)
 export(standardise)
 export(summarise_months)
-importFrom(dplyr,anti_join)
-importFrom(dplyr,arrange)
-importFrom(dplyr,as_tibble)
-importFrom(dplyr,bind_cols)
-importFrom(dplyr,bind_rows)
-importFrom(dplyr,case_when)
-importFrom(dplyr,contains)
-importFrom(dplyr,filter)
-importFrom(dplyr,full_join)
-importFrom(dplyr,group_by)
-importFrom(dplyr,inner_join)
-importFrom(dplyr,join_by)
-importFrom(dplyr,last_col)
-importFrom(dplyr,left_join)
-importFrom(dplyr,mutate)
-importFrom(dplyr,n)
-importFrom(dplyr,pull)
-importFrom(dplyr,relocate)
-importFrom(dplyr,rename)
-importFrom(dplyr,right_join)
-importFrom(dplyr,row_number)
-importFrom(dplyr,select)
-importFrom(dplyr,semi_join)
-importFrom(dplyr,summarise)
-importFrom(dplyr,tibble)
-importFrom(dplyr,ungroup)
+importFrom(dplyr,
+  anti_join,
+  arrange,
+  as_tibble,
+  bind_cols,
+  bind_rows,
+  case_when,
+  contains,
+  filter,
+  full_join,
+  group_by,
+  inner_join,
+  join_by,
+  last_col,
+  left_join,
+  mutate,
+  n,
+  pull,
+  relocate,
+  rename,
+  right_join,
+  row_number,
+  select,
+  semi_join,
+  summarise,
+  tibble,
+  ungroup
+)
 importFrom(foreach,"%dopar%")
-importFrom(ggplot2,aes)
-importFrom(ggplot2,element_blank)
-importFrom(ggplot2,element_rect)
-importFrom(ggplot2,element_text)
-importFrom(ggplot2,facet_grid)
-importFrom(ggplot2,facet_wrap)
-importFrom(ggplot2,geom_contour)
-importFrom(ggplot2,geom_line)
-importFrom(ggplot2,geom_sf)
-importFrom(ggplot2,geom_tile)
-importFrom(ggplot2,ggplot)
-importFrom(ggplot2,guide_colorbar)
-importFrom(ggplot2,guide_legend)
-importFrom(ggplot2,guides)
-importFrom(ggplot2,labs)
-importFrom(ggplot2,scale_colour_manual)
-importFrom(ggplot2,scale_colour_viridis_c)
-importFrom(ggplot2,scale_fill_gradientn)
-importFrom(ggplot2,theme)
-importFrom(ggplot2,theme_bw)
-importFrom(ggplot2,xlab)
-importFrom(ggplot2,ylab)
+importFrom(ggplot2,
+  aes,
+  element_blank,
+  element_rect,
+  element_text,
+  facet_grid,
+  facet_wrap,
+  geom_contour,
+  geom_line,
+  geom_sf,
+  geom_tile,
+  ggplot,
+  guide_colorbar,
+  guide_legend,
+  guides,
+  labs,
+  scale_colour_manual,
+  scale_colour_viridis_c,
+  scale_fill_gradientn,
+  theme,
+  theme_bw,
+  xlab,
+  ylab
+)
 importFrom(grDevices,rgb)
-importFrom(graphics,abline)
-importFrom(graphics,axis)
-importFrom(graphics,lines)
-importFrom(graphics,mtext)
-importFrom(graphics,par)
-importFrom(graphics,plot.default)
-importFrom(graphics,points)
-importFrom(graphics,polygon)
-importFrom(graphics,segments)
-importFrom(httr,GET)
-importFrom(httr,content)
-importFrom(httr,status_code)
-importFrom(httr,stop_for_status)
-importFrom(lubridate,month)
-importFrom(lubridate,week)
-importFrom(lubridate,year)
+importFrom(graphics,
+  abline,
+  axis,
+  lines,
+  mtext,
+  par,
+  plot.default,
+  points,
+  polygon,
+  segments
+)
+importFrom(httr,
+  GET,
+  content,
+  status_code,
+  stop_for_status
+)
+importFrom(lubridate,
+  month,
+  week,
+  year
+)
 importFrom(magrittr,"%>%")
-importFrom(pals,brewer.brbg)
-importFrom(pals,brewer.piyg)
-importFrom(pals,brewer.prgn)
-importFrom(pals,brewer.rdgy)
-importFrom(pals,cividis)
-importFrom(pals,jet)
-importFrom(pals,ocean.algae)
-importFrom(pals,ocean.curl)
-importFrom(pals,ocean.oxy)
-importFrom(pals,ocean.tempo)
-importFrom(pals,plasma)
+importFrom(pals,
+  brewer.brbg,
+  brewer.piyg,
+  brewer.prgn,
+  brewer.rdgy,
+  cividis,
+  jet,
+  ocean.algae,
+  ocean.curl,
+  ocean.oxy,
+  ocean.tempo,
+  plasma
+)
 importFrom(rlang,.data)
-importFrom(sf,st_as_sf)
-importFrom(sf,st_bbox)
-importFrom(sf,st_centroid)
-importFrom(sf,st_coordinates)
-importFrom(sf,st_crs)
-importFrom(sf,st_drop_geometry)
-importFrom(sf,st_intersection)
-importFrom(sf,st_intersects)
-importFrom(sf,st_transform)
-importFrom(stats,approx)
-importFrom(stats,median)
-importFrom(stats,na.omit)
-importFrom(stats,sd)
-importFrom(stats,setNames)
-importFrom(tidyr,last_col)
-importFrom(tidyr,pivot_longer)
-importFrom(tidyr,pivot_wider)
-importFrom(utils,tail)
-importFrom(utils,type.convert)
+importFrom(sf,
+  st_as_sf,
+  st_bbox,
+  st_centroid,
+  st_coordinates,
+  st_crs,
+  st_drop_geometry,
+  st_intersection,
+  st_intersects,
+  st_transform
+)
+importFrom(stats,
+  approx,
+  median,
+  na.omit,
+  sd,
+  setNames
+)
+importFrom(tidyr,
+  last_col,
+  pivot_longer,
+  pivot_wider
+)
+importFrom(utils,
+  tail,
+  type.convert
+)

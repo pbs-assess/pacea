@@ -2,7 +2,7 @@
 ##'
 ##' Takes any number of the climatological and oceanographic indices, such as those in
 ##' `pacea_indices`. For plotting standard time series of one index just use
-##' [plot()] which then calls [plot.pacea_index()].
+##' `plot()` which then calls [plot.pacea_index()].
 ##'
 ##' Not currently set up to use `npi_monthly` and `npi_annual` as
 ##' they are absolute values and so need a climatology defined (contact Andrew
