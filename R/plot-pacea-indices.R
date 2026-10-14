@@ -17,8 +17,10 @@
 ##' @param ... the indices you want to plot, e.g. oni, pdo, etc., any of
 ##' those listed in `pacea_indices`.
 ##' @param years numeric vector of the years to show (note that PDO goes back to
-##' 1854 to we selected something more recent for the default start value);
-##' default end is the current year
+##'   1854 to we selected something more recent for the default start value);
+##'   default end is the current year
+##' @param heatmap_colours numeric vector of colours to use for the heatmap.
+##'   Default is `pals::ocean.balance(20)[2:19]`, which provides 18 colours.
 ##' @rdname plot.pacea_buoy_anomalies_list
 ##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot` and `results`
 ##' (when `return_results = TRUE`)
@@ -39,7 +41,8 @@ plot_pacea_indices <- function(...,
                                ylab = "Index",
                                return_results = FALSE,
                                require_requested_months = NULL,
-                               scale_limits = NULL){
+                               scale_limits = NULL,
+                               heatmap_colours = pals::ocean.balance(20)[2:19]){
 
   # Check months are consecutive except Dec to Jan
   if(!is.null(months)){
@@ -224,7 +227,7 @@ plot_pacea_indices <- function(...,
     dplyr::mutate(label = as.character(round(index_plot_value, 1)))
 
   # Colour scale
-  color_scale <- ggplot2::scale_fill_gradientn(colours = pals::ocean.balance(20)[3:18],
+  color_scale <- ggplot2::scale_fill_gradientn(colours = heatmap_colours,
                                                limits = scale_limits,
                                                name = legend_label)
 

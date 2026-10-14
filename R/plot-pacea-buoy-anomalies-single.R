@@ -23,7 +23,8 @@ plot_pacea_buoy_anomalies_single <- function(pacea_buoy_anomalies_list,
                                              sst_plot = "anomalies",
                                              count_breaks = NULL,
                                              return_results = FALSE,
-                                             scale_limits = NULL){
+                                             scale_limits = NULL,
+                                             heatmap_colours = pals::ocean.balance(20)[2:19]){
 
   # Validate sst_plot parameter
   sst_plot <- match.arg(sst_plot,
@@ -118,7 +119,7 @@ plot_pacea_buoy_anomalies_single <- function(pacea_buoy_anomalies_list,
                                               name = legend_label,
                                               limits = c(min(count_breaks), max(count_breaks)))
   } else {
-    color_scale <- ggplot2::scale_fill_gradientn(colours = pals::ocean.balance(20)[3:18],
+    color_scale <- ggplot2::scale_fill_gradientn(colours = heatmap_colours,
                                                  limits = scale_limits,
                                                  name = legend_label)
   }
