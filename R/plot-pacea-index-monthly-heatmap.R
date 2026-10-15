@@ -2,7 +2,9 @@
 ##'
 ##' Creates a heatmap-style plot with years on the x-axis and months on the y-axis,
 ##' showing monthly values or anomalies of a pacea_index object. Similar in style
-##' to `plot_pacea_buoy_anomalies_single()` but for indices with monthly resolution.
+##' to `plot_pacea_buoy_anomalies_single()` but for indices with monthly
+##' resolution. Gets called when using `plot(..., heatmap_style = TRUE)` on an object of class
+##' `pacea_index`.
 ##'
 ##' @param pacea_index_obj object of class `pacea_index` with monthly resolution
 ##'   (e.g., `oni`, `npi_monthly`). Must have columns: `year`, `month`, and the
@@ -36,6 +38,7 @@
 ##' @param heatmap_colours numeric vector of colours to use for the heatmap.
 ##'   Default is `pals::ocean.balance(20)[2:19]`, which provides 18 colours.
 ##'   When `neutral_oni_one_colour = TRUE`, must have an even number of colours.
+##' @param digits numeric number of decimal places to give for digits within the squares
 ##'
 ##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot`
 ##'   and `results` (when `return_results = TRUE`)
@@ -43,26 +46,44 @@
 ##' @author Andrew Edwards and Andrea Hilborn
 ##' @examples
 ##' \dontrun{
+##' # plot_pacea_index_monthly_heatmap() gets called when using `plot(...,
+##' heatmap_style = TRUE)` on an object of class `pacea_index`. Examples, with
+##' some options used:
+
 ##' # Plot ONI anomalies as a heatmap
-##' plot_pacea_index_monthly_heatmap(oni)
+##' plot(oni,
+##'      heatmap = TRUE)
 ##'
 ##' # Plot absolute ONI values instead of anomalies
-##' plot_pacea_index_monthly_heatmap(oni, value = "value")
+##' plot(oni,
+##'      heatmap = TRUE,
+##'      value = "value")
 ##'
 ##' # Plot NPI monthly values
-##' plot_pacea_index_monthly_heatmap(npi_monthly, value = "value")
+##' plot(npi_monthly,
+##'      heatmap = TRUE,
+##'      value = "value")
 ##'
 ##' # Plot ONI for specific years
-##' plot_pacea_index_monthly_heatmap(oni, years = 2010:2020)
+##' plot(oni,
+##'      heatmap = TRUE,
+##'      years = 2010:2020)
 ##'
 ##' # Plot ONI with neutral conditions (±0.5) as grey60 (default)
-##' plot_pacea_index_monthly_heatmap(oni, neutral_oni_one_colour = TRUE)
+##' plot(oni,
+##'      heatmap = TRUE,
+##'      neutral_oni_one_colour = TRUE)
 ##'
-##' # Plot ONI with neutral conditions as white
-##' plot_pacea_index_monthly_heatmap(oni, neutral_oni_one_colour = TRUE, neutral_oni_colour = "white")
+##' # Plot ONI with neutral conditions as white (I prefer the grey!)
+##' plot(oni,
+##'      heatmap = TRUE,
+##'      neutral_oni_one_colour = TRUE,
+##'      neutral_oni_colour = "white")
 ##'
 ##' # Get the plot and underlying data
-##' result <- plot_pacea_index_monthly_heatmap(oni, return_results = TRUE)
+##' result <- plot(oni,
+##'           heatmap = TRUE,
+##'           return_results = TRUE)
 ##' }
 plot_pacea_index_monthly_heatmap <- function(pacea_index_obj,
                                              value = "anomaly",
@@ -75,7 +96,9 @@ plot_pacea_index_monthly_heatmap <- function(pacea_index_obj,
                                              scale_limits = NULL,
                                              neutral_oni_one_colour = FALSE,
                                              neutral_oni_colour = "grey60",
-                                             heatmap_colours = pals::ocean.balance(20)[2:19]){
+                                             heatmap_colours =
+                                               pals::ocean.balance(20)[2:19],
+                                             digits = 1){
 
   # Validate input is a pacea_index object
   stopifnot("Input must be a pacea_index object" =
@@ -85,12 +108,13 @@ plot_pacea_index_monthly_heatmap <- function(pacea_index_obj,
   # Check that the object has year and month columns
   stopifnot("pacea_index_obj must have 'year' column" =
               "year" %in% names(pacea_index_obj))
-  stopifnot("pacea_index_obj must have 'month' column" =
+  stopifnot("Input does not have 'month' column but requires it for heatmap style plot."
+  =
               "month" %in% names(pacea_index_obj))
 
   # Validate value parameter
-  stopifnot("value must be a column of the pacea_index object" =
-              value %in% names(pacea_index_obj))
+  stopifnot("value must be a column of the pacea_index object; if wanting to plot npi_monthly then use plot(npi_monthly, heatmap_style = TRUE, value = 'value', digits = 0)"
+            = value %in% names(pacea_index_obj))
 
   # Determine the index name from the object's axis_name attribute if available
   index_name <- attr(pacea_index_obj, "axis_name")
@@ -217,7 +241,8 @@ plot_pacea_index_monthly_heatmap <- function(pacea_index_obj,
 
   # Create label column for text display
   plot_data <- plot_data %>%
-    dplyr::mutate(label = as.character(round(.data[[value]], 1)))
+    dplyr::mutate(label = as.character(round(.data[[value]],
+                                             digits)))
 
   # Create the plot
   monthly_heatmap <-
