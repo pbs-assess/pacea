@@ -149,7 +149,8 @@ plot.pacea_index <- function(obj,
 
   # If heatmap_style is TRUE, use the heatmap plotting function
   if(heatmap_style){
-    stopifnot("heatmap_style requires monthly data (a 'month' column)" =
+    stopifnot("heatmap_style requires monthly data (a 'month' column), which is not the case for npi_annual, alpi, or bi."
+  =
               "month" %in% names(obj))
     return(dots_parser(plot_pacea_index_monthly_heatmap,
                        pacea_index_obj = obj,
