@@ -3,7 +3,7 @@
 ##' Create an annual index based on a pacea object. The annual value can be
 ##' calculated from annual values, such as `hake_recruitment`, or averaged for
 ##' specific monthly values (e.g. PDO for Apr to Sep). See the examples and
-##' vignette TODO
+##' vignettes TODO
 ##' Calculations are based on the class of the object: [create_index()] is a generic function that calls `create_index.<class>()`
 ##' where `<class>` is `class(data)`. [create_index.pacea_recruitment()] is a
 ##' kind of master file that gets used by others when possible (could not for
@@ -30,13 +30,14 @@
 ##'
 ##' TODO add a test to make sure they match, and default months is always April.
 ##'
-##' The index is normalised (subtract the mean and divide by the standard
-##' deviation) across the specified years, except for climatological and
-##' oceanographic indices as these are already anomalies that have specific
-##' meanings TODO check each of them in turn. This means that different types of
+##' By defaults, the index is normalised (subtract the mean and divide by the standard
+##' deviation) across the specified years. This means that different types of
 ##' indices can be compared to each other. Indices are returned in a
 ##' standardised format for plotting. TODO: Medians are used if there is uncertainties
-##' are given in the original data, though functions may have choices
+##' are given in the original data, though functions may have choices. The
+##' option `standardise_index = FALSE` means that a created index will not
+##' standardised, but use this with caution as the idea is to standardise them
+##' all for ease of comparison in heatmap-style plots.
 ##' @param data One of the data objects (or a reduced version that retains the
 ##' class of the object) in pacea:
 ##' Biological populations:
@@ -73,10 +74,10 @@
 ##' climatology can be built (which can depend on the years used for the
 ##' climatology). For `oisst_month` only `anomalies` (the default) can be used.
 ##' @param standardise_index logical as to whether to standardise the index or
-##' not. It is `TRUE` except for the oceanographic and climatological indices
-##' TODO check them all, because these are already calculated as anomalies with
-##' well known definitions. TODO see vignette, decide what to do. May help to
-##' plot heatmap style first.
+##' not. It is `TRUE` by default, but we give the option to not standardise, but
+##' use that with caution because we are defining such an annual index to be
+##' standardised, for ease of comparing different types of indices on a heatmap
+##' style plot.
 ##' @param herring_region string for the region to be used when making an index related
 ##' to `herring_recruitment` or `herring_spawning_biomass`.
 ##' @param seal_region string for the region to be used when making an index related

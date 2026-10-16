@@ -405,84 +405,25 @@ plot(oni,
      heatmap_style = TRUE)
 ```
 
+We can create an index based on a few months of ONI, let's say Nov-Jan, based on
+the above figure:
+```{r, onindexnovjan}
 
 
-HERE actually first make a heatmap style plot for an index. ONI would be
-great. Have not committed yet; see what I did and whether to undo the
-standardise_index option (not implemented yet though).
-
-TODO move up when done.
-
-If averaging over a few months, should we still standardise over those months
-and across years. Kind of think no when the known indices are already
-standardised in a well-defined way and showing those. But yes if we want to make them into an
-ecosystem summary heatmap.
-
-TODO have to think about, ask Jennifer, Chris, Mike Jacox....
-
-TODO BUT what does it mean for standard deviations?
-
-TODO add something in the usual index vignette
-
-Do both here then make an Issue and ask people.
-
-```{r, oniindex}
-oni_index <- create_index_oni(oni,
-                              months = 5,
-                              standardise_index = FALSE)
-
-oni_index_2 <- create_index_oni(oni,
-                                months = 3:5,
-                                standardise_index = FALSE)                                
-
-plot_indices(oni_index_2)
-
-oni_index_3 <- create_index_oni(oni,
-                                months = 10:12,
-                                standardise_index = FALSE)                                
-
-plot_indices(oni_index_3)
 ```
 
-That works, TODO but colourscale caption is not correct.
 
-Now try not standardising:
-```{r, oniindex2}
-oni_index_std <- create_index_oni(oni,
-                              months = 5,
-                              standardise_index = TRUE)
 
-oni_index_std_2 <- create_index_oni(oni,
-                                months = 3:5,
-                                standardise_index = TRUE)                                
 
-plot_indices(oni_index_std_2)
-
-oni_index_std_3 <- create_index_oni(oni,
-                                months = 10:12,
-                                standardise_index = TRUE,
-                                index_label = "standardised")
-
-plot_indices(oni_index_std_3,
-             oni_index_3,
-             years = 1972:2026)
-
-# Standardised:
-oni_index_std_3
-# Not standardised:
-oni_index_3
-```
-
-Perfect. The values are slightly different as expected, but the colours come out
-exactly the same. So standardising is fine to do for oni at least. TODO think a
-little more.
 
 
 ## Temporary - figuring out why historical values have changed
 
-TODO remove when figure out, rerun indices data updates.
+TODO this will be removed when all figured out, rerun indices data updates. Send
+figure to Chris. 
 
-TODO See long email to Mike and Tetjana; W: for response.
+TODO See long email to Mike and Tetjana; waiting for response (Mike has asked
+someone about it).
 
 First want to update indices values and check how the figure looks. Quick cheat
 as the index has changed so I don't want to save it into pacea yet (not
@@ -718,7 +659,37 @@ plot(oni_new,
 ```
 
 
+<!--
+None of this is run:
 
+Trying to compare standardised to not standardised, look okay but not really 
+needed as confusing.
 
+-->
 
+```{r, oniindex, fig.height = fig_height_two_row_heatmap, eval = FALSE, echo = FALSE}
+oni_index_std <- create_index_oni(oni,
+                                  months = 3:5,
+                                  standardise_index = TRUE)                          
+oni_index_not_std <- create_index_oni(oni,
+                                      months = 3:5,
+                                      standardise_index = FALSE,
+                                      index_label = "Not standardised")
 
+plot_indices(oni_index_std,
+             oni_index_not_std)
+```
+
+<!-- 
+
+(Note colourscale caption is wrong as assumes standardised indices). Looks
+correct, general pattern is the same, just the standardised one is more spread
+out than the non-standardised.
+-->
+
+```{r, oniindexvalues, eval = FALSE, echo = FALSE}
+# Standardised:
+oni_index_std
+# Not standardised:
+oni_index_not_std
+```
