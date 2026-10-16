@@ -22,8 +22,8 @@ knitr::opts_chunk$set(
 )
 ```
 
-**This is now updated to include the North Pacific Current Bifurcation Index
-(`bi`). And was re-run on the above date to update all indices in the plots below.**
+**Check out the new (October 2026) [heatmap style plots](#heatmap) that are especially useful for
+understanding how El Niño is evolving in 2026**
 
 ## Oceanic Niño Index
 
@@ -103,6 +103,29 @@ tail(oni_fix)       # Should always end with February 2023
 Of course, you may always want an analysis to be as up-to-date as possible, but be
 aware of this for reproducibility, and to avoid you being confused if your results
 slightly change. Similar, for `pdo` the previous last value can seem to get updated.
+
+## New heatmap style plots {#heatmap}
+
+The `heatmap_style = TRUE` option creates the following new figure for the
+Oceanic Niño Index, of particuar interest as a strong El Niño is developing 
+during 2026:
+```{r, oniheatmap, fig.width = 14, fig.height = 5.25}
+plot(oni,
+     years = 1980:2026,
+     neutral_oni_one_colour = TRUE,
+     heatmap_style = TRUE)
+```
+
+You can read down the columns to follow the months in each year. 
+Neutral conditions are between -0.5 and +0.5 and so are coloured grey (with
+`neutral_oni_one_colour = TRUE`; users can change the colour if desired). Red
+represents El Niño conditions and blue La Niña (technically an El Niño requires
+five consecutive overlapping three-month periods to be >0.5,
+https://www.ncei.noaa.gov/access/monitoring/dyk/el-nino). 
+
+Similar maps can be produced for all the pacea indices, except those that are
+only annual (`npi_annual`, `alpi`, and `bi`). Use `value = "value"` argument for
+`npi_monthly`; see `?plot_pacea_index_monthly_heatmap`.
 
 ## Further climatic and oceanographic indices
 

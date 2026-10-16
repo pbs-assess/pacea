@@ -393,6 +393,22 @@ the figure sizes looking good; these are not automated in the functions.
 
 ## Climatological and oceanographic indices
 
+For details of the climatological and oceanographic indices available in pacea
+see that [indices](https://pbs-assess.github.io/pacea/vignettes/indices.html)
+vignette. For example, we have developed a heatmap style that is particularly
+useful for understanding the emergence of El Niño (see vignette for more
+details), with shades of blue representing La Niña conditions, grey representing
+neutral, and shades of red representing El Niño:
+
+```{r, oniheatmap}
+plot(oni,
+     years = 1980:2026,
+     neutral_oni_one_colour = TRUE,
+     heatmap_style = TRUE)
+```
+
+
+
 HERE actually first make a heatmap style plot for an index. ONI would be
 great. Have not committed yet; see what I did and whether to undo the
 standardise_index option (not implemented yet though).
@@ -401,7 +417,7 @@ TODO move up when done.
 
 If averaging over a few months, should we still standardise over those months
 and across years. Kind of think no when the known indices are already
-standardised in a well-defined way. But yes if we want to make them into an
+standardised in a well-defined way and showing those. But yes if we want to make them into an
 ecosystem summary heatmap.
 
 TODO have to think about, ask Jennifer, Chris, Mike Jacox....
@@ -463,39 +479,6 @@ Perfect. The values are slightly different as expected, but the colours come out
 exactly the same. So standardising is fine to do for oni at least. TODO think a
 little more.
 
-Now to get heatmap-monthly style plot, like we did for buoys.
-
-So we want to have a plot like
-`plot_pacea_buoy_anomalies_single()`, but it can actually just work on the oni
-values. Stick with only needing to create a standardised index when wanting to
-compare to other types of indices. 
-
-So when we call `plot.pacea_index()`, add a `monthly_heatmap` option to then call
-`plot_pacea_index_monthly_heatmap()`. Then do need to check how it works for each type
-of index. But do the `plot_pacea_index_monthly_heatmap()` first to get that
-going, based on `plot_pacea_buoy_anomalies_single()`.
-
-Default:
-```{r, oniplot7}
-plot(oni,
-     years = 1980:2026,
-     heatmap_style = TRUE)
-```
-
-Neutral conditions are between -0.5 and +0.5, and so we can make those just grey
-as we do not really care so much about slight differencs in this range, using:
-```{r, oniplot8}
-plot(oni,
-     years = 1980:2026,
-     neutral_oni_one_colour = TRUE,
-     heatmap_style = TRUE)
-```
-
-Users might be prefer one or the other.
-
-Similar maps can be produced for all the pacea indices, except those that are
-only annual (`npi_annual`, `alpi`, and `bi`). Use `value = "value"` argument for
-`npi_monthly`; see `?plot_pacea_index_monthly_heatmap`.
 
 ## Temporary - figuring out why historical values have changed
 
