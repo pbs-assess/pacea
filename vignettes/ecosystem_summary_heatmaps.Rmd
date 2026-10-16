@@ -408,6 +408,8 @@ TODO have to think about, ask Jennifer, Chris, Mike Jacox....
 
 TODO BUT what does it mean for standard deviations?
 
+TODO add something in the usual index vignette
+
 Do both here then make an Issue and ask people.
 
 ```{r, oniindex}
@@ -492,90 +494,14 @@ plot(oni,
 Users might be prefer one or the other.
 
 Similar maps can be produced for all the pacea indices, except those that are
-only annual (`npi_annual`, `alpi`, and `bi`).
-
-### Check each index in turn - heatmap style plot
-
-```{r, pdoplot}
-plot(pdo,
-     years = 1980:2026,
-     heatmap_style = TRUE)
-```
-
-No anomaly:
-```{r, npi_monthlyplot}
-expect_error(plot(npi_monthly,
-                  years = 1980:2026,
-                  heatmap_style = TRUE))
-```
-
-```{r, npi_monthlyplot2}
-plot(npi_monthly,
-     years = 1980:2026,
-     heatmap_style = TRUE,
-     value = "value",
-     digits = 0)
-```
-
-
-No month:
-```{r, npi_annualplot}
-expect_error(plot(npi_annual,
-                  years = 1980:2026,
-                  heatmap_style = TRUE))
-```
-
-No month:
-```{r, alpiplot}
-expect_error(plot(alpi,
-                  years = 1980:2026,
-                  heatmap_style = TRUE))
-```
-
-Works:
-```{r, npgoplot}
-plot(npgo,
-     years = 1980:2026,
-     heatmap_style = TRUE)
-```
-
-Works:
-```{r, aoplot}
-plot(ao,
-     years = 1980:2026,
-     heatmap_style = TRUE)
-```
-
-Works:
-```{r, soiplot}
-plot(soi,
-     years = 1980:2026,
-     heatmap_style = TRUE)
-```
-
-Needs month:
-```{r, biplot}
-expect_error(plot(bi,
-                  years = 1980:2026,
-                  heatmap_style = TRUE))
-```
-
-Works:
-```{r, meiplot}
-plot(mei,
-     years = 1980:2026,
-     heatmap_style = TRUE)
-```
-
-
-
-Need to test each type of index in turn. TODO above
+only annual (`npi_annual`, `alpi`, and `bi`). Use `value = "value"` argument for
+`npi_monthly`; see `?plot_pacea_index_monthly_heatmap`.
 
 ## Temporary - figuring out why historical values have changed
 
 TODO remove when figure out, rerun indices data updates.
 
-TODO See long email to Mike and Tetjana.
+TODO See long email to Mike and Tetjana; W: for response.
 
 First want to update indices values and check how the figure looks. Quick cheat
 as the index has changed so I don't want to save it into pacea yet (not
