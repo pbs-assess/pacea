@@ -1,25 +1,20 @@
 ##' @export
 ##' @rdname create_index
-create_index_oni <- function(data,  # TODO change to .pacea_index when
-                                     # got going, then need to check other
-                                     # indices; annual ones will be different
-                                  years = NULL,
-                                  index_label = NULL,
-                                  index_name = NULL,
-                                  index_statistic = "mean_of_monthly_anomalies",
-                                  months = NULL,
-                                  require_requested_months = NULL,
-                                  standardise_index = TRUE,
-                                  ...){
+create_index.pacea_index <- function(data,
+                                     years = NULL,
+                                     index_label = NULL,
+                                     index_name = NULL,
+                                     index_statistic = "mean_of_monthly_anomalies",
+                                     months = NULL,
+                                     require_requested_months = NULL,
+                                     standardise_index = TRUE,
+                                     ...){
 
-  # Need a different function for the annual indices that do not have months.
+  # Need different options for the annual indices that do not have months. TODO
 
   if(is.null(months)){
     months <- 4
   }
-
-  # TODO remove stopifnot(index_statistic %in% c("anomalies"))    # TODO help, note it's the mean
-  # of the anomalies
 
   # Check months are consecutive except Dec to Jan
   if(!is.null(months)){

@@ -408,12 +408,12 @@ plot(oni,
 We can create an index based on a few months of ONI, let's say Nov-Jan, based on
 the above figure:
 ```{r, onindexnovjan}
-
-
+oni_index_nov_jan <- create_index(oni,
+                                  months = c(11, 12, 1))
 ```
 
 
-
+HERE
 
 
 
@@ -668,10 +668,10 @@ needed as confusing.
 -->
 
 ```{r, oniindex, fig.height = fig_height_two_row_heatmap, eval = FALSE, echo = FALSE}
-oni_index_std <- create_index_oni(oni,
+oni_index_std <- create_index(oni,
                                   months = 3:5,
                                   standardise_index = TRUE)                          
-oni_index_not_std <- create_index_oni(oni,
+oni_index_not_std <- create_index(oni,
                                       months = 3:5,
                                       standardise_index = FALSE,
                                       index_label = "Not standardised")
