@@ -23,6 +23,7 @@ plot_pacea_buoy_anomalies_single <- function(pacea_buoy_anomalies_list,
                                              sst_plot = "anomalies",
                                              count_breaks = NULL,
                                              return_results = FALSE,
+                                             angle_year_labels = TRUE,
                                              scale_limits = NULL,
                                              heatmap_colours = pals::ocean.balance(20)[2:19]){
 
@@ -159,6 +160,15 @@ plot_pacea_buoy_anomalies_single <- function(pacea_buoy_anomalies_list,
           panel.background = element_rect(fill = "white",
                                           colour = NA),
           panel.grid = element_blank()) +
+    {
+      if(angle_year_labels){
+        theme(axis.text.x = element_text(angle = 45,
+                                         hjust = 1,
+                                         vjust = 1))
+      } else {
+        theme()
+      }
+    } +
     ggplot2::geom_text(aes(label = label),
                        size = 3.5) +
     guides(fill = guide_colorbar(barwidth = 15,

@@ -78,7 +78,7 @@ This is so that indices
 are all dimensionless and can be compared on equivalent scales, and shown on a
 single heatmap style plot.
 
-As an example, let's use some example ecosystem information for the Strait of Georgia
+As a general proof-of-concept example, let's use some ecosystem information for the Strait of Georgia
 (SOG) that is in pacea. We create an index for each type of ecosystem information in turn and
 then make the plot. We just need to use `create_index()` multiple times to
 create the indices, and then `plot_indices()` to make the function (we will
@@ -165,7 +165,7 @@ It is a tibble, with a value for each year, plus an `index` to refer to in code,
 and an `index_label` to use for the labels in the plot (these are repeated in
 each row, which just makes things easier at the plotting stage). 
 
-We can chose multiple months. Note that `index` and `index_label`
+We can also choose multiple months. Note that `index` and `index_label`
 get automatically prescribed;
 examine the arguments and results for these three indices (for the default buoy,
 namely that 
@@ -215,7 +215,9 @@ by checking `class(object)` and then `?create_index.<class>`. For example
 ## OISST spatiotemporal data
 
 We now create various indices from the Optimally Interpolated Sea Surface
-Temperature (OISST) spatiotemporal data. An index is a single standardised value
+Temperature (OISST) spatiotemporal data, that are described in
+[oisst.html](https://pbs-assess.github.io/pacea/vignettes/oisst.html). 
+An index is a single standardised value
 for each year, and for SST would be based on the mean anomalies over a given
 area.
 
@@ -224,12 +226,8 @@ verify the area and understand what is going on. We wil then calculate an index
 directly from the anomalies list, or 
 directly from `create_index(oisst_month)` with various options.
 
-<!-- which will then call `calculate_anomalies()` and then
-`create_index.pacea_oisst_anomalies_list()` , but only return the index.
--->
-
 First, let's look at the full domain of the OISST data and calculate annual
-anomalies and do the default plot (for the most recent month of data):
+anomalies and do the default plot (which is for the most recent month of data):
 ```{r, oisst1, fig.height = fig_height_one_map}
 oisst_anomalies <- calculate_anomalies(oisst_month)
 
@@ -394,7 +392,7 @@ the figure sizes looking good; these are not automated in the functions.
 ## Climatological and oceanographic indices
 
 For details of the climatological and oceanographic indices available in pacea
-see that [indices](https://pbs-assess.github.io/pacea/vignettes/indices.html)
+see the [indices](https://pbs-assess.github.io/pacea/vignettes/indices.html)
 vignette. For example, we have developed a heatmap style that is particularly
 useful for understanding the emergence of El Niño (see vignette for more
 details), with shades of blue representing La Niña conditions, grey representing
@@ -705,14 +703,14 @@ filter(oni_new, year == 2026)
 ```
 
 Original `oni`:
-```{r, oniheatmap}
+```{r, oniheatmap2}
 plot(oni,
      heatmap_style = TRUE,
      years = 1980:2026,
      neutral_oni_one_colour = TRUE)
 ```
 and `oni_new`:
-```{r, oninewheatmap}
+```{r, onineheatmap3}
 plot(oni_new,
      heatmap_style = TRUE,
      years = 1980:2026,

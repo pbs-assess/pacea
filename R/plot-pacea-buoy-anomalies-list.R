@@ -46,6 +46,7 @@
 ##'   then they are coloured grey.
 ##' @param heatmap_colours numeric vector of colours to use for the heatmap.
 ##'   Default is `pals::ocean.balance(20)[2:19]`, which provides 18 colours.
+##' @rdname plot_indices
 ##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot` and `results`
 ##'   (when `return_results = TRUE`)
 ##' @export
@@ -68,6 +69,7 @@ plot.pacea_buoy_anomalies_list <- function(pacea_buoy_anomalies_list,
                                            count_breaks = NULL,
                                            return_results = FALSE,
                                            require_requested_months = NULL,
+                                           angle_year_labels = TRUE,
                                            scale_limits = NULL,
                                            heatmap_colours = pals::ocean.balance(20)[2:19]){
                                            # number_shades = 16){ see below
@@ -123,6 +125,7 @@ plot.pacea_buoy_anomalies_list <- function(pacea_buoy_anomalies_list,
       sst_plot = sst_plot,
       count_breaks = count_breaks,
       return_results = return_results,
+      angle_year_labels = angle_year_labels,
       scale_limits = scale_limits,
       heatmap_colours = heatmap_colours)
 
@@ -356,7 +359,7 @@ plot.pacea_buoy_anomalies_list <- function(pacea_buoy_anomalies_list,
                                                 name = legend_label)
   }
 
-  anomalies_plot <-
+    anomalies_plot <-
     plot_data %>%
     ggplot(aes(x = year,
                y = stn_id)) +
@@ -377,6 +380,15 @@ plot.pacea_buoy_anomalies_list <- function(pacea_buoy_anomalies_list,
           panel.background = element_rect(fill = "white",
                                           colour = NA),
           panel.grid = element_blank()) +
+    {
+      if(angle_year_labels){
+        theme(axis.text.x = element_text(angle = 45,
+                                         hjust = 1,
+                                         vjust = 1))
+      } else {
+        theme()
+      }
+    } +
     ggplot2::geom_text(aes(label = label),
                        size = 3.5) +
     guides(fill = guide_colorbar(barwidth = 15,

@@ -30,6 +30,7 @@
 ##'   then they are coloured grey.
 ##' @param heatmap_colours numeric vector of colours to use for the heatmap.
 ##'   Default is `pals::ocean.balance(20)[2:19]`, which provides 18 colours.
+##' @rdname plot_indices
 ##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot` and `results`
 ##'   (when `return_results = TRUE`)
 ##' @export
@@ -51,6 +52,7 @@ plot_pacea_oisst_anomalies_heatmap_style <- function(dat,
                                                      ylab = "Month",
                                                      return_results = FALSE,
                                                      scale_limits = NULL,
+                                                     angle_year_labels = TRUE,
                                                      heatmap_colours = pals::ocean.balance(20)[2:19]){
 
   legend_label <- bquote("Monthly SST anomaly ("*degree*C*")")
@@ -143,6 +145,15 @@ plot_pacea_oisst_anomalies_heatmap_style <- function(dat,
           panel.background = element_rect(fill = "white",
                                           colour = NA),
           panel.grid = element_blank()) +
+    {
+      if(angle_year_labels){
+        theme(axis.text.x = element_text(angle = 45,
+                                         hjust = 1,
+                                         vjust = 1))
+      } else {
+        theme()
+      }
+    } +
     ggplot2::geom_text(aes(label = label),
                        size = 3.5) +
     guides(fill = guide_colorbar(barwidth = 15,

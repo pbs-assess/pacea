@@ -39,7 +39,7 @@
 ##'   Default is `pals::ocean.balance(20)[2:19]`, which provides 18 colours.
 ##'   When `neutral_oni_one_colour = TRUE`, must have an even number of colours.
 ##' @param digits numeric number of decimal places to give for digits within the squares
-##'
+##' @rdname plot_indices
 ##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot`
 ##'   and `results` (when `return_results = TRUE`)
 ##' @export
@@ -96,6 +96,7 @@ plot_pacea_index_monthly_heatmap <- function(pacea_index_obj,
                                              scale_limits = NULL,
                                              neutral_oni_one_colour = FALSE,
                                              neutral_oni_colour = "grey60",
+                                             angle_year_labels = TRUE,
                                              heatmap_colours =
                                                pals::ocean.balance(20)[2:19],
                                              digits = 1){
@@ -266,6 +267,15 @@ plot_pacea_index_monthly_heatmap <- function(pacea_index_obj,
                    panel.background = ggplot2::element_rect(fill = "white",
                                                              colour = NA),
                    panel.grid = ggplot2::element_blank()) +
+    {
+      if(angle_year_labels){
+        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45,
+                                                           hjust = 1,
+                                                           vjust = 1))
+      } else {
+        ggplot2::theme()
+      }
+    } +
     ggplot2::geom_text(ggplot2::aes(label = label),
                        size = 3.5) +
     ggplot2::guides(fill = ggplot2::guide_colorbar(barwidth = 15,
