@@ -110,3 +110,51 @@ test_that("create_index.pacea_oisst_anomalies_list() works with different option
                                months = 5),
                   "pacea_standardised_index")
 })
+
+test_that("create_index.pacea_index() works with different options",
+{
+  expect_s3_class(create_index(oni,
+                               months = c(11, 12, 1)),
+                  "pacea_standardised_index")
+
+  expect_s3_class(create_index(pdo,
+                               months = c(11, 12, 1)),
+                  "pacea_standardised_index")
+
+  # TODO this fails, make it pass
+  expect_s3_class(create_index(npi_monthly,
+                               months = c(11, 12, 1)),
+                  "pacea_standardised_index")
+  # TODO this fails, make it pass
+  expect_s3_class(create_index(npi_annual,
+                               months = c(11, 12, 1)),
+                  "pacea_standardised_index")
+
+  # TODO this fails, make it pass
+  expect_s3_class(create_index(alpi,
+                               months = c(11, 12, 1)),
+                  "pacea_standardised_index")
+
+  expect_s3_class(create_index(npgo,
+                               months = c(11, 12, 1)),
+                  "pacea_standardised_index")
+
+  expect_s3_class(create_index(ao,
+                               months = c(11, 12, 1)),
+                  "pacea_standardised_index")
+
+  expect_s3_class(create_index(soi,
+                               months = c(11, 12, 1)),
+                  "pacea_standardised_index")
+
+  # TODO this fails, make it pass
+  expect_s3_class(create_index(bi,
+                               months = c(11, 12, 1)),
+                  "pacea_standardised_index")
+
+  expect_s3_class(create_index(mei,
+                               months = c(11, 12, 1)),
+                  "pacea_standardised_index")
+
+})
+

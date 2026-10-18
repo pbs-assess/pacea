@@ -38,19 +38,22 @@ create_index.pacea_index <- function(data,
     }
   }
 
-
   if(is.null(index_label)){
+    data_name <- deparse(substitute(data)) %>%
+      tolower()
+    display_name <- toupper(data_name)
     index_label <-
-      paste0("Mean ONI anomaly for ",
+      paste0(display_name,
+             " for ",
              summarise_months(months))
-    # TODO think if that makes sense for one month
   }
 
   if(is.null(index_name)){
+    data_name <- deparse(substitute(data)) %>%
+      tolower()
     index_name <-
-      paste0("oni_",
+      paste0(data_name, "_",
              tolower(summarise_months(months))) %>%
-      tolower() %>%
       stringr::str_replace_all(" ",
                                "_")
   }

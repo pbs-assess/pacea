@@ -255,7 +255,10 @@ full domain shown (which is Canada's Exclusive Economic Zone):
 
 ```{r, fulldomain}
 oisst_eez_apr_jun_index <- create_index(oisst_anomalies,
-                                        months = 4:6)
+                                        months = 4:6,
+                                        index_name =
+                                          "oisst_apr_to_jun_over_eez",
+                                        index_label = "OISST for Apr to Jun over EEZ")
 oisst_eez_apr_jun_index
 ```
 The index tibble has the same format as the other types shown above, with one
@@ -314,9 +317,11 @@ plot(oisst_anomalies,
      x_axis_labels = c(-130, -128))
 ```
 
-To calculate the index for Area 126:
+To calculate the index for Area 126 in April (the default), and give it an appropriate name and label:
 ```{r, oisstindex}
-oisst_area_126_apr_index <- create_index(oisst_anomalies_area_126)   # April is the default
+oisst_area_126_apr_index <- create_index(oisst_anomalies_area_126,
+                                         index_name = "oisst_apr_area_126",
+                                         index_label = "OISST in Apr over Area 126")   # April is the default
 
 oisst_area_126_apr_index
 ```
@@ -412,10 +417,64 @@ oni_index_nov_jan <- create_index(oni,
                                   months = c(11, 12, 1))
 ```
 
+And then see if that looks to correlate with the indices of temperatures off
+WCVI, and then the whole EEZ, that
+we looked at above:
+
+```{r, onitemp, fig.height = fig_height_three_row_heatmap}
+plot_indices(oni_index_nov_jan,
+             oisst_area_126_apr_index,
+             sst_buoy_south_brooks_apr_index,
+             oisst_eez_apr_jun_index,
+             years = 1982:2026,
+             gap_after = c("oni_index_nov_jan",
+                           "sst_buoy_south_brooks_apr_index"))             
+```
+(Note that the standardised ONI index here is standardised, as noted in the
+title, so values are not
+the same as for the true ONI index).
+
+For the top two rows, the red and blues generally match up, although there are
+some exceptions. TODO coming soon a simple phase plot that would show this. The
+correlation coefficient is
+```{r, corr}
+cor(filter(oni_index_nov_jan, year >= 1982)$value,
+    oisst_area_126_apr_index$value) %>% round(2)
+```
+
+Interestingly, the averaged temperature over Area 126 (second row) for 2026 is 0.9 -- only
+in 2025 and 2026 has it been >0.5 when the standardised ONI the previous Nov to
+Jan is negative (blue). So coming into an El Niño the water is already
+relatively warm (not saying there's an exact connection, but this shows the sort
+of hypotheses you can start looking into and trying to understand).
+
+<!-- TODO add a phase plot when done. A simple correlation plot does not really -->
+<!-- show this up, a phase plot with years might. The numbers force you to look -->
+<!-- and think a bit-->
+
+For the South Brooks buoy, 2026 is the only year with an anomaly of 0.5 and a
+negative standardised ONI over the pevious Nov to Jan, except for 1996 (that had
+a low standardised ONI value of -0.9).
+
+For the full EEZ (bottom row), the signal is not as strong.
+
+The first comment above about ONI and Area 126 in 2025 and 2026
+does not show really show up in a simple plot unless we highlight those two
+years in red (to be improved with a general
+phase plot function): 
+```{r, oniarea126plot}
+plot(filter(oni_index_nov_jan, year >= 1982)$value,
+     oisst_area_126_apr_index$value,
+     xlab = oni_index_nov_jan$index_label[1],
+     ylab = oisst_area_126_apr_index$index_label[1])
+points(filter(oni_index_nov_jan,
+              year %in% 2025:2026)$value,
+       filter(oisst_area_126_apr_index,
+              year %in% 2025:2026)$value,
+       col = "red")
+```
 
 HERE
-
-
 
 ## Temporary - figuring out why historical values have changed
 
@@ -531,7 +590,7 @@ recalculated, presumably related to:
 
 Using the link from Andrea: https://psl.noaa.gov/data/timeseries/month/
 
-Oceanic Nino index:
+Oceanic Niño index:
 
 https://psl.noaa.gov/data/correlation/oni.data    
 
