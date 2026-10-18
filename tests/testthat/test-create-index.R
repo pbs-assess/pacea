@@ -121,18 +121,14 @@ test_that("create_index.pacea_index() works with different options",
                                months = c(11, 12, 1)),
                   "pacea_standardised_index")
 
-  # TODO this fails, make it pass
   expect_s3_class(create_index(npi_monthly,
                                months = c(11, 12, 1)),
                   "pacea_standardised_index")
-  # TODO this fails, make it pass
-  expect_s3_class(create_index(npi_annual,
-                               months = c(11, 12, 1)),
+
+  expect_s3_class(create_index(npi_annual),
                   "pacea_standardised_index")
 
-  # TODO this fails, make it pass
-  expect_s3_class(create_index(alpi,
-                               months = c(11, 12, 1)),
+  expect_s3_class(create_index(alpi),
                   "pacea_standardised_index")
 
   expect_s3_class(create_index(npgo,
@@ -147,14 +143,12 @@ test_that("create_index.pacea_index() works with different options",
                                months = c(11, 12, 1)),
                   "pacea_standardised_index")
 
-  # TODO this fails, make it pass
-  expect_s3_class(create_index(bi,
-                               months = c(11, 12, 1)),
+  expect_s3_class(create_index(bi),
                   "pacea_standardised_index")
 
   expect_s3_class(create_index(mei,
                                months = c(11, 12, 1)),
                   "pacea_standardised_index")
-
 })
+
 

@@ -12,6 +12,48 @@ create_index.pacea_index <- function(data,
 
   # Need different options for the annual indices that do not have months. TODO
 
+  # Use value column as anomaly if anomaly column doesn't exist. Bit of an
+  # internal workaround, but the point is to get a standardised index who's name
+  # will not mention anomaly or value.
+  if(!("anomaly" %in% names(data))){
+    data <- data %>%
+      dplyr::mutate(anomaly = value)
+  }
+
+  if(is.null(years)){
+    years <- min(data$year):max(data$year)
+  }
+
+  # Handle annual data (no month column)
+  if(!("month" %in% names(data))){
+    if(is.null(index_label)){
+      data_name <- as.character(match.call()$data)
+      parts <- strsplit(data_name, "_")[[1]]
+      display_name <- paste(c(toupper(parts[1]),
+                              tolower(parts[-1])),
+                            collapse = " ")
+      index_label <- display_name
+    }
+
+    if(is.null(index_name)){
+      data_name <- as.character(match.call()$data)
+      index_name <- data_name
+    }
+
+    res <- data %>%
+      dplyr::filter(year %in% years) %>%
+      dplyr::select(year,
+                    anomaly)
+
+    ret <- create_index.pacea_recruitment(data = res,
+                                          years = years,
+                                          index_label = index_label,
+                                          index_name = index_name,
+                                          index_statistic = "anomaly",
+                                          standardise_index = standardise_index)
+    return(ret)
+  }
+
   if(is.null(months)){
     months <- 4
   }
@@ -39,9 +81,11 @@ create_index.pacea_index <- function(data,
   }
 
   if(is.null(index_label)){
-    data_name <- deparse(substitute(data)) %>%
-      tolower()
-    display_name <- toupper(data_name)
+    data_name <- as.character(match.call()$data)
+    parts <- strsplit(data_name, "_")[[1]]
+    display_name <- paste(c(toupper(parts[1]),
+                            tolower(parts[-1])),
+                          collapse = " ")
     index_label <-
       paste0(display_name,
              " for ",
@@ -49,8 +93,7 @@ create_index.pacea_index <- function(data,
   }
 
   if(is.null(index_name)){
-    data_name <- deparse(substitute(data)) %>%
-      tolower()
+    data_name <- as.character(match.call()$data)
     index_name <-
       paste0(data_name, "_",
              tolower(summarise_months(months))) %>%
@@ -110,5 +153,5 @@ create_index.pacea_index <- function(data,
                                         index_name = index_name,
                                         index_statistic = index_statistic,
                                         standardise_index = standardise_index)
-  ret
+  return(ret)
 }
