@@ -365,7 +365,10 @@ above. Nevertheless, `create_index()` will work directly on `oisst_month`, with
 the `area` option, giving the same result as above
 ```{r, oisstindex2}
 oisst_area_126_apr_index_directly <- create_index(oisst_month,
-                                                  area = pfma_area_126_temp)
+                                                  area = pfma_area_126_temp,
+                                                  index_name =
+                                                    "oisst_apr_area_126",
+                                                  index_label = "OISST in Apr over Area 126")
 
 expect_equal(oisst_area_126_apr_index,
              oisst_area_126_apr_index_directly)
@@ -462,7 +465,7 @@ The first comment above about ONI and Area 126 in 2025 and 2026
 does not show really show up in a simple plot unless we highlight those two
 years in red (to be improved with a general
 phase plot function): 
-```{r, oniarea126plot}
+```{r, oniarea126plot, fig.width = 5}
 plot(filter(oni_index_nov_jan, year >= 1982)$value,
      oisst_area_126_apr_index$value,
      xlab = oni_index_nov_jan$index_label[1],
@@ -474,7 +477,14 @@ points(filter(oni_index_nov_jan,
        col = "red")
 ```
 
-HERE
+The `create_index()` function works on all the climatological and oceanographic indices in
+pacea (PDO, NPGO, etc.;see `pacea_indices`) and so that plus `plot_indices()` could be used to
+compare and understand the relationships between the indices. An exercise for the reader.
+
+## Biogeochemical model outputs
+
+We have not yet tested or worked on extracting indices from the BCCM and HOTSSea
+model outputs. Coming soon. The OISST functions should help. TODO
 
 ## Temporary - figuring out why historical values have changed
 
