@@ -420,25 +420,21 @@ oni_index_nov_jan <- create_index(oni,
                                   months = c(11, 12, 1))
 ```
 
-And then see if that looks to correlate with the indices of temperatures off
-WCVI, and then the whole EEZ, that
-we looked at above:
+We can see if that looks to correlate with the previously calculated index of
+temperature in Area 126, off the west coast of Vancouver Island:
 
-```{r, onitemp, fig.height = fig_height_three_row_heatmap}
+```{r, oni126, fig.height = fig_height_two_row_heatmap}
 plot_indices(oni_index_nov_jan,
              oisst_area_126_apr_index,
-             sst_buoy_south_brooks_apr_index,
-             oisst_eez_apr_jun_index,
-             years = 1982:2026,
-             gap_after = c("oni_index_nov_jan",
-                           "sst_buoy_south_brooks_apr_index"))             
+             years = 1982:2026)             
 ```
-(Note that the standardised ONI index here is standardised, as noted in the
+(Note that the standardised ONI here is standardised like all variables in
+such a plot, as noted in the
 title, so values are not
-the same as for the true ONI index).
+the same as for usually-defined ONI).
 
-For the top two rows, the red and blues generally match up, although there are
-some exceptions. TODO coming soon a simple phase plot that would show this. The
+The red and blues generally match up, although there are
+some exceptions. The
 correlation coefficient is
 ```{r, corr}
 cor(filter(oni_index_nov_jan, year >= 1982)$value,
@@ -447,9 +443,39 @@ cor(filter(oni_index_nov_jan, year >= 1982)$value,
 
 Interestingly, the averaged temperature over Area 126 (second row) for 2026 is 0.9 -- only
 in 2025 and 2026 has it been >0.5 when the standardised ONI the previous Nov to
-Jan is negative (blue). So coming into an El Niño the water is already
-relatively warm (not saying there's an exact connection, but this shows the sort
-of hypotheses you can start looking into and trying to understand).
+Jan is negative (blue). So coming into an El Niño for 2026-2027, the water is already
+relatively warm. This shows the sort
+of hypotheses you can start looking into and trying to understand. And because
+we have the values available, we can make a quick plot to demonstrate this last
+point:
+```{r, onineg, fig.width = 7}
+# Values of the standardised ONI that are negative:
+oni_index_neg <- filter(oni_index_nov_jan,
+                        year >= 1982,     # when OISST data start
+                        value <= 0)
+# Corresponding Area 126 April mean OISST for those years:
+oisst_area_126_apr_oni_neg <- filter(oisst_area_126_apr_index,
+                                     year %in% oni_index_neg$year)
+
+plot(oisst_area_126_apr_oni_neg$year,
+     oisst_area_126_apr_oni_neg$value,
+     xlab = "Year",
+     ylab = "OISST in April over Area 126",
+     main = "Only for years with a negative standardised ONI")
+abline(h = 0, col = "grey")
+``` 
+
+We can also look at potential correlations with the other temperature indices we
+calculated above (for a buoy and for4 the whole EEZ):
+```{r, onitemp, fig.height = fig_height_three_row_heatmap}
+plot_indices(oni_index_nov_jan,
+             oisst_area_126_apr_index,
+             sst_buoy_south_brooks_apr_index,
+             oisst_eez_apr_jun_index,
+             years = 1982:2026,
+             gap_after = c("oni_index_nov_jan",
+                           "sst_buoy_south_brooks_apr_index"))
+```
 
 <!-- TODO add a phase plot when done. A simple correlation plot does not really -->
 <!-- show this up, a phase plot with years might. The numbers force you to look -->
@@ -461,10 +487,10 @@ a low standardised ONI value of -0.9).
 
 For the full EEZ (bottom row), the signal is not as strong.
 
-The first comment above about ONI and Area 126 in 2025 and 2026
-does not show really show up in a simple plot unless we highlight those two
-years in red (to be improved with a general
-phase plot function): 
+The earlier point above about ONI and Area 126 in 2025 and 2026
+does not show really show up in a simple plot (the years in question are
+highlighted in red, but otherwise would not really stand out; to be improved with a general
+phase plot function):
 ```{r, oniarea126plot, fig.width = 5}
 plot(filter(oni_index_nov_jan, year >= 1982)$value,
      oisst_area_126_apr_index$value,
@@ -476,6 +502,7 @@ points(filter(oni_index_nov_jan,
               year %in% 2025:2026)$value,
        col = "red")
 ```
+This demonstrates the usefulness of the heatmap-style plot.
 
 The `create_index()` function works on all the climatological and oceanographic indices in
 pacea (PDO, NPGO, etc.;see `pacea_indices`) and so that plus `plot_indices()` could be used to

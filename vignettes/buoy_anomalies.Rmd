@@ -21,13 +21,25 @@ knitr::opts_chunk$set(
   fig.width = 14,   #5.7,
   fig.height = 7  #5
 )
+fig_height_two_row_heatmap <- 2.7    
+fig_height_three_row_heatmap <- 3  
+fig_height_four_row_heatmap <- 3.5 
+fig_height_five_row_heatmap <- 4   # Looks good, scale others to this kind of
+fig_height_six_row_heatmap <- 4.33 
+fig_height_ten_row_heatmap <- 6.2   
+
+fig_height_one_map <- 4
+fig_width_one_map <- 4
+fig_height_two_map <- 4
+fig_height_three_map <- 4       # width depends how many in each row, so do manually
+
 ```
 
 ## Daily average sea surface temperature from buoys -- climatologies and anomalies
 
 ```{r setup}
-# load_all()    # for developer
-library(pacea)  # for user
+load_all()    # for developer
+# library(pacea)  # for user
 library(dplyr)
 library(tibble)  # Else prints all of a tibble
 library(ggplot2)
@@ -54,11 +66,12 @@ knitr::include_graphics(paste0(here::here(),
                                "/man/figures/buoys_map.png"))
 ```
 
-If you want to quickly get a sense of current temperatures (in the wider
-  northeast Pacific also), check out Andrea Hilborn et al.'s
-  [Pacific_SST_Monitoring website](https://ios-osd-dpg.github.io/Pacific_SST_Monitoring_Site/)
-  page. The pacea package is more suited for doing more speficic plots and
-  analyses (because the data are easily accessible).
+If you want to quickly get a sense of current temperatures (and aso across the wider
+  northeast Pacific Ocean), check out Andrea Hilborn et al.'s
+  [Pacific_SST_Monitoring
+  website](https://ios-osd-dpg.github.io/Pacific_SST_Monitoring_Site/buoys.html). This
+  complements pacea, which is suited for doing specific plots and
+  analyses defined by the user.
 
 ## Calculations and plotting
 
@@ -132,7 +145,7 @@ does not appear on this plot (it was second from bottom in the previous
 plots). We will come back to this later (briefly, the plot requires every
 specified month in `months` to have an anomaly available, else it shows a blank).
 
-And if you want a wintertime index that includes December, that can be done:
+And if you want a wintertime-ish (not strictly 'winter') index that includes December, that can be done:
 ```{r, buoyanomaliesmonths2}
 plot(all_buoys_anomalies,
      months = c(12, 1, 2, 3))
@@ -141,8 +154,8 @@ plot(all_buoys_anomalies,
 As stated in the title, the year on the x-axis is the year of the January.
 
 If you specify `months` and a single buoy, the anomalies for those months are
-all shown:
-```{r, buoyanomaliesmonths3}
+all shown individually:
+```{r, buoyanomaliesmonths3, fig.height = fig_height_four_row_heatmap}
 plot(all_buoys_anomalies,
      months = c(12, 1, 2, 3),
      stn_id = "Halibut Bank")  
@@ -160,7 +173,7 @@ Setting `return_results = TRUE` returns a list containing the plot and then the
 results used for the plot (and also automatically shows the plot). Repeating the
 previous plot with this setting:
 
-```{r, buoyanomaliesmonths4}
+```{r, buoyanomaliesmonths4, fig.height = fig_height_four_row_heatmap}
 res <- plot(all_buoys_anomalies,
             months = c(12, 1, 2, 3),
             stn_id = "Halibut Bank",
@@ -184,7 +197,7 @@ At the beginning we ran
 all_buoys_anomalies <- calculate_anomalies(buoy_sst)
 ```
 
-which we have plotted using various options, and now examine
+which we have plotted using various options. We now examine
 `all_buoys_anomalies` in detail:
 
 ```{r, buoyanomaliesdetails}

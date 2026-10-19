@@ -294,10 +294,12 @@ plot.pacea_buoy_anomalies_list <- function(pacea_buoy_anomalies_list,
       scale_limits <- c(-max_abs,
                         max_abs)
     } else if(sst_plot == "mean"){
-      max_abs <- max(plot_data$sst_plot_value,
+      min_val <- min(plot_data$sst_plot_value,
                      na.rm = TRUE)
-      scale_limits <- c(0,
-                        max_abs)
+      max_val <- max(plot_data$sst_plot_value,
+                     na.rm = TRUE)
+      scale_limits <- c(min_val,
+                        max_val)
     }
   }
 
