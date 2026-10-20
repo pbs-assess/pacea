@@ -191,8 +191,8 @@ in the plot, as `sst_plot_value` and then `label` for the rounded values that ar
 numerically. You can then use these for analyses if desired.
 
 That tibble contains results that depend on options used in the plotting. But we
-will now examine the full results generated at the very beginning in
-`all_buoys_anomalies`.
+will now examine the full results generated at the start in the
+`all_buoys_anomalies` object.
 
 ### Examining the climatology and anomalies
 
@@ -244,19 +244,18 @@ but briefly these allow users to change:
 - months and years to return anomalies for (defaults to all months and
 years)
 - minimum number of daily SST values required in a month for that month to be
-  included in climatology calculation and anomalies calculation; defaults to 15
+  included in climatology and anomaly calculations; defaults to 15
   days per month
 - maximum number of consecutive days allowed to be missing (NA) within a
   month. If a time period has more than this many consecutive NAs, it is
-  excluded from climatology and anomalies calculation; defaults to 6 days.
+  excluded from climatology and anomalies calculations; defaults to 6 days.
 
 We (Elise Keppel and Andy) pragmatically decided on requiring 15 days (roughly half) of daily SST within
 a month, and a maximum consecutive number of missing days of 6. This avoids
 having, say, 15 days of data but all at the beginning of the month -- they need
 to be somewhat spread out.
 These are the
-defaults, but can be changed to any number, or `NULL` to allow
-all data and then examine the results for plotting.
+defaults, but can be changed to any number.
 
 The resulting `plot(all_buoys_anomalies)` uses
 `plot.pacea_buoy_anomalies_list(all_buoys_anomalies)`, which also has arguments
@@ -264,49 +263,30 @@ that users can tweak. See `?plot.pacea_buoy_anomalies_list` for details, but
 briefly these allow users to change:
 
 - main title and axis labels
-- whether to use the name of the buoy (e.g. `Middle NOMAD`) or the `stn_id`
+- whether to use the name of the buoy in the plot (e.g. `Middle NOMAD`) or the `stn_id`
   (e.g. C46004), by setting `use_stn_id_name` to `TRUE` or `FALSE`, respectively.
-- whether to plot monthly anomalies, mean absolute SST values for each month, or
-  counts of daily SST values used to calculate the monthly means; see below for
-  examples, plus options to change the colour scale when plotting counts.
+- what is plotted, using `sst_plot = "mean"` for absolute SST rather than
+anomalies, or `sst_plot = "count"` to check how many days of data are available
+(see example below); for the latter, `count_breaks` adjusts the break points
+used for the colour scale.
+- the number of  months that must be available
+out of the requested `months` to compute an average anomaly, by changing
+`require_requested_months` (see below).
+- limits for the colour scale, using `scale_limits`. 
+- colour palette used, by changing `heatmap_colours`.
 
-Decide what to keep:
-
-- sst_plot character, one of:
-  - `"anomalies"` (default) - plots SST anomalies
-  - `"mean"` - plots mean SST values for each month
-  - `"count"` - 
-
-- `count_breaks` numeric vector of break points for the count plot colour scale.
- Only used when `sst_plot = "count"`. Default of `NULL` actually defaults to
- `c(0, 10, 15, 20, 31) * length(months)` if `months` is specified, else it is
- `c(0, 10, 15, 20, 31)`.
-
-- `return_results` logical, if `FALSE` (default) returns the plot object only.
-If `TRUE`, prints the plot and returns a list with both `plot` and `results`.
-
-- `require_requested_months` numeric, number of months that must be available
-out of the requested `months` to compute an average anomaly. If `NULL` (default),
-defaults to `length(months)`. Only used when `length(months) > 1` and
-`length(stn_id_to_plot) > 1`.
-- `scale_limits` numeric vector of length 2 specifying the limits for the colour scale.
-If `NULL` (default), limits are calculated automatically based on the data. Only used
- for non-count plots. If any plotted values are outside of `scale_limits`   then
- they are coloured grey.
- 
-`heatmap_colours` numeric vector of colours to use for the heatmap.
- Default is `pals::ocean.balance(20)[2:19]`, which provides 18 colours.
-
-We suggest the following workflow if users want to tweak those defaults
+We suggest the following workflow if users want to tweak some of the defaults TODO
 (explained in detail below):
 
 - do the calculations with the defaults (as above)
 - plot the counts (number of daily SST values used to calculate the climatology
   and anomalies) 
 - check if that looks satisfactory, both in terms of calculating the climatology
-  and for doing the anomalies. Hard to automate, so just have to inspect
+  and for doing the anomalies. This hard to automate, so users just have to
+  inspect the figures
   manually (e.g. not too many big gaps).
-- rerun `create_anomalies()` with a different `min_days_per_month` value, maybe
+- rerun `create_anomalies()` with a different `min_days_per_month` value if
+  desired, and maybe
   also `max_consecutive_missing_days`.
 
 The `sst_plot = "counts"` setting shows how many daily counts are available to
@@ -320,7 +300,8 @@ plot(all_buoys_anomalies,
 ```
 So every month here has SST values for at least 16 days. Say we wanted to
 instead insist on having 25 days of values for each month, we could plot the
-same figure with a different colour scale:
+same figure with a different breaks in the colour scale (this also changes the
+actual colour palette for some reason):
 ```{r, buoyanomalycounts2, fig.height = fig_height_three_row_heatmap}
 plot(all_buoys_anomalies,
      stn_id = "East Dellwood Knolls",
@@ -329,7 +310,7 @@ plot(all_buoys_anomalies,
      count_breaks = c(0, 25, 31))
 ```
 which shows the months that would get dropped if we used the more stringent
-criteria of 25 days per month. We can apply this criteria by recalculating the climatology
+criterion of 25 days per month. We can apply this criterion by recalculating the climatology
 and anomalies:
 ```{r, buoyanomalycounts3, fig.height = fig_height_three_row_heatmap}
 all_buoys_anomalies_require_25_days <- calculate_anomalies(buoy_sst,
@@ -338,7 +319,7 @@ plot(all_buoys_anomalies_require_25_days,
      stn_id = "East Dellwood Knolls",
      months = c(12, 1, 2))
 ```
-Plotting the same figure with the default criteria of 15 days for each month, we
+Plotting the same figure with the default criterion of 15 days for each month, we
 can see the extra months that get calculated (e.g. Dec 1989, Feb and Dec 1994):
 ```{r, buoyanomalycounts4, fig.height = fig_height_three_row_heatmap}
 plot(all_buoys_anomalies,
@@ -351,11 +332,7 @@ The extreme case of using all available data would be `min_days_per_months = 0`
   this is not recommended (but can be used to check the upper limit of how much
   data is available).
   
-Also, if a user wants to look at average SST for a buoy over the months
-Jan-Jun, a decision has to be made as to how many months should be
-available. 
-
-We can also change the number of required months for a plot that averages of
+We can also change the number of required months for a plot that averages over
 multiple months.
 Above, we noted that the S. Georgia Strait buoy does not appear in this plot:
 ```{r, buoyanomaliesmonths46}
