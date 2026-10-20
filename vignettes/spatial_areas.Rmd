@@ -1,6 +1,6 @@
 ---
 title: "Spatial Areas"
-author: "Andrew Edwards"
+author: "Andrew Edwards and Travis Tai"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Spatial Areas}
@@ -12,7 +12,6 @@ date: "Last rendered on `r format(Sys.time(), '%d %B, %Y')`"
 <!-- To build either run
 rmarkdown::render("spatial_areas.Rmd")
 or click the knit button in RStudio -->
-
 
 ```{r, start, include = FALSE}
 knitr::opts_chunk$set(
@@ -39,16 +38,120 @@ load_all()    # for developer
 library(dplyr)
 library(tibble)  # Else prints all of a tibble
 library(ggplot2)
+library(knitr)
 ```
 
 ## Spatial areas available in pacea, and how to create your own
 
-We have some spatial areas saved as sf (spatial features) data objects in
-pacea. We hope to include many fisheries management areas soon, as being
+We have some spatial areas saved in
+pacea, technically as sf (spatial features) polygon or
+multipolygon data objects. We hope to include many fisheries management areas soon, as being
 discussed in our [GitHub Issue](https://github.com/pbs-assess/pacea/issues/8). 
 
+We first show how these can be used, and then show how to create your own custom
+areas using our helper functions.
 
-## For new Area vignette
+## Current areas
+
+The current areas are:
+
+```{r, which_areas, echo = FALSE}
+areas_in_pacea <- which_data_are_areas()
+```
+
+```{r, areas_table, echo = FALSE}
+# Create table
+areas_table <- tibble::tibble(
+  `Area name` = areas_in_pacea,
+  Description = sapply(areas_in_pacea, 
+                       get_rd_title)
+)
+
+knitr::kable(areas_table)
+```
+
+(Developers - see the hidden code here to check for new areas).
+```{r, plot_areas, fig.height = 6, fig.width = 6, echo = FALSE, eval = FALSE}
+# Look at these manually to check they are actually areas. 
+# For any new ones that are not, just add them to the `ignore` 
+#  default in which_data_are_areas().
+
+for(area_name in areas_in_pacea) {
+  area_data <- get(area_name)
+  plot(area_data,
+       main = area_name)
+}
+```
+
+## Using areas
+
+We can easily restrict spatial data with our `restrict_to_area()` function. We
+will first use the Optimum Interpolation Sea Surface Temperature (OISST)
+data described in the 
+[OISST vignette](https://pbs-assess.github.io/pacea/vignettes/oisst.html), 
+
+To restrict to the example elusive pacea area called `sasquatch` and then plot
+each month from 2014 to 2016:
+```{r, areaplots}
+oisst_sasquatch <- restrict_to_area(oisst_month, 
+                                    sasquatch)
+plot(oisst_sasquatch,
+     months = 1:12,
+     years = 2014:2016)
+```
+
+For just one month, and drawing the outline of the area used:
+```{r, sas2}
+plot(oisst_sasquatch,
+     months = 5,
+     years = 2026,
+     area_outline = sasquatch)
+```
+
+Now do anomalies:
+
+TODO moved to heatmaps, maybe keep some
+```{r, anomaliessqtch}
+oisst_anomalies_sasquatch <- calculate_anomalies(oisst_month,
+                                                 area = sasquatch)
+
+plot(oisst_anomalies_sasquatch,
+     restrict_plot = TRUE,
+     buffer_proportion = 1,
+     area_outline = sasquatch)
+
+# In average years he hides away, so only comes out when it's warm or
+# cold. Probably hibernating.
+plot(oisst_anomalies_sasquatch,
+     months = 4,
+     years = 2014:2026)
+
+plot(oisst_anomalies_sasquatch,
+     heatmap_style = TRUE)
+```
+
+
+
+`pfma_area_126_temp` and then plot some values:
+```{r, area126plot}
+oisst_area_126 <- restrict_to_area(oisst_month,
+                                   pfma_area_126_temp)
+plot(oisst_area_126,
+     years = 2015:2016,
+     months = 1:12,
+     restrict_plot = TRUE)   # 
+```
+
+
+
+
+
+
+
+
+
+
+## Create your own customised area
 
 
 For new Areas vignette. TODO mention here.
@@ -81,6 +184,8 @@ expect_equal(my_area_1,
              my_area_2)
 ```
 
+TODO, sumamrise:
+
 Travis: 
 Hmmm. Looking at the oisst data, the geometry coordinates are stored as points (centre of each cell). However with BCCM, they were staored as polygons (each corner of the cell). I'm not 100% sure why I did this but it's likely because of the different 2x2 and 6x6 grid we initially went with for bccm. If we just stored the centre of coordinates for the bccm data, it would reduce the size a bit, but I don't think by that much. 
  
@@ -97,58 +202,11 @@ Suggest we don't mess with the current storage of the data. I guess I can't make
  
 
 
-Restrict spatiotemporal data to an area:
-```{r, areaplots}
-oisst_sasquatch <- restrict_to_area(oisst_month, sasquatch)
-plot(oisst_sasquatch,
-     years = 2015:2016,
-     months = 1:12)
 
-oisst_area_126 <- restrict_to_area(oisst_month,
-                                   pfma_area_126_temp)
-plot(oisst_area_126,
-     years = 2015:2016,
-     months = 1:12)
+```{r, stop, cache = FALSE}
+knitr::knit_exit()
 ```
 
-Now do anomalies:
-
-```{r, anomaliessqtch}
-oisst_anomalies_sasquatch <- calculate_anomalies(oisst_month,
-                                                 area = sasquatch)
-
-plot(oisst_anomalies_sasquatch,
-     restrict_plot = TRUE,
-     buffer_proportion = 1,
-     area_outline = sasquatch)
-
-# In average years he hides away, so only comes out when it's warm or
-# cold. Probably hibernating.
-plot(oisst_anomalies_sasquatch,
-     months = 4,
-     years = 2014:2026)
-
-plot(oisst_anomalies_sasquatch,
-     heatmap_style = TRUE)
-```
-
-Now create an index
-```{r, sasindex}
-sasquatch_index <- create_index(oisst_anomalies_sasquatch,
-                                months = 4,
-                                index_label = "OISST in Sasquatch for Apr")
-# TODO HERE redo the area126 stuff, can simplify lots of things above
-oisst_area_126_anomalies <- calculate_anomalies(oisst_month,
-                                                 area = pfma_area_126_temp)
-# TODO see if can do it one go, without calculate_anomalies part.
-oisst_area_126_index <- create_index(oisst_area_126_anomalies,
-                                     months = 4,
-                                     index_label = "OISST in Area 126 for Apr")
-
-plot_indices(sasquatch_index,
-             oisst_area_126_index,
-             sst_buoy_halibut_bank_apr_index)
-```
 
 ## <span style="color: purple;">Let's Go Crazy</span>
 

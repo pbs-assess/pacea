@@ -194,7 +194,9 @@ surf_hotssea_buff <- surf_dat %>%
                                         # Doing that comparison in make-mask-layer.full.R
                                         # Looks like not used.
 
-usethis::use_data(surf_dat, overwrite = TRUE)   # save for now to check
+# Commenting out and removing object from package, as was never used in R/ or
+# vignettes/ and is not documented:
+# usethis::use_data(surf_dat, overwrite = TRUE)   # save for now to check
                                         # with domain of bccm, then delete maybe.
                                         # Doing that comparison in
                                         # make-mask-layer.full.R - is used

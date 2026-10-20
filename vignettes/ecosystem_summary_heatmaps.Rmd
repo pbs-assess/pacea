@@ -19,19 +19,20 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.width = 14,   # 14 #5.7,
-  fig.height = 5.25    # 7  #5  
+  fig.height = 5.25    # 7  #5
 )
-fig_height_two_row_heatmap <- 2.7    
-fig_height_three_row_heatmap <- 3  #
+fig_height_two_row_heatmap <- 2.7 
+fig_height_three_row_heatmap <- 3 
+fig_height_four_row_heatmap <- 3.5
 fig_height_five_row_heatmap <- 4   # Looks good, scale others to this kind of
 fig_height_six_row_heatmap <- 4.33 
-fig_height_ten_row_heatmap <- 6.2   
+fig_height_ten_row_heatmap <- 6.2
 
 fig_height_one_map <- 4
 fig_width_one_map <- 4
 fig_height_two_map <- 4
 fig_height_three_map <- 4       # width depends how many in each row, so do manually
-
+fig_height_four_map <- 5
 
 
 ```
@@ -397,6 +398,36 @@ plot(oisst_anomalies_area_126,
 See the code of the vignette (specifically the chunk headers) to see how to get
 the figure sizes looking good; these are not automated in the functions.
 
+If you have read this far then you deserve to learn about another, lesser known,
+spatial area available in pacea.
+
+```{r, anomaliessqtch, fig.height = fig_height_three_map}
+oisst_anomalies_sasquatch <- calculate_anomalies(oisst_month,
+                                                 area = sasquatch)
+
+plot(oisst_anomalies_sasquatch,
+     restrict_plot = TRUE,
+     buffer_proportion = 1,
+     area_outline = sasquatch)
+```
+
+In average years, the sasquatch appears to hide away, only coming out when it's warm or cold:
+```{r, anomaliessqtchmap, fig.height = fig_height_four_map}
+plot(oisst_anomalies_sasquatch,
+     months = 4,
+     years = 2014:2026)
+```
+
+And we can create a new index, and see how it compares to that above for Area 126:
+```{r, sasindex, fig.height = fig_height_two_row_heatmap}
+oisst_sasquatch_apr_index <- create_index(oisst_anomalies_sasquatch,
+                                months = 4,
+                                index_label = "OISST in Sasquatch for Apr")
+
+plot_indices(oisst_sasquatch_apr_index,
+             oisst_area_126_apr_index)
+```
+
 ## Climatological and oceanographic indices
 
 For details of the climatological and oceanographic indices available in pacea
@@ -467,10 +498,11 @@ abline(h = 0, col = "grey")
 
 We can also look at potential correlations with the other temperature indices we
 calculated above (for a buoy and for4 the whole EEZ):
-```{r, onitemp, fig.height = fig_height_three_row_heatmap}
+```{r, onitemp, fig.height = fig_height_four_row_heatmap}
 plot_indices(oni_index_nov_jan,
              oisst_area_126_apr_index,
              sst_buoy_south_brooks_apr_index,
+			 oisst_sasquatch_apr_index,
              oisst_eez_apr_jun_index,
              years = 1982:2026,
              gap_after = c("oni_index_nov_jan",
@@ -502,11 +534,12 @@ points(filter(oni_index_nov_jan,
               year %in% 2025:2026)$value,
        col = "red")
 ```
+
 This demonstrates the usefulness of the heatmap-style plot.
 
 The `create_index()` function works on all the climatological and oceanographic indices in
-pacea (PDO, NPGO, etc.;see `pacea_indices`) and so that plus `plot_indices()` could be used to
-compare and understand the relationships between the indices. An exercise for the reader.
+pacea (PDO, NPGO, etc.; see `pacea_indices`) and so that plus `plot_indices()` could be used to
+compare and help understand the relationships between the various indices. An exercise for the reader.
 
 ## Biogeochemical model outputs
 
