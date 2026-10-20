@@ -67,7 +67,7 @@ knitr::include_graphics(paste0(here::here(),
                                "/man/figures/buoys_map.png"))
 ```
 
-If you want to quickly get a sense of current temperatures (and aso across the wider
+If you want to quickly get a sense of current temperatures (and also across the wider
   northeast Pacific Ocean), check out Andrea Hilborn et al.'s
   [Pacific_SST_Monitoring
   website](https://ios-osd-dpg.github.io/Pacific_SST_Monitoring_Site/buoys.html). This
@@ -144,7 +144,7 @@ plot(all_buoys_anomalies,
      months = 4:6)
 ```
 
-The eagle-eyed amongst you will have spotted that the S. Georgia Strait buoy
+The eagle-eyed among you will have spotted that the S. Georgia Strait buoy
 does not appear on this plot (it was second from bottom in the previous
 plots). We will come back to this later (briefly, the plot requires every
 specified month in `months` to have an anomaly available, else it shows a blank).
@@ -275,7 +275,7 @@ out of the requested `months` to compute an average anomaly, by changing
 - limits for the colour scale, using `scale_limits`. 
 - colour palette used, by changing `heatmap_colours`.
 
-We suggest the following workflow if users want to tweak some of the defaults TODO
+We suggest the following workflow if users want to tweak some of the defaults
 (explained in detail below):
 
 - do the calculations with the defaults (as above)
