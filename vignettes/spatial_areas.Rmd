@@ -90,9 +90,31 @@ will first use the Optimum Interpolation Sea Surface Temperature (OISST)
 data described in the 
 [OISST vignette](https://pbs-assess.github.io/pacea/vignettes/oisst.html), 
 
-To restrict to the example elusive pacea area called `sasquatch` and then plot
+To just restrict a plot to an area, as an example we use the elusive pacea area called `sasquatch` and then plot
 each month from 2014 to 2016:
 ```{r, areaplots}
+plot(oisst_month,
+     months = 1:12,
+     years = 2014:2016,
+     area = sasquatch)
+```
+We can add options to restrict the plot to the reduced area, and to add an
+outline:
+```{r, areaplots2}
+plot(oisst_month,
+     area = sasquatch,
+     restrict_plot = TRUE,
+     area_outline = sasquatch)
+```
+This apparently whimsical plot is instructive in showing that the restriction to
+the area for `oisst_month` is based on whether the centre of each cell is
+within the sasquatch or not. The geometry of the `oisst_month` data is POINTS
+(in sf speak), not polygons, to save filesize.
+
+We can similarly restrict the area of plotting of the BCCM output 
+
+
+
 oisst_sasquatch <- restrict_to_area(oisst_month, 
                                     sasquatch)
 plot(oisst_sasquatch,

@@ -8,6 +8,12 @@
 #' @param years.plot numeric vector to indicate which years to plot. Defaults to current year (or most recent) available.
 #' @param bc logical. Should BC coastline layer be plotted?
 #' @param eez logical. Should BC EEZ layer be plotted?
+#' @param area sf object of the spatial area to restrict the data to. Includes
+#'   any cell of the OISST data for which the middle of the cell is within `area`.
+#' @param area_outline sf object whose outline will be drawn on the plot. If
+#'   provided, the boundary of this object will be plotted as a line. Default is NULL.
+#' @param area_outline_col character. Colour for the area_outline. Default is "black".
+#' @param area_outline_linewidth numeric. Line width for the area_outline. Default is 1.
 #' @param restrict_plot logical. Should the plot be restricted to the spatial 
 #'   domain of the data? If TRUE, the plot extent matches the data bounds and 
 #'   bc_coast and bc_eez layers will not expand the plot limits. Default is FALSE.
@@ -21,7 +27,6 @@
 #'   says the same thing); this should remove a R-CMD-check warning.
 #' @return plot of the spatial data to the current device (returns nothing)
 #'
-#' @importFrom sf st_coordinates
 #' @importFrom lubridate week month
 #' @importFrom dplyr filter mutate rename left_join bind_cols
 #' @importFrom ggplot2 ggplot aes theme_bw theme geom_tile geom_sf scale_fill_gradientn guides guide_colorbar guide_legend labs facet_grid facet_wrap xlab ylab
@@ -40,6 +45,10 @@ plot.pacea_oi <- function(x,
                           years.plot,
                           bc = TRUE,
                           eez = TRUE,
+                          area = NULL,
+                          area_outline = NULL,
+                          area_outline_col = "black",
+                          area_outline_linewidth = 1,
                           restrict_plot = FALSE,
                           buffer_proportion = 0.2,
                           x_axis_labels = NULL,
@@ -57,18 +66,18 @@ plot.pacea_oi <- function(x,
   obj_unit <- attributes(x)$units
 
   # filter years to plot
-  if(missing(years.plot))  years.plot <- max(x$year)
+  if(missing(years.plot)) years.plot <- max(x$year)
   tobj <- x %>% dplyr::filter(year %in% years.plot)
 
-  stopifnot("'years.plot' not found in data, enter valid numeric value" = nrow(tobj)>0)
+  stopifnot("'years.plot' not found in data, enter valid numeric value" = nrow(tobj) > 0)
 
   # weekly data
   if("week" %in% colnames(x)){
 
     # set week to current week if missing
-    if(missing(weeks.plot)) {
+    if(missing(weeks.plot)){
       weeks.plot <- lubridate::week(Sys.Date())
-      if(!(weeks.plot %in% tobj$week)) {
+      if(!(weeks.plot %in% tobj$week)){
         weeks.plot <- max(tobj$week)
       }
     }
@@ -86,8 +95,10 @@ plot.pacea_oi <- function(x,
              plot.date = paste0(year, " - Week ", tunit))
 
     # set levels to order
-    tobj$plot.tunit <- factor(tobj$plot.tunit, levels = unique(tobj$plot.tunit))
-    tobj$plot.date <- factor(tobj$plot.date, levels = unique(tobj$plot.date))
+    tobj$plot.tunit <- factor(tobj$plot.tunit,
+                              levels = unique(tobj$plot.tunit))
+    tobj$plot.date <- factor(tobj$plot.date,
+                             levels = unique(tobj$plot.date))
 
     # set facets
     if(all(length(weeks.plot) > 1, length(years.plot) > 1)){
@@ -99,11 +110,10 @@ plot.pacea_oi <- function(x,
 
   # monthly data
   if("month" %in% colnames(x)){
-    if(missing(months.plot)) {
+    if(missing(months.plot)){
       months.plot <- lubridate::month(Sys.Date())
-      if(!(months.plot %in% tobj$month)) {
-        months.plot <- max(tobj$month)    # nocov        # hard to test since
-                                          # depends on Sys.Date()
+      if(!(months.plot %in% tobj$month)){
+        months.plot <- max(tobj$month)
       }
     }
 
@@ -114,13 +124,16 @@ plot.pacea_oi <- function(x,
     tobj <- tobj %>%
       rename(tunit = month) %>%
       dplyr::filter(tunit %in% ind) %>%
-      left_join(month_table, by = join_by(tunit == month.num)) %>%
+      left_join(month_table,
+                by = join_by(tunit == month.num)) %>%
       mutate(plot.tunit = month.name,
              plot.date = paste(year, month.name, sep = " "))
 
     # set levels to order
-    tobj$plot.tunit <- factor(tobj$plot.tunit, levels = unique(tobj$plot.tunit))
-    tobj$plot.date <- factor(tobj$plot.date, levels = unique(tobj$plot.date))
+    tobj$plot.tunit <- factor(tobj$plot.tunit,
+                              levels = unique(tobj$plot.tunit))
+    tobj$plot.date <- factor(tobj$plot.date,
+                             levels = unique(tobj$plot.date))
 
     # set facets
     if(all(length(months.plot) > 1, length(years.plot) > 1)){
@@ -134,11 +147,20 @@ plot.pacea_oi <- function(x,
   stopifnot("Date combinations specified do not exist in current dataset" = nrow(tobj) > 0)
 
   # warning if year-timeunit combination not available
-  yind <- paste0(unique(tobj$year),ind)
+  yind <- paste0(unique(tobj$year), ind)
   testyind <- tobj %>%
-    mutate(yind = paste0(year,tunit))
+    mutate(yind = paste0(year, tunit))
 
-  if(!all(yind %in% testyind$yind)) {warning("Not all date combinations entered available for the years specified")}
+  if(!all(yind %in% testyind$yind)) {
+    warning("Not all date combinations entered available for the years specified")
+  }
+
+  # Filter to area if provided
+  if(!is.null(area)){
+    tobj <- sf::st_filter(tobj,
+                          area,
+                          .predicate = sf::st_intersects)
+  }
 
   # parameters for plotting
   pfill <- "Temperature\n(\u00B0C)"
@@ -152,7 +174,7 @@ plot.pacea_oi <- function(x,
     xmax <- as.numeric(data_bbox["xmax"])
     ymin <- as.numeric(data_bbox["ymin"])
     ymax <- as.numeric(data_bbox["ymax"])
-    
+
     # Add buffer in each direction
     x_width <- xmax - xmin
     y_height <- ymax - ymin
@@ -163,10 +185,10 @@ plot.pacea_oi <- function(x,
   }
 
   tplot <- tobj %>%
-    bind_cols(st_coordinates(tobj)) %>%
+    bind_cols(sf::st_coordinates(tobj)) %>%
     ggplot() + theme_bw() +
     theme(strip.background = element_blank()) +
-    geom_tile(aes(x = X, y= Y, fill = sst)) +
+    geom_tile(aes(x = X, y = Y, fill = sst)) +
     scale_fill_gradientn(colours = pcol, limits = plimits) +
     guides(fill = guide_colorbar(barheight = 12,
                                  ticks.colour = "grey30", ticks.linewidth = 0.5,
@@ -185,6 +207,10 @@ plot.pacea_oi <- function(x,
     tplot <- tplot +
       geom_sf(data = bc_coast, fill = "darkgrey")
   }
+  if(!is.null(area_outline)){
+    tplot <- tplot +
+      geom_sf(data = area_outline, fill = NA, colour = area_outline_col, linewidth = area_outline_linewidth)
+  }
 
   # Apply coordinate limits if restrict_plot is TRUE
   if(restrict_plot){
@@ -192,19 +218,19 @@ plot.pacea_oi <- function(x,
       ggplot2::coord_sf(xlim = c(data_coords["xmin"], data_coords["xmax"]),
                         ylim = c(data_coords["ymin"], data_coords["ymax"]),
                         expand = FALSE)
-    
-    if(is.null(x_axis_labels)){
+
+    if(is.null(x_axis_labels)) {
       tplot <- tplot +
         ggplot2::scale_x_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE))
     } else {
       tplot <- tplot +
-        ggplot2::scale_x_continuous(breaks = x_axis_labels, 
+        ggplot2::scale_x_continuous(breaks = x_axis_labels,
                                     labels = paste0(abs(x_axis_labels), "°W"))
     }
-    
+
     if(!is.null(y_axis_labels)){
       tplot <- tplot +
-        ggplot2::scale_y_continuous(breaks = y_axis_labels, 
+        ggplot2::scale_y_continuous(breaks = y_axis_labels,
                                     labels = paste0(y_axis_labels, "°N"))
     }
   }
