@@ -3,7 +3,7 @@
 ##' TODO Need to write this.
 ##'
 ##' @param pacea_buoy_anomalies_list object of class `pacea_buoy_anomalies_list`
-##' obtained from running `caclulate_anomalies()` on buoy data.
+##' obtained from running [calculate_anomalies()] on buoy data.
 ##' @param stn_id_to_plot character vector of station IDs (`stn_id` values OR
 ##' `name` values ) from the `buoy_sst` data
 ##' object. If `NULL` (default), anomalies for all buoys (in
@@ -204,13 +204,16 @@ plot.pacea_buoy_anomalies_list <- function(pacea_buoy_anomalies_list,
         n_available = sum(!is.na(.data[[na_check_col]])),
         sst_plot_value = ifelse(
           n_available >= require_requested_months,
-          mean(if(sst_plot == "count"){
-                 sst_n
-               } else if(sst_plot == "anomalies"){
-                 sst_anomaly
-               } else {
-                 sst_mean
-               }, na.rm = TRUE),
+          if(sst_plot == "count"){
+            sum(sst_n,
+                na.rm = TRUE)
+          } else if(sst_plot == "anomalies"){
+            mean(sst_anomaly,
+                 na.rm = TRUE)
+          } else {
+            mean(sst_mean,
+                 na.rm = TRUE)
+          },
           NA
         )
       ) %>%
@@ -264,13 +267,16 @@ plot.pacea_buoy_anomalies_list <- function(pacea_buoy_anomalies_list,
         n_available = sum(!is.na(.data[[na_check_col]])),
         sst_plot_value = ifelse(
           n_available >= require_requested_months,
-          mean(if(sst_plot == "count"){
-                 sst_n
-               } else if(sst_plot == "anomalies"){
-                 sst_anomaly
-               } else {
-                 sst_mean
-               }, na.rm = TRUE),
+          if(sst_plot == "count"){
+            sum(sst_n,
+                na.rm = TRUE)
+          } else if(sst_plot == "anomalies"){
+            mean(sst_anomaly,
+                 na.rm = TRUE)
+          } else {
+            mean(sst_mean,
+                 na.rm = TRUE)
+          },
           NA
         )
       ) %>%
