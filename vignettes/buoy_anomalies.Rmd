@@ -395,37 +395,4 @@ Given the huge number of options that users may wish to explore (many buoys,
 many years, many possible combinations of months), users may wish to relax or
 tighten the defaults, and have the power to do so.
 
-TODO - Check each plotting option has been shown, at least mention the other ones.
-
-
-HERE - see if need any of these, just need to see if this is still wrong.
-
-```{r, usealldays}
-all_buoys_anomalies_all_days <- calculate_anomalies(buoy_sst,
-                                                  min_days_per_month = 0,
-                                                  max_consecutive_missing_days =
-                                                  32)
-plot(all_buoys_anomalies_all_days)  # win 2
-```
-
-And here is the default with the cut off of requiring 15 days:
-```{r, need15days}
-plot(all_buoys_anomalies)
-```
-
-For example, Central Dixon Entrance has a few years that appear when using all
-days but not when using the 15-day-per-month cut off (remember above two plots
-are for April). We can look at that in
-detail, by using the `min_days_per_month = 0` results:
-```{r, cde, fig.height = fig_height_two_row_heatmap}
-plot(all_buoys_anomalies_all_days,
-     stn_id = "C46145",   # Central Dixon Entrance
-     months = 4,
-     sst_plot = "count",
-     count_breaks = c(0, 15, 31))
-```
-The four light-coloured years months are the ones not in the preceding plot (the
-default one), but that do appear in the one before that TODO , not even
-sure we need those, just something was wrong a while ago and so want to check
-code. See if already covered above.
 
