@@ -157,84 +157,33 @@ cell is included. Hence there is no white within the area in this case. Note the
 differing resolution of the underlying grid cells between the two examples (but
 this is not relevant here). 
 
-HERE - decide what else to do. And rerun and read the above.
+```{r, sasquatchwalking, eval = FALSE, echo = FALSE}
+# Easter egg
+plot(primary_production,
+     years = 2014:2016,
+     months = 1:12,
+     area = sasquatch,
+     restrict_plot = TRUE,
+     area_outline = sasquatch)
+```
 
+You can use `restrict_to_areas()` to reduce the data to the area of interest:
 DO this also for looking at values.
 ```{r, oisss}
 oisst_sasquatch <- restrict_to_area(oisst_month, 
                                     sasquatch)
-plot(oisst_sasquatch,
-     months = 1:12,
-     years = 2014:2016)
+plot(oisst_sasquatch)
 ```
-
-For just one month, and drawing the outline of the area used:
-```{r, sas2}
-plot(oisst_sasquatch,
-     months = 5,
-     years = 2026,
-     area_outline = sasquatch)
-```
-
-Now do anomalies:
-
-TODO moved to heatmaps, maybe keep some
-```{r, anomaliessqtch}
-oisst_anomalies_sasquatch <- calculate_anomalies(oisst_month,
-                                                 area = sasquatch)
-
-plot(oisst_anomalies_sasquatch,
-     restrict_plot = TRUE,
-     buffer_proportion = 1,
-     area_outline = sasquatch)
-
-# In average years he hides away, so only comes out when it's warm or
-# cold. Probably hibernating.
-plot(oisst_anomalies_sasquatch,
-     months = 4,
-     years = 2014:2026)
-
-plot(oisst_anomalies_sasquatch,
-     heatmap_style = TRUE)
-```
-
-
-
-`pfma_area_126_temp` and then plot some values:
-```{r, area126plot}
-oisst_area_126 <- restrict_to_area(oisst_month,
-                                   pfma_area_126_temp)
-plot(oisst_area_126,
-     years = 2015:2016,
-     months = 1:12,
-     restrict_plot = TRUE)   # 
-```
-
-
-
-
-
-
-
-
-
+For making consequent indices, e.g. the average monthly temperature over the
+area, see `calculate_anomalies(oisst_month, area = sasquatch)` in the 
+[Ecosystem Summary Heatmaps vignette](https://pbs-assess.github.io/pacea/vignettes/ecosystem_summary_heatmaps.html).
 
 ## Create your own customised area
 
-
-For new Areas vignette. TODO mention here.
-
-We will have many fisheries management areas imported into pacea soon, explain
- those.
- 
-TODO:
-update with new vignette when done. Copy the next bit to that to show how to
-create your own area.
-
-If necessary, you can create your own area (as an sf object) from a matrix or tibble of latitude
-and longitude values, using our `create_area_sf_polygon()` function (if the
+You can create your own area (as an sf object) from a matrix or tibble of latitude
+and longitude values, using our `create_area_sf_polygon()` function. If the
 first and last rows are different then the function repeats the first row as the
-last to make an enclosed polygon). Using a matrix or tibble gives the same result:
+last to make an enclosed polygon. Using a matrix or tibble gives the same result:
 ```{r, myarea}
 my_area_matrix <- matrix(c(-130, -132, -130, -128,
                            48, 50, 52, 50),
@@ -253,66 +202,4 @@ expect_equal(my_area_1,
 ```
 
 
-```{r, stop, cache = FALSE}
-knitr::knit_exit()
-```
 
-
-## <span style="color: purple;">Let's Go Crazy</span>
-
-TODO maybe do as many examples as possible in a giant heatmap, to make a
-point. These were various examples while generating the code. Or at least do
-several heatmaps.
-
-Further examples (originally had above while generating the code), also check
-the help file of `plot_indices()` and add to that TODO
-```{r, furthrexamples, fig.height = fig_height_ten_row_heatmap, fig.width = 18}
-herring_recruitment_hg_index <- create_index(herring_recruitment,
-                                             herring_region= "HG")
-herring_recruitment_prd_index <- create_index(herring_recruitment,
-                                              herring_region = "PRD")
-herring_recruitment_cc_index <- create_index(herring_recruitment,
-                                             herring_region = "CC")
-herring_recruitment_wcvi_index <- create_index(herring_recruitment,
-                                              herring_region = "WCVI")
-herring_biomass_wcvi_index <- create_index(herring_spawning_biomass,
-                                           herring_region = "WCVI")
-
-hake_recruitment_index <- create_index(hake_recruitment)
-
-hake_biomass_index <- create_index(hake_biomass)
-
-harbour_seals_wcvi_index <- create_index(harbour_seals)  
-
-# Many examples (adding as go along), likely not really needed:
-plot_indices(herring_recruitment_hg_index,
-             herring_recruitment_prd_index,
-             herring_recruitment_cc_index,
-             herring_recruitment_sog_index,
-             herring_recruitment_wcvi_index,
-             herring_biomass_wcvi_index,             
-             hake_recruitment_index,
-             hake_biomass_index,
-             harbour_seals_wcvi_index,
-             harbour_seals_sog_index,
-             total_zooplankton_sog_index,
-             years = 1965:2026)    # it ignores 2026 if no values though
-```
-
-See the test for more examples. Summarise here maybe. 
-
-
-Quick example to check that the normalised index of mean anomalies is same
-as normalised index of mean of means. Think so since both relative to the same
-climatology. TODO. Also it's still based on climatology; so does mean of actual
-values just give the same? 
-
-```{r, buoysst}
-sst_west_dixon_apr_using_anomalies <- create_index(buoy_sst)
-sst_west_dixon_apr_using_mean <- create_index(buoy_sst, buoy_statistic = "mean")
-expect_equal(sst_west_dixon_apr_using_anomalies,
-             sst_west_dixon_apr_using_mean)
-# Not convinced that will always hold though, I think only difference would be
-# if you did not have a climatology for a particular month, which does not
-# happen with the default years. So probably best to keep the generality.
-```
