@@ -10,14 +10,6 @@
 #' @param clim.dat climatology data, obtained from using `calc_clim()`. If used,
 #' contours of deviations from climatology mean will be plotted. Does not work
 #' when automatically called from [plot.pacea_oisst_anomalies_list()].
-#' @param area sf object of the spatial area to restrict the anaomlies to. Includes
-#'   any cell of the OISST data for which the  middle
-#'   of the cell is within `area`; OISST data are stored as points represented the
-#'   middle of the cell (which is a bit different to the BCCM data).
-#' @param area_outline sf object whose outline will be drawn on the plot. If
-#'   provided, the boundary of this object will be plotted as a line. Default is NULL.
-#' @param area_outline_col character. Colour for the area_outline. Default is "black".
-#' @param area_outline_linewidth numeric. Line width for the area_outline. Default is 1.
 #' @param eez logical. Should BC EEZ layer be plotted? Can only be plotted with one plot layer.
 #' @param bc logical. Should BC coastline layer be plotted? Can only be plotted with one plot layer.
 #' @param restrict_plot logical. Should the plot be restricted to the spatial
@@ -35,6 +27,7 @@
 #'   over which latitude values are displayed.
 #' @param ... other arguments to be passed on, but not currently used (`?ggplot`
 #'   says the same thing); this should remove a R-CMD-check warning.
+#' @inherit plot.pacea_oi
 #'
 #' @return plot of the spatial data to the current device (returns nothing)
 #'

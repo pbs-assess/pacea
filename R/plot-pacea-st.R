@@ -13,6 +13,7 @@
 #' @param single_current_vector logical. For plotting ocean currents as a total vector with arrows (FALSE), or individual vectors(TRUE)
 #' @param ... other arguments to be passed on, but not currently used (`?ggplot`
 #'   says the same thing); this should remove a R-CMD-check warning.
+#' @inherit plot.pacea_oi
 #'
 #' @return plot of the spatial data to the current device (returns nothing)
 #'
@@ -34,7 +35,11 @@ plot.pacea_st <- function(x,
                           years.plot = c(2018),
                           bc = TRUE,
                           eez = TRUE,
-                          single_current_vector = FALSE,
+                          area = NULL,
+                          area_outline = NULL,
+                          area_outline_col = "black",
+                          area_outline_linewidth = 1,
+                          restrict_plot = NULL,                          single_current_vector = FALSE,
                           ...) {
 
   # month reference table
@@ -57,21 +62,35 @@ plot.pacea_st <- function(x,
 
   # object units attribute
   obj_unit <- attributes(x)$units
-  
+
   # object depth attribute
   obj_depth <- attributes(x)$depth
 
   # subset year_month columns
   tobj <- subset_pacea_ym(data = x, months = months.plot, years = years.plot)  ####MOVE THIS DOWN
 
+  # Filter to area if provided
+  if(!is.null(area)){
+    # Transform area to match data CRS if needed
+    if(sf::st_crs(area) != sf::st_crs(tobj)){
+      area <- sf::st_transform(area, crs = sf::st_crs(tobj))
+    }
+    tobj <- sf::st_filter(tobj,
+                          area,
+                          .predicate = sf::st_intersects)
+  }
+
   # Restrict axes to just data or not (BCCM and OISST are for full coast,
-  #  HOTSSEA is just Salish Sea)
-  if(is.null(attr(x, "restrict_plotting_range"))){
-    restrict_plot <- FALSE
-  } else {
-    restrict_plot <- attr(x, "restrict_plotting_range")
+  #  HOTSSEA is just Salish Sea). Unless user has specified.
+  if(is.null(restrict_plot)){
+    if(is.null(attr(x, "restrict_plotting_range"))){
+      restrict_plot <- FALSE
+    } else {
+      restrict_plot <- attr(x, "restrict_plotting_range")
+    }
   }
   stopifnot("restrict_plotting_ranage attribute needs to be NULL, TRUE, or FALSE" = is.logical(restrict_plot))
+
 
   # Salinity units for salinity plots (BCCM is ppt, hotssea has attribute
   #  indicating psu)
@@ -133,27 +152,27 @@ plot.pacea_st <- function(x,
   pfill <- vars_units[pind]
   pcol <- colpal[pind] %>% unlist()
   plimits <- limit_funs[pind] %>% unlist()
-  
+
   ############## FIXING - put in function
   arrow_data <- FALSE
-  
+
   # read in complementary current data set - either angle or speed dataset
-  if(pfill %in% c("Eastward Current velocity (m/s)", 
+  if(pfill %in% c("Eastward Current velocity (m/s)",
                   "Northward Current velocity (m/s)")){
-    
+
     if(single_current_vector == FALSE){
-      
+
       # adjust as needed
       arrow_res <- 20000
       arrow_length <- 15000
-      
-      
+
+
       # plotting total current vector
-      
+
       message(paste("Plotting current velocity as total combined velocity (u and v vectors combined).",
                     "Use argument 'single_current_vector = TRUE' if you would like just the u or v current vector plotted."),
               sep = "\n")
-      
+
       # if using u_current data
       if(pfill == "Eastward Current velocity (m/s)"){
         if(obj_depth == "surface"){
@@ -162,9 +181,9 @@ plot.pacea_st <- function(x,
         if(obj_depth == "bottom"){
           tcur <- bccm_bottom_v_currentvelocity_full()
         }
-        
+
         tcur <- subset_pacea_ym(data = tcur, months = months.plot, years = years.plot)
-        
+
         # convert to long format
         tcur2 <- tcur %>%
           tidyr::pivot_longer(cols = !last_col(), cols_vary = "slowest", names_to = "date", values_to = "value") %>%
@@ -173,15 +192,15 @@ plot.pacea_st <- function(x,
           left_join(month_table, by = join_by(month.num == month.num)) %>%
           mutate(plot.date = paste(year, month.name, sep = " ")) %>%
           arrange(year, month.num)
-        
+
         # create factor for correct order of plotting
         tcur2$month.f <- factor(tcur2$month.name, levels = c(unique(tcur2$month.name)))
         tcur2$plot.date.f <- factor(tcur2$plot.date, levels = c(unique(tcur2$plot.date)))
-        
+
         # combine u and v vectors into one
         tcom2 <- tobj2 %>% rename(u = value) %>% mutate(v = tcur2$value)
       }
-      
+
       # if using v_current data
       if(pfill == "Northward Current velocity (m/s)"){
         if(obj_depth == "surface"){
@@ -190,9 +209,9 @@ plot.pacea_st <- function(x,
         if(obj_depth == "bottom"){
           tcur <- bccm_bottom_u_currentvelocity_full()
         }
-        
+
         tcur <- subset_pacea_ym(data = tcur, months = months.plot, years = years.plot)
-        
+
         # convert to long format
         tcur2 <- tcur %>%
           tidyr::pivot_longer(cols = !last_col(), cols_vary = "slowest", names_to = "date", values_to = "value") %>%
@@ -201,24 +220,24 @@ plot.pacea_st <- function(x,
           left_join(month_table, by = join_by(month.num == month.num)) %>%
           mutate(plot.date = paste(year, month.name, sep = " ")) %>%
           arrange(year, month.num)
-        
+
         # create factor for correct order of plotting
         tcur2$month.f <- factor(tcur2$month.name, levels = c(unique(tcur2$month.name)))
         tcur2$plot.date.f <- factor(tcur2$plot.date, levels = c(unique(tcur2$plot.date)))
-        
+
         # combine u and v vectors into one
         tcom2 <- tobj2 %>% rename(v = value) %>% mutate(u = tcur2$value)
       }
-      
+
       # create overall speed value
       tcom2 <- tcom2 %>%
         mutate(value = sqrt(u^2 + v^2))
-      
+
       # reduce grid size by arrow_res (arrow resolution)
-      arrow_grid <- st_make_grid(tcom2, cellsize = arrow_res) |> 
+      arrow_grid <- st_make_grid(tcom2, cellsize = arrow_res) |>
         st_as_sf() |>
         mutate(grid_id = row_number())
-      
+
       # arrow data
       arrow_data <- suppressWarnings(tcom2 %>%
         st_centroid() %>%
@@ -232,7 +251,7 @@ plot.pacea_st <- function(x,
           geometry = st_centroid(st_union(geometry)),
           .groups = "drop"
         ))
-      
+
       # arrow length all equal
       arrow_data <- arrow_data %>%
         mutate(
@@ -244,22 +263,22 @@ plot.pacea_st <- function(x,
           xend = x + u_unit * arrow_length,
           yend = y + v_unit * arrow_length
         )
-      
+
       # reduce number of columns and rename object to match plotting below
       tobj2 <- tcom2 %>% select(-u, -v)
-      
+
       # reset plot settings
       pfill <- vars_units[9]
       pcol <- colpal[9] %>% unlist()
       plimits <- c(0, ceiling(max(tobj2$value)))
-      
+
     } else {
       # plotting single current vector
     }
   }
-  
+
   ############## END FIXING
-  
+
   # main plot
   tplot <- tobj2 %>%
     ggplot() + theme_bw() +
@@ -272,16 +291,16 @@ plot.pacea_st <- function(x,
                                  order = 1),
            colour = guide_legend(override.aes = list(linetype = NA), order = 2)) +
     labs(fill = pfill) + xlab(NULL) + ylab(NULL)
-  
+
   # add arrows for current velocity
   if(is.data.frame(arrow_data)){
-    tplot <- tplot + 
+    tplot <- tplot +
       geom_segment(
         data = st_drop_geometry(arrow_data),
         aes(x = x, y = y, xend = xend, yend = yend),
         arrow = arrow(length = unit(0.08, "cm")),
         linewidth = 0.25
-      ) 
+      )
   }
 
   # facet based on year * month combination
@@ -312,6 +331,14 @@ plot.pacea_st <- function(x,
   if(bc == TRUE){
     tplot <- tplot +
       geom_sf(data = bc_coast, fill = "darkgrey")
+  }
+
+  if(!is.null(area_outline)){
+    tplot <- tplot +
+      geom_sf(data = area_outline,
+              fill = NA,
+              colour = area_outline_col,
+              linewidth = area_outline_linewidth)
   }
 
   if(restrict_plot){

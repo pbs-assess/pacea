@@ -85,7 +85,10 @@ for(area_name in areas_in_pacea) {
 
 ## Using areas
 
-We can easily restrict spatial data with our `restrict_to_area()` function. We
+We can easily restrict spatial data within our plotting functions, or
+using `restrict_to_area()` for doing analyses. 
+
+We
 will first use the Optimum Interpolation Sea Surface Temperature (OISST)
 data described in the 
 [OISST vignette](https://pbs-assess.github.io/pacea/vignettes/oisst.html), 
@@ -108,13 +111,56 @@ plot(oisst_month,
 ```
 This apparently whimsical plot is instructive in showing that the restriction to
 the area for `oisst_month` is based on whether the centre of each cell is
-within the sasquatch or not. The geometry of the `oisst_month` data is POINTS
-(in sf speak), not polygons, to save filesize.
+within the sasquatch or not. The geometry of the `oisst_month` data is POINT
+(in sf speak), not polygons, to save filesize:
+```{r, oisstgeom}
+sf::st_geometry(oisst_month)
+```
 
-We can similarly restrict the area of plotting of the BCCM output 
+We can similarly restrict the area of plotting of the BCCM output (the first
+line either downloads the output or loads it into R; see the BCCM vignette):
+```{r, sasquatchprimaryproduction}
+primary_production <- bccm_primaryproduction_full()   
 
+plot(primary_production, 
+     area = sasquatch,
+     restrict_plot = FALSE,
+     area_outline = sasquatch)
+```
 
+Looking more closely, we can see that, unlike the `oisst_month` eample above,
+any cells that are at all inside the area are included:
+```{r, sasquatchprimaryproduction2}
+plot(primary_production, 
+     area = sasquatch,
+     restrict_plot = TRUE,
+     area_outline = sasquatch)
+```
+This is because the geometry of the BCCM results are POLYGONS:
+```{r, bccmgeom}
+sf::st_geometry(primary_production)
+```
+Internally, `plot.pacea_st()`, which the `plot()` calls above are using, is
+using `sf::st_intersects()` to calculate intersection locations between the main
+data set (e.g. `primary_production`) and the `area`. The `sf::st_intersects()`
+function returns `TRUE` when features intersect, or even just touch. 
 
+For `oisst_month` example that uses points as the centre of grid cells, the cell
+is included in the plot (i.e. is within the area) if the point representing it
+is within the area. Hence, if the point is outside the area (even if some of the
+grid cell is within it), then the cell is included and we see the white areas
+inside the sasquatch area.
+
+But for the BCCM `primary_production` values, the geometry is polygons, and so
+if any part of a grid cell (represented by a polygon) touches the area then that
+cell is included. Hence there is no white within the area in this case. Note the
+differing resolution of the underlying grid cells between the two examples (but
+this is not relevant here).
+
+HERE - decide what else to do. And rerun and read the above.
+
+DO this also for looking at values.
+```{r, oisss}
 oisst_sasquatch <- restrict_to_area(oisst_month, 
                                     sasquatch)
 plot(oisst_sasquatch,

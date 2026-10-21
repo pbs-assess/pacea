@@ -14,14 +14,16 @@
 #'   provided, the boundary of this object will be plotted as a line. Default is NULL.
 #' @param area_outline_col character. Colour for the area_outline. Default is "black".
 #' @param area_outline_linewidth numeric. Line width for the area_outline. Default is 1.
-#' @param restrict_plot logical. Should the plot be restricted to the spatial 
-#'   domain of the data? If TRUE, the plot extent matches the data bounds and 
-#'   bc_coast and bc_eez layers will not expand the plot limits. Default is FALSE.
-#' @param buffer_proportion numeric. Buffer proportion to add around the data 
+#' @param restrict_plot logical. Should the plot be restricted to the spatial
+#'   domain of the data? If TRUE, the plot extent matches the data bounds and
+#'   bc_coast and bc_eez layers will not expand the plot limits. Default is
+#' FALSE, or NULL for [plot.pacea_st()] for which the attribute `attr(x,
+#' "restrict_plotting_range")` of the object `x` being plotted is used.
+#' @param buffer_proportion numeric. Buffer proportion to add around the data
 #'   bounds when restrict_plot is TRUE. Default is 0.2 (20% in each direction).
-#' @param x_axis_labels numeric vector. X-axis breaks to label when restrict_plot 
+#' @param x_axis_labels numeric vector. X-axis breaks to label when restrict_plot
 #'   is TRUE. If NULL, automatically hides overlapping labels.
-#' @param y_axis_labels numeric vector. Y-axis breaks to label when restrict_plot 
+#' @param y_axis_labels numeric vector. Y-axis breaks to label when restrict_plot
 #'   is TRUE. If NULL, automatically hides overlapping labels.
 #' @param ... other arguments to be passed on, but not currently used (`?ggplot`
 #'   says the same thing); this should remove a R-CMD-check warning.
