@@ -15,7 +15,8 @@
 # buoy_metadata, which are roughly north-south in bands, rather than simply
 # numerical. Doing at the end so as not to change any of the commented notes.
 
-# Run line-by-line while developing. Can source to update data, check that
+# Run line-by-line while developing. Can source to update data, though I tend to
+#  do line-by-line. Check that
 #  redownload_data = TRUE.
 
 load_all()
@@ -55,7 +56,7 @@ if(redownload_data){
     dfo_data_raw <- readRDS("dfo_data_raw.Rds")     # A tabledap which is a tibble
 }
 
-dfo_data_raw      # 9.8 million rows
+dfo_data_raw      # 9.8 million rows. 10.5 million 21/10/26.
 
 # Figuring out time zone conversions. Commenting out, but keeping for reference.
 # orig_time <- dfo_data_raw$time[6000252]        # 7:20 am UTC
@@ -115,6 +116,7 @@ dfo_data       # 3.666 million rows when removing pre-1991 . Every few minutes h
                #  6/8/2024 update: 3.839 million rows
                #  20/9/2024 update: 3.845 million rows
                #  14/10/2025 update: 3.855 million rows
+               #  21/10/2026 update: 4.116 million rows
 
 summary(dfo_data)   # Earliest is 1987, so not adding tons of data, yet not really worth
                     # excluding 1987-1991 for our purposes (Andrea did since
@@ -477,9 +479,9 @@ opp_ranges
 ## 15 C46207 2021-09-07 2022-09-08
 ## 16 C46208 2021-09-07 2023-08-28
 
-# 14/10/15 all 16 stations were up to date (data from today, all started
+# 14/10/25 all 16 stations were up to date (data from today, all started
 # 2021-09-07 as below)
-
+# 21/10/26 - also all 16 up-to-date (to two days ago)
 dfo_opp_ranges <- left_join(dfo_ranges,
                             opp_ranges,
                             by = "stn_id") %>%
