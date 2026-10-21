@@ -80,6 +80,8 @@ check_index_changed(oni, oni_new)
 tail(oni)
 tail(oni_new)
 
+# See Issue #105. Am updating this anyway even though historical values have
+# changed. i.e. skipping the if statement. 21/10/25.
 if(check_index_changed(oni, oni_new)){
   # Check previous values haven't changed, but for oni we expect the last two
   #  months of anomaly to get updated (and maybe one month of value)
