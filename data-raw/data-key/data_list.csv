@@ -5,6 +5,9 @@ bccm_surface_salinity
 bccm_surface_temperature
 bccm_surface_u_currentvelocity
 bccm_surface_v_currentvelocity
+bccm_surface_current_angledeg
+bccm_surface_current_anglerad
+bccm_surface_current_speed
 bccm_avg0to40m_oxygen
 bccm_avg0to40m_ph
 bccm_avg0to40m_salinity
@@ -23,5 +26,8 @@ bccm_bottom_salinity
 bccm_bottom_temperature
 bccm_bottom_u_currentvelocity
 bccm_bottom_v_currentvelocity
+bccm_bottom_current_angledeg
+bccm_bottom_current_anglerad
+bccm_bottom_current_speed
 bccm_phytoplankton
 bccm_primaryproduction
