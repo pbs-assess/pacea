@@ -126,7 +126,7 @@ anomaly plot shown above.
 
 ### Anomalies for all buoys for different months
 
-You can specify a single month (the default being "4" for April):
+You can specify a single month (the default being "4" for April); here is December:
 ```{r, buoyanomaliesmonth}
 plot(all_buoys_anomalies,
      months = 12)
