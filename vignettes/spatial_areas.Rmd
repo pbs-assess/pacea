@@ -93,16 +93,16 @@ will first use the Optimum Interpolation Sea Surface Temperature (OISST)
 data described in the 
 [OISST vignette](https://pbs-assess.github.io/pacea/vignettes/oisst.html), 
 
-To just restrict a plot to an area, as an example we use the elusive pacea area called `sasquatch` and then plot
-each month from 2014 to 2016:
+To just restrict a plot to an area, as an example we use the elusive pacea area
+called `sasquatch` and then plot each March to September from 2014 to 2016:
 ```{r, areaplots}
 plot(oisst_month,
-     months = 1:12,
+     months = 3:9,
      years = 2014:2016,
      area = sasquatch)
 ```
 We can add options to restrict the plot to the reduced area, and to add an
-outline:
+outline (the default is the last month of data):
 ```{r, areaplots2}
 plot(oisst_month,
      area = sasquatch,
@@ -145,17 +145,17 @@ using `sf::st_intersects()` to calculate intersection locations between the main
 data set (e.g. `primary_production`) and the `area`. The `sf::st_intersects()`
 function returns `TRUE` when features intersect, or even just touch. 
 
-For `oisst_month` example that uses points as the centre of grid cells, the cell
+For the `oisst_month` example that uses points as the centre of grid cells, the cell
 is included in the plot (i.e. is within the area) if the point representing it
 is within the area. Hence, if the point is outside the area (even if some of the
-grid cell is within it), then the cell is included and we see the white areas
+grid cell is within it), then the cell is excluded and we see the white areas
 inside the sasquatch area.
 
 But for the BCCM `primary_production` values, the geometry is polygons, and so
 if any part of a grid cell (represented by a polygon) touches the area then that
 cell is included. Hence there is no white within the area in this case. Note the
 differing resolution of the underlying grid cells between the two examples (but
-this is not relevant here).
+this is not relevant here). 
 
 HERE - decide what else to do. And rerun and read the above.
 
@@ -251,24 +251,6 @@ my_area_2 <- create_area_sf_polygon(my_area_tibble)
 expect_equal(my_area_1,
              my_area_2)
 ```
-
-TODO, sumamrise:
-
-Travis: 
-Hmmm. Looking at the oisst data, the geometry coordinates are stored as points (centre of each cell). However with BCCM, they were staored as polygons (each corner of the cell). I'm not 100% sure why I did this but it's likely because of the different 2x2 and 6x6 grid we initially went with for bccm. If we just stored the centre of coordinates for the bccm data, it would reduce the size a bit, but I don't think by that much. 
- 
-st_intersects is TRUE if any part of the geometry is within your defined area. 
- 
-For POINTS data, st_intersects and st_within act the same as each 'cell' is just one coordinate point. Therefore the centre of the cell has to be within your defined area. 
- 
-If we had POLYGON geometries, then st_intersects and st_within act different. st_intersects is any one of the coordinates (corners) for each cell can be in the defined area for it to be TRUE. Whereas st_within requires all coordinates of the polygon (cell) to be in the area
- 
-Me: That makes sense, thanks. (The Sasquatch was super useful in noticing this). So doing the same thing for BCCM  will look a bit different.
-Don't think I've downloaded BCCM data yet but plan to soon, had to clear up my full hard drive a bit.
- 
-Suggest we don't mess with the current storage of the data. I guess I can't make an option to make them agree (by switching between st_within and st_intersects, as neither will exactly match up). Okay, just have to mention this somewhere. In reality, it shouldn't make such a difference provided areas are not too small. And areas will usually be less topologically interesting than a sasquatch.
- 
-
 
 
 ```{r, stop, cache = FALSE}
