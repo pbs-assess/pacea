@@ -126,7 +126,8 @@ bccm_all_variables_full <- function(run_parallel = TRUE,
       get_zenodo_data(data_name,
                       force = TRUE,
                       cache_subfolder = "bccm_full",
-                      timeout_value = timeout_value)
+                      timeout_value = timeout_value,
+                      version = version)
     }
   }
 
