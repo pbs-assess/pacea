@@ -1774,3 +1774,86 @@
 
 ##' @rdname fraser_discharge_mean
 "fraser_discharge_peak"
+
+##' Pacific Marine Fisheries Commission Major Areas
+##'
+##' Spatial polygons representing Pacific Marine Fisheries
+##' Commission (PMFC) major management areas along the
+##' British Columbia coast.
+##'
+##' The dataset includes a combined `sf` object (`pmfc_major`)
+##' containing all 8 major areas, as well as individual `sf`
+##' objects named according to their polygon IDs
+##' (e.g., `pmfc_major_1`, `pmfc_major_8`). See `pmfc_major`
+##' for list of IDs and the corresponding label or area name.
+##'
+##' @format An `sf` object containing polygon geometries
+##'   in longitude/latitude coordinates (EPSG:4326).
+##'
+##' Attributes include:
+##' \describe{
+##'   \item{PID}{Original PBSmapping polygon identifier.}
+##'   \item{major}{PMFC major area identifier.}
+##'   \item{label}{PMFC alpha-numeric designation.}
+##'   \item{name}{Geographic name of the PMFC major management area.}
+##'   \item{X, Y}{Original label coordinates.}
+##'   \item{geometry}{Polygon geometry.}
+##' }
+##'
+##' @source `PBSdata` package.
+##' Polygon data in use at Fisheries and Oceans Canada (Pacific region) for delimiting Pacific Marine Fisheries Commission (PMFC) major areas.
+##' The international PMFC established areas along the North American Pacific coast from California to Alaska (Tagart 1991). These correspond roughly to reporting regions for the U.S. triennial surveys. They also fit into a Canadian scheme of dividing the coast into major areas, where Canadian areas 3–9 correspond to PMFC areas 3C, 3D, 5A, 5B, 5C, 5D, and 5E. The major areas have hierarchical breakdowns into minor areas and localities (Table 3.2, Fig. 3.2a, Schnute et al. 2001). The major areas cover the BC coast, and the minor areas simply cover the coast with a larger number of subdivisions. Based on historic fishing grounds, each minor area contains localities. These typically leave holes, so that a minor area can consist of various defined localities plus other regions. Each locality has a code number within the minor area, where 9 always means ‘other’, i.e., outside the identified localities. Another code 0 denotes an unknown locality, rather than 9. Simplified, majors cover the BC coast, so do minors, but localities do not.
+##' 
+##' @examples
+##' \dontrun{
+##' library(sf)
+##'
+##' plot(st_geometry(pmfc_major))
+##' plot(st_geometry(pmfc_major_1))
+##' }
+##' 
+##' @aliases pmfc_major_1 pmfc_major_3 pmfc_major_4 pmfc_major_5 pmfc_major_6 pmfc_major_7 pmfc_major_8 pmfc_major_9 
+##' 
+"pmfc_major"
+
+##' Pacific Marine Fisheries Commission Minor Areas
+##'
+##' Spatial polygons representing Pacific Marine Fisheries
+##' Commission (PMFC) minor management areas along the
+##' British Columbia coast.
+##'
+##' The dataset includes a combined `sf` object (`pmfc_minor`)
+##' containing all 30 minor areas, as well as individual `sf`
+##' objects named according to their polygon IDs
+##' (e.g., `pmfc_minor_`). See `pmfc_minor` for list of 
+##' IDs and the corresponding label or area name.
+##'
+##' @format An `sf` object containing polygon geometries
+##'   in longitude/latitude coordinates (EPSG:4326).
+##'
+##' Attributes include:
+##' \describe{
+##'   \item{PID}{Original PBSmapping polygon identifier.}
+##'   \item{major}{Associated PMFC major area.}
+##'   \item{minor}{PMFC minor area identifier.}
+##'   \item{label}{Short label describing the minor area.}
+##'   \item{name}{Geographic name of the PMFC minor management area.}
+##'   \item{X, Y}{Original label coordinates.}
+##'   \item{geometry}{Polygon geometry.}
+##' }
+##'
+##' @source `PBSdata` package.
+##' Polygon data in use at Fisheries and Oceans Canada (Pacific region) for delimiting Pacific Marine Fisheries Commission (PMFC) minor areas.
+##' The international PMFC established areas along the North American Pacific coast from California to Alaska (Tagart 1991). These correspond roughly to reporting regions for the U.S. triennial surveys. They also fit into a Canadian scheme of dividing the coast into major areas, where Canadian areas 3–9 correspond to PMFC areas 3C, 3D, 5A, 5B, 5C, 5D, and 5E. The major areas have hierarchical breakdowns into minor areas and localities (Table 3.2, Fig. 3.2a, Schnute et al. 2001). The major areas cover the BC coast, and the minor areas simply cover the coast with a larger number of subdivisions. Based on historic fishing grounds, each minor area contains localities. These typically leave holes, so that a minor area can consist of various defined localities plus other regions. Each locality has a code number within the minor area, where 9 always means ‘other’, i.e., outside the identified localities. Another code 0 denotes an unknown locality, rather than 9. Simplified, majors cover the BC coast, so do minors, but localities do not.
+##'
+##' @examples
+##' \dontrun{
+##' library(sf)
+##'
+##' plot(st_geometry(pmfc_minor))
+##' plot(st_geometry(pmfc_minor_1))
+##' }
+##' 
+##' @aliases pmfc_minor_1 pmfc_minor_2 pmfc_minor_3 pmfc_minor_4 pmfc_minor_5 pmfc_minor_6 pmfc_minor_7 pmfc_minor_8 pmfc_minor_9 pmfc_minor_11 pmfc_minor_12 pmfc_minor_13 pmfc_minor_14 pmfc_minor_15 pmfc_minor_16 pmfc_minor_17 pmfc_minor_18 pmfc_minor_19 pmfc_minor_20 pmfc_minor_21 pmfc_minor_23 pmfc_minor_24 pmfc_minor_25 pmfc_minor_26 pmfc_minor_27 pmfc_minor_28 pmfc_minor_29 pmfc_minor_31 pmfc_minor_34 pmfc_minor_35
+##'
+"pmfc_minor"
