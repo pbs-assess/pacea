@@ -70,11 +70,14 @@ areas_table <- tibble::tibble(
 knitr::kable(areas_table)
 ```
 
+See the respective help files for details. We plot each of these areas later,
+but use one of them to explain plotting options.
 (Developers - see the hidden code here to check for new areas).
 ```{r, plot_areas, fig.height = 6, fig.width = 6, echo = FALSE, eval = FALSE}
 # Look at these manually to check they are actually areas. 
 # For any new ones that are not, just add them to the `ignore` 
-#  default in which_data_are_areas().
+#  default in which_data_are_areas(). areas_table gets used later to plot the
+#  areas. 
 
 for(area_name in areas_in_pacea) {
   area_data <- get(area_name)
@@ -167,16 +170,43 @@ plot(primary_production,
      area_outline = sasquatch)
 ```
 
-You can use `restrict_to_areas()` to reduce the data to the area of interest:
-DO this also for looking at values.
+You can use `restrict_to_areas()` to reduce the data to the area of interest, so
+ you can examine the data of interest:
 ```{r, oisss}
 oisst_sasquatch <- restrict_to_area(oisst_month, 
                                     sasquatch)
-plot(oisst_sasquatch)
+
+oisst_sasquatch
+
+plot(oisst_sasquatch,
+     restrict_plot = TRUE)
 ```
+The plot is the same as that above (for which we set the area at the plotting
+stage), except the colour scale is slightly different.
+
 For making consequent indices, e.g. the average monthly temperature over the
 area, see `calculate_anomalies(oisst_month, area = sasquatch)` in the 
 [Ecosystem Summary Heatmaps vignette](https://pbs-assess.github.io/pacea/vignettes/ecosystem_summary_heatmaps.html).
+
+## Plots of each area
+
+The easiest way to see an area is to plot its outline over some OISST data
+(because the scale of the map will be automatically suitable), such as for
+Pacific Fisheries Management Area 126:
+```{r, plotareas}
+plot(oisst_month,
+     area_outline = pfma_area_126_temp)
+```
+All the areas from the table at the top are:
+```{r, plotareas2}
+for(i in 1:nrow(areas_table)){
+  print(areas_table$`Area name`[i])
+  plot(oisst_month,
+                    area_outline = get(areas_table$`Area name`[i]))
+}
+```
+
+
 
 ## Create your own customised area
 
