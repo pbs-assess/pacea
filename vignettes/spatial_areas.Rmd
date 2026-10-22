@@ -206,8 +206,6 @@ for(i in 1:nrow(areas_table)){
 }
 ```
 
-
-
 ## Create your own customised area
 
 You can create your own area (as an sf object) from a matrix or tibble of latitude
@@ -230,6 +228,3 @@ my_area_2 <- create_area_sf_polygon(my_area_tibble)
 expect_equal(my_area_1,
              my_area_2)
 ```
-
-
-
