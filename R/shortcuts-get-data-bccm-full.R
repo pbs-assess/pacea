@@ -306,3 +306,66 @@ bccm_bottom_v_currentvelocity_full <- function(update = FALSE, ask = interactive
   get_zenodo_data("bccm_surface_v_currentvelocity_full", update = update, ask = ask,
                   force = force, version = version, cache_subfolder = cache_subfolder)
 }
+
+# #' @rdname bccm_bottom_oxygen_full
+# #' @export
+# bccm_surface_current_speed_full <- function(update = FALSE, ask = interactive(),
+#                                             force = FALSE, version = "03",
+#                                             cache_subfolder = "bccm_full"){
+#   get_zenodo_data("bccm_surface_current_speed_full", update = update, ask = ask,
+#                   force = force, version = version, cache_subfolder = cache_subfolder)
+# }
+# 
+# #' @rdname bccm_bottom_oxygen_full
+# #' @export
+# bccm_surface_current_anglerad_full <- function(update = FALSE, ask = interactive(),
+#                                                force = FALSE, version = "03",
+#                                                cache_subfolder = "bccm_full"){
+#   get_zenodo_data("bccm_surface_current_anglerad_full", update = update, ask = ask,
+#                   force = force, version = version, cache_subfolder = cache_subfolder)
+# }
+# 
+# #' @rdname bccm_bottom_oxygen_full
+# #' @export
+# bccm_surface_current_angledeg_full <- function(update = FALSE, ask = interactive(),
+#                                                force = FALSE, version = "03",
+#                                                cache_subfolder = "bccm_full"){
+#   get_zenodo_data("bccm_surface_current_angledeg_full", update = update, ask = ask,
+#                   force = force, version = version, cache_subfolder = cache_subfolder)
+# }
+# 
+# 
+# #' @rdname bccm_bottom_oxygen_full
+# #' @export
+# bccm_bottom_current_speed_full <- function(update = FALSE, ask = interactive(),
+#                                             force = FALSE, version = "03",
+#                                             cache_subfolder = "bccm_full"){
+#   get_zenodo_data("bccm_bottom_current_speed_full", update = update, ask = ask,
+#                   force = force, version = version, cache_subfolder = cache_subfolder)
+# }
+# 
+# #' @rdname bccm_bottom_oxygen_full
+# #' @export
+# bccm_bottom_current_anglerad_full <- function(update = FALSE, ask = interactive(),
+#                                                force = FALSE, version = "03",
+#                                                cache_subfolder = "bccm_full"){
+#   get_zenodo_data("bccm_bottom_current_anglerad_full", update = update, ask = ask,
+#                   force = force, version = version, cache_subfolder = cache_subfolder)
+# }
+# 
+# #' @rdname bccm_bottom_oxygen_full
+# #' @export
+# bccm_bottom_current_angledeg_full <- function(update = FALSE, ask = interactive(),
+#                                                force = FALSE, version = "03",
+#                                                cache_subfolder = "bccm_full"){
+#   get_zenodo_data("bccm_bottom_current_angledeg_full", update = update, ask = ask,
+#                   force = force, version = version, cache_subfolder = cache_subfolder)
+# }
+
+
+
+
+
+
+
+
