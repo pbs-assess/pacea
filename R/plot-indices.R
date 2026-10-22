@@ -1,30 +1,44 @@
 ##' Plot multiple indices, that have been created by the user, together in a similar heatmap style to the buoy SST plot.
 ##'
 ##' Takes any number standardised annual indices created using [create_index()] and
-##' plots a heatmap style plot.
-##'
-##' To display square tiles for each data point, manually adjust your figure
+##' plots a heatmap style plot. To display square tiles for each data point,
+##' manually adjust your figure
 ##' dimensions when saving.
 ##'
+##' See the `ecosystem_summary_heatmaps` vignette (best viewed as the rendered
+##' version on GitHub) for lots of example uses.
+##'
 ##' @param ... the indices you want to plot, using names you gave them when
-##' using [create_index()], e.g. hake_recruitment_index, etc. They are plotted
-##' from top to bottom in the order given.
+##'   using [create_index()], e.g. hake_recruitment_index, etc. They are plotted
+##'   from top to bottom in the order given.
 ##' @param years numeric vector of the years to show, default is the range that
-##' encompasses all the indices. If some years of an index are not plotted (but
-##' were used to create the standardised index), then the mean of the values
-##' shown in the plot for that index will obviously not be 0.
+##'   encompasses all the indices. If some years of an index are not plotted (but
+##'   were used to create the standardised index), then the mean of the values
+##'   shown in the plot for that index will obviously not be 0.
 ##' @param angle_year_labels logical, whether to put the year labels at 45
-##' degrees, which is needed to avoid overlapping when there are many
-##' years. TODO maybe need the next rdname:
+##'   degrees, which is needed to avoid overlapping when there are many
+##'   years. TODO maybe need the next rdname:
 ##' @param gap_after character vector (or NULL, the default) of index names
-##' to add a gap after in the plot. For example,
-##' `gap_after = "herring_recruitment_sog_index"` (which is an index you have
-##' created and named using `create_index()`) will add a gap after that index.
-##' Multiple indices can be specified: `gap_after = c("index1", "index2")`.
+##'   to add a gap after in the plot. For example,
+##'   `gap_after = "herring_recruitment_sog_index"` (which is an index you have
+##'   created and named using `create_index()`) will add a gap after that index.
+##'   Multiple indices can be specified: `gap_after = c("index1", "index2")`.
 ##' @param gap_size numeric value controlling the size of the gaps in cm
 ##'   (default 0.2, roughly 1/5 of the box height).
 ##' @param heatmap_colours numeric vector of colours to use for the heatmap.
 ##'   Default is `pals::ocean.balance(20)[2:19]`, which provides 18 colours.
+##' @param flip character vector (or NULL, the default) of index names. This is
+##'   for a stock-specific summary, when the first index represents, say,
+##'   recruitment of the stock of interest. The remaining indices are thought to
+##'   possibly influence this recruitment. Indices in `flip` are for when a
+##'   negative value of the index is thought to have a positive values on the
+##'   recruitment. The colours in the heatmap are then reversed for this index,
+##'   so that red is 'good for recruitment'. An asterisk is added to the index
+##'   label in the figure to identify this. The numeric values shown in the
+##'   figure are those of the original index. See the vignette for an
+##'   example. Note that if `return_results = TRUE` then results are given in
+##'   this way, with the `value` column being the negative of the original index
+##'   for those indices given in `flip`.
 ##' @rdname plot.pacea_buoy_anomalies_list
 ##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot` and `results`
 ##' (when `return_results = TRUE`)
@@ -53,7 +67,8 @@ plot_indices <- function(...,
                          angle_year_labels = TRUE,
                          gap_after = NULL,
                          gap_size = 0.2,
-                         heatmap_colours = pals::ocean.balance(20)[2:19]){
+                         heatmap_colours = pals::ocean.balance(20)[2:19],
+                         flip = NULL){
 
   # Make a long tibble from the indices in ..., in a similar way to what we did
   # for buoy_sst data, so plotting can be similar.
@@ -104,7 +119,7 @@ plot_indices <- function(...,
     dplyr::filter(year %in% years,
                   !is.na(value))
 
-  # Create legend label based on sst_plot
+  # Create legend label
   legend_label <- "Standardised anomaly for each index"
 
   if(is.null(scale_limits)){
@@ -114,10 +129,26 @@ plot_indices <- function(...,
                       max_abs)
   }
 
-
   # Add label column for text display
   plot_data <- plot_data %>%
     dplyr::mutate(label = as.character(round(value, 1)))
+
+  # Flip sign of values (so red is 'good for species of interest' but the shown
+  #  'label' number is still the value of the orginal index)
+  #  and add asterisk for 'flipped' indices
+  if(!is.null(flip)){
+    if(!all(flip %in% combined_indices$index)){
+      stop("flip needs to contain only index names from those provided to plot_indices()")
+    }
+
+    plot_data <- plot_data %>%
+      dplyr::mutate(value = dplyr::if_else(index %in% flip,
+                                           -value,
+                                           value),
+                    index_label = dplyr::if_else(index %in% flip,
+                                                 paste0(index_label, "*"),
+                                                 index_label))
+  }
 
   # Create grouping for gaps if gap_after is specified
   if(!is.null(gap_after)){

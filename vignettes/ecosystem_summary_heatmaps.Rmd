@@ -630,7 +630,13 @@ plot_indices(hake_recruitment_index,
 
              gap_after = c("hake_recruitment_index",
                            "pdo_index",
-                           "herring_biomass_wcvi_index"))
+                           "herring_biomass_wcvi_index"),
+             return_results = TRUE,
+             flip = c("bi_index",
+                      "pdo_index",
+                      "herring_biomass_wcvi_index",
+                      "hake_age_1_index"))
+
                           
              
 
