@@ -5,6 +5,37 @@ Developers: for some general tips for writing good bullets see https://style.tid
 
 ## Updates by date
 
+* 2026-10-23 Major enhancements.
+  * Two new vignettes (linked from README) and associated features:
+	* `spatial_areas` - details of spatial areas in pacea and how to easily
+		extract values (such as from OISST and BCCM values) restricted to an
+		area with new `restrict_to_area()` and make plots; create your own area
+		with new `create_area_sf_polygon()`. 
+	* `ecosystem_summary_heatmaps` - how to produce customisable ecosystem
+      summary figures in a heatmap style, tailored to your species and area of
+      interest. 
+	  * Uses new `create_index()` that works on multiple types of pacea
+      objects to produce a standardised index. 
+	  * Uses new `plot_indices()` on multiple create indices to generate a
+        ecosysytem summary heatmap.
+	  * Examples of `plot.pacea_index()` with new heatmap options - good for
+        understanding the developing El Nino.
+  * Additions to `buoys_anomalies` vignette, including details of extra
+    specifications like how much data (e.g. days in a month) is needed to
+    produce an anomaly.
+  * Adapted previous OISST climatology and anomaly calculations into new
+    standardised approach (based on buoys), as then used for other data types. 
+  * Added area-based plotting options to multiple plot functions.
+  * Add option to customise the colour palette for heatmaps.
+  * Added temporary `pfma_area_126_temp` PFMA area 126 area; to be replaced when
+    we add lots of areas in a standardised way. Also `sasquatch`. 
+  * Data updates:
+    * Updated `oisst_week` and `oisst_month`
+    * Updated `buoy_sst` with 1,229 new daily values.
+    * Updated coastwide indices: `ao`, `mei`, `npgo`, `oni`, `pdo`, and `soi`;
+      see Issue #105 regarding changes in the historical `oni` values.
+  * Fix non-parallel version inclusion in `bccm_all_variables_full()`.
+	  
 * 2026-08-21 Added climatology and anomaly calculations for the buoy SST
   data. See the new `buoy_anomalies` vignette. Also reordered the buoy order in
   `buoy_metadata` into a roughly north-south order. Updated `buoy_sst` on

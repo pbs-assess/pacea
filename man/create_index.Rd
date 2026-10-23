@@ -28,7 +28,12 @@
   index_name = NULL
 )
 
-\method{create_index}{pacea_biomass}(data, years = NULL, index_label = "Hake spawning biomass")
+\method{create_index}{pacea_biomass}(
+  data,
+  years = NULL,
+  index_label = "Hake spawning biomass",
+  index_name = NULL
+)
 
 \method{create_index}{pacea_buoy}(
   data,

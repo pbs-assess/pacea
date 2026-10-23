@@ -2,8 +2,8 @@
 % Please edit documentation in R/pacea-import-from.R
 \docType{package}
 \name{pacea}
-\alias{pacea}
 \alias{pacea-package}
+\alias{pacea}
 \title{pacea: an R package of Pacific ecosystem information to help facilitate an
 ecosystem approach to fisheries management}
 \description{
@@ -37,10 +37,10 @@ Authors:
 
 Other contributors:
 \itemize{
-  \item Jessica Nephin  [contributor]
+  \item Jessica Nephin [contributor]
   \item Strahan Tucker [contributor]
-  \item Matt Grinnell  [contributor]
-  \item Lindsay Davidson  [contributor]
+  \item Matt Grinnell [contributor]
+  \item Lindsay Davidson [contributor]
   \item Sean Anderson [contributor]
   \item Philina English [contributor]
   \item Chris Grandin (\href{https://orcid.org/0000-0002-6746-3486}{ORCID}) [contributor]

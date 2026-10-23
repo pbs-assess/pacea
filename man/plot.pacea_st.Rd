@@ -10,6 +10,11 @@
   years.plot = c(2018),
   bc = TRUE,
   eez = TRUE,
+  area = NULL,
+  area_outline = NULL,
+  area_outline_col = "black",
+  area_outline_linewidth = 1,
+  restrict_plot = NULL,
   single_current_vector = FALSE,
   ...
 )
@@ -24,6 +29,21 @@
 \item{bc}{logical. Should BC coastline layer be plotted?}
 
 \item{eez}{logical. Should BC EEZ layer be plotted?}
+
+\item{area}{sf object of the spatial area to restrict the data to. Includes
+any cell of the OISST data for which the middle of the cell is within \code{area}.}
+
+\item{area_outline}{sf object whose outline will be drawn on the plot. If
+provided, the boundary of this object will be plotted as a line. Default is NULL.}
+
+\item{area_outline_col}{character. Colour for the area_outline. Default is "black".}
+
+\item{area_outline_linewidth}{numeric. Line width for the area_outline. Default is 1.}
+
+\item{restrict_plot}{logical. Should the plot be restricted to the spatial
+domain of the data? If TRUE, the plot extent matches the data bounds and
+bc_coast and bc_eez layers will not expand the plot limits. Default is
+FALSE, or NULL for \code{\link[=plot.pacea_st]{plot.pacea_st()}} for which the attribute \code{attr(x, "restrict_plotting_range")} of the object \code{x} being plotted is used.}
 
 \item{single_current_vector}{logical. For plotting ocean currents as a total vector with arrows (FALSE), or individual vectors(TRUE)}
 

@@ -1,6 +1,6 @@
 ##' Plot anomalies of the buoy sea-surface temperature data
 ##'
-##' TODO Need to write this.
+##' TODO Need to write this. See vignette for now.
 ##'
 ##' @param pacea_buoy_anomalies_list object of class `pacea_buoy_anomalies_list`
 ##' obtained from running [calculate_anomalies()] on buoy data.
@@ -46,7 +46,7 @@
 ##'   then they are coloured grey.
 ##' @param heatmap_colours numeric vector of colours to use for the heatmap.
 ##'   Default is `pals::ocean.balance(20)[2:19]`, which provides 18 colours.
-##' @rdname plot_indices
+##' @inherit plot_indices
 ##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot` and `results`
 ##'   (when `return_results = TRUE`)
 ##' @export

@@ -61,7 +61,6 @@
 ##'   the value for 1990 will now appear as 1991). If NULL but `shift` is given,
 ##'   then `shift_years` defaults to `rep(1, length(shift)`, assuming a one-year
 ##'   shift for each specified index.
-##' @rdname plot.pacea_buoy_anomalies_list
 ##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot` and `results`
 ##' (when `return_results = TRUE`)
 ##' @export

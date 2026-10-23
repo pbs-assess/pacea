@@ -89,6 +89,7 @@ export(create_herring_object)
 export(create_index)
 export(dots_parser)
 export(get_pacea_data)
+export(get_rd_title)
 export(get_zenodo_data)
 export(hotssea_all_variables)
 export(hotssea_avg0to30m_salinity_max)
@@ -148,6 +149,7 @@ export(plot_with_uncertainty_discrete)
 export(restrict_to_area)
 export(standardise)
 export(summarise_months)
+export(which_data_are_areas)
 importFrom(dplyr,
   anti_join,
   arrange,

@@ -36,10 +36,8 @@
 contours of deviations from climatology mean will be plotted. Does not work
 when automatically called from \code{\link[=plot.pacea_oisst_anomalies_list]{plot.pacea_oisst_anomalies_list()}}.}
 
-\item{area}{sf object of the spatial area to restrict the anaomlies to. Includes
-any cell of the OISST data for which the  middle
-of the cell is within \code{area}; OISST data are stored as points represented the
-middle of the cell (which is a bit different to the BCCM data).}
+\item{area}{sf object of the spatial area to restrict the data to. Includes
+any cell of the OISST data for which the middle of the cell is within \code{area}.}
 
 \item{area_outline}{sf object whose outline will be drawn on the plot. If
 provided, the boundary of this object will be plotted as a line. Default is NULL.}
