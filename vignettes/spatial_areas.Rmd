@@ -96,7 +96,8 @@ will first use the Optimum Interpolation Sea Surface Temperature (OISST)
 data described in the 
 [OISST vignette](https://pbs-assess.github.io/pacea/vignettes/oisst.html), 
 
-To just restrict a plot to an area, as an example we use the elusive pacea area
+To just restrict a plot to an area, as an example we use the elusive rarely-used
+fisheries management area
 called `sasquatch` and then plot each March to September from 2014 to 2016:
 ```{r, areaplots}
 plot(oisst_month,
@@ -131,7 +132,7 @@ plot(primary_production,
      area_outline = sasquatch)
 ```
 
-Looking more closely, we can see that, unlike the `oisst_month` eample above,
+Looking more closely, we can see that, unlike the `oisst_month` example above,
 any cells that are at all inside the area are included:
 ```{r, sasquatchprimaryproduction2}
 plot(primary_production, 
@@ -191,7 +192,8 @@ area, see `calculate_anomalies(oisst_month, area = sasquatch)` in the
 ## Plots of each area
 
 The easiest way to see an area is to plot its outline over some OISST data
-(because the scale of the map will be automatically suitable), such as for
+(because the scale of the map will be automatically suitable and the coastline
+is included), such as for
 Pacific Fisheries Management Area 126:
 ```{r, plotareas}
 plot(oisst_month,

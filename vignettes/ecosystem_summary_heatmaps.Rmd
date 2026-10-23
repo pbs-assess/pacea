@@ -50,7 +50,7 @@ library(ggplot2)
 In the
 [buoy_anomalies](https://pbs-assess.github.io/pacea/vignettes/buoy_anomalies.html)
 vignette we showed how to make customisable heatmaps of the buoy sea-surface
-temperature data that are saved in pacea. They are in a format famililar to
+temperature data that are saved in pacea. They are in a format familiar to
 oceanographers, using prescribed climatologies and subsequent anomalies.
 
 Here we show how to produce customisable heatmaps that include disparate types
@@ -69,7 +69,7 @@ to create functions for user-customisable plots that easily summarise the releva
 information.
 
 Expert knowledge can be used to suggest relevant ecosystem information to be
-used for a particular stock. Futhermore, the ease of generating the heatmaps can
+used for a particular stock. Furthermore, the ease of generating the heatmaps can
 allow exploration, formulation of ideas, and quick hypothesis testing.
 
 For comparing disparate types of ecosystem information, we calculate an annual
@@ -223,7 +223,7 @@ for each year, and for SST would be based on the mean anomalies over a given
 area.
 
 It is first best to plot the spatial anomalies for the area of interest, to
-verify the area and understand what is going on. We wil then calculate an index
+verify the area and understand what is going on. We will then calculate an index
 directly from the anomalies list, or 
 directly from `create_index(oisst_month)` with various options.
 
@@ -497,7 +497,7 @@ abline(h = 0, col = "grey")
 ``` 
 
 We can also look at potential correlations with the other temperature indices we
-calculated above (for a buoy and for4 the whole EEZ):
+calculated above (for a buoy and for the whole EEZ):
 ```{r, onitemp, fig.height = fig_height_four_row_heatmap}
 plot_indices(oni_index_nov_jan,
              oisst_area_126_apr_index,
@@ -514,7 +514,7 @@ plot_indices(oni_index_nov_jan,
 <!-- and think a bit-->
 
 For the South Brooks buoy, 2026 is the only year with an anomaly of 0.5 and a
-negative standardised ONI over the pevious Nov to Jan, except for 1996 (that had
+negative standardised ONI over the previous Nov to Jan, except for 1996 (that had
 a low standardised ONI value of -0.9).
 
 For the full EEZ (bottom row), the signal is not as strong.
@@ -553,50 +553,34 @@ In the [2025 Pacific Hake stock
 assessment](https://s3.amazonaws.com/media.fisheries.noaa.gov/2025-02/Status-Pacific-Hake-whiting-US-and-Canadian-waters-2025.pdf)
 we presented a hake-specific ecosystem summary as a first step to providing an
 operational summary of relevant ecosystem information regarding the coastwide
-Pacific Hake (from California to British Columbia). It was updated in the [2026
+Pacific Hake stock (from California to British Columbia). The ecosystem summary was updated in the [2026
 assessment](https://www.fisheries.noaa.gov/s3/2026-02/hake-assessment-2026.pdf),
-with about half of the information coming directly from pacea. 
+with about half of the variables shown coming directly from pacea. 
 
 Without going into too much detail (see the assessments), we now
 develop an ecosystem summary heatmap of some of the ecosystem influences on Pacific Hake
-recruitment (age-0 individuals). This  will improve upon the time-series style
+recruitment (age-0 individuals) found by [Vestfals et al. (2023)](https://onlinelibrary.wiley.com/doi/full/10.1111/fog.12634). This  will improve upon the time-series style
 plots used in the 2025 and 2026 assessments. 
 
 We show five indices from pacea:
 
-
 | Definition | Effect on recruitment | Expectation for an increase in the index |
 |:---|:---|:---|
-| Pacific Herring spawning biomass off the west coast of
-Vancouver Island | Increased competition with herring on summer feeding grounds
-leads to poorer feeding conditions and reduced adult condition |
-$\downarrow$ recruitment the following year |
-
-| North Pacific Current Bifurcation Index | Northward-shifted
-bifurcation leads to increased advection of prey southwards, leading to poorer
-feeding conditions off British Columbia, Washington, and Oregon, and reduced
-adult condition | $\downarrow$ recruitment the following year |
-
-| Pacific Decadal Oscillation during preconditioning (Apr-Sep) | Indicator of basin-scale
-processes, negative phase linked to higher productivity and improved adult
-condition (Apr-Sep) |
-$\downarrow$ recruitment the following year |
-
-| North Pacific Gyre Oscillation during preconditioning
-(Apr-Sep) | Indicator of basin-scale
-processes, positive phase linked to higher nutrient concentrations and
-productivity, and improved adult condition | 
-$\uparrow$ recruitment the following year |
+| Pacific Decadal Oscillation during preconditioning (Apr-Sep) | Indicator of basin-scale processes, negative phase linked to higher productivity and improved adult condition | $\downarrow$ recruitment the following year |
+| North Pacific Gyre Oscillation during preconditioning (Apr-Sep) | Indicator of basin-scale processes, positive phase linked to higher nutrient concentrations and productivity, and improved adult condition | $\uparrow$ recruitment the following year |
+| North Pacific Current Bifurcation Index | Northward-shifted bifurcation leads to increased advection of prey southwards, leading to poorer feeding conditions off British Columbia, Washington, and Oregon, and reduced adult condition | $\downarrow$ recruitment the following year |
+| Pacific Herring spawning biomass off the west coast of Vancouver Island | Increased competition with herring on summer feeding grounds leads to poorer feeding conditions and reduced adult condition | $\downarrow$ recruitment the following year |
+| Biomass of age-1 Pacific Hake | Age-1 hake predate on pelagic juveniles (roughly Apr-Sep) | $\downarrow$ recruitment that year |
 
 
-We introduce two new options in `plot_indicces()`:
+We introduce two new options in `plot_indices()`:
 
 - lagging an index when the influence of the index is on the following
-   year's hake recruitment;
+   year's hake recruitment (as seen for four of the indices above);
 - flipping the colour scale when a negative index is expected to positively
-   enhance hake recruitment.
+   enhance hake recruitment (as seen for four of the indices above).
    
-First we will create the relevant indices from pacea objects:
+So create the relevant indices from pacea objects and then make the plot:
 <!-- adapted from `ecosystem_summary_hake.R` -->
 ```{r, hake}
 hake_assessment_year <- 2026
@@ -610,23 +594,7 @@ hake_recruitment_index <- create_index(
   index_name = "hake_recruitment",
   index_label = "Pacific Hake age-0 recruitment")
 
-hake_recruitment_index %>% tail()
-
 start_year <- hake_recruitment_index$year[1]
-
-herring_biomass_wcvi_index <- create_index(filter(herring_spawning_biomass,
-                                                  year >= start_year),
-                                           herring_region = "WCVI",
-                                           index_name =
-                                             "herring_spawning_biomass_wcvi")
-bi_index <- create_index(bi,
-                         index_label = "Bifurcation Index")
-
-
-hake_age_1_index <- create_index(filter(hake_total_biomass_age_1,
-                                        year <= age_1_hake_final_year_to_use),
-                                 index_name = "hake_age_1_total_biomass",
-                                 index_label = "Pacific Hake age-1 biomass")
 
 pdo_index <- create_index(filter(pdo,
                                  year >= start_year),
@@ -640,13 +608,28 @@ npgo_index <- create_index(filter(npgo,
                           index_name = "npgo_preconditioning",
                           index_label = "NPGO Preconditioning")
 
+bi_index <- create_index(bi,
+                         index_label = "Bifurcation Index")
+
+herring_biomass_wcvi_index <- create_index(filter(herring_spawning_biomass,
+                                                  year >= start_year),
+                                           herring_region = "WCVI",
+                                           index_name =
+                                             "herring_spawning_biomass_wcvi")
+
+hake_age_1_index <- create_index(filter(hake_total_biomass_age_1,
+                                        year <= age_1_hake_final_year_to_use),
+                                 index_name = "hake_age_1_total_biomass",
+                                 index_label = "Pacific Hake age-1 biomass")
+
+
 plot_indices(hake_recruitment_index,
              pdo_index,
              npgo_index,
              bi_index,             
              herring_biomass_wcvi_index,
              hake_age_1_index,
-             years = 1995:2027,    # else a bit unwieldy
+             years = 1995:2027,    # else a bit unwieldy to see
              gap_after = c("hake_recruitment_index",
                            "bi_index",
                            "herring_biomass_wcvi_index"),
@@ -657,12 +640,53 @@ plot_indices(hake_recruitment_index,
              shift = c("pdo_index",
                        "npgo_index",
                        "bi_index",
-                       "herring_biomass_wcvi_index")
-             )                      
+                       "herring_biomass_wcvi_index"))                      
 ```
-(Tried with and without log of hake recruitment and age-1's -- prefer unlogged
-as it shows up the really big recruitments better, logged makes the very small
-stand out compared to small, which is not so important. See commented out code.)
+The top row shows the index of hake recruitment, with the other rows showing
+some of the
+indices that are expected to influence hake recruitment. For the indices
+annotated with $^*$, the numbers show the index but the colours are flipped,
+such that red is always 'good for recruitment'  and blue is bad; these indices
+are the four with a $\downarrow$ in the final column of the table.
+
+For the four indices that the effect of the index is expected on the *following* year's
+hake recruitment, the plotted index is shifted by a year and this is indicated
+by a `+` symbol annotated to the index label. This is so that the x-axis
+represents the year of the hake recruitment; so all the influences on, say, 1995 recruitment are in the 1995
+column (even if the index is calculated on 1994 data), and red basically implies good for hake and blue implies not good.
+
+To briefly interpret some of the results, for the very large 1999 year class (high 1999
+hake recruitment), the five indices imply slightly favourable conditions, as
+they are all coloured red. For the very large 2010 class four of them do, which is
+the same for the not-so-large (but still way above average) 2008 and 2014
+classes. For the strong 2016 and 2021 age classes, only three and two indices
+indicate favourable conditions, respectively. Thus, as expected, such influences
+are not definitive.
+
+Note that the latest estimate of hake recruitment is for 2022 (at the original
+time of writing, October 2026), but we already
+have estimates of all the other indices for 2023, and some of them for later
+years. Thus, if a good relationship holds, we have some information for recent
+recruitments that we do not yet have estimates for from the stock assessment
+model. 
+
+Also, note that we already have estimates of the relevant indices derived
+from PDO and NPGO for 2027, because the Apr-Sep 2026 values are available now, and the
+influence of these is expected on the 2027 hake recruitment (so they appear in
+the 2027 column). 
+
+More work is needed regarding interpretation, but the point here is to
+demonstrate the functionality. In the hake assessment we also showed indices
+abstracted from outputs of the Global
+Ocean Physics Reanalysis ([GLORYS12V1]((https://data.marine.copernicus.eu/product/GLOBAL_MULTIYEAR_PHY_001_030/description))) product, which is a global ocean
+eddy-resolving oceanographic model. These looked at, for example, mixed-layer depths and
+strength of currents that affect eggs and larvae.
+
+<!-- (We tried using log of hake recruitment and age-1 values, but prefer the unlogged
+indices as the really big recruitments show up more clearly; logging  makes the
+very small stand out somewhat compared to 'just small', which is not really of
+such interest. See commented out code.)
+-->
 
 ```{r, hakelog, eval = FALSE, echo = FALSE}
 hake_recruitment_log <- hake_recruitment %>%
@@ -735,14 +759,13 @@ plot_indices(pdo_annual_index,
                            "herring_recruitment_wcvi_index"))
 ```
 
-
-
 ## Temporary Appendix - figuring out why historical values have changed. Users can ignore!
 
-TODO this will be removed when all figured out, rerun indices data updates. Send
-figure to Chris. 
+This will be removed when all figured out.
 
-TODO See long email to Mike and Tetjana; waiting for response (Mike has asked
+See
+our [pacea Issue](https://github.com/pbs-assess/pacea/issues/105) for the short
+version of the following. Also see long email to Mike and Tetjana; waiting for response (Mike has asked
 someone about it).
 
 First want to update indices values and check how the figure looks. Originally a

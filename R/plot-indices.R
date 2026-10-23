@@ -50,7 +50,9 @@
 ##'   index name must be one of those provided in `...`. The idea is that if an
 ##'   `index_1` is influenced by the value of `index_2` from the previous year,
 ##'   then we shift `index_2` along by a year so that in the figure the years
-##'   line up, making it easy to spot relationships. If not NULL, then The
+##'   line up, making it easy to spot relationships. A plus symbol as added to
+##'   the index label to identify this (one plus symbol is added for each year
+##'   in the relevant component of `shift_years`). If not NULL, then The
 ##'   x-axis label is also automatically changed to say `Year of <index_label for
 ##'   index_x_>`. See the vignette for an example.
 ##' @param shift_years numeric vector (or NULL, the default) of the same length
@@ -153,7 +155,7 @@ plot_indices <- function(...,
 
     # Change xlab if user hasn't specified something different from the default
     if(xlab == "Year"){
-      xlab = paste0("Year of",
+      xlab = paste0("Year of ",
                     pull(combined_indices[1, "index_label"]))
     }
   }
