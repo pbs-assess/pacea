@@ -557,31 +557,59 @@ Pacific Hake (from California to British Columbia). It was updated in the [2026
 assessment](https://www.fisheries.noaa.gov/s3/2026-02/hake-assessment-2026.pdf),
 with about half of the information coming directly from pacea. 
 
-Without going into too much detail of the indices (see the assessments), we now develop the above heatmap-style plot,
-that should improve upon the time-series style originally used for showing
-expected influenced on hake recruitment (age-0 individuals). We
-introduce two new aspects in the plotting: 
- - lagging an index when the influence of the index is on the following
+Without going into too much detail (see the assessments), we now
+develop an ecosystem summary heatmap of some of the ecosystem influences on Pacific Hake
+recruitment (age-0 individuals). This  will improve upon the time-series style
+plots used in the 2025 and 2026 assessments. 
+
+We show five indices from pacea:
+
+
+| Definition | Effect on recruitment | Expectation for an increase in the index |
+|:---|:---|:---|
+| Pacific Herring spawning biomass off the west coast of
+Vancouver Island | Increased competition with herring on summer feeding grounds
+leads to poorer feeding conditions and reduced adult condition |
+$\downarrow$ recruitment the following year |
+
+| North Pacific Current Bifurcation Index | Northward-shifted
+bifurcation leads to increased advection of prey southwards, leading to poorer
+feeding conditions off British Columbia, Washington, and Oregon, and reduced
+adult condition | $\downarrow$ recruitment the following year |
+
+| Pacific Decadal Oscillation during preconditioning (Apr-Sep) | Indicator of basin-scale
+processes, negative phase linked to higher productivity and improved adult
+condition (Apr-Sep) |
+$\downarrow$ recruitment the following year |
+
+| North Pacific Gyre Oscillation during preconditioning
+(Apr-Sep) | Indicator of basin-scale
+processes, positive phase linked to higher nutrient concentrations and
+productivity, and improved adult condition | 
+$\uparrow$ recruitment the following year |
+
+
+We introduce two new options in `plot_indicces()`:
+
+- lagging an index when the influence of the index is on the following
    year's hake recruitment;
- - flipping the colour scale when a negative index is expected to positively
+- flipping the colour scale when a negative index is expected to positively
    enhance hake recruitment.
    
-First we will create the relevant indices (not showing the results for brevity,
-just want to get to the figure):
+First we will create the relevant indices from pacea objects:
 <!-- adapted from `ecosystem_summary_hake.R` -->
 ```{r, hake}
-
-TODO need to lag herring, bi, pdo, npgo, not age1.
-TODO need to flip herring, bi, pdo, age1hake
 hake_assessment_year <- 2026
 hake_recruitment_final_year_to_use <- 2022  # final years removed as not
             # estimated by data, depends on the model assumptions        
-age_1_hake_final_year_to_use <- 2023
-                                   
+age_1_hake_final_year_to_use <- hake_recruitment_final_year_to_use + 1
+
 hake_recruitment_index <- create_index(
   filter(hake_recruitment,
          year <= hake_recruitment_final_year_to_use),
-  index_name = "hake_recruitment")
+  index_name = "hake_recruitment",
+  index_label = "Pacific Hake age-0 recruitment")
+
 hake_recruitment_index %>% tail()
 
 start_year <- hake_recruitment_index$year[1]
@@ -594,19 +622,11 @@ herring_biomass_wcvi_index <- create_index(filter(herring_spawning_biomass,
 bi_index <- create_index(bi,
                          index_label = "Bifurcation Index")
 
-hake_total_biomass_age_1_log <- hake_total_biomass_age_1 %>%
-  mutate(median = log(median))
 
 hake_age_1_index <- create_index(filter(hake_total_biomass_age_1,
                                         year <= age_1_hake_final_year_to_use),
                                  index_name = "hake_age_1_total_biomass",
                                  index_label = "Pacific Hake age-1 biomass")
-
-hake_age_1_log_index <- create_index(filter(hake_total_biomass_age_1_log,
-                                            year <= age_1_hake_final_year_to_use),
-                                     index_name = "hake_age_1_total_biomass_log",
-                                     index_label = "Pacific Hake age-1 log biomass")
-
 
 pdo_index <- create_index(filter(pdo,
                                  year >= start_year),
@@ -621,106 +641,61 @@ npgo_index <- create_index(filter(npgo,
                           index_label = "NPGO Preconditioning")
 
 plot_indices(hake_recruitment_index,
-             bi_index,
-             npgo_index,
              pdo_index,
+             npgo_index,
+             bi_index,             
              herring_biomass_wcvi_index,
              hake_age_1_index,
-             # hake_age_1_log_index,             
-
+             years = 1995:2027,    # else a bit unwieldy
              gap_after = c("hake_recruitment_index",
-                           "pdo_index",
+                           "bi_index",
                            "herring_biomass_wcvi_index"),
-             return_results = TRUE,
-             flip = c("bi_index",
-                      "pdo_index",
+             flip = c("pdo_index",
+                      "bi_index",
                       "herring_biomass_wcvi_index",
-                      "hake_age_1_index"))
+                      "hake_age_1_index"),
+             shift = c("pdo_index",
+                       "npgo_index",
+                       "bi_index",
+                       "herring_biomass_wcvi_index")
+             )                      
+```
+(Tried with and without log of hake recruitment and age-1's -- prefer unlogged
+as it shows up the really big recruitments better, logged makes the very small
+stand out compared to small, which is not so important. See commented out code.)
 
-                          
-             
+```{r, hakelog, eval = FALSE, echo = FALSE}
+hake_recruitment_log <- hake_recruitment %>%
+  mutate(median = log(median))
+
+hake_recruitment_log_index <- create_index(
+  filter(hake_recruitment_log,
+         year <= hake_recruitment_final_year_to_use),
+  index_name = "hake_recruitment_log",
+  index_label = "Pacific Hake age-0 log recruitment")
+
+hake_recruitment_log_index %>% tail()
+
+# Using recruitment deviations gives very close numbers to log recruitment
+#  (because of biomass lies close to the asymptote of the stock-recruit curve)
+# hake_recruitment_deviations_index <- create_index(
+#  filter(hake_recruitment_deviations,
+#         year <= hake_recruitment_final_year_to_use),
+#  index_name = "hake_recruitment_deviations",
+# index_label = "Pacific Hake age-0 recruitment deviations")
+
+hake_total_biomass_age_1_log <- hake_total_biomass_age_1 %>%
+  mutate(median = log(median))
+
+hake_age_1_log_index <- create_index(filter(hake_total_biomass_age_1_log,
+                                            year <= age_1_hake_final_year_to_use),
+                                     index_name = "hake_age_1_total_biomass_log",
+                                     index_label = "Pacific Hake age-1 log biomass")
 
 
-
-             gap_after = c("sst_buoy_halibut_bank_apr_index",
-                           "total_zooplankton_sog_index",
-                           "herring_biomass_sog_index"))
-
-
-  # no shifting, take log (as in Vestfals)  and then restandardise. From 2026
-  # onwards now removing the years that were not estimated.
-  hake_log_age_1_index <- dplyr::filter(hake_total_biomass_age_1,
-                                       year >= min_year,
-                                       year <= age_1_hake_final_year_to_use) %>%
-    dplyr::mutate(year = year,
-                  median = log(median),  # calling log as it is a pacea.index
-                  anomaly = standardise(median))
-  class(hake_log_age_1_index) <- class(oni)
-
-
-  mtext("Pacific Herring spawning biomass off WCVI - increases competition, lower recruitment next year",
-        side = 3, adj = 0, cex = 0.7, line = 0.3)
-
-
-  mtext("North Pacific Current Bifurcation Index - poorer feeding conditions BC/WA/OR, lower recruitment next year",
-        side = 3, adj = 0, cex = 0.7, line = 0.3)
-
-
-    mtext("Pacific Decadal Oscillation preconditioning index - lower general production, lower recruitment next year",
-          side = 3, adj = 0, cex = 0.7, line = 0.3)
-
-  mtext("North Pacific Gyre Oscillation preconditioning index - higher general production, higher recruitment next year",
-        side = 3, adj = 0, cex = 0.7, line = 0.3)
-
-didn't log age-0 though
-
-    mtext("Hake total log biomass of age-1 fish - more predation on age-0 fish lowers recruitment that year",
-          side = 3, adj = 0, cex = 0.7, line = 0.3)
-  }
-
-  mtext("Year of hake recruitment", side = 1, line = 2)
-
-# Create one big tibble to return; ensure each new index to add is just year and
-#  anomaly. Then make a cumulative index by just summing the normalised indices.
-  tib <- hake_recruitment_with_na %>%
-    dplyr::rename(hake_recruitment_low = low,
-                  hake_recruitment_median = median,
-                  hake_recruitment_high = high) %>%
-    dplyr::left_join(dplyr::select(herring_index,
-                                   year,
-                                   anomaly),
-                     by = "year") %>%
-    dplyr::rename(herring_index = anomaly) %>%
-    dplyr::left_join(dplyr::select(bi_index,
-                                   year,
-                                   anomaly),
-                     by = "year") %>%
-    dplyr::rename(bi_index = anomaly) %>%
-    dplyr::left_join(pdo_pre_index,
-                     by = "year") %>%
-    dplyr::rename(pdo_pre_index = anomaly) %>%
-    dplyr::left_join(npgo_pre_index,
-                     by = "year") %>%
-    dplyr::rename(npgo_pre_index = anomaly) %>%
-    dplyr::left_join(dplyr::select(hake_log_age_1_index,
-                                   year,
-                                   anomaly),
-                     by = "year") %>%
-    dplyr::rename(hake_log_age_1_index = anomaly) %>%
-    dplyr::mutate(cumulative_index =
-             rowSums(dplyr::across(c("herring_index",
-                                     "bi_index",
-                                     "pdo_pre_index",
-                                     "npgo_pre_index",
-                                     "hake_log_age_1_index"))))
 ```
 
-do heatmap
-
-
-
-
-## The end
+## Final remarks
 
 Using our functions described above, you should be able to tailor ecosystem summary
 heatmaps for your own stock or species of interest. We see these allowing you to

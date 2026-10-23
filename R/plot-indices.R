@@ -10,11 +10,17 @@
 ##'
 ##' @param ... the indices you want to plot, using names you gave them when
 ##'   using [create_index()], e.g. hake_recruitment_index, etc. They are plotted
-##'   from top to bottom in the order given.
+##'   from top to bottom in the order given. When the arguments `flip` and
+##'   `shift` are used, it is assumed that the first index given is the one of
+##'   interest, that may be influenced by the other indices.
 ##' @param years numeric vector of the years to show, default is the range that
 ##'   encompasses all the indices. If some years of an index are not plotted (but
 ##'   were used to create the standardised index), then the mean of the values
 ##'   shown in the plot for that index will obviously not be 0.
+##' @param xlab x-axis label, default is "Year". If `shift` is specified then
+##'   automatically becomes "Year of " followed by the `index_label` of the index
+##'   specified in `shift[1]`, as it is assumed this is the focus of interest
+##'   (e.g. recruitment of a fish stock).
 ##' @param angle_year_labels logical, whether to put the year labels at 45
 ##'   degrees, which is needed to avoid overlapping when there are many
 ##'   years. TODO maybe need the next rdname:
@@ -39,6 +45,20 @@
 ##'   example. Note that if `return_results = TRUE` then results are given in
 ##'   this way, with the `value` column being the negative of the original index
 ##'   for those indices given in `flip`.
+##' @param shift character vector (or NULL, the default) of index names to
+##'   shift along the year axis by the respective value in `shift_years`. Each
+##'   index name must be one of those provided in `...`. The idea is that if an
+##'   `index_1` is influenced by the value of `index_2` from the previous year,
+##'   then we shift `index_2` along by a year so that in the figure the years
+##'   line up, making it easy to spot relationships. If not NULL, then The
+##'   x-axis label is also automatically changed to say `Year of <index_label for
+##'   index_x_>`. See the vignette for an example.
+##' @param shift_years numeric vector (or NULL, the default) of the same length
+##'   as `shift`, specifying the number of years to shift each index in `shift`.
+##'   Positive values shift the index forward in time (e.g. a value of 1 means
+##'   the value for 1990 will now appear as 1991). If NULL but `shift` is given,
+##'   then `shift_years` defaults to `rep(1, length(shift)`, assuming a one-year
+##'   shift for each specified index.
 ##' @rdname plot.pacea_buoy_anomalies_list
 ##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot` and `results`
 ##' (when `return_results = TRUE`)
@@ -68,7 +88,9 @@ plot_indices <- function(...,
                          gap_after = NULL,
                          gap_size = 0.2,
                          heatmap_colours = pals::ocean.balance(20)[2:19],
-                         flip = NULL){
+                         flip = NULL,
+                         shift = NULL,
+                         shift_years = NULL){
 
   # Make a long tibble from the indices in ..., in a similar way to what we did
   # for buoy_sst data, so plotting can be similar.
@@ -103,6 +125,38 @@ plot_indices <- function(...,
   combined_indices <- combined_indices %>%
     dplyr::mutate(index_label = factor(index_label,
                                        levels = index_label_levels))
+
+  # Shift years for specified indices
+  if(!is.null(shift)){
+    if(is.null(shift_years)){;
+      shift_years <- rep(1,
+                         length(shift))
+    }
+
+    if(length(shift) != length(shift_years)){
+      stop("shift and shift_years must be the same length")
+    }
+
+    if(!all(shift %in% names(index_list))){
+      stop("All values in shift must be index names from those provided to plot_indices()")
+    }
+
+    shift_tibble <- tibble::tibble(index = shift,
+                                   shift_years = shift_years)
+
+    combined_indices <- combined_indices %>%
+      dplyr::left_join(shift_tibble,
+                       by = "index") %>%
+      dplyr::mutate(year = dplyr::if_else(!is.na(shift_years),
+                                          year + shift_years,
+                                          year))
+
+    # Change xlab if user hasn't specified something different from the default
+    if(xlab == "Year"){
+      xlab = paste0("Year of",
+                    pull(combined_indices[1, "index_label"]))
+    }
+  }
 
   if(is.null(main)){
     main = paste0("Ecosystem summary plot showing standardised value of each index")
@@ -148,6 +202,31 @@ plot_indices <- function(...,
                     index_label = dplyr::if_else(index %in% flip,
                                                  paste0(index_label, "*"),
                                                  index_label))
+  }
+
+  # Add superscript + for shifted indices
+  if(!is.null(shift)){
+    plot_data <- plot_data %>%
+      dplyr::mutate(shift_symbols = dplyr::if_else(!is.na(shift_years),
+                                                   strrep("+", shift_years),
+                                                   ""),
+                    index_label = paste0(index_label,
+                                         shift_symbols)) %>%
+      dplyr::select(-shift_years,
+                    -shift_symbols)
+  }
+
+  # Recreate index_label factor levels to preserve order after adding symbols
+  if(!is.null(flip) || !is.null(shift)){
+    new_levels <- plot_data %>%
+      dplyr::distinct(index, index_label) %>%
+      dplyr::mutate(index = forcats::fct_inorder(index)) %>%
+      dplyr::arrange(index) %>%
+      dplyr::pull(index_label)
+
+    plot_data <- plot_data %>%
+      dplyr::mutate(index_label = factor(index_label,
+                                         levels = new_levels))
   }
 
   # Create grouping for gaps if gap_after is specified
@@ -208,6 +287,13 @@ plot_indices <- function(...,
           panel.background = element_rect(fill = "white",
                                           colour = NA),
           panel.grid = element_blank()) +
+    {
+      if(!is.null(shift) || !is.null(flip)){
+        theme(axis.ticks.y = element_blank())
+      } else {
+        theme()
+      }
+    } +
     {
       if(angle_year_labels){
         theme(axis.text.x = element_text(angle = 45,
