@@ -39,8 +39,8 @@ fig_height_three_map <- 4       # width depends how many in each row, so do manu
 ## Daily average sea surface temperature from buoys -- climatologies and anomalies
 
 ```{r setup}
-load_all()    # for developer
-# library(pacea)  # for user
+# load_all()    # for developers
+library(pacea)  # for users
 library(dplyr)
 library(tibble)  # Else prints all of a tibble
 library(ggplot2)

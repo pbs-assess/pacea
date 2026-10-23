@@ -40,8 +40,8 @@ fig_height_four_map <- 5
 ## Customisable ecosystem summary heatmaps
 
 ```{r setup}
-load_all()    # for developer
-# library(pacea)  # for user
+# load_all()    # for developers
+library(pacea)  # for users
 library(dplyr)
 library(tibble)  # Else prints all of a tibble
 library(ggplot2)
