@@ -39,15 +39,19 @@ should be cited and consulted as appropriate.
 **NEW in October 2026** Lots of new functionality and three new
 vignettes – see [what’s
 new](https://github.com/pbs-assess/pacea?tab=readme-ov-file#what-is-new-since-the-original-release)
-section. Learn how to develop your own customisable ecosytem summary
-figure, and see the line of code needed to make this figure that helps
-explain the concern about the developing El Niño:
+section. Highlights include learning how to develop your own
+customisable ecosystem summary figure, and see the one line of code
+needed to make this graphic that helps explain the concern about the
+developing El Niño:
 
 <img src="man/figures/README-elnino.png" width="140%" />
 
 Shades of blue represent La Niña conditions, grey represents neutral,
-and shades of red represent El Niño. See how the August 2026 value is
-0.4 deg C higher than for any previous August.
+and shades of red represent El Niño. See that the August 2026 value is
+0.4 deg C higher than for any previous August. Hence the concern.
+(GitHub will not let the figure appear any wider here – see bigger
+version
+[here](https://pbs-assess.github.io/pacea/vignettes/ecosystem_summary_heatmaps.html#climatological-and-oceanographic-indices)).
 
 Please continue reading through this README file, and especially see the
 [vignettes
@@ -131,7 +135,7 @@ referenced.
 
 ## What is new since the original release?
 
-The values highlighed above with **Updated monthly** have been updated
+The values highlighted above with **Updated monthly** have been updated
 each month since the release of pacea, as documented in the
 [NEWS](NEWS.md), which it is advisable to check when you update your
 pacea installation (see below). Since the initial release we have also
@@ -143,7 +147,7 @@ the Issues) with latest first:
   - Three new vignettes and associated features:
   - [ecosystem_summary_heatmaps.html](https://pbs-assess.github.io/pacea/vignettes/ecosystem_summary_heatmaps.html)
     – produce customisable ecosystem summary figures in a heatmap style,
-    plus useful plots for understanding the developing El Niño
+    plus useful plots for understanding the developing El Niño.
   - [spatial_areas.html](https://pbs-assess.github.io/pacea/vignettes/spatial_areas.html)
     – details of spatial areas in pacea and how to restrict/plot data to
     them and create your own  
