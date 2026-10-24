@@ -20,7 +20,7 @@ Developers: for some general tips for writing good bullets see https://style.tid
         ecosysytem summary heatmap.
 	  * Examples of `plot.pacea_index()` with new heatmap options - good for
         understanding the developing El Nino.
-  * Additions to `buoys_anomalies` vignette, including details of extra
+  * Additions to `buoy_anomalies` vignette, including details of extra
     specifications like how much data (e.g. days in a month) is needed to
     produce an anomaly.
   * Adapted previous OISST climatology and anomaly calculations into new

@@ -36,6 +36,19 @@ formats in R, and provide helpful plotting functions. All data sets
 include documentation regarding the original sources and authors, who
 should be cited and consulted as appropriate.
 
+**NEW in October 2026** Lots of new functionality and three new
+vignettes – see [what’s
+new](https://github.com/pbs-assess/pacea?tab=readme-ov-file#what-is-new-since-the-original-release)
+section. Learn how to develop your own customisable ecosytem summary
+figure, and see the line of code needed to make this figure that helps
+explain the concern about the developing El Niño:
+
+<img src="man/figures/README-elnino.png" width="140%" />
+
+Shades of blue represent La Niña conditions, grey represents neutral,
+and shades of red represent El Niño. See how the August 2026 value is
+0.4 deg C higher than for any previous August.
+
 Please continue reading through this README file, and especially see the
 [vignettes
 section](https://github.com/pbs-assess/pacea?tab=readme-ov-file#vignettes)
@@ -116,7 +129,7 @@ Plotting and helper functions are provided, and demonstrated in the
 detailed vignettes. All data and model outputs are fully documented and
 referenced.
 
-## What’s new (since the original release)?
+## What is new since the original release?
 
 The values highlighed above with **Updated monthly** have been updated
 each month since the release of pacea, as documented in the
@@ -124,6 +137,29 @@ each month since the release of pacea, as documented in the
 pacea installation (see below). Since the initial release we have also
 added the following in response to user requests (some are documented in
 the Issues) with latest first:
+
+- October 2026 big update:
+
+  - Three new vignettes and associated features:
+  - [ecosystem_summary_heatmaps.html](https://pbs-assess.github.io/pacea/vignettes/ecosystem_summary_heatmaps.html)
+    – produce customisable ecosystem summary figures in a heatmap style,
+    plus useful plots for understanding the developing El Niño
+  - [spatial_areas.html](https://pbs-assess.github.io/pacea/vignettes/spatial_areas.html)
+    – details of spatial areas in pacea and how to restrict/plot data to
+    them and create your own  
+  - [buoy_anomalies.html](https://pbs-assess.github.io/pacea/vignettes/buoy_anomalies.html)
+    – calculating and plotting anomalies of the buoy sea surface
+    temperatures in various ways.
+  - Adapted previous OISST climatology and anomaly calculations into new
+    standardised approach now used for multiple data types.
+  - Added area-based plotting options to multiple plot functions.
+  - Note [Issue \#105](https://github.com/pbs-assess/pacea/issues/105)
+    regarding changes in the historical `oni` values.
+
+- 2026-08-21 Added climatology and anomaly calculations for the buoy SST
+  data. See the new `buoy_anomalies` vignette. Also reordered the buoy
+  order in `buoy_metadata` into a roughly north-south order. Updated
+  `buoy_sst` on 2026-08-13.
 
 - for Pacific Hake, added estimates of total biomass of age-1 fish and
   recruitment deviations (required updating some plotting and tickmark
@@ -360,6 +396,14 @@ the vignettes, which are already rendered here (note that we do not
 automatically update them when the data in pacea are updated, so if you
 run them locally you may get more up-to-date values):
 
+- [ecosystem_summary_heatmaps.html](https://pbs-assess.github.io/pacea/vignettes/ecosystem_summary_heatmaps.html)
+  Produce customisable ecosystem summary figures in a heatmap style,
+  tailored to your species and area of interest. **NEW in October 2026**
+- [spatial_areas.html](https://pbs-assess.github.io/pacea/vignettes/spatial_areas.html)
+  Details of spatial areas in pacea and how to easily extract and plot
+  values (such as from OISST and BCCM outputs) restricted to an area,
+  list of predefined areas (lots of fisheries management areas coming
+  soon), and how to create your own area. **NEW in October 2026**
 - [indices.html](https://pbs-assess.github.io/pacea/vignettes/indices.html)
   Climatic and oceanographic indices and associated plotting functions.
 - [buoys.html](https://pbs-assess.github.io/pacea/vignettes/buoys.html)
@@ -367,7 +411,7 @@ run them locally you may get more up-to-date values):
   functions.
 - [buoy_anomalies.html](https://pbs-assess.github.io/pacea/vignettes/buoy_anomalies.html)
   Calculating and plotting anomalies of the buoy sea surface
-  temperatures in various ways.
+  temperatures in various ways. **NEW October 2026**
 - [populations.html](https://pbs-assess.github.io/pacea/vignettes/populations.html)
   Estimates of animal populations and associated plotting functions.
 - [oisst.html](https://pbs-assess.github.io/pacea/vignettes/oisst.html)
