@@ -49,7 +49,7 @@ below.
 
 Currently, pacea contains:
 
-- 221,739 calculations of daily sea surface temperature based on data
+- 222,968 calculations of daily sea surface temperature based on data
   from 19 buoys. **Updated monthly.**
 
 - outputs from the spatial British Columbia continental margin (BCCM)
@@ -79,7 +79,7 @@ Currently, pacea contains:
   record, that incorporates observations from different platforms
   (satellites, ships, buoys, and Argo floats):
 
-  - provided as weekly and monthly means from Sep 1981 to May 2026.
+  - provided as weekly and monthly means from Sep 1981 to Sep 2026.
     **Updated monthly.**
 
 - outputs from the Hindcast of the Salish Sea (HOTSSea) physical
@@ -317,20 +317,20 @@ example:
 
 ``` r
 oni
-#> # A tibble: 917 × 4
+#> # A tibble: 920 × 4
 #>     year month value anomaly
 #>    <dbl> <dbl> <dbl>   <dbl>
-#>  1  1950     1  24.7   -1.53
-#>  2  1950     2  25.2   -1.34
-#>  3  1950     3  25.8   -1.16
-#>  4  1950     4  26.1   -1.18
-#>  5  1950     5  26.3   -1.07
-#>  6  1950     6  26.3   -0.85
-#>  7  1950     7  26.2   -0.54
-#>  8  1950     8  26.0   -0.42
-#>  9  1950     9  25.8   -0.39
-#> 10  1950    10  25.6   -0.44
-#> # ℹ 907 more rows
+#>  1  1950     1  25.0   -1.32
+#>  2  1950     2  25.4   -1.2 
+#>  3  1950     3  25.9   -1.12
+#>  4  1950     4  26.2   -1.08
+#>  5  1950     5  26.4   -1.1 
+#>  6  1950     6  26.3   -0.9 
+#>  7  1950     7  26.2   -0.62
+#>  8  1950     8  25.9   -0.57
+#>  9  1950     9  25.8   -0.56
+#> 10  1950    10  25.6   -0.62
+#> # ℹ 910 more rows
 ```
 
 **What climatic and oceanographic indices are currently available, and
@@ -347,7 +347,7 @@ knitr::kable(pacea_indices)
 | npi_annual | North Pacific Index (annual) | annual | 1899 | 2026 |
 | alpi | Aleutian Low Pressure Index | annual | 1900 | 2022 |
 | oni | Oceanic Niño Index | monthly | 1950 | 2026 |
-| npgo | North Pacific Gyre Oscillation | monthly | 1950 | 2025 |
+| npgo | North Pacific Gyre Oscillation | monthly | 1950 | 2026 |
 | ao | Arctic Oscillation | monthly | 1950 | 2026 |
 | soi | Southern Oscillation Index | monthly | 1951 | 2026 |
 | bi | North Pacific Bifurcation Index | annual | 1967 | 2024 |
