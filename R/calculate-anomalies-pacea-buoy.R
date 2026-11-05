@@ -86,7 +86,7 @@ calculate_anomalies.pacea_buoy <- function(data,
   excessive_gaps <- data %>%
     mutate(year = lubridate::year(date),
            time_unit = FUN(date),
-           true_days_in_month = lubridate::days_in_month(date)) %>%
+           true_days_in_month = suppressWarnings(lubridate::days_in_month(date))) %>%
     filter(year %in% climatology_years,
            time_unit %in% time_period_return) %>%
     group_by(stn_id,
@@ -177,7 +177,7 @@ calculate_anomalies.pacea_buoy <- function(data,
   excessive_gaps_anomalies <- data %>%
     mutate(year = lubridate::year(date),
            time_unit = FUN(date),
-           true_days_in_month = lubridate::days_in_month(date)) %>%
+           true_days_in_month = suppressWarnings(lubridate::days_in_month(date))) %>%
     filter(year %in% years_return,
            time_unit %in% time_period_return) %>%
     group_by(stn_id,
