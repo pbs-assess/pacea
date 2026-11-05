@@ -14,7 +14,7 @@
 ##'
 ##' R does not recognise the newer "British Columbia Standard Time" timezone
 ##' designation on Windows systems. This hook automatically sets the timezone
-##' to "Etc/GMT+7" for affected users to prevent warnings. The message is only
+##' to "America/Vancouver" for affected users to prevent warnings. The message is only
 ##' shown once per session.
 ##'
 ##' @param libname The library directory where the package is installed
@@ -23,9 +23,9 @@
 ##' @keywords internal
 .onLoad <- function(libname, pkgname){
   if(Sys.timezone() == "British Columbia Standard Time"){
-    Sys.setenv(TZ = "Etc/GMT+7")
+    Sys.setenv(TZ = "America/Vancouver")
     if(!isTRUE(.pacea_env$tz_message_shown)){
-      packageStartupMessage("Timezone automatically set to Etc/GMT+7 for British Columbia Standard Time, see https://github.com/pbs-assess/pacea/issues/107")
+      packageStartupMessage("Timezone automatically set to America/Vancouver for British Columbia Standard Time, see https://github.com/pbs-assess/pacea/issues/107")
       .pacea_env$tz_message_shown <- TRUE
     }
   }
