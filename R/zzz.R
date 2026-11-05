@@ -25,7 +25,7 @@
   if(Sys.timezone() == "British Columbia Standard Time"){
     Sys.setenv(TZ = "America/Vancouver")
     if(!isTRUE(.pacea_env$tz_message_shown)){
-      packageStartupMessage("Timezone automatically set to America/Vancouver for British Columbia Standard Time, see https://github.com/pbs-assess/pacea/issues/107")
+      packageStartupMessage("Timezone automatically set to America/Vancouver for British Columbia Standard Time, see https://github.com/pbs-assess/pacea/issues/107 . Note that Sys.time() may still be one hour off, depending on if America/Vancouver has been updated for you.")
       .pacea_env$tz_message_shown <- TRUE
     }
   }
