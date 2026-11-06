@@ -5,6 +5,14 @@ Developers: for some general tips for writing good bullets see https://style.tid
 
 ## Updates by date
 
+* 2026-11-06 Updated coastwide indices: `ao`, `mei`, `oni`, `pdo`, and `soi`,
+  and rerun `ecosystem_summary_heatmaps` vignette to see new oni value.
+
+* 2026-11-05 Set timezone to be America/Vancouver if R does not recognise the
+  new 'British Columbia Standard Time' which is what Windows calls our new
+  timezone but is not a standard timezone. No flux capacitor needed. See
+  Issue #107.
+
 * 2026-10-23 Major enhancements.
   * Two new vignettes (linked from README) and associated features:
 	* `spatial_areas` - details of spatial areas in pacea and how to easily
