@@ -1,7 +1,7 @@
 ---
 title: "pacea"
-subtitle: "New Canadian and US information added to pacea (since last year)"
-author: "Andrew Edwards"
+subtitle: "pacea: An R package of Pacific ecosystem information to help facilitate an ecosystem approach to fisheries management"
+author: "Andrew Edwards, Travis Tai, and Andrea Hilborn"
 output:
   beamer_presentation:
     theme: Singapore
@@ -87,7 +87,7 @@ library(dplyr)
 library(tibble)
 library(kableExtra)
 
-long_talk <- FALSE    # if FALSE then chunks with eval=long_talk will not be
+long_talk <- TRUE    # if FALSE then chunks with eval=long_talk will not be
                       # evaluated, as we are writing a shorter version. Now
                       # doing two versions of sections, since was getting in a
                       # mess trying to switch individual chunks.
@@ -95,7 +95,7 @@ short_talk <- !long_talk
 
 # Some of the chunks will need fixing if TRUE, can do if needed. Or maybe just
 # simplify things. no time right now (doing dfo/noaa 2025 talk).
-long_motivation <- FALSE  # whether to include the original longer motivation
+long_motivation <- TRUE  # whether to include the original longer motivation
                          # slides (EAFM, Brianna chat, gslea, open data, why R,
                          # why github). Opposite is
                          # short_motivation summarising some of that (or set
@@ -104,7 +104,7 @@ short_motivation <- !long_motivation
 
 explain_assessment <- FALSE  # set to TRUE for two slides explaining stock assessment
 
-more_details <- FALSE        # set to TRUE for some of the more detailed slides
+more_details <- TRUE        # set to TRUE for some of the more detailed slides
                              # (setting FALSE for national EAFM talk)
 
 
@@ -128,7 +128,7 @@ par("mai" = c(1.02, 0.82, 0.3, 0.42))   # default is 1.02 0.82 0.82 0.42
 
 # https://bookdown.org/yihui/rmarkdown-cookbook/font-color.html . For example:
 # `r colorize("hello", "blue")`
-colorize <- function(x, color){
+colorize <- function(x, color = "red"){
   if(knitr::is_latex_output()) {
     sprintf("\\textcolor{%s}{%s}", color, x)
   } else if(knitr::is_html_output()) {
@@ -140,7 +140,7 @@ colorize <- function(x, color){
 
 ```{r coverpage, echo=FALSE, out.width = "100%"}
 knitr::include_graphics(paste0(here::here(),
-                               "/talks/talks-manual-figures/pacea-title-slide-dfo-noaa-seattle-2025.png"))
+                               "/talks/talks-manual-figures/pacea-title-slide-winnipeg-2026.png"))
 ```
 
 <!-- Getting in a mess with trying to be too clever. Just make _short versions -->
@@ -179,6 +179,10 @@ knitr::include_graphics(paste0(here::here(),
 ```
 
 ```{r oisst, child = "oisst.Rmd", eval = long_talk}
+```
+
+```{r anomalies, child = "anomalies.Rmd", eval = FALSE} 
+# long_talk}
 ```
 
 ```{r summary, child = "summary.Rmd", eval = long_talk}

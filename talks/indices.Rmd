@@ -18,7 +18,13 @@ For example, to see a plot of the Oceanic Niño Index (ONI) anomaly, simply type
 plot(oni)
 ```
 
-This shows the onset of El Niño (positive index) conditions in April 2023.
+## Climatic and oceanographic indices
+
+New figure style that shows why everyone is freaking out about El Niño:
+
+```{r oniplotheatmap, fig.height = 5, fig.width = 12, out.width = "100%"}
+plot(oni, years = 1985:2026, neutral_oni_one_colour = TRUE, heatmap_style = TRUE)
+```
 
 ## Climatic and oceanographic indices
 

@@ -23,7 +23,7 @@
 
 Idea is to head towards stock-specific functions like (rough version):
 
-```{r, ecosumplot, echo = FALSE}
+```{r, ecosumplot, echo = FALSE, eval = FALSE}
 # Before moving into R/
 source(paste0(here::here(),
               "/R-temp/ecosystem-summary-hake.R"))
@@ -35,7 +35,7 @@ source(paste0(here::here(),
 #dev.off()
 ```
 
-```{r, ecosum, fig.height = 4.2}
+```{r, ecosum, fig.height = 4.2, eval = FALSE}
 ecosystem_summary_hake()
 ```
 

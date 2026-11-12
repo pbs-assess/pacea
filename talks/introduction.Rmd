@@ -32,6 +32,9 @@ So the SST analysis did not happen.
 
 ## Motivation
 
+- Initial motivation was Dan Duplisea's `gslea` package for the Gulf of
+  St. Lawrence (presented to EAMFWG).
+
 - Revised Fisheries Act: “... the Minister shall take into account the environmental conditions affecting a fish stock."
 
 - `r colorize("Yet <50\\% of DFO’s stock assessments currently use environmental data.", "blue")`
@@ -143,6 +146,8 @@ different catches:
 
 - Code is completely open source: transparent, traceable, and transferable.
 
+<!-- 
+
 ## pacea palooza 2025
 
 - Given quite a few talks, but not done a detailed how-to presentation
@@ -184,8 +189,8 @@ different catches:
   are less familiar with R) and we help out
 - whatever else people want
 
+-->
 
-<!--
 ## Why an R package?
 
 - R is the computer programming language most widely used by stock assessment scientists.
@@ -203,7 +208,7 @@ different catches:
 
 - All data (except oceanographic model output) is saved within the package, no further downloading
   required, so not relying on external websites being functional.
--->
+
 
 <!--
 ## Why an R package on GitHub?
@@ -224,26 +229,25 @@ knitr::include_graphics(paste0(here::here(),
 ```
 -->
 
+
 ```{r, eval = FALSE, echo = FALSE}
 - 'Passing' badge: ensures package can build in R.
 
 - 'codecov' is the amount of the code that is covered by unit tests, which help weed
   out bugs.
+```
 
 ## Spatial domain
 
-Started thinking about ecosystem assessment regions like in gslea:
-```
-
-```{r gslea, echo=FALSE, out.width="50%", eval = FALSE}
+We originally started thinking about ecosystem assessment regions like in gslea:
+```{r gslea, echo=FALSE, out.width="50%"}
 knitr::include_graphics(paste0(here::here(),
                                "/talks/talks-manual-figures/gslmap.plain-1.png"))
 ```
 
-```{r, eval = FALSE, echo = FALSE}
 But it became non-trivial to decide on regions, and we decided to explicitly include
 spatial information, especially regarding outputs of the biogeochemical model.
-```
+
 <!--
 
 ## `pacea` objects (climatic/oceanographic)
