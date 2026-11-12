@@ -46,6 +46,8 @@
 ##'   then they are coloured grey.
 ##' @param heatmap_colours numeric vector of colours to use for the heatmap.
 ##'   Default is `pals::ocean.balance(20)[2:19]`, which provides 18 colours.
+##' @param text_size numeric; size of text displayed in heatmap boxes (default: 3.5)
+##' @param digits numeric number of decimal places to show for text values
 ##' @inherit plot_indices
 ##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot` and `results`
 ##'   (when `return_results = TRUE`)
@@ -71,7 +73,9 @@ plot.pacea_buoy_anomalies_list <- function(pacea_buoy_anomalies_list,
                                            require_requested_months = NULL,
                                            angle_year_labels = TRUE,
                                            scale_limits = NULL,
-                                           heatmap_colours = pals::ocean.balance(20)[2:19]){
+                                           heatmap_colours = pals::ocean.balance(20)[2:19],
+                                           text_size = 3.5,
+                                           digits = 1){
                                            # number_shades = 16){ see below
 
   # Validate sst_plot parameter
@@ -127,7 +131,9 @@ plot.pacea_buoy_anomalies_list <- function(pacea_buoy_anomalies_list,
       return_results = return_results,
       angle_year_labels = angle_year_labels,
       scale_limits = scale_limits,
-      heatmap_colours = heatmap_colours)
+      heatmap_colours = heatmap_colours,
+      text_size = text_size,
+      digits = digits)
 
     return(anomalies_plot_or_list)
   }
@@ -317,10 +323,12 @@ plot.pacea_buoy_anomalies_list <- function(pacea_buoy_anomalies_list,
   # Add label column for text display
   if(sst_plot == "count"){
     plot_data <- plot_data %>%
-      dplyr::mutate(label = as.character(round(sst_plot_value, 0)))
+      dplyr::mutate(label = format(round(sst_plot_value, 0),
+                                   nsmall = 0))
   } else {
     plot_data <- plot_data %>%
-      dplyr::mutate(label = as.character(round(sst_plot_value, 1)))
+      dplyr::mutate(label = format(round(sst_plot_value, digits),
+                                   nsmall = digits))
   }
 
   if(use_stn_id_name){
@@ -398,7 +406,7 @@ plot.pacea_buoy_anomalies_list <- function(pacea_buoy_anomalies_list,
       }
     } +
     ggplot2::geom_text(aes(label = label),
-                       size = 3.5) +
+                       size = text_size) +
     guides(fill = guide_colorbar(barwidth = 15,
                                  title.position = "top",
                                  frame.colour = "black",

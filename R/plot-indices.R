@@ -61,6 +61,8 @@
 ##'   the value for 1990 will now appear as 1991). If NULL but `shift` is given,
 ##'   then `shift_years` defaults to `rep(1, length(shift)`, assuming a one-year
 ##'   shift for each specified index.
+##' @param text_size numeric; size of text displayed in heatmap boxes (default: 3.5)
+##' @param digits numeric number of decimal places to show for text values
 ##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot` and `results`
 ##' (when `return_results = TRUE`)
 ##' @export
@@ -91,7 +93,9 @@ plot_indices <- function(...,
                          heatmap_colours = pals::ocean.balance(20)[2:19],
                          flip = NULL,
                          shift = NULL,
-                         shift_years = NULL){
+                         shift_years = NULL,
+                         text_size = 3.5,
+                         digits = 1){
 
   # Make a long tibble from the indices in ..., in a similar way to what we did
   # for buoy_sst data, so plotting can be similar.
@@ -186,7 +190,8 @@ plot_indices <- function(...,
 
   # Add label column for text display
   plot_data <- plot_data %>%
-    dplyr::mutate(label = as.character(round(value, 1)))
+    dplyr::mutate(label = format(round(value, digits),
+                                 nsmall = digits))
 
   # Flip sign of values (so red is 'good for species of interest' but the shown
   #  'label' number is still the value of the orginal index)
@@ -305,7 +310,7 @@ plot_indices <- function(...,
       }
     } +
     ggplot2::geom_text(aes(label = label),
-                       size = 3.5) +
+                       size = text_size) +
     guides(fill = guide_colorbar(barwidth = 15,
                                  title.position = "top",
                                  frame.colour = "black",

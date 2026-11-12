@@ -21,6 +21,8 @@
 ##'   default end is the current year
 ##' @param heatmap_colours numeric vector of colours to use for the heatmap.
 ##'   Default is `pals::ocean.balance(20)[2:19]`, which provides 18 colours.
+##' @param text_size numeric; size of text displayed in heatmap boxes (default: 3.5)
+##' @param digits numeric number of decimal places to show for text values
 ##' @rdname plot.pacea_buoy_anomalies_list
 ##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot` and `results`
 ##' (when `return_results = TRUE`)
@@ -42,7 +44,9 @@ plot_pacea_indices <- function(...,
                                return_results = FALSE,
                                require_requested_months = NULL,
                                scale_limits = NULL,
-                               heatmap_colours = pals::ocean.balance(20)[2:19]){
+                               heatmap_colours = pals::ocean.balance(20)[2:19],
+                               text_size = 3.5,
+                               digits = 1){
 
   # Check months are consecutive except Dec to Jan
   if(!is.null(months)){
@@ -224,7 +228,8 @@ plot_pacea_indices <- function(...,
 
   # Add label column for text display
   plot_data <- plot_data %>%
-    dplyr::mutate(label = as.character(round(index_plot_value, 1)))
+    dplyr::mutate(label = format(round(index_plot_value, digits),
+                                 nsmall = digits))
 
   # Colour scale
   color_scale <- ggplot2::scale_fill_gradientn(colours = heatmap_colours,
@@ -256,7 +261,7 @@ plot_pacea_indices <- function(...,
                                           colour = NA),
           panel.grid = element_blank()) +
     ggplot2::geom_text(aes(label = label),
-                       size = 3.5) +
+                       size = text_size) +
     guides(fill = guide_colorbar(barwidth = 15,
                                  title.position = "top",
                                  frame.colour = "black",

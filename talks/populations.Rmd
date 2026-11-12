@@ -145,10 +145,15 @@ zooplankton_sog
 ## Zooplankton in the Strait of Georgia
 
 Default plot of anomalies of total biomass:
-```{r zooplot}
+```{r zooplotfake, eval = FALSE}
 plot(zooplankton_sog)
 ```
 
+```{r zooplot, echo = FALSE}
+plot(zooplankton_sog, lwd = 36)   # doesn't seem to work
+```
+
+<!-- 
 ```{r, eval = FALSE, echo = long_talk}
 ## Zooplankton in the Strait of Georgia
 
@@ -158,3 +163,4 @@ Or plot anomalies for a specific species group:
 plot(zooplankton_sog,
      species_group = "cladocera")
 ```
+-->

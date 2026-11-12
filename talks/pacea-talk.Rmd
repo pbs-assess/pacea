@@ -181,8 +181,10 @@ knitr::include_graphics(paste0(here::here(),
 ```{r oisst, child = "oisst.Rmd", eval = long_talk}
 ```
 
-```{r anomalies, child = "anomalies.Rmd", eval = FALSE} 
-# long_talk}
+```{r anomalies, child = "anomalies.Rmd", eval = TRUE} 
+```
+
+```{r anomalies, child = "areas.Rmd", eval = TRUE} 
 ```
 
 ```{r summary, child = "summary.Rmd", eval = long_talk}

@@ -162,7 +162,7 @@ plot(oni,
 The object `oni` has the class `pacea_index`:  \
 ```
 
-```{asis, echo = more_details, eval = long_talk}
+```{r, classoni, echo = more_details, eval = long_talk}
 class(oni)
 ```
 

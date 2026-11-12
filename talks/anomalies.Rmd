@@ -1,0 +1,34 @@
+# Anomalies
+
+## Buoy SST anomalies
+
+We can easily calculate a climatology (by month) and subsequent anomalies for
+each buoy, and plot results:
+```{r, buoyanomalies, fig.height = 5, fig.width = 12, out.width = "100%"}
+all_buoys_anomalies <- calculate_anomalies(buoy_sst)
+
+plot(all_buoys_anomalies, text_size = 3)
+```
+
+## Monthly anomalies for a specific buoy
+
+```{r, buoyanomalies2, fig.height = 5, fig.width = 12, out.width = "100%"}
+plot(all_buoys_anomalies,
+     stn_id = "Halibut Bank")   # In the Strait of Georgia
+```
+
+## Anomalies over several months for all buoys
+
+```{r, buoyanomaliesmonths, fig.height = 5, fig.width = 12, out.width = "100%"}
+plot(all_buoys_anomalies,
+     months = 4:6,
+     text_size = 3)
+```
+
+## Anomalies over winter months for all buoys
+
+```{r, buoyanomaliesmonths2, fig.height = 5, fig.width = 12, out.width = "100%"}
+plot(all_buoys_anomalies,
+     months = c(12, 1, 2, 3),
+     text_size = 3)
+```

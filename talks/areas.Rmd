@@ -1,0 +1,201 @@
+# Ecosystem summaries
+
+Aim is to create ecosystem summary figures that are:
+
+ - customisable
+ - easily updatable
+ 
+ 
+ "Developing `r colorize("tailored")` environmental indices enhances
+ relevance" 
+ 
+ Brodie et al. (2026, Rev. Fish Biol. Fish.)
+
+## Restrict plot or data to an area
+
+You can create our own fisheries management area (see vignette), such as:
+
+```{r, sasquatchprimaryproduction}
+primary_production <- bccm_primaryproduction_full()   
+
+plot(primary_production, area = sasquatch, restrict_plot = FALSE, area_outline = sasquatch)
+```
+
+```{r, sasquatchwalking, fig.height = 6, out.width = "100%", eval = FALSE, echo = FALSE}
+plot(primary_production, years = 2014:2016, months = 1:12, area = sasquatch, restrict_plot = TRUE, area_outline = sasquatch)
+```
+
+## Ecosystem summary heatmap for hake recruitment
+
+index -- annual value of any pacea object (can be spatially
+restricted)\
+    then standardised by subtracting mean and dividing by standard
+deviation
+
+
+New **`create_index()`** function:
+```{r, createindex}
+hake_recruitment_index <- create_index(
+  filter(hake_recruitment,
+         year <= 2022),
+  index_name = "hake_recruitment",
+  index_label = "Pacific Hake age-0 recruitment")
+
+start_year <- hake_recruitment_index$year[1]
+
+herring_biomass_wcvi_index <- create_index(filter(herring_spawning_biomass,
+                                                  year >= start_year),
+                                           herring_region = "WCVI",
+                                           index_name =
+                                             "herring_spawning_biomass_wcvi")
+```
+
+## Ecosystem summary heatmap for hake recruitment
+
+Resulting indices have consistent format:
+
+```{r, showindices}
+hake_recruitment_index
+
+herring_biomass_wcvi_index
+```
+
+Create more based on Vestfals et al. (2023).
+
+```{r, hake, echo = FALSE}
+hake_assessment_year <- 2026
+hake_recruitment_final_year_to_use <- 2022  # final years removed as not
+            # estimated by data, depends on the model assumptions        
+age_1_hake_final_year_to_use <- hake_recruitment_final_year_to_use + 1
+
+hake_recruitment_index <- create_index(
+  filter(hake_recruitment,
+         year <= hake_recruitment_final_year_to_use),
+  index_name = "hake_recruitment",
+  index_label = "Pacific Hake age-0 recruitment")
+
+start_year <- hake_recruitment_index$year[1]
+
+pdo_index <- create_index(filter(pdo,
+                                 year >= start_year),
+                          months = 4:9,
+                          index_name = "pdo_preconditioning",
+                          index_label = "PDO Preconditioning")
+
+npgo_index <- create_index(filter(npgo,
+                                 year >= start_year),
+                          months = 4:9,
+                          index_name = "npgo_preconditioning",
+                          index_label = "NPGO Preconditioning")
+
+bi_index <- create_index(bi,
+                         index_label = "Bifurcation Index")
+
+herring_biomass_wcvi_index <- create_index(filter(herring_spawning_biomass,
+                                                  year >= start_year),
+                                           herring_region = "WCVI",
+                                           index_name =
+                                             "herring_spawning_biomass_wcvi")
+
+hake_age_1_index <- create_index(filter(hake_total_biomass_age_1,
+                                        year <= age_1_hake_final_year_to_use),
+                                 index_name = "hake_age_1_total_biomass",
+                                 index_label = "Pacific Hake age-1 biomass")
+```
+
+## Ecosystem summary heatmap for hake recruitment
+
+```{r, hakeheatmapcode, eval = FALSE}
+plot_indices(hake_recruitment_index,
+             pdo_index,
+             npgo_index,
+             bi_index,             
+             herring_biomass_wcvi_index,
+             hake_age_1_index,
+             years = 1995:2027,
+             gap_after = c("hake_recruitment_index",
+                           "bi_index",
+                           "herring_biomass_wcvi_index"),
+             flip = c("pdo_index",
+                      "bi_index",
+                      "herring_biomass_wcvi_index",
+                      "hake_age_1_index"),
+             shift = c("pdo_index",
+                       "npgo_index",
+                       "bi_index",
+                       "herring_biomass_wcvi_index"),
+             text_size = 2)
+```
+
+## Ecosystem summary heatmap for hake recruitment
+
+```{r, hakeheatmap, fig.height = 5, fig.width = 12, out.width = "95%", echo = FALSE}
+plot_indices(hake_recruitment_index,
+             pdo_index,
+             npgo_index,
+             bi_index,             
+             herring_biomass_wcvi_index,
+             hake_age_1_index,
+             years = 1995:2027,    # else a bit unwieldy to see
+             gap_after = c("hake_recruitment_index",
+                           "bi_index",
+                           "herring_biomass_wcvi_index"),
+             flip = c("pdo_index",
+                      "bi_index",
+                      "herring_biomass_wcvi_index",
+                      "hake_age_1_index"),
+             shift = c("pdo_index",
+                       "npgo_index",
+                       "bi_index",
+                       "herring_biomass_wcvi_index"),
+             text_size = 2) 
+```
+
+`*` colours are flipped so `r colorize("red")` is always ‘good for hake’
+
+`+` year shifted by one due to lag of effect
+
+## Quick summary for Strait of Georgia
+
+```{r, examplessummary, echo = FALSE}
+# Average sea surface temperature in April from a buoy in the SOG
+sst_buoy_halibut_bank_apr_index <- create_index(buoy_sst,
+                                                months = 4,
+                                                stn_id = "Halibut Bank")
+
+# Large calanoid copepods in the SOG 
+calanoid_copepods_large_sog_index <- create_index(zooplankton_sog,
+                                                  zooplankton_species_group =
+                                                    "calanoid_copepods_large")
+
+# Total zooplankton in the SOG
+total_zooplankton_sog_index <- create_index(zooplankton_sog,
+                                            zooplankton_species_group = "total_biomass")
+
+# Annual age-2 herring recruitment in the SOG
+herring_recruitment_sog_index <- create_index(herring_recruitment,
+                                              herring_region = "SOG")
+
+# Annual herring spawning biomass in the SOG
+herring_biomass_sog_index <- create_index(herring_spawning_biomass,
+                                          herring_region = "SOG")
+
+# Annual population estimates of Harbour Seals in the SOG
+harbour_seals_sog_index <- create_index(harbour_seals,
+                                        seal_region = "SOG")
+```
+
+
+```{r, sogplot, fig.height = 5, fig.width = 12, out.width = "95%", echo = FALSE}
+plot_indices(sst_buoy_halibut_bank_apr_index,
+             calanoid_copepods_large_sog_index,
+             total_zooplankton_sog_index,
+             herring_recruitment_sog_index,
+             herring_biomass_sog_index,             
+             harbour_seals_sog_index,
+             years = 1996:2026,
+             gap_after = c("sst_buoy_halibut_bank_apr_index",
+                           "total_zooplankton_sog_index",
+                           "herring_biomass_sog_index"))
+```
+
