@@ -23,7 +23,7 @@ plot(oni)
 New figure style that shows why everyone is freaking out about El Niño:
 
 ```{r oniplotheatmap, fig.height = 5, fig.width = 12, out.width = "100%"}
-plot(oni, years = 1985:2026, neutral_oni_one_colour = TRUE, heatmap_style = TRUE)
+plot(oni, years = 1985:2026, neutral_oni_one_colour = TRUE, heatmap_style = TRUE, text_size = 3)
 ```
 
 ## Climatic and oceanographic indices

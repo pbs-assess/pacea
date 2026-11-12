@@ -5,6 +5,8 @@
 ##' @param pacea_buoy_anomalies_list object of class `pacea_buoy_anomalies_list`
 ##' obtained from running `calculate_anomalies()` on buoy data.
 ##' @param stn_id_to_plot single `stn_id` to plot
+##' @param text_size numeric; size of text displayed in heatmap boxes (default: 3.5)
+##' @param digits numeric number of decimal places to show for text values
 ##' @rdname plot.pacea_buoy_anomalies_list
 ##' @return a ggplot object
 ##' @export
@@ -25,7 +27,9 @@ plot_pacea_buoy_anomalies_single <- function(pacea_buoy_anomalies_list,
                                              return_results = FALSE,
                                              angle_year_labels = TRUE,
                                              scale_limits = NULL,
-                                             heatmap_colours = pals::ocean.balance(20)[2:19]){
+                                             heatmap_colours = pals::ocean.balance(20)[2:19],
+                                             text_size = 3.5,
+                                             digits = 1){
 
   # Validate sst_plot parameter
   sst_plot <- match.arg(sst_plot,
@@ -135,10 +139,12 @@ plot_pacea_buoy_anomalies_single <- function(pacea_buoy_anomalies_list,
   # Add label column for text display
   if(sst_plot == "count"){
     plot_data <- plot_data %>%
-      dplyr::mutate(label = as.character(round(sst_plot_value, 0)))
+      dplyr::mutate(label = format(round(sst_plot_value, 0),
+                                   nsmall = 0))
   } else {
     plot_data <- plot_data %>%
-      dplyr::mutate(label = as.character(round(sst_plot_value, 1)))
+      dplyr::mutate(label = format(round(sst_plot_value, digits),
+                                   nsmall = digits))
   }
 
   anomalies_plot <-
@@ -172,7 +178,7 @@ plot_pacea_buoy_anomalies_single <- function(pacea_buoy_anomalies_list,
       }
     } +
     ggplot2::geom_text(aes(label = label),
-                       size = 3.5) +
+                       size = text_size) +
     guides(fill = guide_colorbar(barwidth = 15,
                                  title.position = "top",
                                  frame.colour = "black",

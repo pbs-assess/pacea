@@ -30,6 +30,8 @@
 ##'   then they are coloured grey.
 ##' @param heatmap_colours numeric vector of colours to use for the heatmap.
 ##'   Default is `pals::ocean.balance(20)[2:19]`, which provides 18 colours.
+##' @param text_size numeric; size of text displayed in heatmap boxes (default: 3.5)
+##' @param digits numeric number of decimal places to show for text values
 ##' @rdname plot_indices
 ##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot` and `results`
 ##'   (when `return_results = TRUE`)
@@ -53,7 +55,9 @@ plot_pacea_oisst_anomalies_heatmap_style <- function(dat,
                                                      return_results = FALSE,
                                                      scale_limits = NULL,
                                                      angle_year_labels = TRUE,
-                                                     heatmap_colours = pals::ocean.balance(20)[2:19]){
+                                                     heatmap_colours = pals::ocean.balance(20)[2:19],
+                                                     text_size = 3.5,
+                                                     digits = 1){
 
   legend_label <- bquote("Monthly SST anomaly ("*degree*C*")")
 
@@ -122,7 +126,8 @@ plot_pacea_oisst_anomalies_heatmap_style <- function(dat,
 
   # Add label column for text display
   plot_data <- plot_data %>%
-    dplyr::mutate(label = as.character(round(monthly_anomaly, 1)))
+    dplyr::mutate(label = format(round(monthly_anomaly, digits),
+                                 nsmall = digits))
 
   anomalies_plot <-
     plot_data %>%
@@ -155,7 +160,7 @@ plot_pacea_oisst_anomalies_heatmap_style <- function(dat,
       }
     } +
     ggplot2::geom_text(aes(label = label),
-                       size = 3.5) +
+                       size = text_size) +
     guides(fill = guide_colorbar(barwidth = 15,
                                  title.position = "top",
                                  frame.colour = "black",

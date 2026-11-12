@@ -39,6 +39,7 @@
 ##'   Default is `pals::ocean.balance(20)[2:19]`, which provides 18 colours.
 ##'   When `neutral_oni_one_colour = TRUE`, must have an even number of colours.
 ##' @param digits numeric number of decimal places to give for digits within the squares
+##' @param text_size numeric; size of text displayed in heatmap boxes (default: 3.5)
 ##' @rdname plot_indices
 ##' @return a ggplot object (when `return_results = FALSE`) or a list with `plot`
 ##'   and `results` (when `return_results = TRUE`)
@@ -99,7 +100,8 @@ plot_pacea_index_monthly_heatmap <- function(pacea_index_obj,
                                              angle_year_labels = TRUE,
                                              heatmap_colours =
                                                pals::ocean.balance(20)[2:19],
-                                             digits = 1){
+                                             digits = 1,
+                                             text_size = 3.5){
 
   # Validate input is a pacea_index object
   stopifnot("Input must be a pacea_index object" =
@@ -242,8 +244,9 @@ plot_pacea_index_monthly_heatmap <- function(pacea_index_obj,
 
   # Create label column for text display
   plot_data <- plot_data %>%
-    dplyr::mutate(label = as.character(round(.data[[value]],
-                                             digits)))
+    dplyr::mutate(label = format(round(.data[[value]],
+                                       digits),
+                                 nsmall = digits))
 
   # Create the plot
   monthly_heatmap <-
@@ -277,7 +280,7 @@ plot_pacea_index_monthly_heatmap <- function(pacea_index_obj,
       }
     } +
     ggplot2::geom_text(ggplot2::aes(label = label),
-                       size = 3.5) +
+                       size = text_size) +
     ggplot2::guides(fill = ggplot2::guide_colorbar(barwidth = 15,
                                                    title.position = "top",
                                                    frame.colour = "black",
