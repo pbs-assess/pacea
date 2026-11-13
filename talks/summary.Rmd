@@ -196,5 +196,5 @@ citation("pacea")
 
 Edwards AM, Tai TC, Watson J, Peña MA, Hilborn A, Hannah CG, Rooper CN
 (2023). "pacea: An R package of Pacific ecosystem information to help facilitate an ecosystem approach to fisheries management."
-  https://github.com/pbs-assess/pacea.
+  https://github.com/pbs-assess/pacea. https://zenodo.org/doi/10.5281/zenodo.13840804
 ```

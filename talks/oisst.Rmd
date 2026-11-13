@@ -20,11 +20,15 @@ Two data products: weekly and monthly mean SST
 
 - `oisst_7day` and `oisst_month`
 
-\footnotesize
+\
 R `erddap` - https://www.ncei.noaa.gov/products/optimum-interpolation-sst
 
-Huang, B., C. Liu, V. Banzon, E. Freeman, G. Graham, B. Hankins, T. Smith, and H. Zhang, 2021: Improvements of the Daily Optimum Interpolation Sea Surface Temperature (DOISST) Version 2.1. J. Climate, 34, 2923–2939, https://doi.org/10.1175/JCLI-D-20-0166.1.
-\normalsize
+<!-- Huang, B., C. Liu, V. Banzon, E. Freeman, G. Graham, B. Hankins, T. Smith,
+and H. Zhang, 2021: Improvements of the Daily Optimum Interpolation Sea Surface
+Temperature (DOISST) Version 2.1. J. Climate, 34, 2923–2939,
+https://doi.org/10.1175/JCLI-D-20-0166.1. -->
+
+[Huang et al. (2021; *Climate*)](https://doi.org/10.1175/JCLI-D-20-0166.1)
 
 ## OISST -- monthly mean
 The data are saved as a `sf` (simple feature) `tibble` object in `pacea`:

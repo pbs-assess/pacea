@@ -1,8 +1,9 @@
 # HOTSSea
 
 - Hindcast of the Salish Sea (HOTSSea)
-- physical ocean model from 1980 to 2018 [Oldford et al., (*Geoscientific Model
-Development*, in press)](https://doi.org/10.5194/gmd-2024-58).
+- physical ocean model from 1980 to 2018 ([Oldford et al.,
+2025; *Geoscientific Model
+Development*](https://doi.org/10.5194/gmd-2024-58))
 - pacea includes temperature and salinty
 - mapped to same 2 km x 2 km grid as `bccm_full` (slight overlap in domain)
 - 6,165 spatial cells
