@@ -156,6 +156,9 @@ knitr::include_graphics(paste0(here::here(),
 ```{r buoys, child = "buoys.Rmd", eval = long_talk}
 ```
 
+```{r oisst, child = "oisst.Rmd", eval = long_talk}
+```
+
 ```{r bccm, child = "bccm.Rmd", eval = long_talk}
 ```
 
@@ -176,9 +179,6 @@ knitr::include_graphics(paste0(here::here(),
 ```
 
 ```{r populationsshort, child = "populations-short.Rmd", eval = short_talk}
-```
-
-```{r oisst, child = "oisst.Rmd", eval = long_talk}
 ```
 
 ```{r anomalies, child = "anomalies.Rmd", eval = TRUE} 

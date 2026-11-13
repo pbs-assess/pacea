@@ -2,8 +2,7 @@
 
 ## Buoy SST anomalies
 
-We can easily calculate a climatology (by month) and subsequent anomalies for
-each buoy, and plot results:
+Easily calculate climatology (by month) and subsequent anomalies for each buoy:
 ```{r, buoyanomalies, fig.height = 5, fig.width = 12, out.width = "100%"}
 all_buoys_anomalies <- calculate_anomalies(buoy_sst)
 
@@ -32,3 +31,12 @@ plot(all_buoys_anomalies,
      months = c(12, 1, 2, 3),
      text_size = 3)
 ```
+
+## Anomalies for OISST
+
+```{r, oisstanomalies, fig.height = 5, fig.width = 12, out.width = "100%"}
+oisst_anomalies <- calculate_anomalies(oisst_month)
+
+plot(oisst_anomalies, months = 1:12, years = 2014:2016, x_axis_labels = c(-135, -125))
+```
+

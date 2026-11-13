@@ -121,7 +121,52 @@ Commission commitments <!-- Chris -->
    the data processing, storing, and plotting functions could be adopted
    - similarly for other types of data/information
 
-## Summary
+## Coming soon (potentially)
+
+- Future projections downscaled from IPCC forecasts using Angelica's BCCM model
+  - Surface and bottom temperatures
+  - Three future socio-economic pathways
+<!-- - Done by Trond Kristiansen et al., contract through Robyn Forrest -->
+
+- Functionality to extract MOM6 oceanographic model output (working with NOAA on
+  this); will provide outputs such as mixed-layer depths and eddy kinetic energy 
+  
+\pause
+
+- Pan-basin Pattern (new index due to breakdown of PDO-ecosystem correlations)
+- Relative Oceanic Niño Index (RONI)
+- Lightstation data (temperature and salinity)
+- Oxygen time series in BC waters
+- Functionality to extract the oceanographic indices (Python or just .csv)
+
+<!-- Three future socio-economic pathways:
+
+- SSP1-RCP2.6 -- `r colorize("sustainable development", "red")`
+- SSP2-RCP4.5 -- `r colorize("middle-of-the-road development", "red")`
+- SSP5-RCP8.5 -- `r colorize("fossil fueled development", "red")`
+
+\pause
+
+Think we will have monthly averages, corresponding to time periods:
+
+- 2021-2040
+- 2041-2060
+- 2080-2090
+- or maybe just 2050 and 2090
+
+-->
+
+## Acknowledgments
+
+- `r colorize("Co-authors: Joe Watson, Angelica Peña, Charles
+  Hannah, Chris Rooper, Kelsey Flynn, and Greig Oldford.", "red")`
+
+- Jessica Nephin, Lindsay Davidson, Strahan Tucker,
+  Brianna Wright, Patrick Thompson, Matt Grinnell, Jaclyn Cleary,
+  Sean Anderson, Philina English, Chris Grandin, Jennifer Boldt, Elise Keppel and others.
+
+- Funding: CSRF (project 21-FS-03-13) and Bill C-68.
+<!-- ompetitive Science Research Fund for funding (project 21-FS-03-13). -->
 
 <!-- - let us know of any applications (so we understand the uptake and how much
    effort to devote to maintaining it)
@@ -132,19 +177,19 @@ Commission commitments <!-- Chris -->
     - Chris Rooper: looking at Pacific Saury process errors from a stock assessment
  using the indices (PDO etc.). ``It made my life easier today."
 -->
+
+<!-- 
  - https://github.com/pbs-assess/pacea
 
  - installation:
    \textcolor{red}{\texttt{remotes::install\_github("pbs-assess/pacea")}}
 
 \
-
+-->
 \begin{center}
-\includegraphics[width = 2cm]{"../man/figures/logo.png"}\\
+\includegraphics[width = 1.5cm]{"../man/figures/logo.png"}\\
 \emph{We wrangle the data so you don't have to}
 \end{center}
-
-\
 
 ```{r citation, eval=FALSE}
 citation("pacea")

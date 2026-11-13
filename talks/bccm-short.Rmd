@@ -13,9 +13,9 @@ Physical biogeochemical oceanographic model
 
 - we interpolate to regular `r colorize("2 km x 2km grid")`
 
-- `r colorize("161,025 cells", "red")`
+- `r colorize("177,247 cells", "red")`
 
-- monthly from 1993-2019
+- monthly from 1993-2025
 
 - huge filesizes required hosting outputs on Zenodo not GitHub
 

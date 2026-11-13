@@ -121,6 +121,7 @@ Estimates for each region and coastwide, reproducing Figure 3 of DFO (2022):
 plot(harbour_seals)
 ```
 
+<!-- 
 ```{r, eval = FALSE, echo = long_talk}
 ## Pacific Harbour Seals
 
@@ -130,6 +131,7 @@ Or just plot estimates for a single region:
 plot(harbour_seals,
      region = "SOG")
 ```
+-->
 
 ## Zooplankton in the Strait of Georgia
 

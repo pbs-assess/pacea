@@ -13,7 +13,7 @@ Aim is to create ecosystem summary figures that are:
 
 ## Restrict plot or data to an area
 
-You can create our own fisheries management area (see vignette), such as:
+You can create your own fisheries management area, or use built-in ones:
 
 ```{r, sasquatchprimaryproduction}
 primary_production <- bccm_primaryproduction_full()   
