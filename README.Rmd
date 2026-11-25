@@ -452,6 +452,32 @@ years?**
 knitr::kable(pacea_indices)
 ```
 
+## Data classes in pacea
+
+```{r checkclasses, echo = FALSE}
+classes <- get_pacea_classes()
+if(nrow(classes) != 9){
+  Warning("Extra class added to pacea, manually update the table in README.Rmd")
+}
+```
+
+The following data classes are used for appropriate objects in pacea, and ensure
+that the appropriate plotting or other functions get used. For example,
+`hake_biomass` has class `pacea_biomass` (it is also a tibble), such that
+`plot(hake_biomass)` automatically uses the pacea function
+`plot.pacea_biomass(hake_biomass)` to make the customised plot.
+Then `?plot.pacea_biomass` will show the help file for the correct function. 
+
+| pacea class                 | Description                                                    |
+|-----------------------------|----------------------------------------------------------------|
+| `pacea_biomass`, `pacea_herring_biomass`   | Biomass estimates for a species (tibble)                       |
+| `pacea_harbour_seals`       | Harbour seal population estimates (tibble)                     |
+| `pacea_recruitment`, `pacea_herring_recruitment` | Recruitment estimates (tibble)                         |
+| `pacea_index`               | Climatological and oceanographic indices (tibble)              |
+| `pacea_oi`                  | OISST data (sf object)                                         |
+| `pacea_st`                  | Spatio-temporal outputs from biogeochemical models (sf object) |
+| `pacea_zooplankton`         | Zooplankton abundance anomalies (tibble)                       |
+
 ## Vignettes
 
 For more detailed explanations of the data sets and functionality see the
