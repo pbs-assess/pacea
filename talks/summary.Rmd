@@ -11,7 +11,7 @@ We will:
 
 - update the NEWS as we add/update data and make improvements.
 
-- ideally update the following `r colorize("on the 20th of every month (or soon after)", "red")` to get the latest raw data:
+- update the following every month (ideally) to get the latest raw data:
   - climatic and oceanographic indices
   - buoy sst
   - OISST
@@ -21,11 +21,9 @@ We will:
 - update other data as appropriate:
   - hake assessment output: February each year
   - harbour seals: next time assessment is updated
-  - herring assessment output: when SAR published each year
-  - BCCM model output: the model may be run into 2020 (boundary
-    conditions come from a global model currently only available to Jan 2021).
-    - note that BCCM is a research model (not an operational model) so updates
-      depend on projects and access to High Performance Computing.
+  - herring assessment output: annual update
+  - zooplankton anomalies: March each year
+
 
 ## Recommended guidelines for users
 
@@ -39,7 +37,7 @@ Please:
 
  - understand the limitations of the data
 
- - cite `pacea` and the original sources for any data you use
+ - cite `pacea` and the `r colorize("original sources")` for any data you use
 
 ```{asis, echo = more_details}
 ## Recommended guidelines for users
@@ -47,7 +45,7 @@ Please:
 To check when you last installed `pacea`
 ```
 
-```{r installed, echo = more_details, eval = more_details}
+```{r installed, echo = more_details, eval = FALSE}
 pacea_installed()
 
 You last locally installed pacea on 2023-11-01 which is 8 days ago.
@@ -77,14 +75,37 @@ knitr::include_graphics(paste0(here::here(),
 <!-- see short version for maybe more -->
 ## Current uses of pacea (that we know about)
 
- - Spiny Dogfish: understanding declines over the past 20 years
+* investigating environmental influences on body conditions of 35 demersal fish species [(English et al., 2026)](https://doi.org/10.1111/faf.70053)
+* Pacific Hake -- generation of indices previously found to be influential for
+  recruitment of Pacific Hake ([Johnson et
+  al.,
+  2025)](https://s3.amazonaws.com/media.fisheries.noaa.gov/2025-02/Status-Pacific-Hake-whiting-US-and-Canadian-waters-2025.pdf)
+  and ([Edwards et al., 2026)](https://www.fisheries.noaa.gov/s3/2026-02/hake-assessment-2026.pdf)
+* Petrale Sole stock assessment (under revision for CSAS) -- investigating environmental
+conditions potentially affecting recruitment and body condition <!-- Philina, -->
+<!-- Mackenzie --> 
+* Dover Sole stock assessment (under revision for CSAS) -- investigating environmental
+conditions potentially affecting recruitment <!-- Travis, Nick -->
+* Yelloweye Rockfish stock assessment (under revision for CSAS) -- investigating
+environmental <!-- Travis, Matt -->
+conditions potentially affecting recruitment and body condition 
+* Spiny Dogfish -- understanding declines over the past 20 years (research project
+ and potentially a stock assessment) <!-- Lindsay -->
+  
+## Current uses of pacea (that we know about)
 
- - shrimp: impact of including environmental variables on predicting distributions
-
- - humpback whales and porpoises: environmental covariates in species distribution models
-
- - Pacific Saury assessment: finding links between two basin-scale indices and process errors, directly supporting Canada's North Pacific Fisheries
-   Commission commitments
+* spatial densities of humpback whales (working paper for CSAS) <!-- Elise -->
+<!-- and porpoises - environmental covariates in species
+  distribution models ; may still be happening-->
+* shrimp distributions -- impact of temperature on shrimp habitat (manuscript in
+  progress) <!-- Mackenzie -->
+* analysing occurrence of Bigg's killer whales 
+* Pacific Saury -- finding links between two basin-scale indices (AOI & PDO) and
+process errors in assessment, supporting Canada's North Pacific Fisheries
+Commission commitments <!-- Chris -->
+* investigating fluctuations of infectious hematopoietic necrosis virus (IHPV)
+  in Sockeye Salmon <!-- Kyle -->
+* recommended source of information for the [Salmon Prize Project](http://salmonprize.com/)
 
 ## Lessons learned (applicable to other regions)
 
@@ -100,7 +121,52 @@ knitr::include_graphics(paste0(here::here(),
    the data processing, storing, and plotting functions could be adopted
    - similarly for other types of data/information
 
-## Summary
+## Coming soon (potentially)
+
+- Future projections downscaled from IPCC forecasts using Angelica's BCCM model
+  - Surface and bottom temperatures
+  - Three future socio-economic pathways
+<!-- - Done by Trond Kristiansen et al., contract through Robyn Forrest -->
+
+- Functionality to extract MOM6 oceanographic model output (working with NOAA on
+  this); will provide outputs such as mixed-layer depths and eddy kinetic energy 
+  
+\pause
+
+- Pan-basin Pattern (new index due to breakdown of PDO-ecosystem correlations)
+- Relative Oceanic Niño Index (RONI)
+- Lightstation data (temperature and salinity)
+- Oxygen time series in BC waters
+- Functionality to extract the oceanographic indices (Python or just .csv)
+
+<!-- Three future socio-economic pathways:
+
+- SSP1-RCP2.6 -- `r colorize("sustainable development", "red")`
+- SSP2-RCP4.5 -- `r colorize("middle-of-the-road development", "red")`
+- SSP5-RCP8.5 -- `r colorize("fossil fueled development", "red")`
+
+\pause
+
+Think we will have monthly averages, corresponding to time periods:
+
+- 2021-2040
+- 2041-2060
+- 2080-2090
+- or maybe just 2050 and 2090
+
+-->
+
+## Acknowledgments
+
+- `r colorize("Co-authors: Joe Watson, Angelica Peña, Charles
+  Hannah, Chris Rooper, Kelsey Flynn, and Greig Oldford.", "red")`
+
+- Jessica Nephin, Lindsay Davidson, Strahan Tucker,
+  Brianna Wright, Patrick Thompson, Matt Grinnell, Jaclyn Cleary,
+  Sean Anderson, Philina English, Chris Grandin, Jennifer Boldt, Elise Keppel and others.
+
+- Funding: CSRF (project 21-FS-03-13) and Bill C-68.
+<!-- ompetitive Science Research Fund for funding (project 21-FS-03-13). -->
 
 <!-- - let us know of any applications (so we understand the uptake and how much
    effort to devote to maintaining it)
@@ -111,24 +177,24 @@ knitr::include_graphics(paste0(here::here(),
     - Chris Rooper: looking at Pacific Saury process errors from a stock assessment
  using the indices (PDO etc.). ``It made my life easier today."
 -->
+
+<!-- 
  - https://github.com/pbs-assess/pacea
 
  - installation:
    \textcolor{red}{\texttt{remotes::install\_github("pbs-assess/pacea")}}
 
 \
-
+-->
 \begin{center}
-\includegraphics[width = 2cm]{"../man/figures/logo.png"}\\
+\includegraphics[width = 1.5cm]{"../man/figures/logo.png"}\\
 \emph{We wrangle the data so you don't have to}
 \end{center}
-
-\
 
 ```{r citation, eval=FALSE}
 citation("pacea")
 
 Edwards AM, Tai TC, Watson J, Peña MA, Hilborn A, Hannah CG, Rooper CN
 (2023). "pacea: An R package of Pacific ecosystem information to help facilitate an ecosystem approach to fisheries management."
-  https://github.com/pbs-assess/pacea.
+  https://github.com/pbs-assess/pacea. https://zenodo.org/doi/10.5281/zenodo.13840804
 ```

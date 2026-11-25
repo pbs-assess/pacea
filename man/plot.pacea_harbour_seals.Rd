@@ -81,8 +81,10 @@ means not medians)}
 
 \item{median_line_lwd}{lwd for median}
 
-\item{...}{optional arguments passed onto \code{plot()}. Note that the x-axis is
-constructed using a lubridate \code{date} object, so \code{xlim} needs to be a
+\item{...}{optional arguments passed onto \code{plot()} for temporal plots, or onto
+\code{\link[=plot_pacea_index_monthly_heatmap]{plot_pacea_index_monthly_heatmap()}} for heatmap-style plots. Note that the x-axis is
+constructed using a lubridate \code{date} object for temporal plots of the
+former kind, so \code{xlim} needs to be a
 \code{date} object (see example).}
 }
 \value{

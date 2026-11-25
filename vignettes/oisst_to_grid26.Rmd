@@ -41,7 +41,8 @@ This means that exactly the same spatiotemporal analyses can be done on
 both datasets.
 
 ```{r packages}
-load_all() # library(pacea)  # or load_all() when developing
+# load_all()    # for developers
+library(pacea)  # for users
 library(dplyr)
 library(sf)
 library(ggplot2)

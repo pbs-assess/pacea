@@ -1,0 +1,232 @@
+---
+title: "Spatial Areas"
+author: "Andrew Edwards and Travis Tai"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Spatial Areas}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+date: "Last rendered on `r format(Sys.time(), '%d %B, %Y')`"
+---
+
+<!-- To build either run
+rmarkdown::render("spatial_areas.Rmd")
+or click the knit button in RStudio -->
+
+```{r, start, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 14,   # 14 #5.7,
+  fig.height = 5.25    # 7  #5  
+)
+fig_height_two_row_heatmap <- 2.7    
+fig_height_three_row_heatmap <- 3  #
+fig_height_five_row_heatmap <- 4   # Looks good, scale others to this kind of
+fig_height_six_row_heatmap <- 4.33 
+fig_height_ten_row_heatmap <- 6.2   
+
+fig_height_one_map <- 4
+fig_width_one_map <- 4
+fig_height_two_map <- 4
+fig_height_three_map <- 4       # width depends how many in each row, so do manually
+```
+
+```{r setup}
+# load_all()    # for developers
+library(pacea)  # for users
+library(dplyr)
+library(tibble)  # Else prints all of a tibble
+library(ggplot2)
+library(knitr)
+```
+
+## Spatial areas available in pacea, and how to create your own
+
+We have some spatial areas saved in
+pacea, technically as sf (spatial features) polygon or
+multipolygon data objects. We hope to include many fisheries management areas soon, as being
+discussed in our [GitHub Issue](https://github.com/pbs-assess/pacea/issues/8). 
+
+We first show how these can be used, and then show how to create your own custom
+areas using our helper functions.
+
+## Current areas
+
+The current areas are:
+
+```{r, which_areas, echo = FALSE}
+areas_in_pacea <- which_data_are_areas()
+```
+
+```{r, areas_table, echo = FALSE}
+# Create table
+areas_table <- tibble::tibble(
+  `Area name` = areas_in_pacea,
+  Description = sapply(areas_in_pacea, 
+                       get_rd_title)
+)
+
+knitr::kable(areas_table)
+```
+
+See the respective help files for details. We plot each of these areas later,
+but use one of them to explain plotting options.
+(Developers - see the hidden code here to check for new areas).
+```{r, plot_areas, fig.height = 6, fig.width = 6, echo = FALSE, eval = FALSE}
+# Look at these manually to check they are actually areas. 
+# For any new ones that are not, just add them to the `ignore` 
+#  default in which_data_are_areas(). areas_table gets used later to plot the
+#  areas. 
+
+for(area_name in areas_in_pacea) {
+  area_data <- get(area_name)
+  plot(area_data,
+       main = area_name)
+}
+```
+
+## Using areas
+
+We can easily restrict spatial data within our plotting functions, or
+using `restrict_to_area()` for doing analyses. 
+
+We
+will first use the Optimum Interpolation Sea Surface Temperature (OISST)
+data described in the 
+[OISST vignette](https://pbs-assess.github.io/pacea/vignettes/oisst.html), 
+
+To just restrict a plot to an area, as an example we use the elusive rarely-used
+fisheries management area
+called `sasquatch` and then plot each March to September from 2014 to 2016:
+```{r, areaplots}
+plot(oisst_month,
+     months = 3:9,
+     years = 2014:2016,
+     area = sasquatch)
+```
+We can add options to restrict the plot to the reduced area, and to add an
+outline (the default is the last month of data):
+```{r, areaplots2}
+plot(oisst_month,
+     area = sasquatch,
+     restrict_plot = TRUE,
+     area_outline = sasquatch)
+```
+This apparently whimsical plot is instructive in showing that the restriction to
+the area for `oisst_month` is based on whether the centre of each cell is
+within the sasquatch or not. The geometry of the `oisst_month` data is POINT
+(in sf speak), not polygons, to save filesize:
+```{r, oisstgeom}
+sf::st_geometry(oisst_month)
+```
+
+We can similarly restrict the area of plotting of the BCCM output (the first
+line either downloads the output or loads it into R; see the BCCM vignette):
+```{r, sasquatchprimaryproduction}
+primary_production <- bccm_primaryproduction_full()   
+
+plot(primary_production, 
+     area = sasquatch,
+     restrict_plot = FALSE,
+     area_outline = sasquatch)
+```
+
+Looking more closely, we can see that, unlike the `oisst_month` example above,
+any cells that are at all inside the area are included:
+```{r, sasquatchprimaryproduction2}
+plot(primary_production, 
+     area = sasquatch,
+     restrict_plot = TRUE,
+     area_outline = sasquatch)
+```
+This is because the geometry of the BCCM results are POLYGONS:
+```{r, bccmgeom}
+sf::st_geometry(primary_production)
+```
+Internally, `plot.pacea_st()`, which the `plot()` calls above are using, is
+using `sf::st_intersects()` to calculate intersection locations between the main
+data set (e.g. `primary_production`) and the `area`. The `sf::st_intersects()`
+function returns `TRUE` when features intersect, or even just touch. 
+
+For the `oisst_month` example that uses points as the centre of grid cells, the cell
+is included in the plot (i.e. is within the area) if the point representing it
+is within the area. Hence, if the point is outside the area (even if some of the
+grid cell is within it), then the cell is excluded and we see the white areas
+inside the sasquatch area.
+
+But for the BCCM `primary_production` values, the geometry is polygons, and so
+if any part of a grid cell (represented by a polygon) touches the area then that
+cell is included. Hence there is no white within the area in this case. Note the
+differing resolution of the underlying grid cells between the two examples (but
+this is not relevant here). 
+
+```{r, sasquatchwalking, eval = FALSE, echo = FALSE}
+# Easter egg
+plot(primary_production,
+     years = 2014:2016,
+     months = 1:12,
+     area = sasquatch,
+     restrict_plot = TRUE,
+     area_outline = sasquatch)
+```
+
+You can use `restrict_to_areas()` to reduce the data to the area of interest, so
+ you can examine the data of interest:
+```{r, oisss}
+oisst_sasquatch <- restrict_to_area(oisst_month, 
+                                    sasquatch)
+
+oisst_sasquatch
+
+plot(oisst_sasquatch,
+     restrict_plot = TRUE)
+```
+The plot is the same as that above (for which we set the area at the plotting
+stage), except the colour scale is slightly different.
+
+For making consequent indices, e.g. the average monthly temperature over the
+area, see `calculate_anomalies(oisst_month, area = sasquatch)` in the 
+[Ecosystem Summary Heatmaps vignette](https://pbs-assess.github.io/pacea/vignettes/ecosystem_summary_heatmaps.html).
+
+## Plots of each area
+
+The easiest way to see an area is to plot its outline over some OISST data
+(because the scale of the map will be automatically suitable and the coastline
+is included), such as for
+Pacific Fisheries Management Area 126:
+```{r, plotareas}
+plot(oisst_month,
+     area_outline = pfma_area_126_temp)
+```
+All the areas from the table at the top are:
+```{r, plotareas2}
+for(i in 1:nrow(areas_table)){
+  print(areas_table$`Area name`[i])
+  plot(oisst_month,
+                    area_outline = get(areas_table$`Area name`[i]))
+}
+```
+
+## Create your own customised area
+
+You can create your own area (as an sf object) from a matrix or tibble of latitude
+and longitude values, using our `create_area_sf_polygon()` function. If the
+first and last rows are different then the function repeats the first row as the
+last to make an enclosed polygon. Using a matrix or tibble gives the same result:
+```{r, myarea}
+my_area_matrix <- matrix(c(-130, -132, -130, -128,
+                           48, 50, 52, 50),
+                         ncol = 2)
+my_area_matrix
+my_area_1 <- create_area_sf_polygon(my_area_matrix)
+my_area_1
+
+my_area_tibble <- tibble::tibble(
+  lon = c(-130, -132, -130, -128),
+  lat = c(48, 50, 52, 50))
+my_area_tibble
+my_area_2 <- create_area_sf_polygon(my_area_tibble)
+expect_equal(my_area_1,
+             my_area_2)
+```

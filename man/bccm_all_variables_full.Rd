@@ -30,7 +30,7 @@ directory.
 }
 \description{
 This downloads (in parallel by default) all 26 BCCM full model results from
-https://zenodo.org/records/19580988 to your local cache directory given by
+Zenodo to your local cache directory given by
 \code{paste0(pacea_cache(), "/bccm_full")}. Each file is around 150 Mb, and only
 took about two minutes each on a home network (and since was running on 6
 parallel cores, it all took less than 10 minutes. Any files that are already

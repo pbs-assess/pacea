@@ -1,0 +1,1056 @@
+---
+title: "Ecosystem Summary Heatmaps"
+author: "Andrew Edwards"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ecosystem Summary Heatmaps}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+date: "Last rendered on `r format(Sys.time(), '%d %B, %Y')`"
+---
+
+<!-- To build either run
+rmarkdown::render("ecosystem_summary_heatmaps.Rmd")
+or click the knit button in RStudio -->
+
+
+```{r, start, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 14,   # 14 #5.7,
+  fig.height = 5.25    # 7  #5
+)
+fig_height_two_row_heatmap <- 2.7 
+fig_height_three_row_heatmap <- 3 
+fig_height_four_row_heatmap <- 3.5
+fig_height_five_row_heatmap <- 4   # Looks good, scale others to this kind of
+fig_height_six_row_heatmap <- 4.33 
+fig_height_ten_row_heatmap <- 6.2
+
+fig_height_one_map <- 4
+fig_width_one_map <- 4
+fig_height_two_map <- 4
+fig_height_three_map <- 4       # width depends how many in each row, so do manually
+fig_height_four_map <- 5
+
+
+```
+
+## Customisable ecosystem summary heatmaps
+
+```{r setup}
+# load_all()    # for developers
+library(pacea)  # for users
+library(dplyr)
+library(tibble)  # Else prints all of a tibble
+library(ggplot2)
+```
+
+In the
+[buoy_anomalies](https://pbs-assess.github.io/pacea/vignettes/buoy_anomalies.html)
+vignette we showed how to make customisable heatmaps of the buoy sea-surface
+temperature data that are saved in pacea. They are in a format familiar to
+oceanographers, using prescribed climatologies and subsequent anomalies.
+
+Here we show how to produce customisable heatmaps that include disparate types
+of ecosystem information, thus bringing together the various data objects in
+pacea. Importantly the user can choose:
+
+- the types of ecosystem information to be included, tailored to their
+  particular stock;
+- the area over which spatial information is summarised.
+
+The aim of pacea is to
+facilitate inclusion of ecosystem information in advice to fisheries management,
+such as stock assessments. Given the multitude of stocks in DFO's Pacific
+Region, both in terms of the diversity of species and the many stock-specific spatial areas, we decided
+to create functions for user-customisable plots that easily summarise the relevant ecosystem
+information.
+
+Expert knowledge can be used to suggest relevant ecosystem information to be
+used for a particular stock. Furthermore, the ease of generating the heatmaps can
+allow exploration, formulation of ideas, and quick hypothesis testing.
+
+For comparing disparate types of ecosystem information, we calculate an annual
+index which is standardised (by subtracting the mean and dividing by the standard deviation across
+the time series; note that all years might not get shown in a plot).
+This is so that indices
+are all dimensionless and can be compared on equivalent scales, and shown on a
+single heatmap style plot.
+
+As a general proof-of-concept example, let's use some ecosystem information for the Strait of Georgia
+(SOG) that is in pacea. We create an index for each type of ecosystem information in turn and
+then make the plot. We just need to use `create_index()` multiple times to
+create the indices, and then `plot_indices()` to make the function (we will
+explain the functions in more detail later):
+```{r, examples}
+# Average sea surface temperature in April from a buoy in the SOG
+sst_buoy_halibut_bank_apr_index <- create_index(buoy_sst,
+                                                months = 4,
+                                                stn_id = "Halibut Bank")
+
+# Large calanoid copepods in the SOG 
+calanoid_copepods_large_sog_index <- create_index(zooplankton_sog,
+                                                  zooplankton_species_group =
+                                                    "calanoid_copepods_large")
+
+# Total zooplankton in the SOG
+total_zooplankton_sog_index <- create_index(zooplankton_sog,
+                                            zooplankton_species_group = "total_biomass")
+
+# Annual age-2 herring recruitment in the SOG
+herring_recruitment_sog_index <- create_index(herring_recruitment,
+                                              herring_region = "SOG")
+
+# Annual herring spawning biomass in the SOG
+herring_biomass_sog_index <- create_index(herring_spawning_biomass,
+                                          herring_region = "SOG")
+
+# Annual population estimates of Harbour Seals in the SOG
+harbour_seals_sog_index <- create_index(harbour_seals,
+                                        seal_region = "SOG")
+```
+See the
+relevant vignettes and help files for details of the pacea objects used for each
+index. The first index is from the buoy sea surface temperature. Looking at the [buoy_anomalies](https://pbs-assess.github.io/pacea/vignettes/buoy_anomalies.html)
+vignette we have used the Halibut Bank buoy in the SoG, which has good timespans of
+data, and just pick April. 
+
+The `create_index()` function automatically creates an object of class
+`pacea_standardised_index`, no matter what type the ecosystem information is. 
+
+Now make the plot, manually basing the start year on the shortest
+of those (zooplankton data):
+```{r, sogplot, fig.height = fig_height_five_row_heatmap}
+plot_indices(sst_buoy_halibut_bank_apr_index,
+             calanoid_copepods_large_sog_index,
+             total_zooplankton_sog_index,
+             herring_recruitment_sog_index,
+             herring_biomass_sog_index,             
+             harbour_seals_sog_index,
+             years = 1996:2026,
+             gap_after = c("sst_buoy_halibut_bank_apr_index",
+                           "total_zooplankton_sog_index",
+                           "herring_biomass_sog_index"))
+```
+
+The first six arguments are the indices that we created above, and `years`
+restricts the plot to the years specified.
+To delineate different types of ecosystem information in the plot
+(e.g. here we have temperature, zooplankton, fish, mammals), we used the optional
+`gap_after` argument to add a small gap after the specified indices.
+
+Each index is standardised over its full time series, and red for a year indicates
+above-average conditions, blue indicates below-average, with the black numbers
+giving the exact standardised anomaly (number of standard deviations above the
+mean), as used for the colour coding. 
+
+The restriction of the years being shown is why the seal index is always
+positive. By definition the mean of an index across its full time series 
+is 0, and so the seal index must be negative earlier in the time series. A quick check of
+the absolute seal populations numbers confirms this, in that the  population has
+indeed 
+increased from the early years:
+
+```{r, sealplot, fig.width = 5, fig.height = 4}
+plot(harbour_seals,
+     region = "SOG")
+```
+
+Here are the details of what is in the buoy SST index object created above:
+```{r, indexdetails}
+sst_buoy_halibut_bank_apr_index
+```
+It is a tibble, with a value for each year, plus an `index` to refer to in code,
+and an `index_label` to use for the labels in the plot (these are repeated in
+each row, which just makes things easier at the plotting stage). 
+
+We can also choose multiple months. Note that `index` and `index_label`
+get automatically prescribed;
+examine the arguments and results for these three indices (for the default buoy,
+namely that 
+in West Dixon Entrance):
+```{r, createindmonths}
+create_index(buoy_sst,
+             months = 5)
+create_index(buoy_sst,
+             months = 5:6)
+create_index(buoy_sst,
+             months = c(11, 12, 1, 2, 3))
+```
+In the third example note how the months are specified from November to March -
+the year indicated is the year of the January.
+
+Note that in the first example we have a value for 1992, but not in the second
+one. This must be because June 1992 does not have enough daily values for this
+particular buoy, which we can confirm from the raw data:
+```{r, confirm}
+filter(buoy_sst,
+       stn_id == "C46205",   # default in create_index.pacea_buoy()
+       date >= "1992-06-01",
+       date <= "1992-06-30",
+       !is.na(sst))
+```
+So there are only 6 daily SST values for this buoy in June 1992, and so an
+anomaly is not calculated for that month because the default is to require 15
+daily SST values in a month. We could force an anomaly to be
+calculated by changing the arguments `min_days_per_month` (default 15) and 
+`max_consecutive_missing_days` (default 6) that get passed onto
+`calculate_anomalies.pacea_buoy()`:
+```{r, confirmchange}
+create_index(buoy_sst,
+             months = 5:6,
+             min_days_per_month = 6,
+             max_consecutive_missing_days = 24)
+```
+thus giving an index value for 1992, given these definitions (which we do not
+recommend, but are showing as examples to help understanding, and to show that
+arguments get correctly passed onto further functions). 
+
+For any type of pacea object, check the exact calculations and further options
+by checking `class(object)` and then `?create_index.<class>`. For example
+`?create_index.pacea_buoy` for the `buoy_sst` data.
+
+
+## OISST spatiotemporal data
+
+We now create various indices from the Optimally Interpolated Sea Surface
+Temperature (OISST) spatiotemporal data, that are described in
+[oisst.html](https://pbs-assess.github.io/pacea/vignettes/oisst.html). 
+An index is a single standardised value
+for each year, and for SST would be based on the mean anomalies over a given
+area.
+
+It is first best to plot the spatial anomalies for the area of interest, to
+verify the area and understand what is going on. We will then calculate an index
+directly from the anomalies list, or 
+directly from `create_index(oisst_month)` with various options.
+
+First, let's look at the full domain of the OISST data and calculate annual
+anomalies and do the default plot (which is for the most recent month of data):
+```{r, oisst1, fig.height = fig_height_one_map}
+oisst_anomalies <- calculate_anomalies(oisst_month)
+
+plot(oisst_anomalies)
+```
+
+The `oisst_anomalies` list object (of class `pacea_oisst_anomalies_list`) contains the climatology for each month-location
+combination, plus the anomalies relative to those for each year-month-location
+combination, plus the `climatology_years` used:
+```{r, oisst3}
+oisst_anomalies
+```
+
+We can specify months and years in a plot, chosen here to show the marine heatwave forming
+in 2014:
+```{r, oisst2, fig.height = fig_height_three_map}
+plot(oisst_anomalies,
+     months = 1:12,
+     years = 2014:2016,
+     x_axis_labels = c(-135, -125)) # specify the x-axis labels to be shown     
+```
+
+We can create an index of the mean anomaly each year averaged over, say, Apr-Jun, over the
+full domain shown (which is Canada's Exclusive Economic Zone):
+
+```{r, fulldomain}
+oisst_eez_apr_jun_index <- create_index(oisst_anomalies,
+                                        months = 4:6,
+                                        index_name =
+                                          "oisst_apr_to_jun_over_eez",
+                                        index_label = "OISST for Apr to Jun over EEZ")
+oisst_eez_apr_jun_index
+```
+The index tibble has the same format as the other types shown above, with one
+value per day. We can simply add this to our earlier heatmap summary plot:
+```{r, sogplot2, fig.height = fig_height_six_row_heatmap}
+plot_indices(oisst_eez_apr_jun_index,
+             sst_buoy_halibut_bank_apr_index,
+             calanoid_copepods_large_sog_index,
+             total_zooplankton_sog_index,
+             herring_recruitment_sog_index,
+             herring_biomass_sog_index,             
+             harbour_seals_sog_index,
+             years = 1996:2026,
+             gap_after = c("sst_buoy_halibut_bank_apr_index",
+                           "total_zooplankton_sog_index",
+                           "herring_biomass_sog_index"))
+```
+This is showing the proof of concept, in that, we can easily compare the
+mean SST anomaly across the whole EEZ over April to June with the buoy SST mean
+anomaly for April, at one location (the point being you can define an index
+however you like and easily compare it). 
+
+In practice, we likely want to restrict an index (and annual summary figure) to a
+specific spatial region, and also specific months.
+
+### Restricting an index over a spatial area
+
+To create anomalies for a specific area, such as Pacific Marine
+Fisheries Area 126, again showing
+the heatwave progressing
+```{r, area126plot, fig.height = fig_height_three_map}
+oisst_anomalies_area_126 <- calculate_anomalies(oisst_month,
+                                                area = pfma_area_126_temp)
+
+plot(oisst_anomalies_area_126,
+     months = 1:12,
+     years = 2014:2016,
+     restrict_plot = TRUE,          # restrict the plot to the area of the anomalies
+     buffer_proportion = 0.6,       # add a buffer proportion to zoom out a bit
+     x_axis_labels = c(-130, -128)) # specify the x-axis labels to be shown
+```
+(Some of those settings are hard to automate with multiple panels, so users may need to
+tweak the options; also `pfma_area_126_temp` is a temporary data object in pacea
+and will change names when we import many fisheries management areas).
+
+For investigating plots (rather than doing analyses), we can also simply use the `area`
+argument when plotting the full `oisst_anomalies`, giving the same plot as above
+(so we have not shown it again here):
+```{r, area126inplot, eval = FALSE}
+plot(oisst_anomalies,
+     area = pfma_area_126_temp,
+     months = 1:12,
+     years = 2014:2016,
+     restrict_plot = TRUE,
+     buffer_proportion = 0.6,
+     x_axis_labels = c(-130, -128))
+```
+
+To calculate the index for Area 126 in April (the default), and give it an appropriate name and label:
+```{r, oisstindex}
+oisst_area_126_apr_index <- create_index(oisst_anomalies_area_126,
+                                         index_name = "oisst_apr_area_126",
+                                         index_label = "OISST in Apr over Area 126")   # April is the default
+
+oisst_area_126_apr_index
+```
+For comparison we can also calculate the mean sea surface temperature for April from a buoy
+within area 126
+```{r, buoy126, fig.height = fig_height_two_row_heatmap}
+sst_buoy_south_brooks_apr_index <- create_index(buoy_sst,
+                                                months = 4,
+                                                stn_id = "South Brooks")
+plot_indices(oisst_area_126_apr_index,
+             sst_buoy_south_brooks_apr_index)
+```
+This shows that the two different indices representing SST are fairly correlated
+but not exactly the same, as expected.
+
+<!-- TODO phase plot when done -->
+
+It makes sense to restrict the plot to 1995 onwards when we have both types of
+data. You can either restrict the years in the plot, or recalculate the OISST
+anomalies from 1995 onwards. Note how these give slightly different figures;
+restricting the plot:
+```{r, buoy126b, fig.height = fig_height_two_row_heatmap}
+plot_indices(oisst_area_126_apr_index,
+             sst_buoy_south_brooks_apr_index,
+             years = 1995:2026)
+```
+or recalculate a restricted index:
+```{r, buoy126c, fig.height = fig_height_two_row_heatmap}
+oisst_area_126_apr_from_1995_index <-
+  create_index(oisst_anomalies_area_126,
+               years = 1995:2026)
+
+plot_indices(oisst_area_126_apr_from_1995_index,
+             sst_buoy_south_brooks_apr_index)
+```
+
+You can also create an index directly from the `oisst_month` data, for which the
+anomalies are calculated internally. Though it seems better to calculate
+the full spatial anomalies for your area to take a look at them first, as we did
+above. Nevertheless, `create_index()` will work directly on `oisst_month`, with
+the `area` option, giving the same result as above
+```{r, oisstindex2}
+oisst_area_126_apr_index_directly <- create_index(oisst_month,
+                                                  area = pfma_area_126_temp,
+                                                  index_name =
+                                                    "oisst_apr_area_126",
+                                                  index_label = "OISST in Apr over Area 126")
+
+expect_equal(oisst_area_126_apr_index,
+             oisst_area_126_apr_index_directly)
+```
+
+We can also show every month of a spatially averaged anomaly in a heatmap style
+plot, like in the
+[buoy_anomalies](https://pbs-assess.github.io/pacea/vignettes/buoy_anomalies.html)
+vignette. This nicely summarises the many spatial maps (which can't all easily
+digested by a reader) into one plot. Note that these are NOT annual indices:
+
+```{r, oisstheatmap}
+plot(oisst_anomalies_area_126,
+     heatmap_style = TRUE,
+     area_name = "Area 126")
+```
+
+You can just do a few months of interest:
+```{r, oisstheatmap2, fig.height = fig_height_three_row_heatmap}
+plot(oisst_anomalies_area_126,
+     heatmap_style = TRUE,
+     area_name = "Area 126",
+     months = 3:5)
+```
+
+See the code of the vignette (specifically the chunk headers) to see how to get
+the figure sizes looking good; these are not automated in the functions.
+
+If you have read this far then you deserve to learn about another, lesser known,
+spatial area available in pacea.
+
+```{r, anomaliessqtch, fig.height = fig_height_three_map}
+oisst_anomalies_sasquatch <- calculate_anomalies(oisst_month,
+                                                 area = sasquatch)
+
+plot(oisst_anomalies_sasquatch,
+     restrict_plot = TRUE,
+     buffer_proportion = 1,
+     area_outline = sasquatch)
+```
+
+In average years, the sasquatch appears to hide away, only coming out when it's warm or cold:
+```{r, anomaliessqtchmap, fig.height = fig_height_four_map}
+plot(oisst_anomalies_sasquatch,
+     months = 4,
+     years = 2014:2026)
+```
+
+And we can create a new index, and see how it compares to that above for Area 126:
+```{r, sasindex, fig.height = fig_height_two_row_heatmap}
+oisst_sasquatch_apr_index <- create_index(oisst_anomalies_sasquatch,
+                                months = 4,
+                                index_label = "OISST in Sasquatch for Apr")
+
+plot_indices(oisst_sasquatch_apr_index,
+             oisst_area_126_apr_index)
+```
+
+## Climatological and oceanographic indices
+
+For details of the climatological and oceanographic indices available in pacea
+see the [indices](https://pbs-assess.github.io/pacea/vignettes/indices.html)
+vignette. For example, we have developed a heatmap style that is particularly
+useful for understanding the emergence of El Niño (see vignette for more
+details), with shades of blue representing La Niña conditions, grey representing
+neutral, and shades of red representing El Niño:
+
+```{r, oniheatmap}
+plot(oni,
+     years = 1980:2026,
+     neutral_oni_one_colour = TRUE,
+     heatmap_style = TRUE)
+```
+
+We can create an index based on a few months of ONI, let's say Nov-Jan, based on
+the above figure:
+```{r, onindexnovjan}
+oni_index_nov_jan <- create_index(oni,
+                                  months = c(11, 12, 1))
+```
+
+We can see if that looks to correlate with the previously calculated index of
+temperature in Area 126, off the west coast of Vancouver Island:
+
+```{r, oni126, fig.height = fig_height_two_row_heatmap}
+plot_indices(oni_index_nov_jan,
+             oisst_area_126_apr_index,
+             years = 1982:2026)             
+```
+(Note that the standardised ONI here is standardised like all variables in
+such a plot, as noted in the
+title, so values are not
+the same as for usually-defined ONI).
+
+The red and blues generally match up, although there are
+some exceptions. The
+correlation coefficient is
+```{r, corr}
+cor(filter(oni_index_nov_jan, year >= 1982)$value,
+    oisst_area_126_apr_index$value) %>% round(2)
+```
+
+Interestingly, the averaged temperature over Area 126 (second row) for 2026 is 0.9 -- only
+in 2025 and 2026 has it been >0.5 when the standardised ONI the previous Nov to
+Jan is negative (blue). So coming into an El Niño for 2026-2027, the water is already
+relatively warm. This shows the sort
+of hypotheses you can start looking into and trying to understand. And because
+we have the values available, we can make a quick plot to demonstrate this last
+point:
+```{r, onineg, fig.width = 7}
+# Values of the standardised ONI that are negative:
+oni_index_neg <- filter(oni_index_nov_jan,
+                        year >= 1982,     # when OISST data start
+                        value <= 0)
+# Corresponding Area 126 April mean OISST for those years:
+oisst_area_126_apr_oni_neg <- filter(oisst_area_126_apr_index,
+                                     year %in% oni_index_neg$year)
+
+plot(oisst_area_126_apr_oni_neg$year,
+     oisst_area_126_apr_oni_neg$value,
+     xlab = "Year",
+     ylab = "OISST in April over Area 126",
+     main = "Only for years with a negative standardised ONI")
+abline(h = 0, col = "grey")
+``` 
+
+We can also look at potential correlations with the other temperature indices we
+calculated above (for a buoy and for the whole EEZ):
+```{r, onitemp, fig.height = fig_height_four_row_heatmap}
+plot_indices(oni_index_nov_jan,
+             oisst_area_126_apr_index,
+             sst_buoy_south_brooks_apr_index,
+			 oisst_sasquatch_apr_index,
+             oisst_eez_apr_jun_index,
+             years = 1982:2026,
+             gap_after = c("oni_index_nov_jan",
+                           "sst_buoy_south_brooks_apr_index"))
+```
+
+<!-- TODO add a phase plot when done. A simple correlation plot does not really -->
+<!-- show this up, a phase plot with years might. The numbers force you to look -->
+<!-- and think a bit-->
+
+For the South Brooks buoy, 2026 is the only year with an anomaly of 0.5 and a
+negative standardised ONI over the previous Nov to Jan, except for 1996 (that had
+a low standardised ONI value of -0.9).
+
+For the full EEZ (bottom row), the signal is not as strong.
+
+The earlier point above about ONI and Area 126 in 2025 and 2026
+does not show really show up in a simple plot (the years in question are
+highlighted in red, but otherwise would not really stand out; to be improved with a general
+phase plot function):
+```{r, oniarea126plot, fig.width = 5}
+plot(filter(oni_index_nov_jan, year >= 1982)$value,
+     oisst_area_126_apr_index$value,
+     xlab = oni_index_nov_jan$index_label[1],
+     ylab = oisst_area_126_apr_index$index_label[1])
+points(filter(oni_index_nov_jan,
+              year %in% 2025:2026)$value,
+       filter(oisst_area_126_apr_index,
+              year %in% 2025:2026)$value,
+       col = "red")
+```
+
+This demonstrates the usefulness of the heatmap-style plot.
+
+The `create_index()` function works on all the climatological and oceanographic indices in
+pacea (PDO, NPGO, etc.; see `pacea_indices`) and so that plus `plot_indices()` could be used to
+compare and help understand the relationships between the various indices. An exercise for the reader.
+
+## Biogeochemical model outputs
+
+We have not yet tested or worked on extracting indices from the BCCM and HOTSSea
+model outputs. Coming soon. The OISST functions should help but will need slight
+adapting. TODO
+
+## Tailoring for a specific stock
+
+In the [2025 Pacific Hake stock
+assessment](https://s3.amazonaws.com/media.fisheries.noaa.gov/2025-02/Status-Pacific-Hake-whiting-US-and-Canadian-waters-2025.pdf)
+we presented a hake-specific ecosystem summary as a first step to providing an
+operational summary of relevant ecosystem information regarding the coastwide
+Pacific Hake stock (from California to British Columbia). The ecosystem summary was updated in the [2026
+assessment](https://www.fisheries.noaa.gov/s3/2026-02/hake-assessment-2026.pdf),
+with about half of the variables shown coming directly from pacea. 
+
+Without going into too much detail (see the assessments), we now
+develop an ecosystem summary heatmap of some of the ecosystem influences on Pacific Hake
+recruitment (age-0 individuals) found by [Vestfals et al. (2023)](https://onlinelibrary.wiley.com/doi/full/10.1111/fog.12634). This  will improve upon the time-series style
+plots used in the 2025 and 2026 assessments. 
+
+We show five indices from pacea:
+
+| Definition | Effect on recruitment | Expectation for an increase in the index |
+|:---|:---|:---|
+| Pacific Decadal Oscillation during preconditioning (Apr-Sep) | Indicator of basin-scale processes, negative phase linked to higher productivity and improved adult condition | $\downarrow$ recruitment the following year |
+| North Pacific Gyre Oscillation during preconditioning (Apr-Sep) | Indicator of basin-scale processes, positive phase linked to higher nutrient concentrations and productivity, and improved adult condition | $\uparrow$ recruitment the following year |
+| North Pacific Current Bifurcation Index | Northward-shifted bifurcation leads to increased advection of prey southwards, leading to poorer feeding conditions off British Columbia, Washington, and Oregon, and reduced adult condition | $\downarrow$ recruitment the following year |
+| Pacific Herring spawning biomass off the west coast of Vancouver Island | Increased competition with herring on summer feeding grounds leads to poorer feeding conditions and reduced adult condition | $\downarrow$ recruitment the following year |
+| Biomass of age-1 Pacific Hake | Age-1 hake predate on pelagic juveniles (roughly Apr-Sep) | $\downarrow$ recruitment that year |
+
+
+We introduce two new options in `plot_indices()`:
+
+- lagging an index when the influence of the index is on the following
+   year's hake recruitment (as seen for four of the indices above);
+- flipping the colour scale when a negative index is expected to positively
+   enhance hake recruitment (as seen for four of the indices above).
+   
+So create the relevant indices from pacea objects and then make the plot:
+<!-- adapted from `ecosystem_summary_hake.R` -->
+```{r, hake}
+hake_assessment_year <- 2026
+hake_recruitment_final_year_to_use <- 2022  # final years removed as not
+            # estimated by data, depends on the model assumptions        
+age_1_hake_final_year_to_use <- hake_recruitment_final_year_to_use + 1
+
+hake_recruitment_index <- create_index(
+  filter(hake_recruitment,
+         year <= hake_recruitment_final_year_to_use),
+  index_name = "hake_recruitment",
+  index_label = "Pacific Hake age-0 recruitment")
+
+start_year <- hake_recruitment_index$year[1]
+
+pdo_index <- create_index(filter(pdo,
+                                 year >= start_year),
+                          months = 4:9,
+                          index_name = "pdo_preconditioning",
+                          index_label = "PDO Preconditioning")
+
+npgo_index <- create_index(filter(npgo,
+                                 year >= start_year),
+                          months = 4:9,
+                          index_name = "npgo_preconditioning",
+                          index_label = "NPGO Preconditioning")
+
+bi_index <- create_index(bi,
+                         index_label = "Bifurcation Index")
+
+herring_biomass_wcvi_index <- create_index(filter(herring_spawning_biomass,
+                                                  year >= start_year),
+                                           herring_region = "WCVI",
+                                           index_name =
+                                             "herring_spawning_biomass_wcvi")
+
+hake_age_1_index <- create_index(filter(hake_total_biomass_age_1,
+                                        year <= age_1_hake_final_year_to_use),
+                                 index_name = "hake_age_1_total_biomass",
+                                 index_label = "Pacific Hake age-1 biomass")
+
+
+plot_indices(hake_recruitment_index,
+             pdo_index,
+             npgo_index,
+             bi_index,             
+             herring_biomass_wcvi_index,
+             hake_age_1_index,
+             years = 1995:2027,    # else a bit unwieldy to see
+             gap_after = c("hake_recruitment_index",
+                           "bi_index",
+                           "herring_biomass_wcvi_index"),
+             flip = c("pdo_index",
+                      "bi_index",
+                      "herring_biomass_wcvi_index",
+                      "hake_age_1_index"),
+             shift = c("pdo_index",
+                       "npgo_index",
+                       "bi_index",
+                       "herring_biomass_wcvi_index"))                      
+```
+The top row shows the index of hake recruitment, with the other rows showing
+some of the
+indices that are expected to influence hake recruitment. For the indices
+annotated with $^*$, the numbers show the index but the colours are flipped,
+such that red is always 'good for recruitment'  and blue is bad; these indices
+are the four with a $\downarrow$ in the final column of the table.
+
+For the four indices that the effect of the index is expected on the *following* year's
+hake recruitment, the plotted index is shifted by a year and this is indicated
+by a `+` symbol annotated to the index label. This is so that the x-axis
+represents the year of the hake recruitment; so all the influences on, say, 1995 recruitment are in the 1995
+column (even if the index is calculated on 1994 data), and red basically implies good for hake and blue implies not good.
+
+To briefly interpret some of the results, for the very large 1999 year class (high 1999
+hake recruitment), the five indices imply slightly favourable conditions, as
+they are all coloured red. For the very large 2010 class four of them do, which is
+the same for the not-so-large (but still way above average) 2008 and 2014
+classes. For the strong 2016 and 2021 age classes, only three and two indices
+indicate favourable conditions, respectively. Thus, as expected, such influences
+are not definitive.
+
+Note that the latest estimate of hake recruitment is for 2022 (at the original
+time of writing, October 2026), but we already
+have estimates of all the other indices for 2023, and some of them for later
+years. Thus, if a good relationship holds, we have some information for recent
+recruitments that we do not yet have estimates for from the stock assessment
+model. 
+
+Also, note that we already have estimates of the relevant indices derived
+from PDO and NPGO for 2027, because the Apr-Sep 2026 values are available now, and the
+influence of these is expected on the 2027 hake recruitment (so they appear in
+the 2027 column). 
+
+More work is needed regarding interpretation, but the point here is to
+demonstrate the functionality. In the hake assessment we also showed indices
+abstracted from outputs of the Global
+Ocean Physics Reanalysis ([GLORYS12V1]((https://data.marine.copernicus.eu/product/GLOBAL_MULTIYEAR_PHY_001_030/description))) product, which is a global ocean
+eddy-resolving oceanographic model. These looked at, for example, mixed-layer depths and
+strength of currents that affect eggs and larvae.
+
+<!-- (We tried using log of hake recruitment and age-1 values, but prefer the unlogged
+indices as the really big recruitments show up more clearly; logging  makes the
+very small stand out somewhat compared to 'just small', which is not really of
+such interest. See commented out code.)
+-->
+
+```{r, hakelog, eval = FALSE, echo = FALSE}
+hake_recruitment_log <- hake_recruitment %>%
+  mutate(median = log(median))
+
+hake_recruitment_log_index <- create_index(
+  filter(hake_recruitment_log,
+         year <= hake_recruitment_final_year_to_use),
+  index_name = "hake_recruitment_log",
+  index_label = "Pacific Hake age-0 log recruitment")
+
+hake_recruitment_log_index %>% tail()
+
+# Using recruitment deviations gives very close numbers to log recruitment
+#  (because of biomass lies close to the asymptote of the stock-recruit curve)
+# hake_recruitment_deviations_index <- create_index(
+#  filter(hake_recruitment_deviations,
+#         year <= hake_recruitment_final_year_to_use),
+#  index_name = "hake_recruitment_deviations",
+# index_label = "Pacific Hake age-0 recruitment deviations")
+
+hake_total_biomass_age_1_log <- hake_total_biomass_age_1 %>%
+  mutate(median = log(median))
+
+hake_age_1_log_index <- create_index(filter(hake_total_biomass_age_1_log,
+                                            year <= age_1_hake_final_year_to_use),
+                                     index_name = "hake_age_1_total_biomass_log",
+                                     index_label = "Pacific Hake age-1 log biomass")
+
+
+```
+
+## Final remarks
+
+Using our functions described above, you should be able to tailor ecosystem summary
+heatmaps for your own stock or species of interest. We see these allowing you to
+be exploratory, generate hypotheses, and
+help you include ecosystem information when providing
+advice to fisheries management.
+
+<!-- 
+A final example, though thing we have enough: does the ONI index the previous winter seem to relate to
+herring recruitment across the five herring regions and hake recruitment (which
+is mostly in US waters)? Also, how synchronous
+is recruitment across those regions? 
+-->
+```{r, furtherexamples, fig.height = fig_height_six_row_heatmap, fig.width = 18, eval = FALSE, echo = FALSE}
+pdo_annual_index <- create_index(pdo,
+                          months = 1:12)
+herring_recruitment_hg_index <- create_index(herring_recruitment,
+                                             herring_region= "HG")
+herring_recruitment_prd_index <- create_index(herring_recruitment,
+                                              herring_region = "PRD")
+herring_recruitment_cc_index <- create_index(herring_recruitment,
+                                             herring_region = "CC")
+herring_recruitment_wcvi_index <- create_index(herring_recruitment,
+                                              herring_region = "WCVI")
+hake_recruitment_index <- create_index(hake_recruitment)
+
+# Many examples (adding as go along), likely not really needed:
+plot_indices(pdo_annual_index,
+             herring_recruitment_hg_index,
+             herring_recruitment_prd_index,
+             herring_recruitment_cc_index,
+             herring_recruitment_sog_index,
+             herring_recruitment_wcvi_index,
+             hake_recruitment_index,
+             years = 1953:2026,    # it ignores 2026 if no values though
+             gap_after = c("pdo_annual_index",
+                           "herring_recruitment_wcvi_index"))
+```
+
+## Temporary Appendix - figuring out why historical values have changed. Users can ignore!
+
+This will be removed when all figured out.
+
+See
+our [pacea Issue](https://github.com/pbs-assess/pacea/issues/105) for the short
+version of the following. Also see long email to Mike and Tetjana; waiting for response (Mike has asked
+someone about it).
+
+First want to update indices values and check how the figure looks. Originally a
+quick cheat
+as the index has changed so I didn't want to save it into pacea yet (not
+evaluating as do not want to keep downloading it), but now (before PICES) I am
+going to update all the indices, so any mention of 'oni' below is before the
+update (dates are given).
+```{r, updateoni, eval = FALSE}
+download.file("https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+              destfile="oni.txt",
+              mode="wb",
+              quiet = FALSE)
+```
+
+```{r, updateoni2}
+oni_new <- readr::read_table("oni.txt")
+
+stopifnot(colnames(oni_new) == c("SEAS", "YR", "TOTAL", "ANOM"),
+          oni_new[1, 1] == "DJF")    # If this fails then months as factors
+                                     #  below will become incorrect because it
+                                     #  assumes first one is January
+
+colnames(oni_new)<-c("month",
+                     "year",
+                     "value",
+                     "anomaly")
+
+oni_new <- dplyr::relocate(oni_new,
+                           year)
+
+oni_new$month <- as.numeric(factor(oni_new$month,
+                                   levels=unique(oni_new$month),
+                                   ordered=TRUE))
+class(oni_new) <- c("pacea_index",
+                    class(oni_new))
+
+attr(oni_new, "axis_name") <- "Oceanic Niño Index"
+
+plot(oni_new,
+     years = 1980:2026,
+     neutral_oni_one_colour = TRUE,
+     heatmap_style = TRUE)
+
+```
+
+Copying and pasting these in, not running:
+```{r, eval = FALSE}
+# My installed version:
+> pacea::pacea_installed()
+You last locally installed pacea on 2026-10-08 which is 6 days ago.
+# Also Cameron's:
+ You last locally installed pacea on 2026-09-28 which is 16 days ago.
+# Elise:
+You last locally installed pacea on 2026-01-27 which is 260 days ago.
+
+> pacea::oni
+# A tibble: 917 × 4
+    year month value anomaly
+   <dbl> <dbl> <dbl>   <dbl>
+ 1  1950     1  24.7   -1.53
+ 2  1950     2  25.2   -1.34
+ 3  1950     3  25.8   -1.16
+ 4  1950     4  26.1   -1.18
+ 5  1950     5  26.3   -1.07
+ 6  1950     6  26.3   -0.85
+ 7  1950     7  26.2   -0.54
+ 8  1950     8  26.0   -0.42
+ 9  1950     9  25.8   -0.39
+10  1950    10  25.6   -0.44
+# ℹ 907 more rows
+# ℹ Use `print(n = ...)` to see more rows
+
+# The new values downloaded on 9th October from https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt
+> oni_new
+# A tibble: 920 × 4
+    year month value anomaly
+   <dbl> <dbl> <dbl>   <dbl>
+ 1  1950     1  25.0   -1.32
+ 2  1950     2  25.4   -1.2 
+ 3  1950     3  25.9   -1.12
+ 4  1950     4  26.2   -1.08
+ 5  1950     5  26.4   -1.1 
+ 6  1950     6  26.3   -0.9 
+ 7  1950     7  26.2   -0.62
+ 8  1950     8  25.9   -0.57
+ 9  1950     9  25.8   -0.56
+10  1950    10  25.6   -0.62
+# ℹ 910 more rows
+# ℹ Use `print(n = ...)` to see more rows
+
+
+
+# Dates of last commits that changed oni.rda on pacea/main:
+
+2026-07-26
+2026-10-26  - this rebuilt the README.Md and has -1.53 as 1950-1 anomaly,
+unchanged from previous README.Md commit. Aha - this line in README has not
+changed since Nov 2023. 
+2026-03-03 NEWS update says: In particular for ONI we are now in a new five-year
+baseline period for recent anomalies so all ONI values since 2010 have been
+recalculated, presumably related to:
+2026-03-02
+2025-02-25
+
+
+
+```
+
+Using the link from Andrea: https://psl.noaa.gov/data/timeseries/month/
+
+Oceanic Niño index:
+
+https://psl.noaa.gov/data/correlation/oni.data    
+
+starts with Jan 1950 being -1.53. So the same that I used to have, but not the
+same as the link I have been using.
+
+This has (saved in oni-from-psl-noaa-gov-from-andrea.csv):
+```{r, eval = FALSE}
+1950-01-01,   -1.530
+1950-02-01,   -1.340
+
+2026-01-01,   -0.390
+2026-02-01,   -0.210
+2026-03-01,    0.110
+2026-04-01,    0.460
+2026-05-01,    0.950
+2026-06-01,    1.390
+2026-07-01,    1.800
+2026-08-01, -9999.000
+```
+
+Currently in my `load_all()` pacea (`oni.rda` is dated 2026-07-26):
+```{r, eval = FALSE}
+> oni
+ 1  1950     1  24.7   -1.53
+ 2  1950     2  25.2   -1.34
+
+> tail(oni)
+# A tibble: 6 × 4
+   year month value anomaly
+  <dbl> <dbl> <dbl>   <dbl>
+1  2025    12  26.0   -0.54
+2  2026     1  26.1   -0.37
+3  2026     2  26.6   -0.14
+4  2026     3  27.3    0.13
+5  2026     4  28.1    0.51
+6  2026     5  28.7    0.98
+```
+
+So, confusingly, the 1950s values match the PSL values. But the recent ones do
+not. Values can change with updates, but I thought only in the final few months.
+
+Let's look at both for 1999 as a middle year:
+```{r, eval = FALSE}
+# PSL values:
+1999-01-01,   -1.550
+1999-02-01,   -1.300
+1999-03-01,   -1.070
+1999-04-01,   -0.980
+1999-05-01,   -1.020
+1999-06-01,   -1.040
+1999-07-01,   -1.100
+1999-08-01,   -1.110
+1999-09-01,   -1.160
+1999-10-01,   -1.260
+1999-11-01,   -1.460
+1999-12-01,   -1.650
+
+> filter(oni, year == 1999)
+    year month value anomaly
+   <dbl> <dbl> <dbl>   <dbl>
+ 1  1999     1  25.1   -1.55
+ 2  1999     2  25.6   -1.3 
+ 3  1999     3  26.2   -1.07
+ 4  1999     4  26.6   -0.98
+ 5  1999     5  26.7   -1.02
+ 6  1999     6  26.5   -1.04
+ 7  1999     7  26.1   -1.1 
+ 8  1999     8  25.8   -1.11
+ 9  1999     9  25.6   -1.16
+10  1999    10  25.4   -1.26
+11  1999    11  25.2   -1.46
+12  1999    12  24.9   -1.65
+```
+
+Okay, so they match. So recent values must still be getting updated in the PSL
+or usual one.
+
+Also, `oni_new` is different for 1999:
+```{r, eval = FALSE}
+> filter(oni_new, year == 1999)
+# A tibble: 12 × 4
+    year month value anomaly
+   <dbl> <dbl> <dbl>   <dbl>
+ 1  1999     1  25.1   -1.51
+ 2  1999     2  25.6   -1.25
+ 3  1999     3  26.3   -0.93
+ 4  1999     4  26.8   -0.8 
+ 5  1999     5  26.9   -0.79
+ 6  1999     6  26.7   -0.84
+ 7  1999     7  26.3   -0.9 
+ 8  1999     8  26.0   -0.94
+ 9  1999     9  25.8   -1   
+10  1999    10  25.6   -1.13
+11  1999    11  25.3   -1.35
+12  1999    12  25.1   -1.53
+```
+
+So, issue is that historical Jan 1950 (versions in pacea) has always seemed to
+be -1.53. Same as the current PSL one. But different to where I usually get oni
+from, which is:
+
+https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt
+
+and Jan 1950 is now -1.32. The latter is currently in this vignette as
+`oni_new`:
+```{r, oninew}
+oni_new
+filter(oni_new, year == 2026)
+```
+
+Original `oni`:
+```{r, oniheatmap2}
+plot(oni,
+     heatmap_style = TRUE,
+     years = 1980:2026,
+     neutral_oni_one_colour = TRUE)
+```
+and `oni_new`:
+```{r, onineheatmap3}
+plot(oni_new,
+     heatmap_style = TRUE,
+     years = 1980:2026,
+     neutral_oni_one_colour = TRUE)
+```
+
+
+<!--
+None of this is run:
+
+Trying to compare standardised to not standardised, look okay but not really 
+needed as confusing.
+
+-->
+
+```{r, oniindex, fig.height = fig_height_two_row_heatmap, eval = FALSE, echo = FALSE}
+oni_index_std <- create_index(oni,
+                                  months = 3:5,
+                                  standardise_index = TRUE)                          
+oni_index_not_std <- create_index(oni,
+                                      months = 3:5,
+                                      standardise_index = FALSE,
+                                      index_label = "Not standardised")
+
+plot_indices(oni_index_std,
+             oni_index_not_std)
+```
+
+<!-- 
+
+(Note colourscale caption is wrong as assumes standardised indices). Looks
+correct, general pattern is the same, just the standardised one is more spread
+out than the non-standardised.
+-->
+
+```{r, oniindexvalues, eval = FALSE, echo = FALSE}
+# Standardised:
+oni_index_std
+# Not standardised:
+oni_index_not_std
+```
+
+<!-- Quick example to check that the normalised index of mean anomalies is same
+as normalised index of mean of means. Think so since both relative to the same
+climatology. TODO. Also it's still based on climatology; so does mean of actual
+values just give the same? -->
+
+```{r, buoysst, eval = FALSE, echo = FALSE}
+sst_west_dixon_apr_using_anomalies <- create_index(buoy_sst)
+sst_west_dixon_apr_using_mean <- create_index(buoy_sst, buoy_statistic = "mean")
+expect_equal(sst_west_dixon_apr_using_anomalies,
+             sst_west_dixon_apr_using_mean)
+# Not convinced that will always hold though, I think only difference would be
+# if you did not have a climatology for a particular month, which does not
+# happen with the default years. So probably best to keep the generality.
+```

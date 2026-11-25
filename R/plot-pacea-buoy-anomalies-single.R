@@ -5,10 +5,12 @@
 ##' @param pacea_buoy_anomalies_list object of class `pacea_buoy_anomalies_list`
 ##' obtained from running `calculate_anomalies()` on buoy data.
 ##' @param stn_id_to_plot single `stn_id` to plot
+##' @param text_size numeric; size of text displayed in heatmap boxes (default: 3.5)
+##' @param digits numeric number of decimal places to show for text values
 ##' @rdname plot.pacea_buoy_anomalies_list
 ##' @return a ggplot object
 ##' @export
-##' @author Andrew Edwards
+##' @author Andrew Edwards and Andrea Hilborn
 ##' @examples
 ##' \dontrun{
 ##' # See the vignette
@@ -23,11 +25,17 @@ plot_pacea_buoy_anomalies_single <- function(pacea_buoy_anomalies_list,
                                              sst_plot = "anomalies",
                                              count_breaks = NULL,
                                              return_results = FALSE,
-                                             scale_limits = NULL){
+                                             angle_year_labels = TRUE,
+                                             scale_limits = NULL,
+                                             heatmap_colours = pals::ocean.balance(20)[2:19],
+                                             text_size = 3.5,
+                                             digits = 1){
 
   # Validate sst_plot parameter
-  sst_plot <- match.arg(sst_plot, c("anomalies", "mean", "count"))
-
+  sst_plot <- match.arg(sst_plot,
+                        c("anomalies",
+                          "mean",
+                          "count"))
 
     if(use_stn_id_name){
       stn_id_to_plot_name <- buoy_metadata$name[match(stn_id_to_plot,
@@ -97,10 +105,12 @@ plot_pacea_buoy_anomalies_single <- function(pacea_buoy_anomalies_list,
       scale_limits <- c(-max_abs,
                         max_abs)
     } else if(sst_plot == "mean"){
-      max_abs <- max(plot_data$sst_plot_value,
+      min_val <- min(plot_data$sst_plot_value,
                      na.rm = TRUE)
-      scale_limits <- c(0,
-                        max_abs)
+      max_val <- max(plot_data$sst_plot_value,
+                     na.rm = TRUE)
+      scale_limits <- c(min_val,
+                        max_val)
     }
   }
 
@@ -116,7 +126,7 @@ plot_pacea_buoy_anomalies_single <- function(pacea_buoy_anomalies_list,
                                               name = legend_label,
                                               limits = c(min(count_breaks), max(count_breaks)))
   } else {
-    color_scale <- ggplot2::scale_fill_gradientn(colours = pals::ocean.balance(20)[3:18],
+    color_scale <- ggplot2::scale_fill_gradientn(colours = heatmap_colours,
                                                  limits = scale_limits,
                                                  name = legend_label)
   }
@@ -129,10 +139,12 @@ plot_pacea_buoy_anomalies_single <- function(pacea_buoy_anomalies_list,
   # Add label column for text display
   if(sst_plot == "count"){
     plot_data <- plot_data %>%
-      dplyr::mutate(label = as.character(round(sst_plot_value, 0)))
+      dplyr::mutate(label = format(round(sst_plot_value, 0),
+                                   nsmall = 0))
   } else {
     plot_data <- plot_data %>%
-      dplyr::mutate(label = as.character(round(sst_plot_value, 1)))
+      dplyr::mutate(label = format(round(sst_plot_value, digits),
+                                   nsmall = digits))
   }
 
   anomalies_plot <-
@@ -156,8 +168,17 @@ plot_pacea_buoy_anomalies_single <- function(pacea_buoy_anomalies_list,
           panel.background = element_rect(fill = "white",
                                           colour = NA),
           panel.grid = element_blank()) +
+    {
+      if(angle_year_labels){
+        theme(axis.text.x = element_text(angle = 45,
+                                         hjust = 1,
+                                         vjust = 1))
+      } else {
+        theme()
+      }
+    } +
     ggplot2::geom_text(aes(label = label),
-                       size = 3.5) +
+                       size = text_size) +
     guides(fill = guide_colorbar(barwidth = 15,
                                  title.position = "top",
                                  frame.colour = "black",

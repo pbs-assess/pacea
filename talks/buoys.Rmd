@@ -43,8 +43,6 @@ Extensive data processing to calculate daily mean SST:
 - Switch from DFO data stream to ECCC data stream when appropriate
 
 - Time zones and daylight savings time
-
-- Still working on fixing a few outliers in the high-resolution data (hard to automate)
 ```
 
 ## Sea surface temperature data from buoys

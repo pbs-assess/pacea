@@ -9,11 +9,15 @@ A tibble with columns:
 \describe{
 \item{species_group_name:}{the available values for \code{species_group_name},
 as given by the columns of \code{zooplankton_sog} from \code{total_biomass} onwards}
-\item{axis_name :}{an expression to give a correct y label for the plots
+\item{axis_name :}{an expression to give a correct y label for the default
+plots
 (not just the \code{species_group_name} shorthand),
 including getting the units (with superscripts) correct}
 \item{in_perry_fig_s1:}{logical whether or not the species group is in the
-20 figures shown in Figures S1 of Perry et al. (2021); see the zooplankton vignette.}
+20 figures shown in Figures S1 of Perry et al. (2021); see the zooplankton
+vignette.}
+\item{heatmap_axis_name :}{an expression to give a correct y label for the
+ecosystem summary heatmap-style plot of indices (so do not need units)}
 }
 }
 \source{

@@ -168,7 +168,12 @@ get_zenodo_data <- function(layer,
                 "Returning local version of data.", call. = FALSE)
 
         dat <- load(local_file_dir)
-        return(get(dat))
+        dat_obj <- get(dat)
+        # Ensure pacea_st is the first class
+        class(dat_obj) <- c("pacea_st",
+                            setdiff(class(dat_obj),
+                                    "pacea_st"))
+        return(dat_obj)
       }
 
       # Might need some of this if have new versions. Or just get users to do manually.
@@ -197,7 +202,12 @@ get_zenodo_data <- function(layer,
                 call. = FALSE)
         
         dat <- load(local_file_dir)
-        return(get(dat))
+        dat_obj <- get(dat)
+        # Ensure pacea_st is the first class
+        class(dat_obj) <- c("pacea_st",
+                            setdiff(class(dat_obj),
+                                    "pacea_st"))
+        return(dat_obj)
 
       } else {
         # default ans = TRUE
@@ -222,7 +232,12 @@ get_zenodo_data <- function(layer,
           message("Returned local version of data.")
           
           dat <- load(local_file_dir)
-          return(get(dat))
+            dat_obj <- get(dat)
+            # Ensure pacea_st is the first class
+            class(dat_obj) <- c("pacea_st",
+                                setdiff(class(dat_obj),
+                                        "pacea_st"))
+            return(dat_obj)
           # nocov end
         } else {
           
@@ -253,14 +268,24 @@ get_zenodo_data <- function(layer,
           new_local_file_dir <- paste0(cache_dir, "/", zen_file_name)
           
           dat <- load(new_local_file_dir)
-          return(get(dat))
+          dat_obj <- get(dat)
+          # Ensure pacea_st is the first class
+          class(dat_obj) <- c("pacea_st",
+                              setdiff(class(dat_obj),
+                                      "pacea_st"))
+          return(dat_obj)
         }
       } 
       
     } else { # no update
       
       dat <- load(local_file_dir)
-      return(get(dat))
+      dat_obj <- get(dat)
+      # Ensure pacea_st is the first class
+      class(dat_obj) <- c("pacea_st",
+                          setdiff(class(dat_obj),
+                                  "pacea_st"))
+      return(dat_obj)
       
       } 
     
@@ -307,7 +332,12 @@ get_zenodo_data <- function(layer,
       
       dat <- load(new_local_file_dir)  # seems to not be a true .rds file, should contain
       # the object 'layer'
-      return(get(dat))
+      dat_obj <- get(dat)
+      # Ensure pacea_st is the first class
+      class(dat_obj) <- c("pacea_st",
+                          setdiff(class(dat_obj),
+                                  "pacea_st"))
+      return(dat_obj)
     }
 }
 

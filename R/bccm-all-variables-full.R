@@ -1,7 +1,7 @@
 #' Download all 26 BCCM full model results from Zenodo to a local drive.
 #'
 #' This downloads (in parallel by default) all 26 BCCM full model results from
-#' https://zenodo.org/records/19580988 to your local cache directory given by
+#' Zenodo to your local cache directory given by
 #' `paste0(pacea_cache(), "/bccm_full")`. Each file is around 150 Mb, and only
 #' took about two minutes each on a home network (and since was running on 6
 #' parallel cores, it all took less than 10 minutes. Any files that are already
@@ -126,7 +126,8 @@ bccm_all_variables_full <- function(run_parallel = TRUE,
       get_zenodo_data(data_name,
                       force = TRUE,
                       cache_subfolder = "bccm_full",
-                      timeout_value = timeout_value)
+                      timeout_value = timeout_value,
+                      version = version)
     }
   }
 

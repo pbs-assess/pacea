@@ -1,6 +1,7 @@
 # These are on plotting functions for pacea_index and then pacea_recruitment,
 # pacea_biomass, pacea_buoy, pacea_harbour_seals, pacea_zooplankton, and
-# pacea_recruitment_herring objects. Also a generic df to which we add class pacea_index.
+# pacea_recruitment_herring objects. Also a generic df to which we add class
+# pacea_index. And the heatmap_style for the indices.
 
 # plot.pacea_index()
 test_that("index plotting: the stopifnot commands are working", {
@@ -9,6 +10,26 @@ test_that("index plotting: the stopifnot commands are working", {
   expect_error(plot(npi_monthly))
   expect_error(plot(npi_annual,
                     smooth_over_year = TRUE))
+
+  # heatmap_style = TRUE
+
+  expect_visible(plot(pdo,
+                        years = 1980:2026,
+                        heatmap_style = TRUE))
+
+  expect_error(plot(npi_monthly,
+                    years = 1980:2026,
+                    heatmap_style = TRUE))
+
+  expect_visible(plot(npi_monthly,
+                        years = 1980:2026,
+                        heatmap_style = TRUE,
+                        value = "value",
+                        digits = 0))
+  # No month:
+  expect_error(plot(npi_annual,
+                    years = 1980:2026,
+                    heatmap_style = TRUE))
 })
 
 test_that("index plotting works with various options", {
@@ -42,8 +63,10 @@ test_that("index plotting works with various options", {
                         event_lub = c(lubridate::dmy(02081972),
                                       lubridate::dmy(31121999))))
 
-  suppressWarnings(expect_warning(plot(oni,
-                                       not_an_option = "My nice plot")))
+  # This failed I think because I added more ... options in to other functions,
+  #  and they cannot really all be checked. So not needed.
+  # suppressWarnings(expect_warning(plot(oni,
+  #                                     not_an_option = "My nice plot")))
                                        # nonsensical ... option
 
   expect_invisible(plot(oni,

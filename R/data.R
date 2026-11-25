@@ -1440,11 +1440,15 @@
 ##' \describe{
 ##'   \item{species_group_name:}{the available values for `species_group_name`,
 ##'   as given by the columns of `zooplankton_sog` from `total_biomass` onwards}
-##'   \item{axis_name :}{an expression to give a correct y label for the plots
+##'   \item{axis_name :}{an expression to give a correct y label for the default
+##' plots
 ##'   (not just the `species_group_name` shorthand),
 ##'   including getting the units (with superscripts) correct}
 ##'   \item{in_perry_fig_s1:}{logical whether or not the species group is in the
-##'   20 figures shown in Figures S1 of Perry et al. (2021); see the zooplankton vignette.}
+##'   20 figures shown in Figures S1 of Perry et al. (2021); see the zooplankton
+##' vignette.}
+##'   \item{heatmap_axis_name :}{an expression to give a correct y label for the
+##' ecosystem summary heatmap-style plot of indices (so do not need units)}
 ##'  }
 ##'
 ##' @examples
@@ -1857,3 +1861,57 @@
 ##' @aliases pmfc_minor_1 pmfc_minor_2 pmfc_minor_3 pmfc_minor_4 pmfc_minor_5 pmfc_minor_6 pmfc_minor_7 pmfc_minor_8 pmfc_minor_9 pmfc_minor_11 pmfc_minor_12 pmfc_minor_13 pmfc_minor_14 pmfc_minor_15 pmfc_minor_16 pmfc_minor_17 pmfc_minor_18 pmfc_minor_19 pmfc_minor_20 pmfc_minor_21 pmfc_minor_23 pmfc_minor_24 pmfc_minor_25 pmfc_minor_26 pmfc_minor_27 pmfc_minor_28 pmfc_minor_29 pmfc_minor_31 pmfc_minor_34 pmfc_minor_35
 ##'
 "pmfc_minor"
+
+#' Sasquatch sf object for testing area options in code
+#'
+#' A simple features object of a sasquatch, maruading off the west coast of
+#' Vancouver Island and in Queen Charlotte Sound.
+#
+#' @format A simple features polygon dataframe.
+#' @examples
+#' \dontrun{
+#' sasquatch
+#' plot(sasquatch)
+#' p <- plot(oisst_month)
+#' p + geom_sf(data = sasquatch,
+#'             fill = NA,
+#'             colour = "black",
+#'             linewidth = 1)
+#' # Extract SST within the sasquatch
+#' sasquatch_sst <- oisst_month[sasquatch, ]
+#' class(sasquatch_sst) <- class(oisst_month)    # will make a function for that,
+#'    or an option in the plotting, at some point
+#' plot(sasquatch_sst)    # full coastline, no sasquatch outline
+#'
+#' pp <- plot(sasquatch_sst)
+#' pp + geom_sf(data = sasquatch,
+#'              fill = NA,
+#'              colour = "black",
+#'              linewidth = 1)
+#' # Can see that, as Kelsey explained, it's the centres of the SST squares that
+#' # determine whether the square is considered part of the area or not.
+#' }
+#'
+#' @source Generated from running `data-raw/areas/sasquatch.R"
+"sasquatch"
+
+#' Temporary PFMA Area 126 sf object for testing area options in code
+#'
+#' A simple features object of PFMA Area 126 to test code.
+
+#' @format A simple features polygon dataframe.
+#' @examples
+#' \dontrun{
+#' pfma_area_126_temp
+#' plot(pfma_area_126_temp)    # just draws the polygon of the area
+#' # Plot the latest OISST data plus draw the polygon of the area
+#' p <- plot(oisst_month)
+#'
+#' p + geom_sf(data = pfma_area_126_temp,
+#'             fill = NA,
+#'             colour = "black",
+#'             linewidth = 1)
+#' }
+#'
+#' @source Generated from running `data-raw/areas/pfma-area-126-temp.R"
+"pfma_area_126_temp"

@@ -13,10 +13,11 @@ standardise(x, range = 1:length(x))
 calculated over (default is to use all of \code{x})}
 }
 \value{
-numeric with standardised value corresponding to each value of \code{x}
+numeric with standardised value corresponding to each value of \code{x},
+NA's are ignored
 }
 \description{
-Standardise a vector of values to a mean of 0 and standard deviation of 1
+Can be used in \code{\link[dplyr:mutate]{dplyr::mutate()}} call.
 }
 \examples{
 \dontrun{
