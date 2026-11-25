@@ -22,7 +22,9 @@ plot_indices(
   heatmap_colours = pals::ocean.balance(20)[2:19],
   flip = NULL,
   shift = NULL,
-  shift_years = NULL
+  shift_years = NULL,
+  text_size = 3.5,
+  digits = 1
 )
 
 plot_pacea_index_monthly_heatmap(
@@ -39,7 +41,8 @@ plot_pacea_index_monthly_heatmap(
   neutral_oni_colour = "grey60",
   angle_year_labels = TRUE,
   heatmap_colours = pals::ocean.balance(20)[2:19],
-  digits = 1
+  digits = 1,
+  text_size = 3.5
 )
 
 plot_pacea_oisst_anomalies_heatmap_style(
@@ -53,7 +56,9 @@ plot_pacea_oisst_anomalies_heatmap_style(
   return_results = FALSE,
   scale_limits = NULL,
   angle_year_labels = TRUE,
-  heatmap_colours = pals::ocean.balance(20)[2:19]
+  heatmap_colours = pals::ocean.balance(20)[2:19],
+  text_size = 3.5,
+  digits = 1
 )
 }
 \arguments{
@@ -128,6 +133,10 @@ the value for 1990 will now appear as 1991). If NULL but \code{shift} is given,
 then \code{shift_years} defaults to \verb{rep(1, length(shift)}, assuming a one-year
 shift for each specified index.}
 
+\item{text_size}{numeric; size of text displayed in heatmap boxes (default: 3.5)}
+
+\item{digits}{numeric number of decimal places to show for text values}
+
 \item{pacea_index_obj}{object of class \code{pacea_index} with monthly resolution
 (e.g., \code{oni}, \code{npi_monthly}). Must have columns: \code{year}, \code{month}, and the
 column specified in the \code{value} parameter.}
@@ -148,8 +157,6 @@ defined as ±0.5°C anomalies.}
 \item{neutral_oni_colour}{character string specifying the colour to use for
 neutral anomalies (between -0.5 and 0.5) when \code{neutral_oni_one_colour = TRUE}.
 Default is "grey60".}
-
-\item{digits}{numeric number of decimal places to give for digits within the squares}
 
 \item{dat}{\code{pacea_oisst_anomalies_list} class object from running
 \code{calculate_anomalies()} on an object of class \code{pacea_oi} (the \code{sst_month}
