@@ -21,3 +21,5 @@ R/plot-buoy-sst*.R
 
 ^README\.Rmd$
 ^LICENSE\.md$
+
+.nojekyll
