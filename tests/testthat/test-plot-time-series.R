@@ -39,6 +39,10 @@ test_that("index plotting works with various options", {
   expect_invisible(plot(oni,
                         style = "red_blue"))
 
+#  expect_invisible(plot(oni,
+#                        y_axis_reverse = TRUE))
+
+
   expect_invisible(plot(npi_monthly,
                         value = "value"))
   expect_invisible(plot(npi_annual,

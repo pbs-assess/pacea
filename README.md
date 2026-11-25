@@ -357,7 +357,7 @@ example:
 
 ``` r
 oni
-#> # A tibble: 920 × 4
+#> # A tibble: 921 × 4
 #>     year month value anomaly
 #>    <dbl> <dbl> <dbl>   <dbl>
 #>  1  1950     1  25.0   -1.32
@@ -370,7 +370,7 @@ oni
 #>  8  1950     8  25.9   -0.57
 #>  9  1950     9  25.8   -0.56
 #> 10  1950    10  25.6   -0.62
-#> # ℹ 910 more rows
+#> # ℹ 911 more rows
 ```
 
 **What climatic and oceanographic indices are currently available, and
@@ -392,6 +392,26 @@ knitr::kable(pacea_indices)
 | soi | Southern Oscillation Index | monthly | 1951 | 2026 |
 | bi | North Pacific Bifurcation Index | annual | 1967 | 2024 |
 | mei | Multivariate El Niño Southern Oscillation Index | monthly | 1979 | 2026 |
+
+## Data classes in pacea
+
+The following data classes are used for appropriate objects in pacea,
+and ensure that the appropriate plotting or other functions get used.
+For example, `hake_biomass` has class `pacea_biomass` (it is also a
+tibble), such that `plot(hake_biomass)` automatically uses the pacea
+function `plot.pacea_biomass(hake_biomass)` to make the customised plot.
+Then `?plot.pacea_biomass` will show the help file for the correct
+function.
+
+| pacea class | Description |
+|----|----|
+| `pacea_biomass`, `pacea_herring_biomass` | Biomass estimates for a species (tibble) |
+| `pacea_harbour_seals` | Harbour seal population estimates (tibble) |
+| `pacea_recruitment`, `pacea_herring_recruitment` | Recruitment estimates (tibble) |
+| `pacea_index` | Climatological and oceanographic indices (tibble) |
+| `pacea_oi` | OISST data (sf object) |
+| `pacea_st` | Spatio-temporal outputs from biogeochemical models (sf object) |
+| `pacea_zooplankton` | Zooplankton abundance anomalies (tibble) |
 
 ## Vignettes
 
