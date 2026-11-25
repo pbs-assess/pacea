@@ -21,7 +21,9 @@
   require_requested_months = NULL,
   angle_year_labels = TRUE,
   scale_limits = NULL,
-  heatmap_colours = pals::ocean.balance(20)[2:19]
+  heatmap_colours = pals::ocean.balance(20)[2:19],
+  text_size = 3.5,
+  digits = 1
 )
 
 plot_pacea_buoy_anomalies_single(
@@ -37,7 +39,9 @@ plot_pacea_buoy_anomalies_single(
   return_results = FALSE,
   angle_year_labels = TRUE,
   scale_limits = NULL,
-  heatmap_colours = pals::ocean.balance(20)[2:19]
+  heatmap_colours = pals::ocean.balance(20)[2:19],
+  text_size = 3.5,
+  digits = 1
 )
 
 plot_pacea_indices(
@@ -50,7 +54,9 @@ plot_pacea_indices(
   return_results = FALSE,
   require_requested_months = NULL,
   scale_limits = NULL,
-  heatmap_colours = pals::ocean.balance(20)[2:19]
+  heatmap_colours = pals::ocean.balance(20)[2:19],
+  text_size = 3.5,
+  digits = 1
 )
 }
 \arguments{
@@ -110,6 +116,10 @@ then they are coloured grey.}
 
 \item{heatmap_colours}{numeric vector of colours to use for the heatmap.
 Default is \code{pals::ocean.balance(20)[2:19]}, which provides 18 colours.}
+
+\item{text_size}{numeric; size of text displayed in heatmap boxes (default: 3.5)}
+
+\item{digits}{numeric number of decimal places to show for text values}
 
 \item{...}{the indices you want to plot, e.g. oni, pdo, etc., any of
 those listed in \code{pacea_indices}.}
