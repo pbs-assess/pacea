@@ -13,7 +13,7 @@ of the development version.}
 }
 \value{
 Character string containing the title from the .Rd file, or
-the description from an \item{} entry, or NA_character_ if not found.
+the description from an \code{\item{}} entry, or \code{NA_character_} if not found.
 The first word is capitalised.
 }
 \description{
